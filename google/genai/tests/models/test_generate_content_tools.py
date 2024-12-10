@@ -228,7 +228,10 @@ def test_function_calling_without_implementation(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
       contents='What is the weather in Boston?',
-      config={'tools': [get_weather_declaration_only]},
+      config={
+          'tools': [get_weather_declaration_only],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
   )
 
 
@@ -238,6 +241,7 @@ def test_2_function(client):
       contents='What is the price of GOOG? And what is the weather in Boston?',
       config={
           'tools': [get_weather, get_stock_price],
+          'automatic_function_calling': {'ignore_call_history': True},
       },
   )
   assert '1000' in response.text
@@ -252,6 +256,7 @@ async def test_2_function_async(client):
       contents='What is the price of GOOG? And what is the weather in Boston?',
       config={
           'tools': [get_weather, get_stock_price],
+          'automatic_function_calling': {'ignore_call_history': True},
       },
   )
   assert '1000' in response.text
@@ -280,6 +285,7 @@ def test_automatic_function_calling(client):
       contents='what is the result of 1000/2?',
       config={
           'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
       },
   )
 
@@ -294,6 +300,7 @@ def test_callable_tools_user_disable_afc(client):
           'tools': [divide_integers],
           'automatic_function_calling': {
               'disable': True,
+              'ignore_call_history': True,
           },
       },
   )
@@ -308,6 +315,7 @@ def test_callable_tools_user_disable_afc_with_max_remote_calls(client):
           'automatic_function_calling': {
               'disable': True,
               'maximum_remote_calls': 2,
+              'ignore_call_history': True,
           },
       },
   )
@@ -324,6 +332,7 @@ def test_callable_tools_user_disable_afc_with_max_remote_calls_negative(
           'automatic_function_calling': {
               'disable': True,
               'maximum_remote_calls': -1,
+              'ignore_call_history': True,
           },
       },
   )
@@ -338,6 +347,7 @@ def test_callable_tools_user_disable_afc_with_max_remote_calls_zero(client):
           'automatic_function_calling': {
               'disable': True,
               'maximum_remote_calls': 0,
+              'ignore_call_history': True,
           },
       },
   )
@@ -351,6 +361,7 @@ def test_callable_tools_user_enable_afc(client):
           'tools': [divide_integers],
           'automatic_function_calling': {
               'disable': False,
+              'ignore_call_history': True,
           },
       },
   )
@@ -365,6 +376,7 @@ def test_callable_tools_user_enable_afc_with_max_remote_calls(client):
           'automatic_function_calling': {
               'disable': False,
               'maximum_remote_calls': 2,
+              'ignore_call_history': True,
           },
       },
   )
@@ -381,6 +393,7 @@ def test_callable_tools_user_enable_afc_with_max_remote_calls_negative(
           'automatic_function_calling': {
               'disable': False,
               'maximum_remote_calls': -1,
+              'ignore_call_history': True,
           },
       },
   )
@@ -395,6 +408,7 @@ def test_callable_tools_user_enable_afc_with_max_remote_calls_zero(client):
           'automatic_function_calling': {
               'disable': False,
               'maximum_remote_calls': 0,
+              'ignore_call_history': True,
           },
       },
   )
@@ -406,6 +420,7 @@ def test_automatic_function_calling_with_exception(client):
       contents='what is the result of 1000/0?',
       config={
           'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
       },
   )
 
@@ -414,7 +429,10 @@ def test_automatic_function_calling_float_without_decimal(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
       contents='what is the result of 1000.0/2.0?',
-      config={'tools': [divide_floats, divide_integers]},
+      config={
+          'tools': [divide_floats, divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
   )
 
   assert '500.0' in response.text
@@ -435,7 +453,10 @@ def test_automatic_function_calling_with_pydantic_model(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
       contents='it is winter now, what is the weather in Boston?',
-      config={'tools': [get_weather_pydantic_model]},
+      config={
+          'tools': [get_weather_pydantic_model],
+          'automatic_function_calling': {'ignore_call_history': True}
+      },
   )
 
   assert 'cold' in response.text and 'Boston' in response.text
@@ -465,7 +486,9 @@ def test_automatic_function_calling_with_pydantic_model_in_list_type(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
       contents='it is winter now, what is the weather in Boston and New York?',
-      config={'tools': [get_weather_from_list_of_cities]},
+      config={'tools': [get_weather_from_list_of_cities],
+              'automatic_function_calling': {'ignore_call_history': True},
+      },
   )
 
   assert 'cold' in response.text and 'Boston' in response.text
@@ -507,7 +530,10 @@ def test_automatic_function_calling_with_pydantic_model_in_union_type(client):
             'I have a one year old cat named Sundae, can you get the'
             ' information of the cat for me?'
         ),
-        config={'tools': [get_information]},
+        config={
+            'tools': [get_information],
+            'automatic_function_calling': {'ignore_call_history': True}
+        },
     )
     assert 'animal' in response.text
     assert 'Sundae' in response.text
@@ -542,7 +568,10 @@ def test_with_1_empty_tool(client):
     client.models.generate_content(
         model='gemini-1.5-flash',
         contents='What is the price of GOOG?.',
-        config={'tools': [{}, get_stock_price]},
+        config={
+            'tools': [{}, get_stock_price],
+            'automatic_function_calling': {'ignore_call_history': True}
+        },
     )
 
 
@@ -600,7 +629,10 @@ def test_automatic_function_calling_with_coroutine_function(client):
     client.models.generate_content(
         model='gemini-1.5-flash',
         contents='what is the result of 1000/2?',
-        config={'tools': [divide_integers]},
+        config={
+            'tools': [divide_integers],
+            'automatic_function_calling': {'ignore_call_history': True}
+        },
     )
 
 
@@ -615,7 +647,10 @@ async def test_automatic_function_calling_with_coroutine_function_async(
     await client.aio.models.generate_content(
         model='gemini-1.5-flash',
         contents='what is the result of 1000/2?',
-        config={'tools': [divide_integers]},
+        config={
+            'tools': [divide_integers],
+            'automatic_function_calling': {'ignore_call_history': True}
+        },
     )
 
 
@@ -627,7 +662,10 @@ async def test_automatic_function_calling_async(client):
   response = await client.aio.models.generate_content(
       model='gemini-1.5-flash',
       contents='what is the result of 1000/2?',
-      config={'tools': [divide_integers]},
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True}
+      },
   )
 
   assert '500' in response.text
@@ -652,7 +690,10 @@ async def test_automatic_function_calling_async_float_without_decimal(client):
   response = await client.aio.models.generate_content(
       model='gemini-1.5-flash',
       contents='what is the result of 1000.0/2.0?',
-      config={'tools': [divide_floats, divide_integers]},
+      config={
+          'tools': [divide_floats, divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
   )
 
   assert '500.0' in response.text
@@ -674,9 +715,121 @@ async def test_automatic_function_calling_async_with_pydantic_model(client):
   response = await client.aio.models.generate_content(
       model='gemini-1.5-flash',
       contents='it is winter now, what is the weather in Boston?',
-      config={'tools': [get_weather_pydantic_model]},
+      config={
+          'tools': [get_weather_pydantic_model],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
   )
 
   # ML Dev couldn't understand pydantic model
   if client.vertexai:
     assert 'cold' in response.text and 'Boston' in response.text
+
+
+def test_2_function_with_history(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What is the price of GOOG? And what is the weather in Boston?',
+      config={
+          'tools': [get_weather, get_stock_price],
+          'automatic_function_calling': {'ignore_call_history': False},
+      },
+  )
+
+  actual_history = response.automatic_function_calling_history
+
+  assert actual_history[0].role == 'user'
+  assert (
+      actual_history[0].parts[0].text
+      == 'What is the price of GOOG? And what is the weather in Boston?'
+  )
+
+  assert actual_history[1].role == 'model'
+  assert actual_history[1].parts[0].function_call.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionCall(
+      name='get_stock_price',
+      args={'symbol': 'GOOG'},
+  ).model_dump_json(
+      exclude_none=True
+  )
+  assert actual_history[1].parts[1].function_call.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionCall(
+      name='get_weather',
+      args={'city': 'Boston'},
+  ).model_dump_json(
+      exclude_none=True
+  )
+
+  assert actual_history[2].role == 'user'
+  assert actual_history[2].parts[0].function_response.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionResponse(
+      name='get_stock_price', response={'result': '1000'}
+  ).model_dump_json(
+      exclude_none=True
+  )
+  assert actual_history[2].parts[1].function_response.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionResponse(
+      name='get_weather',
+      response={'result': 'The weather in Boston is sunny and 100 degrees.'},
+  ).model_dump_json(
+      exclude_none=True
+  )
+
+
+@pytest.mark.asyncio
+async def test_2_function_with_history_async(client):
+  response = await client.aio.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What is the price of GOOG? And what is the weather in Boston?',
+      config={
+          'tools': [get_weather, get_stock_price],
+          'automatic_function_calling': {'ignore_call_history': False},
+      },
+  )
+
+  actual_history = response.automatic_function_calling_history
+
+  assert actual_history[0].role == 'user'
+  assert (
+      actual_history[0].parts[0].text
+      == 'What is the price of GOOG? And what is the weather in Boston?'
+  )
+
+  assert actual_history[1].role == 'model'
+  assert actual_history[1].parts[0].function_call.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionCall(
+      name='get_stock_price',
+      args={'symbol': 'GOOG'},
+  ).model_dump_json(
+      exclude_none=True
+  )
+  assert actual_history[1].parts[1].function_call.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionCall(
+      name='get_weather',
+      args={'city': 'Boston'},
+  ).model_dump_json(
+      exclude_none=True
+  )
+
+  assert actual_history[2].role == 'user'
+  assert actual_history[2].parts[0].function_response.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionResponse(
+      name='get_stock_price', response={'result': '1000'}
+  ).model_dump_json(
+      exclude_none=True
+  )
+  assert actual_history[2].parts[1].function_response.model_dump_json(
+      exclude_none=True
+  ) == types.FunctionResponse(
+      name='get_weather',
+      response={'result': 'The weather in Boston is sunny and 100 degrees.'},
+  ).model_dump_json(
+      exclude_none=True
+  )

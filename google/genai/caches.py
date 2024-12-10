@@ -1249,6 +1249,7 @@ class Caches(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       contents = ... // Initialize the content to cache.
       response = await client.aio.caches.create(
           model= ... // The publisher model id
@@ -1310,6 +1311,7 @@ class Caches(_common.BaseModule):
     """Gets cached content configurations.
 
     .. code-block:: python
+
       await client.aio.caches.get(name= ... ) // The server-generated resource
       name.
     """
@@ -1364,6 +1366,7 @@ class Caches(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       await client.aio.caches.delete(name= ... ) // The server-generated
       resource name.
     """
@@ -1420,6 +1423,7 @@ class Caches(_common.BaseModule):
     """Updates cached content configurations.
 
     .. code-block:: python
+
       response = await client.aio.caches.update(
           name= ... // The server-generated resource name.
           config={
@@ -1473,6 +1477,7 @@ class Caches(_common.BaseModule):
     """Lists cached content configurations.
 
     .. code-block:: python
+
       cached_contents = await client.aio.caches.list(config={'page_size': 2})
       async for cached_content in cached_contents:
         print(cached_content)
@@ -1548,6 +1553,7 @@ class AsyncCaches(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       contents = ... // Initialize the content to cache.
       response = await client.aio.caches.create(
           model= ... // The publisher model id
@@ -1609,6 +1615,7 @@ class AsyncCaches(_common.BaseModule):
     """Gets cached content configurations.
 
     .. code-block:: python
+
       await client.aio.caches.get(name= ... ) // The server-generated resource
       name.
     """
@@ -1663,6 +1670,7 @@ class AsyncCaches(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       await client.aio.caches.delete(name= ... ) // The server-generated
       resource name.
     """
@@ -1719,6 +1727,7 @@ class AsyncCaches(_common.BaseModule):
     """Updates cached content configurations.
 
     .. code-block:: python
+
       response = await client.aio.caches.update(
           name= ... // The server-generated resource name.
           config={
@@ -1772,6 +1781,7 @@ class AsyncCaches(_common.BaseModule):
     """Lists cached content configurations.
 
     .. code-block:: python
+
       cached_contents = await client.aio.caches.list(config={'page_size': 2})
       async for cached_content in cached_contents:
         print(cached_content)

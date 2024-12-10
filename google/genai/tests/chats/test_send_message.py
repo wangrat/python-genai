@@ -23,6 +23,13 @@ pytestmark = pytest_helper.setup(
 pytest_plugins = ('pytest_asyncio',)
 
 
+def divide_intergers_with_customized_math_rule(
+    numerator: int, denominator: int
+) -> int:
+  """Divides two integers with customized math rule."""
+  return numerator // denominator + 1
+
+
 def test_text(client):
   chat = client.chats.create(model='gemini-1.5-flash')
   chat.send_message(
@@ -103,6 +110,73 @@ def test_history(client):
   ]
   chat = client.chats.create(model='gemini-1.5-flash', history=history)
   chat.send_message('what is a + b?')
+
+
+def test_with_afc_history(client):
+  chat = client.chats.create(
+      model='gemini-1.5-flash',
+      config={'tools': [divide_intergers_with_customized_math_rule]},
+  )
+  _ = chat.send_message('what is the result of 100/2?')
+  chat_history = chat._curated_history
+
+  assert len(chat_history) == 4
+  assert chat_history[0].role == 'user'
+  assert chat_history[0].parts[0].text == 'what is the result of 100/2?'
+
+  assert chat_history[1].role == 'model'
+  assert (
+      chat_history[1].parts[0].function_call.name
+      == 'divide_intergers_with_customized_math_rule'
+  )
+  assert chat_history[1].parts[0].function_call.args == {
+      'numerator': 100,
+      'denominator': 2,
+  }
+
+  assert chat_history[2].role == 'user'
+  assert (
+      chat_history[2].parts[0].function_response.name
+      == 'divide_intergers_with_customized_math_rule'
+  )
+  assert chat_history[2].parts[0].function_response.response == {'result': 51}
+
+  assert chat_history[3].role == 'model'
+  assert '51' in chat_history[3].parts[0].text
+
+
+@pytest.mark.asyncio
+async def test_with_afc_history_async(client):
+  chat = client.aio.chats.create(
+      model='gemini-1.5-flash',
+      config={'tools': [divide_intergers_with_customized_math_rule]},
+  )
+  _ = await chat.send_message('what is the result of 100/2?')
+  chat_history = chat._curated_history
+
+  assert len(chat_history) == 4
+  assert chat_history[0].role == 'user'
+  assert chat_history[0].parts[0].text == 'what is the result of 100/2?'
+
+  assert chat_history[1].role == 'model'
+  assert (
+      chat_history[1].parts[0].function_call.name
+      == 'divide_intergers_with_customized_math_rule'
+  )
+  assert chat_history[1].parts[0].function_call.args == {
+      'numerator': 100,
+      'denominator': 2,
+  }
+
+  assert chat_history[2].role == 'user'
+  assert (
+      chat_history[2].parts[0].function_response.name
+      == 'divide_intergers_with_customized_math_rule'
+  )
+  assert chat_history[2].parts[0].function_response.response == {'result': 51}
+
+  assert chat_history[3].role == 'model'
+  assert '51' in chat_history[3].parts[0].text
 
 
 @pytest.mark.asyncio

@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/googlapis/genai-python"
+Homepage = "https://github.com/googleapis/python-genai"
 
 [tool.setuptools]
 packages = [

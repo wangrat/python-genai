@@ -293,3 +293,18 @@ def get_max_remote_calls_afc(
   ):
     return _DEFAULT_MAX_REMOTE_CALLS_AFC
   return int(config_model.automatic_function_calling.maximum_remote_calls)
+
+def should_append_afc_history(
+    config: Optional[types.GenerateContentConfigOrDict] = None,
+) -> bool:
+  config_model = (
+      types.GenerateContentConfig(**config)
+      if config and isinstance(config, dict)
+      else config
+  )
+  if (
+      not config_model
+      or not config_model.automatic_function_calling
+  ):
+    return True
+  return not config_model.automatic_function_calling.ignore_call_history

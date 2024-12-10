@@ -94,7 +94,7 @@ test_table: list[pytest_helper.TestTableItem] = [
                         'parts': [
                             types.PartDict({
                                 'file_data': {
-                                    'file_uri': 'https://image.mota.press/image/games/yinhe/project/images/bg.jpg',
+                                    'file_uri': 'https://storage.googleapis.com/cloud-samples-data/generative-ai/image/scones.jpg',
                                     'mime_type': 'image/jpeg',
                                 }
                             })

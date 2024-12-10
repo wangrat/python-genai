@@ -81,20 +81,23 @@ class AsyncSession:
     """Receive model responses from the server.
 
     The method will yield the model responses from the server. The returned
-    responses will represent a complete model turn.
-    when the returned message is fuction call, user must call `send` with the
-    function response to continue the turn.
-    Example usage:
-    ```
-    client = genai.Client(api_key=API_KEY)
+    responses will represent a complete model turn. When the returned message
+    is fuction call, user must call `send` with the function response to
+    continue the turn.
 
-    async with client.aio.live.connect(model='...') as session:
-      await session.send(input='Hello world!', end_of_turn=True)
-      async for message in session.receive():
-        print(message)
-    ```
     Yields:
-        The model responses from the server.
+      The model responses from the server.
+
+    Example usage:
+
+    .. code-block:: python
+
+      client = genai.Client(api_key=API_KEY)
+
+      async with client.aio.live.connect(model='...') as session:
+        await session.send(input='Hello world!', end_of_turn=True)
+        async for message in session.receive():
+          print(message)
     """
     # TODO(b/365983264) Handle intermittent issues for the user.
     while result := await self._receive():
@@ -113,28 +116,27 @@ class AsyncSession:
     input stream to the model and the other task will be used to receive the
     responses from the model.
 
-    Example usage:
-    ```
-    client = genai.Client(api_key=API_KEY)
-    config = {'response_modalities': ['AUDIO']}
-
-    async def audio_stream():
-      stream = read_audio()
-      for data in stream:
-        yield data
-
-    async with client.aio.live.connect(model='...') as session:
-      for audio in session.start_stream(stream = audio_stream(),
-      mime_type = 'audio/pcm'):
-        play_audio_chunk(audio.data)
-    ```
-
     Args:
-        stream: An iterator that yields the model response.
-        mime_type: The MIME type of the data in the stream.
+      stream: An iterator that yields the model response.
+      mime_type: The MIME type of the data in the stream.
 
     Yields:
-        The audio bytes received from the model and server response messages.
+      The audio bytes received from the model and server response messages.
+
+    Example usage:
+
+    .. code-block:: python
+
+      client = genai.Client(api_key=API_KEY)
+      config = {'response_modalities': ['AUDIO']}
+      async def audio_stream():
+        stream = read_audio()
+        for data in stream:
+          yield data
+      async with client.aio.live.connect(model='...') as session:
+        for audio in session.start_stream(stream = audio_stream(),
+        mime_type = 'audio/pcm'):
+          play_audio_chunk(audio.data)
     """
     stop_event = asyncio.Event()
     # Start the send loop. When stream is complete stop_event is set.
@@ -571,16 +573,16 @@ class AsyncLive(_common.BaseModule):
   ) -> AsyncSession:
     """Connect to the live server.
 
-    Example usage:
-    ```
-    client = genai.Client(api_key=API_KEY)
-    config = {}
+    Usage:
 
-    async with client.aio.live.connect(model='gemini-1.0-pro-002', config=config) as session:
-      await session.send(input='Hello world!', end_of_turn=True)
-      async for message in session:
-        print(message)
-    ```
+    .. code-block:: python
+
+      client = genai.Client(api_key=API_KEY)
+      config = {}
+      async with client.aio.live.connect(model='gemini-1.0-pro-002', config=config) as session:
+        await session.send(input='Hello world!', end_of_turn=True)
+        async for message in session:
+          print(message)
     """
     base_url = self.api_client._websocket_base_url()
     if self.api_client.api_key:

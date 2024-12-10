@@ -65,7 +65,12 @@ class Chat(_BaseChat):
         config=self._config,
     )
     if response.candidates and response.candidates[0].content:
-      self._curated_history.append(input_content)
+      if response.automatic_function_calling_history:
+        self._curated_history.extend(
+            response.automatic_function_calling_history
+        )
+      else:
+        self._curated_history.append(input_content)
       self._curated_history.append(response.candidates[0].content)
     return response
 
@@ -138,7 +143,12 @@ class AsyncChat(_BaseChat):
         config=self._config,
     )
     if response.candidates and response.candidates[0].content:
-      self._curated_history.append(input_content)
+      if response.automatic_function_calling_history:
+        self._curated_history.extend(
+            response.automatic_function_calling_history
+        )
+      else:
+        self._curated_history.append(input_content)
       self._curated_history.append(response.candidates[0].content)
     return response
 

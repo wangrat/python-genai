@@ -1253,6 +1253,9 @@ def _GenerateImageConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['output_gcs_uri']):
     raise ValueError('output_gcs_uri parameter is not supported in Google AI.')
 
@@ -1348,6 +1351,9 @@ def _GenerateImageConfig_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['output_gcs_uri']) is not None:
     setv(
         parent_object,
@@ -1778,6 +1784,9 @@ def _EditImageConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['output_gcs_uri']):
     raise ValueError('output_gcs_uri parameter is not supported in Google AI.')
 
@@ -1870,6 +1879,9 @@ def _EditImageConfig_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['output_gcs_uri']) is not None:
     setv(
         parent_object,
@@ -2042,6 +2054,9 @@ def _UpscaleImageAPIConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['upscale_factor']) is not None:
     setv(
         parent_object,
@@ -2089,6 +2104,9 @@ def _UpscaleImageAPIConfig_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['upscale_factor']) is not None:
     setv(
         parent_object,
@@ -4327,6 +4345,7 @@ class Models(_common.BaseModule):
     logging.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
+    automatic_function_calling_history = []
     while remaining_remote_calls_afc > 0:
       response = self._generate_content(
           model=model, contents=contents, config=config
@@ -4351,11 +4370,17 @@ class Models(_common.BaseModule):
         break
       contents = t.t_contents(self.api_client, contents)
       contents.append(response.candidates[0].content)
-      contents.append({
-          'role': 'user',
-          'parts': func_response_parts,
-      })
-
+      contents.append(
+          types.Content(
+              role='user',
+              parts=func_response_parts,
+          )
+      )
+      automatic_function_calling_history.extend(contents)
+    if _extra_utils.should_append_afc_history(config):
+      response.automatic_function_calling_history = (
+          automatic_function_calling_history
+      )
     return response
 
   def upscale_image(
@@ -5185,6 +5210,7 @@ class AsyncModels(_common.BaseModule):
     logging.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
+    automatic_function_calling_history = []
     while remaining_remote_calls_afc > 0:
       response = await self._generate_content(
           model=model, contents=contents, config=config
@@ -5209,11 +5235,18 @@ class AsyncModels(_common.BaseModule):
         break
       contents = t.t_contents(self.api_client, contents)
       contents.append(response.candidates[0].content)
-      contents.append({
-          'role': 'user',
-          'parts': func_response_parts,
-      })
+      contents.append(
+          types.Content(
+              role='user',
+              parts=func_response_parts,
+          )
+      )
+      automatic_function_calling_history.extend(contents)
 
+    if _extra_utils.should_append_afc_history(config):
+      response.automatic_function_calling_history = (
+          automatic_function_calling_history
+      )
     return response
 
   async def list(

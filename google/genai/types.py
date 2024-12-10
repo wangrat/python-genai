@@ -322,8 +322,13 @@ FileDataOrDict = Union[FileData, FileDataDict]
 
 
 class FunctionCall(_common.BaseModel):
-  """A predicted [FunctionCall] returned from the model that contains a string representing the [FunctionDeclaration.name] and a structured JSON object containing the parameters and their values."""
+  """A function call."""
 
+  id: Optional[str] = Field(
+      default=None,
+      description="""The unique id of the function call. If populated, the client to execute the
+   `function_call` and return the response with the matching `id`.""",
+  )
   args: Optional[dict[str, Any]] = Field(
       default=None,
       description="""Optional. Required. The function parameters and values in JSON object format. See [FunctionDeclaration.parameters] for parameter details.""",
@@ -335,7 +340,11 @@ class FunctionCall(_common.BaseModel):
 
 
 class FunctionCallDict(TypedDict, total=False):
-  """A predicted [FunctionCall] returned from the model that contains a string representing the [FunctionDeclaration.name] and a structured JSON object containing the parameters and their values."""
+  """A function call."""
+
+  id: Optional[str]
+  """The unique id of the function call. If populated, the client to execute the
+   `function_call` and return the response with the matching `id`."""
 
   args: Optional[dict[str, Any]]
   """Optional. Required. The function parameters and values in JSON object format. See [FunctionDeclaration.parameters] for parameter details."""
@@ -348,12 +357,13 @@ FunctionCallOrDict = Union[FunctionCall, FunctionCallDict]
 
 
 class FunctionResponse(_common.BaseModel):
-  """The result output from a [FunctionCall] that contains a string representing the [FunctionDeclaration.name] and a structured JSON object containing any output from the function is used as context to the model.
+  """A function response."""
 
-  This should contain the result of a [FunctionCall] made based on model
-  prediction.
-  """
-
+  id: Optional[str] = Field(
+      default=None,
+      description="""The id of the function call this response is for. Populated by the client
+   to match the corresponding function call `id`.""",
+  )
   name: Optional[str] = Field(
       default=None,
       description="""Required. The name of the function to call. Matches [FunctionDeclaration.name] and [FunctionCall.name].""",
@@ -365,11 +375,11 @@ class FunctionResponse(_common.BaseModel):
 
 
 class FunctionResponseDict(TypedDict, total=False):
-  """The result output from a [FunctionCall] that contains a string representing the [FunctionDeclaration.name] and a structured JSON object containing any output from the function is used as context to the model.
+  """A function response."""
 
-  This should contain the result of a [FunctionCall] made based on model
-  prediction.
-  """
+  id: Optional[str]
+  """The id of the function call this response is for. Populated by the client
+   to match the corresponding function call `id`."""
 
   name: Optional[str]
   """Required. The name of the function to call. Matches [FunctionDeclaration.name] and [FunctionCall.name]."""
@@ -1218,6 +1228,15 @@ class AutomaticFunctionCallingConfig(_common.BaseModel):
       If not set, SDK will set maximum number of remote calls to 10.
       """,
   )
+  ignore_call_history: Optional[bool] = Field(
+      default=None,
+      description="""If automatic function calling is enabled,
+      whether to ignore call history to the response.
+      If not set, SDK will set ignore_call_history to false,
+      and will append the call history to
+      GenerateContentResponse.automatic_function_calling_history.
+      """,
+  )
 
 
 class AutomaticFunctionCallingConfigDict(TypedDict, total=False):
@@ -1234,6 +1253,14 @@ class AutomaticFunctionCallingConfigDict(TypedDict, total=False):
       maximum number of remote calls for automatic function calling.
       This number should be a positive integer.
       If not set, SDK will set maximum number of remote calls to 10.
+      """
+
+  ignore_call_history: Optional[bool]
+  """If automatic function calling is enabled,
+      whether to ignore call history to the response.
+      If not set, SDK will set ignore_call_history to false,
+      and will append the call history to
+      GenerateContentResponse.automatic_function_calling_history.
       """
 
 
@@ -2314,6 +2341,7 @@ class GenerateContentResponse(_common.BaseModel):
   usage_metadata: Optional[GenerateContentResponseUsageMetadata] = Field(
       default=None, description="""Usage metadata about the response(s)."""
   )
+  automatic_function_calling_history: Optional[list[Content]] = None
   parsed: Union[pydantic.BaseModel, dict] = None
 
   @property
@@ -2536,6 +2564,9 @@ EmbedContentResponseOrDict = Union[
 class GenerateImageConfig(_common.BaseModel):
   """Class that represents the config for generating an image."""
 
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
   output_gcs_uri: Optional[str] = Field(
       default=None,
       description="""Cloud Storage URI used to store the generated images.
@@ -2615,6 +2646,9 @@ class GenerateImageConfig(_common.BaseModel):
 
 class GenerateImageConfigDict(TypedDict, total=False):
   """Class that represents the config for generating an image."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   output_gcs_uri: Optional[str]
   """Cloud Storage URI used to store the generated images.
@@ -3102,6 +3136,9 @@ _ReferenceImageAPIOrDict = Union[_ReferenceImageAPI, _ReferenceImageAPIDict]
 class EditImageConfig(_common.BaseModel):
   """Configuration for editing an image."""
 
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
   output_gcs_uri: Optional[str] = Field(
       default=None,
       description="""Cloud Storage URI used to store the generated images.
@@ -3175,6 +3212,9 @@ class EditImageConfig(_common.BaseModel):
 
 class EditImageConfigDict(TypedDict, total=False):
   """Configuration for editing an image."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   output_gcs_uri: Optional[str]
   """Cloud Storage URI used to store the generated images.
@@ -3300,6 +3340,9 @@ class _UpscaleImageAPIConfig(_common.BaseModel):
   to be modifiable or exposed to users in the SDK method.
   """
 
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
   upscale_factor: Optional[str] = Field(
       default=None,
       description="""The factor to which the image will be upscaled.""",
@@ -3328,6 +3371,9 @@ class _UpscaleImageAPIConfigDict(TypedDict, total=False):
   These fields require default values sent to the API which are not intended
   to be modifiable or exposed to users in the SDK method.
   """
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   upscale_factor: Optional[str]
   """The factor to which the image will be upscaled."""
@@ -6733,6 +6779,9 @@ class UpscaleImageConfig(_common.BaseModel):
   <https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api>`_.
   """
 
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
   upscale_factor: Optional[str] = Field(
       default=None,
       description="""The factor to which the image will be upscaled.""",
@@ -6760,6 +6809,9 @@ class UpscaleImageConfigDict(TypedDict, total=False):
   the `Imagen API reference documentation
   <https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api>`_.
   """
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   upscale_factor: Optional[str]
   """The factor to which the image will be upscaled."""
