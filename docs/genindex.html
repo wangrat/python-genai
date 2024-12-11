@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=10df8095" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=fdc8595f" />
     
     
 
@@ -18,6 +18,9 @@
   body {
     --color-code-background: #f8f8f8;
   --color-code-foreground: black;
+  --font-stack: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-stack--monospace: Roboto Mono, "Helvetica Neue Mono", monospace;
+  --font-stack--headings: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --color-brand-primary: black;
   --color-brand-content: black;
   
@@ -26,6 +29,9 @@
     body[data-theme="dark"] {
       --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
+  --font-stack: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-stack--monospace: Roboto Mono, "Helvetica Neue Mono", monospace;
+  --font-stack--headings: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --color-brand-primary: white;
   --color-brand-content: white;
   
@@ -34,6 +40,9 @@
       body:not([data-theme="light"]) {
         --color-code-background: #202020;
   --color-code-foreground: #d0d0d0;
+  --font-stack: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-stack--monospace: Roboto Mono, "Helvetica Neue Mono", monospace;
+  --font-stack--headings: "Google Sans Text", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
   --color-brand-primary: white;
   --color-brand-content: white;
   
@@ -1290,8 +1299,6 @@
           <li><a href="genai.html#genai.types.SchemaDict.format">(genai.types.SchemaDict attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="genai.html#genai.types.GenerateContentConfig.frequency_penalty">frequency_penalty (genai.types.GenerateContentConfig attribute)</a>
 
         <ul>
@@ -1302,6 +1309,8 @@
           <li><a href="genai.html#genai.types.GenerationConfigDict.frequency_penalty">(genai.types.GenerationConfigDict attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="genai.html#genai.types.Part.from_bytes">from_bytes() (genai.types.Part class method)</a>
 </li>
         <li><a href="genai.html#genai.types.Part.from_code_execution_result">from_code_execution_result() (genai.types.Part class method)</a>
@@ -1309,6 +1318,8 @@
         <li><a href="genai.html#genai.types.Part.from_executable_code">from_executable_code() (genai.types.Part class method)</a>
 </li>
         <li><a href="genai.html#genai.types.Image.from_file">from_file() (genai.types.Image static method)</a>
+</li>
+        <li><a href="genai.html#genai.types.FunctionDeclaration.from_function">from_function() (genai.types.FunctionDeclaration static method)</a>
 </li>
         <li><a href="genai.html#genai.types.Part.from_function_call">from_function_call() (genai.types.Part class method)</a>
 </li>
@@ -1694,6 +1705,10 @@
 </li>
           <li><a href="genai.html#genai.types.EditImageConfigDict.http_options">(genai.types.EditImageConfigDict attribute)</a>
 </li>
+          <li><a href="genai.html#genai.types.EmbedContentConfig.http_options">(genai.types.EmbedContentConfig attribute)</a>
+</li>
+          <li><a href="genai.html#genai.types.EmbedContentConfigDict.http_options">(genai.types.EmbedContentConfigDict attribute)</a>
+</li>
           <li><a href="genai.html#genai.types.GenerateImageConfig.http_options">(genai.types.GenerateImageConfig attribute)</a>
 </li>
           <li><a href="genai.html#genai.types.GenerateImageConfigDict.http_options">(genai.types.GenerateImageConfigDict attribute)</a>
@@ -1751,6 +1766,16 @@
   <h2>I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="genai.html#genai.types.FunctionCall.id">id (genai.types.FunctionCall attribute)</a>
+
+        <ul>
+          <li><a href="genai.html#genai.types.FunctionCallDict.id">(genai.types.FunctionCallDict attribute)</a>
+</li>
+          <li><a href="genai.html#genai.types.FunctionResponse.id">(genai.types.FunctionResponse attribute)</a>
+</li>
+          <li><a href="genai.html#genai.types.FunctionResponseDict.id">(genai.types.FunctionResponseDict attribute)</a>
+</li>
+        </ul></li>
         <li><a href="genai.html#genai.types.LiveServerToolCallCancellation.ids">ids (genai.types.LiveServerToolCallCancellation attribute)</a>
 
         <ul>

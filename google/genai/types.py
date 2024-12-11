@@ -6621,6 +6621,24 @@ class BatchJobDict(TypedDict, total=False):
 BatchJobOrDict = Union[BatchJob, BatchJobDict]
 
 
+class GetBatchJobConfig(_common.BaseModel):
+  """Optional parameters."""
+
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+
+
+class GetBatchJobConfigDict(TypedDict, total=False):
+  """Optional parameters."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
+
+
+GetBatchJobConfigOrDict = Union[GetBatchJobConfig, GetBatchJobConfigDict]
+
+
 class _GetBatchJobParameters(_common.BaseModel):
   """Config class for batches.get parameters."""
 
@@ -6630,6 +6648,9 @@ class _GetBatchJobParameters(_common.BaseModel):
     Example: "projects/.../locations/.../batchPredictionJobs/456"
     or "456" when project and location are initialized in the client.
     """,
+  )
+  config: Optional[GetBatchJobConfig] = Field(
+      default=None, description="""Optional parameters for the request."""
   )
 
 
@@ -6642,9 +6663,32 @@ class _GetBatchJobParametersDict(TypedDict, total=False):
     or "456" when project and location are initialized in the client.
     """
 
+  config: Optional[GetBatchJobConfigDict]
+  """Optional parameters for the request."""
+
 
 _GetBatchJobParametersOrDict = Union[
     _GetBatchJobParameters, _GetBatchJobParametersDict
+]
+
+
+class CancelBatchJobConfig(_common.BaseModel):
+  """Optional parameters."""
+
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+
+
+class CancelBatchJobConfigDict(TypedDict, total=False):
+  """Optional parameters."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
+
+
+CancelBatchJobConfigOrDict = Union[
+    CancelBatchJobConfig, CancelBatchJobConfigDict
 ]
 
 
@@ -6658,6 +6702,9 @@ class _CancelBatchJobParameters(_common.BaseModel):
     or "456" when project and location are initialized in the client.
     """,
   )
+  config: Optional[CancelBatchJobConfig] = Field(
+      default=None, description="""Optional parameters for the request."""
+  )
 
 
 class _CancelBatchJobParametersDict(TypedDict, total=False):
@@ -6668,6 +6715,9 @@ class _CancelBatchJobParametersDict(TypedDict, total=False):
     Example: "projects/.../locations/.../batchPredictionJobs/456"
     or "456" when project and location are initialized in the client.
     """
+
+  config: Optional[CancelBatchJobConfigDict]
+  """Optional parameters for the request."""
 
 
 _CancelBatchJobParametersOrDict = Union[

@@ -3733,6 +3733,7 @@ class Models(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       embeddings = client.models.embed_content(
           model= 'text-embedding-004',
           contents=[
@@ -4630,6 +4631,7 @@ class AsyncModels(_common.BaseModule):
     Usage:
 
     .. code-block:: python
+
       embeddings = client.models.embed_content(
           model= 'text-embedding-004',
           contents=[

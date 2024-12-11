@@ -213,6 +213,30 @@ def _CreateBatchJobParameters_to_vertex(
   return to_object
 
 
+def _GetBatchJobConfig_to_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
+  return to_object
+
+
+def _GetBatchJobConfig_to_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
+  return to_object
+
+
 def _GetBatchJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
@@ -221,6 +245,15 @@ def _GetBatchJobParameters_to_mldev(
   to_object = {}
   if getv(from_object, ['name']):
     raise ValueError('name parameter is not supported in Google AI.')
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _GetBatchJobConfig_to_mldev(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
 
   return to_object
 
@@ -238,6 +271,39 @@ def _GetBatchJobParameters_to_vertex(
         t.t_batch_job_name(api_client, getv(from_object, ['name'])),
     )
 
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _GetBatchJobConfig_to_vertex(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
+
+  return to_object
+
+
+def _CancelBatchJobConfig_to_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
+  return to_object
+
+
+def _CancelBatchJobConfig_to_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   return to_object
 
 
@@ -249,6 +315,15 @@ def _CancelBatchJobParameters_to_mldev(
   to_object = {}
   if getv(from_object, ['name']):
     raise ValueError('name parameter is not supported in Google AI.')
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _CancelBatchJobConfig_to_mldev(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
 
   return to_object
 
@@ -264,6 +339,15 @@ def _CancelBatchJobParameters_to_vertex(
         to_object,
         ['_url', 'name'],
         t.t_batch_job_name(api_client, getv(from_object, ['name'])),
+    )
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _CancelBatchJobConfig_to_vertex(
+            api_client, getv(from_object, ['config']), to_object
+        ),
     )
 
   return to_object
@@ -660,7 +744,9 @@ class Batches(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  def get(self, *, name: str) -> types.BatchJob:
+  def get(
+      self, *, name: str, config: Optional[types.GetBatchJobConfigOrDict] = None
+  ) -> types.BatchJob:
     """Gets a batch job.
 
     Args:
@@ -681,6 +767,7 @@ class Batches(_common.BaseModule):
 
     parameter_model = types._GetBatchJobParameters(
         name=name,
+        config=config,
     )
 
     if not self.api_client.vertexai:
@@ -713,9 +800,15 @@ class Batches(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  def cancel(self, *, name: str) -> None:
+  def cancel(
+      self,
+      *,
+      name: str,
+      config: Optional[types.CancelBatchJobConfigOrDict] = None,
+  ) -> None:
     parameter_model = types._CancelBatchJobParameters(
         name=name,
+        config=config,
     )
 
     if not self.api_client.vertexai:
@@ -947,7 +1040,9 @@ class AsyncBatches(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  async def get(self, *, name: str) -> types.BatchJob:
+  async def get(
+      self, *, name: str, config: Optional[types.GetBatchJobConfigOrDict] = None
+  ) -> types.BatchJob:
     """Gets a batch job.
 
     Args:
@@ -968,6 +1063,7 @@ class AsyncBatches(_common.BaseModule):
 
     parameter_model = types._GetBatchJobParameters(
         name=name,
+        config=config,
     )
 
     if not self.api_client.vertexai:
@@ -1000,9 +1096,15 @@ class AsyncBatches(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  async def cancel(self, *, name: str) -> None:
+  async def cancel(
+      self,
+      *,
+      name: str,
+      config: Optional[types.CancelBatchJobConfigOrDict] = None,
+  ) -> None:
     parameter_model = types._CancelBatchJobParameters(
         name=name,
+        config=config,
     )
 
     if not self.api_client.vertexai:
