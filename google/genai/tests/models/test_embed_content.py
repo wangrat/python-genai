@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# pylint: disable=protected-access
 
 
 """Tests for models.embedContent()."""
+
+import pytest
 
 from ... import types
 from .. import pytest_helper
@@ -33,7 +36,15 @@ test_table: list[pytest_helper.TestTableItem] = [
         parameters=types._EmbedContentParameters(
             model='text-embedding-004',
             contents=['What is your name?', 'I am a model.'],
-            config={'output_dimensionality': 10},
+            config={
+                'output_dimensionality': 10,
+                'title': 'test_title',
+                'task_type': 'RETRIEVAL_DOCUMENT',
+                'http_options': {
+                    'headers': {'test': 'headers'},
+                    'uri': 'test_uri',
+                },
+            },
         ),
     ),
     pytest_helper.TestTableItem(
@@ -68,3 +79,13 @@ pytestmark = pytest_helper.setup(
     test_method='models.embed_content',
     test_table=test_table,
 )
+
+
+@pytest.mark.asyncio
+async def test_async(client):
+  response = await client.aio.models.embed_content(
+      model='text-embedding-004',
+      contents='What is your name?',
+      config={'output_dimensionality': 10},
+  )
+  assert response

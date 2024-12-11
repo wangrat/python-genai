@@ -53,6 +53,12 @@ except ModuleNotFoundError:
   from websockets.client import connect
 
 
+_FUNCTION_RESPONSE_REQUIRES_ID = (
+    'FunctionResponse request must have an `id` field from the'
+    ' response of a ToolCall.FunctionalCalls in Google AI.'
+)
+
+
 class AsyncSession:
   """AsyncSession."""
 
@@ -342,6 +348,8 @@ class AsyncSession:
       input = [input]
     elif isinstance(input, dict) and 'name' in input and 'response' in input:
       # ToolResponse.FunctionResponse
+      if not (self._api_client.vertexai) and 'id' not in input:
+        raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
       input = [input]
 
     if isinstance(input, Sequence) and any(
@@ -397,7 +405,29 @@ class AsyncSession:
       client_message = {'client_content': input.model_dump(exclude_none=True)}
     elif isinstance(input, types.LiveClientToolResponse):
       # ToolResponse.FunctionResponse
+      if not (self._api_client.vertexai) and not (input.function_responses[0].id):
+        raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
       client_message = {'tool_response': input.model_dump(exclude_none=True)}
+    elif isinstance(input, types.FunctionResponse):
+      if not (self._api_client.vertexai) and not (input.id):
+        raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
+      client_message = {
+          'tool_response': {
+              'function_responses': [input.model_dump(exclude_none=True)]
+          }
+      }
+    elif isinstance(input, Sequence) and isinstance(
+        input[0], types.FunctionResponse
+    ):
+      if not (self._api_client.vertexai) and not (input[0].id):
+        raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
+      client_message = {
+          'tool_response': {
+              'function_responses': [
+                  c.model_dump(exclude_none=True) for c in input
+              ]
+          }
+      }
     else:
       raise ValueError(
           f'Unsupported input type "{type(input)}" or input content "{input}"'

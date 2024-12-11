@@ -661,6 +661,24 @@ class Batches(_common.BaseModule):
     return return_value
 
   def get(self, *, name: str) -> types.BatchJob:
+    """Gets a batch job.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/456" or "456"
+          when project and location are initialized in the client.
+
+    Returns:
+      A BatchJob object that contains details about the batch job.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_job = client.batches.get(name='123456789')
+      print(f"Batch job: {batch_job.name}, state {batch_job.state}")
+    """
+
     parameter_model = types._GetBatchJobParameters(
         name=name,
     )
@@ -767,6 +785,23 @@ class Batches(_common.BaseModule):
     return return_value
 
   def delete(self, *, name: str) -> types.DeleteResourceJob:
+    """Deletes a batch job.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/456" or "456"
+          when project and location are initialized in the client.
+
+    Returns:
+      A DeleteResourceJob object that shows the status of the deletion.
+
+    Usage:
+
+    .. code-block:: python
+
+      client.batches.delete(name='123456789')
+    """
+
     parameter_model = types._DeleteBatchJobParameters(
         name=name,
     )
@@ -814,12 +849,51 @@ class Batches(_common.BaseModule):
       src: str,
       config: Optional[types.CreateBatchJobConfigOrDict] = None,
   ) -> types.BatchJob:
+    """Creates a batch job.
+
+    Args:
+      model (str): The model to use for the batch job.
+      src (str): The source of the batch job. Currently supports GCS URI(-s) or
+        Bigquery URI. Example: "gs://path/to/input/data" or
+        "bq://projectId.bqDatasetId.bqTableId".
+      config (CreateBatchJobConfig): Optional configuration for the batch job.
+
+    Returns:
+      A BatchJob object that contains details about the batch job.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_job = client.batches.create(
+          model="gemini-1.5-flash",
+          src="gs://path/to/input/data",
+      )
+      print(batch_job.state)
+    """
     config = _extra_utils.format_destination(src, config)
     return self._create(model=model, src=src, config=config)
 
   def list(
       self, *, config: Optional[types.ListBatchJobConfigOrDict] = None
   ) -> Pager[types.BatchJob]:
+    """Lists batch jobs.
+
+    Args:
+      config (ListBatchJobConfig): Optional configuration for the list request.
+
+    Returns:
+      A Pager object that contains one page of batch jobs. When iterating over
+      the pager, it automatically fetches the next page if there are more.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_jobs = client.batches.list(config={"page_size": 10})
+      for batch_job in batch_jobs:
+        print(f"Batch job: {batch_job.name}, state {batch_job.state}")
+    """
     return Pager(
         'batch_jobs',
         self._list,
@@ -874,6 +948,24 @@ class AsyncBatches(_common.BaseModule):
     return return_value
 
   async def get(self, *, name: str) -> types.BatchJob:
+    """Gets a batch job.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/456" or "456"
+          when project and location are initialized in the client.
+
+    Returns:
+      A BatchJob object that contains details about the batch job.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_job = client.batches.get(name='123456789')
+      print(f"Batch job: {batch_job.name}, state {batch_job.state}")
+    """
+
     parameter_model = types._GetBatchJobParameters(
         name=name,
     )
@@ -980,6 +1072,23 @@ class AsyncBatches(_common.BaseModule):
     return return_value
 
   async def delete(self, *, name: str) -> types.DeleteResourceJob:
+    """Deletes a batch job.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/456" or "456"
+          when project and location are initialized in the client.
+
+    Returns:
+      A DeleteResourceJob object that shows the status of the deletion.
+
+    Usage:
+
+    .. code-block:: python
+
+      client.batches.delete(name='123456789')
+    """
+
     parameter_model = types._DeleteBatchJobParameters(
         name=name,
     )
@@ -1027,12 +1136,51 @@ class AsyncBatches(_common.BaseModule):
       src: str,
       config: Optional[types.CreateBatchJobConfigOrDict] = None,
   ) -> types.BatchJob:
+    """Creates a batch job asynchronously.
+
+    Args:
+      model (str): The model to use for the batch job.
+      src (str): The source of the batch job. Currently supports GCS URI(-s) or
+        Bigquery URI. Example: "gs://path/to/input/data" or
+        "bq://projectId.bqDatasetId.bqTableId".
+      config (CreateBatchJobConfig): Optional configuration for the batch job.
+
+    Returns:
+      A BatchJob object that contains details about the batch job.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_job = await client.aio.batches.create(
+          model="gemini-1.5-flash",
+          src="gs://path/to/input/data",
+      )
+    """
     config = _extra_utils.format_destination(src, config)
     return await self._create(model=model, src=src, config=config)
 
   async def list(
       self, *, config: Optional[types.ListBatchJobConfigOrDict] = None
   ) -> AsyncPager[types.BatchJob]:
+    """Lists batch jobs asynchronously.
+
+    Args:
+      config (ListBatchJobConfig): Optional configuration for the list request.
+
+    Returns:
+      A Pager object that contains one page of batch jobs. When iterating over
+      the pager, it automatically fetches the next page if there are more.
+
+    Usage:
+
+    .. code-block:: python
+
+      batch_jobs = await client.aio.batches.list(config={'page_size': 5})
+      print(f"current page: {batch_jobs.page}")
+      await batch_jobs_pager.next_page()
+      print(f"next page: {batch_jobs_pager.page}")
+    """
     return AsyncPager(
         'batch_jobs',
         self._list,

@@ -205,12 +205,22 @@ async def test_async_session_send_tool_response(
   session = live.AsyncSession(
       api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
   )
-  tool_response = types.LiveClientToolResponse(
+
+  if vertexai:
+    tool_response = types.LiveClientToolResponse(
       function_responses=[types.FunctionResponse(
           name='get_current_weather',
           response={'temeperature': 14.5, 'unit': 'C'},
       )]
-  )
+    )
+  else:
+    tool_response = types.LiveClientToolResponse(
+      function_responses=[types.FunctionResponse(
+          name='get_current_weather',
+          response={'temeperature': 14.5, 'unit': 'C'},
+          id='some-id',
+      )]
+    )
   await session.send(tool_response)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])

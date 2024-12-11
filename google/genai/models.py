@@ -1116,8 +1116,15 @@ def _EmbedContentConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['task_type']) is not None:
-    setv(parent_object, ['requests[]'], getv(from_object, ['task_type']))
+    setv(
+        parent_object,
+        ['requests[]', 'taskType'],
+        getv(from_object, ['task_type']),
+    )
 
   if getv(from_object, ['title']) is not None:
     setv(parent_object, ['requests[]', 'title'], getv(from_object, ['title']))
@@ -1144,10 +1151,13 @@ def _EmbedContentConfig_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['task_type']) is not None:
     setv(
         parent_object,
-        ['instances[]', 'taskType'],
+        ['instances[]', 'task_type'],
         getv(from_object, ['task_type']),
     )
 
@@ -3713,6 +3723,28 @@ class Models(_common.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.EmbedContentConfigOrDict] = None,
   ) -> types.EmbedContentResponse:
+    """Calculates embeddings for the given contents(only text is supported).
+
+    Args:
+      model (str): The model to use.
+      contents (list[Content]): The contents to embed.
+      config (EmbedContentConfig): Optional configuration for embeddings.
+
+    Usage:
+
+    .. code-block:: python
+      embeddings = client.models.embed_content(
+          model= 'text-embedding-004',
+          contents=[
+              'What is your name?',
+              'What is your favorite color?',
+          ],
+          config={
+              'output_dimensionality': 64
+          },
+      )
+    """
+
     parameter_model = types._EmbedContentParameters(
         model=model,
         contents=contents,
@@ -4588,6 +4620,28 @@ class AsyncModels(_common.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.EmbedContentConfigOrDict] = None,
   ) -> types.EmbedContentResponse:
+    """Calculates embeddings for the given contents(only text is supported).
+
+    Args:
+      model (str): The model to use.
+      contents (list[Content]): The contents to embed.
+      config (EmbedContentConfig): Optional configuration for embeddings.
+
+    Usage:
+
+    .. code-block:: python
+      embeddings = client.models.embed_content(
+          model= 'text-embedding-004',
+          contents=[
+              'What is your name?',
+              'What is your favorite color?',
+          ],
+          config={
+              'output_dimensionality': 64
+          },
+      )
+    """
+
     parameter_model = types._EmbedContentParameters(
         model=model,
         contents=contents,

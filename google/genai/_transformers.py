@@ -27,7 +27,6 @@ import PIL.Image
 
 from . import _api_client
 from . import types
-from ._automatic_function_calling_util import function_to_declaration
 
 
 def _resource_name(
@@ -307,7 +306,9 @@ def t_tool(client: _api_client.ApiClient, origin) -> types.Tool:
     return None
   if inspect.isfunction(origin):
     return types.Tool(
-        function_declarations=[function_to_declaration(client, origin)]
+        function_declarations=[
+            types.FunctionDeclaration.from_function(client, origin)
+        ]
     )
   else:
     return origin

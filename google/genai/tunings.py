@@ -896,7 +896,7 @@ def _TuningJobOrOperation_from_vertex(
 
 class Tunings(_common.BaseModule):
 
-  def get(self, *, name: str) -> types.TuningJob:
+  def _get(self, *, name: str) -> types.TuningJob:
     """Gets a TuningJob.
 
     Args:
@@ -998,7 +998,7 @@ class Tunings(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  def tune(
+  def _tune(
       self,
       *,
       base_model: str,
@@ -1129,10 +1129,35 @@ class Tunings(_common.BaseModule):
         config,
     )
 
+  def get(self, *, name: str) -> types.TuningJob:
+    job = self._get(name=name)
+    if job.experiment and self.api_client.vertexai:
+      _IpythonUtils.display_experiment_button(
+          experiment=job.experiment,
+          project=self.api_client.project,
+      )
+    return job
+
+  def tune(
+      self,
+      *,
+      base_model: str,
+      training_dataset: types.TuningDatasetOrDict,
+      config: Optional[types.CreateTuningJobConfigOrDict] = None,
+  ) -> types.TuningJobOrOperation:
+    result = self._tune(
+        base_model=base_model,
+        training_dataset=training_dataset,
+        config=config,
+    )
+    if result.name and self.api_client.vertexai:
+      _IpythonUtils.display_model_tuning_button(tuning_job_resource=result.name)
+    return result
+
 
 class AsyncTunings(_common.BaseModule):
 
-  async def get(self, *, name: str) -> types.TuningJob:
+  async def _get(self, *, name: str) -> types.TuningJob:
     """Gets a TuningJob.
 
     Args:
@@ -1234,7 +1259,7 @@ class AsyncTunings(_common.BaseModule):
     self.api_client._verify_response(return_value)
     return return_value
 
-  async def tune(
+  async def _tune(
       self,
       *,
       base_model: str,
@@ -1364,3 +1389,215 @@ class AsyncTunings(_common.BaseModule):
         await self._list(config=config),
         config,
     )
+
+  async def get(self, *, name: str) -> types.TuningJob:
+    job = await self._get(name=name)
+    if job.experiment and self.api_client.vertexai:
+      _IpythonUtils.display_experiment_button(
+          experiment=job.experiment,
+          project=self.api_client.project,
+      )
+    return job
+
+  async def tune(
+      self,
+      *,
+      base_model: str,
+      training_dataset: types.TuningDatasetOrDict,
+      config: Optional[types.CreateTuningJobConfigOrDict] = None,
+  ) -> types.TuningJobOrOperation:
+    result = await self._tune(
+        base_model=base_model,
+        training_dataset=training_dataset,
+        config=config,
+    )
+    if result.name and self.api_client.vertexai:
+      _IpythonUtils.display_model_tuning_button(tuning_job_resource=result.name)
+    return result
+
+
+class _IpythonUtils:
+  """Temporary class to hold the IPython related functions."""
+
+  displayed_experiments = set()
+
+  @staticmethod
+  def _get_ipython_shell_name() -> str:
+    import sys
+
+    if 'IPython' in sys.modules:
+      from IPython import get_ipython
+
+      return get_ipython().__class__.__name__
+    return ''
+
+  @staticmethod
+  def is_ipython_available() -> bool:
+    return bool(_IpythonUtils._get_ipython_shell_name())
+
+  @staticmethod
+  def _get_styles() -> None:
+    """Returns the HTML style markup to support custom buttons."""
+    return """
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      .view-vertex-resource,
+      .view-vertex-resource:hover,
+      .view-vertex-resource:visited {
+        position: relative;
+        display: inline-flex;
+        flex-direction: row;
+        height: 32px;
+        padding: 0 12px;
+          margin: 4px 18px;
+        gap: 4px;
+        border-radius: 4px;
+
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 103, 214);
+
+        font-family: Roboto,"Helvetica Neue",sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-decoration: none !important;
+
+        transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1) 0s;
+        box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
+      }
+      .view-vertex-resource:active {
+        box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+      }
+      .view-vertex-resource:active .view-vertex-ripple::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 4px;
+        pointer-events: none;
+
+        content: '';
+        background-color: rgb(51, 103, 214);
+        opacity: 0.12;
+      }
+      .view-vertex-icon {
+        font-size: 18px;
+      }
+    </style>
+  """
+
+  @staticmethod
+  def _parse_resource_name(marker: str, resource_parts: list[str]) -> str:
+    """Returns the part after the marker text part."""
+    for i in range(len(resource_parts)):
+      if resource_parts[i] == marker and i + 1 < len(resource_parts):
+        return resource_parts[i + 1]
+    return ''
+
+  @staticmethod
+  def _display_link(
+      text: str, url: str, icon: Optional[str] = 'open_in_new'
+  ) -> None:
+    """Creates and displays the link to open the Vertex resource.
+
+    Args:
+      text: The text displayed on the clickable button.
+      url: The url that the button will lead to. Only cloud console URIs are
+        allowed.
+      icon: The icon name on the button (from material-icons library)
+    """
+    CLOUD_UI_URL = 'https://console.cloud.google.com'  # pylint: disable=invalid-name
+    if not url.startswith(CLOUD_UI_URL):
+      raise ValueError(f'Only urls starting with {CLOUD_UI_URL} are allowed.')
+
+    import uuid
+
+    button_id = f'view-vertex-resource-{str(uuid.uuid4())}'
+
+    # Add the markup for the CSS and link component
+    html = f"""
+        {_IpythonUtils._get_styles()}
+        <a class="view-vertex-resource" id="{button_id}" href="#view-{button_id}">
+          <span class="material-icons view-vertex-icon">{icon}</span>
+          <span>{text}</span>
+        </a>
+        """
+
+    # Add the click handler for the link
+    html += f"""
+        <script>
+          (function () {{
+            const link = document.getElementById('{button_id}');
+            link.addEventListener('click', (e) => {{
+              if (window.google?.colab?.openUrl) {{
+                window.google.colab.openUrl('{url}');
+              }} else {{
+                window.open('{url}', '_blank');
+              }}
+              e.stopPropagation();
+              e.preventDefault();
+            }});
+          }})();
+        </script>
+    """
+
+    from IPython.core.display import display
+    from IPython.display import HTML
+
+    display(HTML(html))
+
+  @staticmethod
+  def display_experiment_button(experiment: str, project: str) -> None:
+    """Function to generate a link bound to the Vertex experiment.
+
+    Args:
+      experiment: The Vertex experiment name. Example format:
+        projects/{project_id}/locations/{location}/metadataStores/default/contexts/{experiment_name}
+      project: The project (alphanumeric) name.
+    """
+    if (
+        not _IpythonUtils.is_ipython_available()
+        or experiment in _IpythonUtils.displayed_experiments
+    ):
+      return
+    # Experiment gives the numeric id, but we need the alphanumeric project
+    # name. So we get the project from the api client object as an argument.
+    resource_parts = experiment.split('/')
+    location = resource_parts[3]
+    experiment_name = resource_parts[-1]
+
+    uri = (
+        'https://console.cloud.google.com/vertex-ai/experiments/locations/'
+        + f'{location}/experiments/{experiment_name}/'
+        + f'runs?project={project}'
+    )
+    _IpythonUtils._display_link('View Experiment', uri, 'science')
+
+    # Avoid repeatedly showing the button
+    _IpythonUtils.displayed_experiments.add(experiment)
+
+  @staticmethod
+  def display_model_tuning_button(tuning_job_resource: str) -> None:
+    """Function to generate a link bound to the Vertex model tuning job.
+
+    Args:
+      tuning_job_resource: The Vertex tuning job name. Example format:
+        projects/{project_id}/locations/{location}/tuningJobs/{tuning_job_id}
+    """
+    if not _IpythonUtils.is_ipython_available():
+      return
+
+    resource_parts = tuning_job_resource.split('/')
+    project = resource_parts[1]
+    location = resource_parts[3]
+    tuning_job_id = resource_parts[-1]
+
+    uri = (
+        'https://console.cloud.google.com/vertex-ai/generative/language/'
+        + f'locations/{location}/tuning/tuningJob/{tuning_job_id}'
+        + f'?project={project}'
+    )
+    _IpythonUtils._display_link('View Tuning Job', uri, 'tune')

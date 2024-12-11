@@ -39,7 +39,7 @@ The `client.models` modules exposes model inferencing and model getters.
 
 ``` python
 response = client.models.generate_content(
-    model='gemini-1.5-pro-002', contents='What is your name?'
+    model='gemini-2.0-flash-exp', contents='What is your name?'
 )
 print(response.text)
 ```
@@ -48,7 +48,7 @@ print(response.text)
 
 ``` python
 response = client.models.generate_content(
-    model='gemini-1.5-pro-002',
+    model='gemini-2.0-flash-exp',
     contents='high',
     config=types.GenerateContentConfig(
         system_instruction='I say high, you say low',
@@ -65,7 +65,7 @@ dictionaries. You can get the type from `google.genai.types`.
 
 ``` python
 response = client.models.generate_content(
-    model='gemini-1.5-flash-002',
+    model='gemini-2.0-flash-exp',
     contents=types.Part.from_text('Why is sky blue?'),
     config=types.GenerateContentConfig(
         temperature=0,
@@ -87,7 +87,7 @@ response
 
 ``` python
 response = client.models.generate_content(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='Say something bad.',
     config=types.GenerateContentConfig(
         safety_settings= [types.SafetySetting(
@@ -116,7 +116,7 @@ def get_current_weather(location: str,) -> int:
   return 'sunny'
 
 response = client.models.generate_content(
-    model='gemini-1.5-pro-002',
+    model='gemini-2.0-flash-exp',
     contents="What is the weather like in Boston?",
     config=types.GenerateContentConfig(tools=[get_current_weather],)
 )
@@ -144,7 +144,7 @@ tool = types.Tool(function_declarations=[function])
 
 
 response = client.models.generate_content(
-    model='gemini-1.5-pro-002',
+    model='gemini-2.0-flash-exp',
     contents="What is the weather like in Boston?",
     config=types.GenerateContentConfig(tools=[tool],)
 )
@@ -164,7 +164,7 @@ function_response_part = types.Part.from_function_response(
 )
 
 response = client.models.generate_content(
-    model='gemini-1.5-pro-002',
+    model='gemini-2.0-flash-exp',
     contents=[
         types.Part.from_text("What is the weather like in Boston?"),
         function_call_part,
@@ -194,7 +194,7 @@ class CountryInfo(BaseModel):
 
 
 response = client.models.generate_content(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='Give me information of the United States.',
     config=types.GenerateContentConfig(
         response_mime_type= 'application/json',
@@ -206,7 +206,7 @@ print(response.text)
 
 ``` python
 response = client.models.generate_content(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='Give me information of the United States.',
     config={
         'response_mime_type': 'application/json',
@@ -240,7 +240,7 @@ print(response.text)
 
 ``` python
 for chunk in client.models.generate_content_stream(
-    model='gemini-1.5-flash', contents='Tell me a story in 300 words.'
+    model='gemini-2.0-flash-exp', contents='Tell me a story in 300 words.'
 ):
   print(chunk.text)
 ```
@@ -255,7 +255,7 @@ of `client.models.generate_content`
 
 ``` python
 request = await client.aio.models.generate_content(
-    model='gemini-1.5-flash', contents='Tell me a story in 300 words.'
+    model='gemini-2.0-flash-exp', contents='Tell me a story in 300 words.'
 )
 
 print(response.text)
@@ -265,7 +265,7 @@ print(response.text)
 
 ``` python
 async for response in client.aio.models.generate_content_stream(
-    model='gemini-1.5-flash', contents='Tell me a story in 300 words.'
+    model='gemini-2.0-flash-exp', contents='Tell me a story in 300 words.'
 ):
   print(response.text)
 ```
@@ -274,7 +274,7 @@ async for response in client.aio.models.generate_content_stream(
 
 ``` python
 response = client.models.count_tokens(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='What is your name?',
 )
 print(response)
@@ -286,7 +286,7 @@ Compute tokens is not supported by Google AI.
 
 ``` python
 response = client.models.compute_tokens(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='What is your name?',
 )
 print(response)
@@ -296,7 +296,7 @@ print(response)
 
 ``` python
 response = await client.aio.models.count_tokens(
-    model='gemini-1.5-flash',
+    model='gemini-2.0-flash-exp',
     contents='What is your name?',
 )
 print(response)
@@ -333,14 +333,12 @@ Support for generate image in Google AI is behind an allowlist
 # Generate Image
 response1 = client.models.generate_image(
     model='imagen-3.0-generate-001',
-    prompt='Robot holding a red skateboard',
+    prompt='An umbrella in the foreground, and a rainy night sky in the background',
     config=types.GenerateImageConfig(
+        negative_prompt= "human",
         number_of_images= 1,
-        person_generation= "ALLOW_ADULT",
-        safety_filter_level= "BLOCK_LOW_AND_ABOVE",
         include_rai_reason= True,
-        add_watermark= True,
-        aspect_ratio= "4:3"
+        output_mime_type= "image/jpeg"
     )
 )
 response1.generated_images[0].image.show()
@@ -348,9 +346,10 @@ response1.generated_images[0].image.show()
 
 #### Upscale Image
 
+Upscale image is not supported in Google AI.
+
 ``` python
-# Upscale the generated image from the cell above
-from google.genai.types import Image
+# Upscale the generated image from above
 response2 = client.models.upscale_image(
     model='imagen-3.0-generate-001',
     image=response1.generated_images[0].image,
@@ -361,21 +360,36 @@ response2.generated_images[0].image.show()
 
 #### Edit Image
 
+Edit image is not supported in Google AI.
+
 ``` python
-# Edit the generated image from the first cell
-from google.genai.types import Image
+# Edit the generated image from above
+from google.genai.types import RawReferenceImage, MaskReferenceImage
+raw_ref_image = RawReferenceImage(
+    reference_id=1,
+    reference_image=response1.generated_images[0].image,
+)
+
+# Model computes a mask of the background
+mask_ref_image = MaskReferenceImage(
+    reference_id=2,
+    config=types.MaskReferenceConfig(
+        mask_mode='MASK_MODE_BACKGROUND',
+        mask_dilation=0,
+    ),
+)
+
 response3 = client.models.edit_image(
-    model='imagegeneration@006',
-    prompt='holding yellow surfboard',
-    image=response1.generated_images[0].image,
+    model='imagen-3.0-capability-preview-0930',
+    prompt='Sunlight and clear sky',
+    reference_images=[raw_ref_image, mask_ref_image],
     config=types.EditImageConfig(
-        edit_mode="inpainting-insert",
-        mask_type="semantic",
-        segmentation_classes=[156],
+        edit_mode= 'EDIT_MODE_INPAINT_INSERTION',
         number_of_images= 1,
+        negative_prompt= 'human',
         include_rai_reason= True,
-        product_position="reposition"
-    )
+        output_mime_type= 'image/jpeg',
+    ),
 )
 response3.generated_images[0].image.show()
 ```
@@ -412,7 +426,7 @@ client.files.delete(name=file3.name)
 ### Create
 
 ``` python
-if client._api_client.vertexai:
+if client.vertexai:
   file_uris = [
       'gs://cloud-samples-data/generative-ai/pdf/2312.11805v3.pdf',
       'gs://cloud-samples-data/generative-ai/pdf/2403.05530.pdf'
@@ -597,7 +611,7 @@ distillation_job = client.tunings.distill(
     config=genai.types.CreateDistillationJobConfig(
         epoch_count=1,
         pipeline_root_directory=(
-            "gs://vertex-sdk-dev-staging-us-central1/tmp/distillation_pipeline_root"
+            "gs://my-bucket"
         ),
     ),
 )
@@ -662,14 +676,7 @@ Only supported in Vertex AI.
 # Specify model and source file only, destination and job display name will be auto-populated
 job = client.batches.create(
     model='gemini-1.5-flash-002',
-    src='bq://vertex-sdk-dev.unified_genai_tests_batches.generate_content_requests',
-    # # optionally specify destination and display_name by yourself
-    # config = {
-    #     'dest': 'bq://vertex-sdk-dev.unified_genai_tests_batches.generate_content_responses',
-    #     'display_name': 'create_batch_job_demo'
-    # }
-)
-
+    src='bq://my-project.my-dataset.my-table',
 job
 ```
 

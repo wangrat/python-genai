@@ -805,6 +805,57 @@ class FunctionDeclaration(_common.BaseModel):
       description="""Optional. Describes the parameters to this function in JSON Schema Object format. Reflects the Open API 3.03 Parameter Object. string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. For function with no parameters, this can be left unset. Parameter names must start with a letter or an underscore and must only contain chars a-z, A-Z, 0-9, or underscores with a maximum length of 64. Example with 1 required and 1 optional parameter: type: OBJECT properties: param1: type: STRING param2: type: INTEGER required: - param1""",
   )
 
+  @staticmethod
+  def from_function(client, func: Callable) -> "FunctionDeclaration":
+    """Converts a function to a FunctionDeclaration."""
+    from . import _automatic_function_calling_util
+
+    parameters_properties = {}
+    for name, param in inspect.signature(func).parameters.items():
+      if param.kind in (
+          inspect.Parameter.POSITIONAL_OR_KEYWORD,
+          inspect.Parameter.KEYWORD_ONLY,
+          inspect.Parameter.POSITIONAL_ONLY,
+      ):
+        schema = _automatic_function_calling_util._parse_schema_from_parameter(
+            client, param, func.__name__
+        )
+        parameters_properties[name] = schema
+    declaration = FunctionDeclaration(
+        name=func.__name__,
+        description=func.__doc__,
+    )
+    if parameters_properties:
+      declaration.parameters = Schema(
+          type="OBJECT",
+          properties=parameters_properties,
+      )
+      if client.vertexai:
+        declaration.parameters.required = (
+            _automatic_function_calling_util._get_required_fields(
+                declaration.parameters
+            )
+        )
+    if not client.vertexai:
+      return declaration
+
+    return_annotation = inspect.signature(func).return_annotation
+    if return_annotation is inspect._empty:
+      return declaration
+
+    declaration.response = (
+        _automatic_function_calling_util._parse_schema_from_parameter(
+            client,
+            inspect.Parameter(
+                "return_value",
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                annotation=return_annotation,
+            ),
+            func.__name__,
+        )
+    )
+    return declaration
+
 
 class FunctionDeclarationDict(TypedDict, total=False):
   """Defines a function that the model can generate JSON inputs for.
@@ -2421,57 +2472,114 @@ GenerateContentResponseOrDict = Union[
 
 
 class EmbedContentConfig(_common.BaseModel):
+  """Class for configuring optional parameters for the embed_content method."""
 
-  task_type: Optional[str] = Field(default=None, description="""""")
-  title: Optional[str] = Field(default=None, description="""""")
-  output_dimensionality: Optional[int] = Field(default=None, description="""""")
-  mime_type: Optional[str] = Field(default=None, description="""""")
-  auto_truncate: Optional[bool] = Field(default=None, description="""""")
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+  task_type: Optional[str] = Field(
+      default=None,
+      description="""Type of task for which the embedding will be used.
+      """,
+  )
+  title: Optional[str] = Field(
+      default=None,
+      description="""Title for the text. Only applicable when TaskType is
+      `RETRIEVAL_DOCUMENT`.
+      """,
+  )
+  output_dimensionality: Optional[int] = Field(
+      default=None,
+      description="""Reduced dimension for the output embedding. If set,
+      excessive values in the output embedding are truncated from the end.
+      Supported by newer models since 2024 only. You cannot set this value if
+      using the earlier model (`models/embedding-001`).
+      """,
+  )
+  mime_type: Optional[str] = Field(
+      default=None,
+      description="""Vertex API only. The MIME type of the input.
+      """,
+  )
+  auto_truncate: Optional[bool] = Field(
+      default=None,
+      description="""Vertex API only. Whether to silently truncate inputs longer than
+      the max sequence length. If this option is set to false, oversized inputs
+      will lead to an INVALID_ARGUMENT error, similar to other text APIs.
+      """,
+  )
 
 
 class EmbedContentConfigDict(TypedDict, total=False):
+  """Class for configuring optional parameters for the embed_content method."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   task_type: Optional[str]
-  """"""
+  """Type of task for which the embedding will be used.
+      """
 
   title: Optional[str]
-  """"""
+  """Title for the text. Only applicable when TaskType is
+      `RETRIEVAL_DOCUMENT`.
+      """
 
   output_dimensionality: Optional[int]
-  """"""
+  """Reduced dimension for the output embedding. If set,
+      excessive values in the output embedding are truncated from the end.
+      Supported by newer models since 2024 only. You cannot set this value if
+      using the earlier model (`models/embedding-001`).
+      """
 
   mime_type: Optional[str]
-  """"""
+  """Vertex API only. The MIME type of the input.
+      """
 
   auto_truncate: Optional[bool]
-  """"""
+  """Vertex API only. Whether to silently truncate inputs longer than
+      the max sequence length. If this option is set to false, oversized inputs
+      will lead to an INVALID_ARGUMENT error, similar to other text APIs.
+      """
 
 
 EmbedContentConfigOrDict = Union[EmbedContentConfig, EmbedContentConfigDict]
 
 
 class _EmbedContentParameters(_common.BaseModel):
+  """Parameters for the embed_content method."""
 
   model: Optional[str] = Field(
       default=None,
       description="""ID of the model to use. For a list of models, see `Google models
     <https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models>`_.""",
   )
-  contents: Optional[ContentListUnion] = Field(default=None, description="""""")
-  config: Optional[EmbedContentConfig] = Field(default=None, description="""""")
+  contents: Optional[ContentListUnion] = Field(
+      default=None,
+      description="""The content to embed. Only the `parts.text` fields will be counted.
+      """,
+  )
+  config: Optional[EmbedContentConfig] = Field(
+      default=None,
+      description="""Configuration that contains optional parameters.
+      """,
+  )
 
 
 class _EmbedContentParametersDict(TypedDict, total=False):
+  """Parameters for the embed_content method."""
 
   model: Optional[str]
   """ID of the model to use. For a list of models, see `Google models
     <https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models>`_."""
 
   contents: Optional[ContentListUnionDict]
-  """"""
+  """The content to embed. Only the `parts.text` fields will be counted.
+      """
 
   config: Optional[EmbedContentConfigDict]
-  """"""
+  """Configuration that contains optional parameters.
+      """
 
 
 _EmbedContentParametersOrDict = Union[
@@ -2480,18 +2588,32 @@ _EmbedContentParametersOrDict = Union[
 
 
 class ContentEmbeddingStatistics(_common.BaseModel):
+  """Statistics of the input text associated with the result of content embedding."""
 
-  truncated: Optional[bool] = Field(default=None, description="""""")
-  token_count: Optional[float] = Field(default=None, description="""""")
+  truncated: Optional[bool] = Field(
+      default=None,
+      description="""Vertex API only. If the input text was truncated due to having
+      a length longer than the allowed maximum input.
+      """,
+  )
+  token_count: Optional[float] = Field(
+      default=None,
+      description="""Vertex API only. Number of tokens of the input text.
+      """,
+  )
 
 
 class ContentEmbeddingStatisticsDict(TypedDict, total=False):
+  """Statistics of the input text associated with the result of content embedding."""
 
   truncated: Optional[bool]
-  """"""
+  """Vertex API only. If the input text was truncated due to having
+      a length longer than the allowed maximum input.
+      """
 
   token_count: Optional[float]
-  """"""
+  """Vertex API only. Number of tokens of the input text.
+      """
 
 
 ContentEmbeddingStatisticsOrDict = Union[
@@ -2500,36 +2622,55 @@ ContentEmbeddingStatisticsOrDict = Union[
 
 
 class ContentEmbedding(_common.BaseModel):
+  """The embedding generated from an input content."""
 
-  values: Optional[list[float]] = Field(default=None, description="""""")
+  values: Optional[list[float]] = Field(
+      default=None,
+      description="""A list of floats representing an embedding.
+      """,
+  )
   statistics: Optional[ContentEmbeddingStatistics] = Field(
-      default=None, description=""""""
+      default=None,
+      description="""Vertex API only. Statistics of the input text associated with this
+      embedding.
+      """,
   )
 
 
 class ContentEmbeddingDict(TypedDict, total=False):
+  """The embedding generated from an input content."""
 
   values: Optional[list[float]]
-  """"""
+  """A list of floats representing an embedding.
+      """
 
   statistics: Optional[ContentEmbeddingStatisticsDict]
-  """"""
+  """Vertex API only. Statistics of the input text associated with this
+      embedding.
+      """
 
 
 ContentEmbeddingOrDict = Union[ContentEmbedding, ContentEmbeddingDict]
 
 
 class EmbedContentMetadata(_common.BaseModel):
+  """Request-level metadata for the Vertex Embed Content API."""
 
   billable_character_count: Optional[int] = Field(
-      default=None, description=""""""
+      default=None,
+      description="""Vertex API only. The total number of billable characters included
+      in the request.
+      """,
   )
 
 
 class EmbedContentMetadataDict(TypedDict, total=False):
+  """Request-level metadata for the Vertex Embed Content API."""
 
   billable_character_count: Optional[int]
-  """"""
+  """Vertex API only. The total number of billable characters included
+      in the request.
+      """
 
 
 EmbedContentMetadataOrDict = Union[
@@ -2538,22 +2679,32 @@ EmbedContentMetadataOrDict = Union[
 
 
 class EmbedContentResponse(_common.BaseModel):
+  """Response for the embed_content method."""
 
   embeddings: Optional[list[ContentEmbedding]] = Field(
-      default=None, description=""""""
+      default=None,
+      description="""The embeddings for each request, in the same order as provided in
+      the batch request.
+      """,
   )
   metadata: Optional[EmbedContentMetadata] = Field(
-      default=None, description=""""""
+      default=None,
+      description="""Vertex API only. Metadata about the request.
+      """,
   )
 
 
 class EmbedContentResponseDict(TypedDict, total=False):
+  """Response for the embed_content method."""
 
   embeddings: Optional[list[ContentEmbeddingDict]]
-  """"""
+  """The embeddings for each request, in the same order as provided in
+      the batch request.
+      """
 
   metadata: Optional[EmbedContentMetadataDict]
-  """"""
+  """Vertex API only. Metadata about the request.
+      """
 
 
 EmbedContentResponseOrDict = Union[
@@ -6185,22 +6336,39 @@ DeleteFileResponseOrDict = Union[DeleteFileResponse, DeleteFileResponseDict]
 class BatchJobSource(_common.BaseModel):
   """Config class for `src` parameter."""
 
-  format: Optional[str] = Field(default=None, description="""""")
-  gcs_uri: Optional[list[str]] = Field(default=None, description="""""")
-  bigquery_uri: Optional[str] = Field(default=None, description="""""")
+  format: Optional[str] = Field(
+      default=None,
+      description="""Storage format of the input files. Must be one of:
+      'jsonl', 'bigquery'.
+      """,
+  )
+  gcs_uri: Optional[list[str]] = Field(
+      default=None,
+      description="""The Google Cloud Storage URIs to input files.
+      """,
+  )
+  bigquery_uri: Optional[str] = Field(
+      default=None,
+      description="""The BigQuery URI to input table.
+      """,
+  )
 
 
 class BatchJobSourceDict(TypedDict, total=False):
   """Config class for `src` parameter."""
 
   format: Optional[str]
-  """"""
+  """Storage format of the input files. Must be one of:
+      'jsonl', 'bigquery'.
+      """
 
   gcs_uri: Optional[list[str]]
-  """"""
+  """The Google Cloud Storage URIs to input files.
+      """
 
   bigquery_uri: Optional[str]
-  """"""
+  """The BigQuery URI to input table.
+      """
 
 
 BatchJobSourceOrDict = Union[BatchJobSource, BatchJobSourceDict]
@@ -6209,22 +6377,39 @@ BatchJobSourceOrDict = Union[BatchJobSource, BatchJobSourceDict]
 class BatchJobDestination(_common.BaseModel):
   """Config class for `des` parameter."""
 
-  format: Optional[str] = Field(default=None, description="""""")
-  gcs_uri: Optional[str] = Field(default=None, description="""""")
-  bigquery_uri: Optional[str] = Field(default=None, description="""""")
+  format: Optional[str] = Field(
+      default=None,
+      description="""Storage format of the output files. Must be one of:
+      'jsonl', 'bigquery'.
+      """,
+  )
+  gcs_uri: Optional[str] = Field(
+      default=None,
+      description="""The Google Cloud Storage URI to the output file.
+      """,
+  )
+  bigquery_uri: Optional[str] = Field(
+      default=None,
+      description="""The BigQuery URI to the output table.
+      """,
+  )
 
 
 class BatchJobDestinationDict(TypedDict, total=False):
   """Config class for `des` parameter."""
 
   format: Optional[str]
-  """"""
+  """Storage format of the output files. Must be one of:
+      'jsonl', 'bigquery'.
+      """
 
   gcs_uri: Optional[str]
-  """"""
+  """The Google Cloud Storage URI to the output file.
+      """
 
   bigquery_uri: Optional[str]
-  """"""
+  """The BigQuery URI to the output table.
+      """
 
 
 BatchJobDestinationOrDict = Union[BatchJobDestination, BatchJobDestinationDict]
@@ -6236,8 +6421,17 @@ class CreateBatchJobConfig(_common.BaseModel):
   http_options: Optional[dict[str, Any]] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
-  display_name: Optional[str] = Field(default=None, description="""""")
-  dest: Optional[str] = Field(default=None, description="""""")
+  display_name: Optional[str] = Field(
+      default=None,
+      description="""The user-defined name of this BatchJob.
+      """,
+  )
+  dest: Optional[str] = Field(
+      default=None,
+      description="""GCS or Bigquery URI prefix for the output predictions. Example:
+      "gs://path/to/output/data" or "bq://projectId.bqDatasetId.bqTableId".
+      """,
+  )
 
 
 class CreateBatchJobConfigDict(TypedDict, total=False):
@@ -6247,10 +6441,13 @@ class CreateBatchJobConfigDict(TypedDict, total=False):
   """Used to override HTTP request options."""
 
   display_name: Optional[str]
-  """"""
+  """The user-defined name of this BatchJob.
+      """
 
   dest: Optional[str]
-  """"""
+  """GCS or Bigquery URI prefix for the output predictions. Example:
+      "gs://path/to/output/data" or "bq://projectId.bqDatasetId.bqTableId".
+      """
 
 
 CreateBatchJobConfigOrDict = Union[
@@ -6261,10 +6458,21 @@ CreateBatchJobConfigOrDict = Union[
 class _CreateBatchJobParameters(_common.BaseModel):
   """Config class for batches.create parameters."""
 
-  model: Optional[str] = Field(default=None, description="""""")
-  src: Optional[str] = Field(default=None, description="""""")
+  model: Optional[str] = Field(
+      default=None,
+      description="""The name of the model to produces the predictions via the BatchJob.
+      """,
+  )
+  src: Optional[str] = Field(
+      default=None,
+      description="""GCS URI(-s) or Bigquery URI to your input data to run batch job.
+      Example: "gs://path/to/input/data" or "bq://projectId.bqDatasetId.bqTableId".
+      """,
+  )
   config: Optional[CreateBatchJobConfig] = Field(
-      default=None, description=""""""
+      default=None,
+      description="""Optional parameters for creating a BatchJob.
+      """,
   )
 
 
@@ -6272,13 +6480,17 @@ class _CreateBatchJobParametersDict(TypedDict, total=False):
   """Config class for batches.create parameters."""
 
   model: Optional[str]
-  """"""
+  """The name of the model to produces the predictions via the BatchJob.
+      """
 
   src: Optional[str]
-  """"""
+  """GCS URI(-s) or Bigquery URI to your input data to run batch job.
+      Example: "gs://path/to/input/data" or "bq://projectId.bqDatasetId.bqTableId".
+      """
 
   config: Optional[CreateBatchJobConfigDict]
-  """"""
+  """Optional parameters for creating a BatchJob.
+      """
 
 
 _CreateBatchJobParametersOrDict = Union[
@@ -6349,9 +6561,21 @@ class BatchJob(_common.BaseModel):
       default=None,
       description="""Output only. Time when the Job was most recently updated.""",
   )
-  model: Optional[str] = Field(default=None, description="""""")
-  src: Optional[BatchJobSource] = Field(default=None, description="""""")
-  dest: Optional[BatchJobDestination] = Field(default=None, description="""""")
+  model: Optional[str] = Field(
+      default=None,
+      description="""The name of the model that produces the predictions via the BatchJob.
+      """,
+  )
+  src: Optional[BatchJobSource] = Field(
+      default=None,
+      description="""Configuration for the input data.
+      """,
+  )
+  dest: Optional[BatchJobDestination] = Field(
+      default=None,
+      description="""Configuration for the output data.
+      """,
+  )
 
 
 class BatchJobDict(TypedDict, total=False):
@@ -6382,13 +6606,16 @@ class BatchJobDict(TypedDict, total=False):
   """Output only. Time when the Job was most recently updated."""
 
   model: Optional[str]
-  """"""
+  """The name of the model that produces the predictions via the BatchJob.
+      """
 
   src: Optional[BatchJobSourceDict]
-  """"""
+  """Configuration for the input data.
+      """
 
   dest: Optional[BatchJobDestinationDict]
-  """"""
+  """Configuration for the output data.
+      """
 
 
 BatchJobOrDict = Union[BatchJob, BatchJobDict]
@@ -6397,14 +6624,23 @@ BatchJobOrDict = Union[BatchJob, BatchJobDict]
 class _GetBatchJobParameters(_common.BaseModel):
   """Config class for batches.get parameters."""
 
-  name: Optional[str] = Field(default=None, description="""""")
+  name: Optional[str] = Field(
+      default=None,
+      description="""A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """,
+  )
 
 
 class _GetBatchJobParametersDict(TypedDict, total=False):
   """Config class for batches.get parameters."""
 
   name: Optional[str]
-  """"""
+  """A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """
 
 
 _GetBatchJobParametersOrDict = Union[
@@ -6415,14 +6651,23 @@ _GetBatchJobParametersOrDict = Union[
 class _CancelBatchJobParameters(_common.BaseModel):
   """Config class for batches.cancel parameters."""
 
-  name: Optional[str] = Field(default=None, description="""""")
+  name: Optional[str] = Field(
+      default=None,
+      description="""A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """,
+  )
 
 
 class _CancelBatchJobParametersDict(TypedDict, total=False):
   """Config class for batches.cancel parameters."""
 
   name: Optional[str]
-  """"""
+  """A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """
 
 
 _CancelBatchJobParametersOrDict = Union[
@@ -6503,14 +6748,23 @@ ListBatchJobResponseOrDict = Union[
 class _DeleteBatchJobParameters(_common.BaseModel):
   """Config class for batches.delete parameters."""
 
-  name: Optional[str] = Field(default=None, description="""""")
+  name: Optional[str] = Field(
+      default=None,
+      description="""A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """,
+  )
 
 
 class _DeleteBatchJobParametersDict(TypedDict, total=False):
   """Config class for batches.delete parameters."""
 
   name: Optional[str]
-  """"""
+  """A fully-qualified BatchJob resource name or ID.
+    Example: "projects/.../locations/.../batchPredictionJobs/456"
+    or "456" when project and location are initialized in the client.
+    """
 
 
 _DeleteBatchJobParametersOrDict = Union[
@@ -7341,12 +7595,6 @@ class LiveServerMessage(_common.BaseModel):
       return None
     text = ""
     for part in self.server_content.model_turn.parts:
-      for field_name, field_value in part.dict(exclude={"text"}).items():
-        if field_value is not None:
-          raise ValueError(
-              "LiveServerMessage.text only supports text parts, but got"
-              f" {field_name} part{part}"
-          )
       if isinstance(part.text, str):
         text += part.text
     return text if text else None
@@ -7363,12 +7611,6 @@ class LiveServerMessage(_common.BaseModel):
       return None
     concatenated_data = b""
     for part in self.server_content.model_turn.parts:
-      for field_name, field_value in part.dict(exclude={"inline_data"}).items():
-        if field_value is not None:
-          raise ValueError(
-              "LiveServerMessage.text only supports inline_data parts, but got"
-              f" {field_name} part{part}"
-          )
       if part.inline_data and isinstance(part.inline_data.data, bytes):
         concatenated_data += part.inline_data.data
     return concatenated_data if len(concatenated_data) > 0 else None
