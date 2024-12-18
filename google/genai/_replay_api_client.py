@@ -15,6 +15,7 @@
 
 """Replay API client."""
 
+import base64
 import copy
 import inspect
 import json
@@ -103,28 +104,6 @@ def redact_http_request(http_request: HttpRequest):
   http_request.headers = _redact_request_headers(http_request.headers)
   http_request.url = _redact_request_url(http_request.url)
   _redact_request_body(http_request.data)
-
-
-def process_bytes_fields(data: dict[str, object]):
-  """Converts bytes fields to strings.
-
-  This function doesn't modify the content of data dict.
-  """
-  if not isinstance(data, dict):
-    return data
-  for key, value in data.items():
-    if isinstance(value, bytes):
-      data[key] = value.decode()
-    elif isinstance(value, dict):
-      process_bytes_fields(value)
-    elif isinstance(value, list):
-      if all(isinstance(v, bytes) for v in value):
-        data[key] = [v.decode() for v in value]
-      else:
-        data[key] = [process_bytes_fields(v) for v in value]
-    else:
-      data[key] = value
-  return data
 
 
 def _current_file_path_and_line():
@@ -280,9 +259,18 @@ class ReplayApiClient(ApiClient):
     replay_file_path = self._get_replay_file_path()
     os.makedirs(os.path.dirname(replay_file_path), exist_ok=True)
     with open(replay_file_path, 'w') as f:
+      replay_session_dict = self.replay_session.model_dump()
+      # Use for non-utf-8 bytes in image/video... output.
+      for interaction in replay_session_dict['interactions']:
+        segments = []
+        for response in interaction['response']['sdk_response_segments']:
+          segments.append(json.loads(json.dumps(
+              response, cls=ResponseJsonEncoder
+          )))
+        interaction['response']['sdk_response_segments'] = segments
       f.write(
           json.dumps(
-              self.replay_session.model_dump(), indent=2, cls=ResponseJsonEncoder
+              replay_session_dict, indent=2, cls=RequestJsonEncoder
           )
       )
     self.replay_session = None
@@ -463,10 +451,16 @@ class ResponseJsonEncoder(json.JSONEncoder):
   """
   def default(self, o):
     if isinstance(o, bytes):
-      # use error replace because response need to be serialized with bytes
-      # string, not base64 string. Otherwise, we cannot tell the response is
-      # already decoded from base64 or not from the replay file.
-      return o.decode(encoding='utf-8', errors='replace')
+      # Use base64.b64encode() to encode bytes to string so that the media bytes
+      # fields are serializable.
+      # o.decode(encoding='utf-8', errors='replace') doesn't work because it
+      # uses a fixed error string `\ufffd` for all non-utf-8 characters,
+      # which cannot be converted back to original bytes. And other languages
+      # only have the original bytes to compare with.
+      # Since we use base64.b64encoding() in replay test, a change that breaks
+      # native bytes can be captured by
+      # test_compute_tokens.py::test_token_bytes_deserialization.
+      return base64.b64encode(o).decode(encoding='utf-8')
     elif isinstance(o, datetime.datetime):
       # dt.isoformat() prints "2024-11-15T23:27:45.624657+00:00"
       # but replay files want "2024-11-15T23:27:45.624657Z"
