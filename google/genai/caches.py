@@ -30,7 +30,7 @@ def _Part_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['video_metadata']):
+  if getv(from_object, ['video_metadata']) is not None:
     raise ValueError('video_metadata parameter is not supported in Google AI.')
 
   if getv(from_object, ['thought']) is not None:
@@ -162,51 +162,51 @@ def _Schema_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['min_items']):
+  if getv(from_object, ['min_items']) is not None:
     raise ValueError('min_items parameter is not supported in Google AI.')
 
-  if getv(from_object, ['example']):
+  if getv(from_object, ['example']) is not None:
     raise ValueError('example parameter is not supported in Google AI.')
 
-  if getv(from_object, ['property_ordering']):
+  if getv(from_object, ['property_ordering']) is not None:
     raise ValueError(
         'property_ordering parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['pattern']):
+  if getv(from_object, ['pattern']) is not None:
     raise ValueError('pattern parameter is not supported in Google AI.')
 
-  if getv(from_object, ['minimum']):
+  if getv(from_object, ['minimum']) is not None:
     raise ValueError('minimum parameter is not supported in Google AI.')
 
-  if getv(from_object, ['default']):
+  if getv(from_object, ['default']) is not None:
     raise ValueError('default parameter is not supported in Google AI.')
 
-  if getv(from_object, ['any_of']):
+  if getv(from_object, ['any_of']) is not None:
     raise ValueError('any_of parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_length']):
+  if getv(from_object, ['max_length']) is not None:
     raise ValueError('max_length parameter is not supported in Google AI.')
 
-  if getv(from_object, ['title']):
+  if getv(from_object, ['title']) is not None:
     raise ValueError('title parameter is not supported in Google AI.')
 
-  if getv(from_object, ['min_length']):
+  if getv(from_object, ['min_length']) is not None:
     raise ValueError('min_length parameter is not supported in Google AI.')
 
-  if getv(from_object, ['min_properties']):
+  if getv(from_object, ['min_properties']) is not None:
     raise ValueError('min_properties parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_items']):
+  if getv(from_object, ['max_items']) is not None:
     raise ValueError('max_items parameter is not supported in Google AI.')
 
-  if getv(from_object, ['maximum']):
+  if getv(from_object, ['maximum']) is not None:
     raise ValueError('maximum parameter is not supported in Google AI.')
 
-  if getv(from_object, ['nullable']):
+  if getv(from_object, ['nullable']) is not None:
     raise ValueError('nullable parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_properties']):
+  if getv(from_object, ['max_properties']) is not None:
     raise ValueError('max_properties parameter is not supported in Google AI.')
 
   if getv(from_object, ['type']) is not None:
@@ -318,7 +318,7 @@ def _FunctionDeclaration_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['response']):
+  if getv(from_object, ['response']) is not None:
     raise ValueError('response parameter is not supported in Google AI.')
 
   if getv(from_object, ['description']) is not None:
@@ -474,7 +474,7 @@ def _Tool_to_mldev(
         ],
     )
 
-  if getv(from_object, ['retrieval']):
+  if getv(from_object, ['retrieval']) is not None:
     raise ValueError('retrieval parameter is not supported in Google AI.')
 
   if getv(from_object, ['google_search']) is not None:

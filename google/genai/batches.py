@@ -31,13 +31,13 @@ def _BatchJobSource_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['format']):
+  if getv(from_object, ['format']) is not None:
     raise ValueError('format parameter is not supported in Google AI.')
 
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
-  if getv(from_object, ['bigquery_uri']):
+  if getv(from_object, ['bigquery_uri']) is not None:
     raise ValueError('bigquery_uri parameter is not supported in Google AI.')
 
   return to_object
@@ -71,13 +71,13 @@ def _BatchJobDestination_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['format']):
+  if getv(from_object, ['format']) is not None:
     raise ValueError('format parameter is not supported in Google AI.')
 
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
-  if getv(from_object, ['bigquery_uri']):
+  if getv(from_object, ['bigquery_uri']) is not None:
     raise ValueError('bigquery_uri parameter is not supported in Google AI.')
 
   return to_object
@@ -121,7 +121,7 @@ def _CreateBatchJobConfig_to_mldev(
   if getv(from_object, ['display_name']) is not None:
     setv(parent_object, ['displayName'], getv(from_object, ['display_name']))
 
-  if getv(from_object, ['dest']):
+  if getv(from_object, ['dest']) is not None:
     raise ValueError('dest parameter is not supported in Google AI.')
 
   return to_object
@@ -159,10 +159,10 @@ def _CreateBatchJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['model']):
+  if getv(from_object, ['model']) is not None:
     raise ValueError('model parameter is not supported in Google AI.')
 
-  if getv(from_object, ['src']):
+  if getv(from_object, ['src']) is not None:
     raise ValueError('src parameter is not supported in Google AI.')
 
   if getv(from_object, ['config']) is not None:
@@ -243,7 +243,7 @@ def _GetBatchJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Google AI.')
 
   if getv(from_object, ['config']) is not None:
@@ -313,7 +313,7 @@ def _CancelBatchJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Google AI.')
 
   if getv(from_object, ['config']) is not None:
@@ -374,7 +374,7 @@ def _ListBatchJobConfig_to_mldev(
         getv(from_object, ['page_token']),
     )
 
-  if getv(from_object, ['filter']):
+  if getv(from_object, ['filter']) is not None:
     raise ValueError('filter parameter is not supported in Google AI.')
 
   return to_object
@@ -413,7 +413,7 @@ def _ListBatchJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['config']):
+  if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Google AI.')
 
   return to_object
@@ -443,7 +443,7 @@ def _DeleteBatchJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Google AI.')
 
   return to_object

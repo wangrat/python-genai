@@ -54,6 +54,7 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'logprobs': 0,
             },
         ),
+        exception_if_mldev='logprobs parameter is not supported in Google AI',
         exception_if_vertex='setting response_logprobs to be true',
     ),
     pytest_helper.TestTableItem(

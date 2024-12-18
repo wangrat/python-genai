@@ -32,7 +32,7 @@ def _Part_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['video_metadata']):
+  if getv(from_object, ['video_metadata']) is not None:
     raise ValueError('video_metadata parameter is not supported in Google AI.')
 
   if getv(from_object, ['thought']) is not None:
@@ -164,51 +164,51 @@ def _Schema_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['min_items']):
+  if getv(from_object, ['min_items']) is not None:
     raise ValueError('min_items parameter is not supported in Google AI.')
 
-  if getv(from_object, ['example']):
+  if getv(from_object, ['example']) is not None:
     raise ValueError('example parameter is not supported in Google AI.')
 
-  if getv(from_object, ['property_ordering']):
+  if getv(from_object, ['property_ordering']) is not None:
     raise ValueError(
         'property_ordering parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['pattern']):
+  if getv(from_object, ['pattern']) is not None:
     raise ValueError('pattern parameter is not supported in Google AI.')
 
-  if getv(from_object, ['minimum']):
+  if getv(from_object, ['minimum']) is not None:
     raise ValueError('minimum parameter is not supported in Google AI.')
 
-  if getv(from_object, ['default']):
+  if getv(from_object, ['default']) is not None:
     raise ValueError('default parameter is not supported in Google AI.')
 
-  if getv(from_object, ['any_of']):
+  if getv(from_object, ['any_of']) is not None:
     raise ValueError('any_of parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_length']):
+  if getv(from_object, ['max_length']) is not None:
     raise ValueError('max_length parameter is not supported in Google AI.')
 
-  if getv(from_object, ['title']):
+  if getv(from_object, ['title']) is not None:
     raise ValueError('title parameter is not supported in Google AI.')
 
-  if getv(from_object, ['min_length']):
+  if getv(from_object, ['min_length']) is not None:
     raise ValueError('min_length parameter is not supported in Google AI.')
 
-  if getv(from_object, ['min_properties']):
+  if getv(from_object, ['min_properties']) is not None:
     raise ValueError('min_properties parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_items']):
+  if getv(from_object, ['max_items']) is not None:
     raise ValueError('max_items parameter is not supported in Google AI.')
 
-  if getv(from_object, ['maximum']):
+  if getv(from_object, ['maximum']) is not None:
     raise ValueError('maximum parameter is not supported in Google AI.')
 
-  if getv(from_object, ['nullable']):
+  if getv(from_object, ['nullable']) is not None:
     raise ValueError('nullable parameter is not supported in Google AI.')
 
-  if getv(from_object, ['max_properties']):
+  if getv(from_object, ['max_properties']) is not None:
     raise ValueError('max_properties parameter is not supported in Google AI.')
 
   if getv(from_object, ['type']) is not None:
@@ -320,7 +320,7 @@ def _SafetySetting_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['method']):
+  if getv(from_object, ['method']) is not None:
     raise ValueError('method parameter is not supported in Google AI.')
 
   if getv(from_object, ['category']) is not None:
@@ -356,7 +356,7 @@ def _FunctionDeclaration_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['response']):
+  if getv(from_object, ['response']) is not None:
     raise ValueError('response parameter is not supported in Google AI.')
 
   if getv(from_object, ['description']) is not None:
@@ -512,7 +512,7 @@ def _Tool_to_mldev(
         ],
     )
 
-  if getv(from_object, ['retrieval']):
+  if getv(from_object, ['retrieval']) is not None:
     raise ValueError('retrieval parameter is not supported in Google AI.')
 
   if getv(from_object, ['google_search']) is not None:
@@ -797,12 +797,12 @@ def _GenerateContentConfig_to_mldev(
   if getv(from_object, ['stop_sequences']) is not None:
     setv(to_object, ['stopSequences'], getv(from_object, ['stop_sequences']))
 
-  if getv(from_object, ['response_logprobs']):
+  if getv(from_object, ['response_logprobs']) is not None:
     raise ValueError(
         'response_logprobs parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['logprobs']):
+  if getv(from_object, ['logprobs']) is not None:
     raise ValueError('logprobs parameter is not supported in Google AI.')
 
   if getv(from_object, ['presence_penalty']) is not None:
@@ -838,7 +838,7 @@ def _GenerateContentConfig_to_mldev(
         ),
     )
 
-  if getv(from_object, ['routing_config']):
+  if getv(from_object, ['routing_config']) is not None:
     raise ValueError('routing_config parameter is not supported in Google AI.')
 
   if getv(from_object, ['safety_settings']) is not None:
@@ -886,7 +886,7 @@ def _GenerateContentConfig_to_mldev(
         getv(from_object, ['response_modalities']),
     )
 
-  if getv(from_object, ['media_resolution']):
+  if getv(from_object, ['media_resolution']) is not None:
     raise ValueError(
         'media_resolution parameter is not supported in Google AI.'
     )
@@ -1152,10 +1152,10 @@ def _EmbedContentConfig_to_mldev(
         getv(from_object, ['output_dimensionality']),
     )
 
-  if getv(from_object, ['mime_type']):
+  if getv(from_object, ['mime_type']) is not None:
     raise ValueError('mime_type parameter is not supported in Google AI.')
 
-  if getv(from_object, ['auto_truncate']):
+  if getv(from_object, ['auto_truncate']) is not None:
     raise ValueError('auto_truncate parameter is not supported in Google AI.')
 
   return to_object
@@ -1282,7 +1282,7 @@ def _GenerateImageConfig_to_mldev(
   if getv(from_object, ['http_options']) is not None:
     setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
 
-  if getv(from_object, ['output_gcs_uri']):
+  if getv(from_object, ['output_gcs_uri']) is not None:
     raise ValueError('output_gcs_uri parameter is not supported in Google AI.')
 
   if getv(from_object, ['negative_prompt']) is not None:
@@ -1306,7 +1306,7 @@ def _GenerateImageConfig_to_mldev(
         getv(from_object, ['guidance_scale']),
     )
 
-  if getv(from_object, ['seed']):
+  if getv(from_object, ['seed']) is not None:
     raise ValueError('seed parameter is not supported in Google AI.')
 
   if getv(from_object, ['safety_filter_level']) is not None:
@@ -1358,7 +1358,7 @@ def _GenerateImageConfig_to_mldev(
         getv(from_object, ['output_compression_quality']),
     )
 
-  if getv(from_object, ['add_watermark']):
+  if getv(from_object, ['add_watermark']) is not None:
     raise ValueError('add_watermark parameter is not supported in Google AI.')
 
   if getv(from_object, ['aspect_ratio']) is not None:
@@ -1539,7 +1539,7 @@ def _Image_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
   if getv(from_object, ['image_bytes']) is not None:
@@ -1569,15 +1569,15 @@ def _MaskReferenceConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['mask_mode']):
+  if getv(from_object, ['mask_mode']) is not None:
     raise ValueError('mask_mode parameter is not supported in Google AI.')
 
-  if getv(from_object, ['segmentation_classes']):
+  if getv(from_object, ['segmentation_classes']) is not None:
     raise ValueError(
         'segmentation_classes parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['mask_dilation']):
+  if getv(from_object, ['mask_dilation']) is not None:
     raise ValueError('mask_dilation parameter is not supported in Google AI.')
 
   return to_object
@@ -1609,10 +1609,10 @@ def _ControlReferenceConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['control_type']):
+  if getv(from_object, ['control_type']) is not None:
     raise ValueError('control_type parameter is not supported in Google AI.')
 
-  if getv(from_object, ['enable_control_image_computation']):
+  if getv(from_object, ['enable_control_image_computation']) is not None:
     raise ValueError(
         'enable_control_image_computation parameter is not supported in'
         ' Google AI.'
@@ -1646,7 +1646,7 @@ def _StyleReferenceConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['style_description']):
+  if getv(from_object, ['style_description']) is not None:
     raise ValueError(
         'style_description parameter is not supported in Google AI.'
     )
@@ -1676,10 +1676,10 @@ def _SubjectReferenceConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['subject_type']):
+  if getv(from_object, ['subject_type']) is not None:
     raise ValueError('subject_type parameter is not supported in Google AI.')
 
-  if getv(from_object, ['subject_description']):
+  if getv(from_object, ['subject_description']) is not None:
     raise ValueError(
         'subject_description parameter is not supported in Google AI.'
     )
@@ -1712,31 +1712,31 @@ def _ReferenceImageAPI_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['reference_image']):
+  if getv(from_object, ['reference_image']) is not None:
     raise ValueError('reference_image parameter is not supported in Google AI.')
 
-  if getv(from_object, ['reference_id']):
+  if getv(from_object, ['reference_id']) is not None:
     raise ValueError('reference_id parameter is not supported in Google AI.')
 
-  if getv(from_object, ['reference_type']):
+  if getv(from_object, ['reference_type']) is not None:
     raise ValueError('reference_type parameter is not supported in Google AI.')
 
-  if getv(from_object, ['mask_image_config']):
+  if getv(from_object, ['mask_image_config']) is not None:
     raise ValueError(
         'mask_image_config parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['control_image_config']):
+  if getv(from_object, ['control_image_config']) is not None:
     raise ValueError(
         'control_image_config parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['style_image_config']):
+  if getv(from_object, ['style_image_config']) is not None:
     raise ValueError(
         'style_image_config parameter is not supported in Google AI.'
     )
 
-  if getv(from_object, ['subject_image_config']):
+  if getv(from_object, ['subject_image_config']) is not None:
     raise ValueError(
         'subject_image_config parameter is not supported in Google AI.'
     )
@@ -1813,7 +1813,7 @@ def _EditImageConfig_to_mldev(
   if getv(from_object, ['http_options']) is not None:
     setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
 
-  if getv(from_object, ['output_gcs_uri']):
+  if getv(from_object, ['output_gcs_uri']) is not None:
     raise ValueError('output_gcs_uri parameter is not supported in Google AI.')
 
   if getv(from_object, ['negative_prompt']) is not None:
@@ -1837,7 +1837,7 @@ def _EditImageConfig_to_mldev(
         getv(from_object, ['guidance_scale']),
     )
 
-  if getv(from_object, ['seed']):
+  if getv(from_object, ['seed']) is not None:
     raise ValueError('seed parameter is not supported in Google AI.')
 
   if getv(from_object, ['safety_filter_level']) is not None:
@@ -2496,7 +2496,7 @@ def _CountTokensConfig_to_mldev(
         ],
     )
 
-  if getv(from_object, ['generation_config']):
+  if getv(from_object, ['generation_config']) is not None:
     raise ValueError(
         'generation_config parameter is not supported in Google AI.'
     )
@@ -2655,7 +2655,7 @@ def _ComputeTokensParameters_to_mldev(
         t.t_model(api_client, getv(from_object, ['model'])),
     )
 
-  if getv(from_object, ['contents']):
+  if getv(from_object, ['contents']) is not None:
     raise ValueError('contents parameter is not supported in Google AI.')
 
   if getv(from_object, ['config']) is not None:

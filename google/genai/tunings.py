@@ -195,10 +195,10 @@ def _TuningExample_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['text_input']):
+  if getv(from_object, ['text_input']) is not None:
     raise ValueError('text_input parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['output']):
+  if getv(from_object, ['output']) is not None:
     raise ValueError('output parameter is not supported in Vertex AI.')
 
   return to_object
@@ -210,7 +210,7 @@ def _TuningDataset_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
   if getv(from_object, ['examples']) is not None:
@@ -239,7 +239,7 @@ def _TuningDataset_to_vertex(
         getv(from_object, ['gcs_uri']),
     )
 
-  if getv(from_object, ['examples']):
+  if getv(from_object, ['examples']) is not None:
     raise ValueError('examples parameter is not supported in Vertex AI.')
 
   return to_object
@@ -251,7 +251,7 @@ def _TuningValidationDataset_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
   return to_object
@@ -278,7 +278,7 @@ def _CreateTuningJobConfig_to_mldev(
   if getv(from_object, ['http_options']) is not None:
     setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
 
-  if getv(from_object, ['validation_dataset']):
+  if getv(from_object, ['validation_dataset']) is not None:
     raise ValueError(
         'validation_dataset parameter is not supported in Google AI.'
     )
@@ -290,7 +290,7 @@ def _CreateTuningJobConfig_to_mldev(
         getv(from_object, ['tuned_model_display_name']),
     )
 
-  if getv(from_object, ['description']):
+  if getv(from_object, ['description']) is not None:
     raise ValueError('description parameter is not supported in Google AI.')
 
   if getv(from_object, ['epoch_count']) is not None:
@@ -307,7 +307,7 @@ def _CreateTuningJobConfig_to_mldev(
         getv(from_object, ['learning_rate_multiplier']),
     )
 
-  if getv(from_object, ['adapter_size']):
+  if getv(from_object, ['adapter_size']) is not None:
     raise ValueError('adapter_size parameter is not supported in Google AI.')
 
   if getv(from_object, ['batch_size']) is not None:
@@ -376,10 +376,10 @@ def _CreateTuningJobConfig_to_vertex(
         getv(from_object, ['adapter_size']),
     )
 
-  if getv(from_object, ['batch_size']):
+  if getv(from_object, ['batch_size']) is not None:
     raise ValueError('batch_size parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['learning_rate']):
+  if getv(from_object, ['learning_rate']) is not None:
     raise ValueError('learning_rate parameter is not supported in Vertex AI.')
 
   return to_object
@@ -451,7 +451,7 @@ def _DistillationDataset_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
   return to_object
@@ -479,7 +479,7 @@ def _DistillationValidationDataset_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['gcs_uri']):
+  if getv(from_object, ['gcs_uri']) is not None:
     raise ValueError('gcs_uri parameter is not supported in Google AI.')
 
   return to_object
@@ -506,7 +506,7 @@ def _CreateDistillationJobConfig_to_mldev(
   if getv(from_object, ['http_options']) is not None:
     setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
 
-  if getv(from_object, ['validation_dataset']):
+  if getv(from_object, ['validation_dataset']) is not None:
     raise ValueError(
         'validation_dataset parameter is not supported in Google AI.'
     )
@@ -532,10 +532,10 @@ def _CreateDistillationJobConfig_to_mldev(
         getv(from_object, ['learning_rate_multiplier']),
     )
 
-  if getv(from_object, ['adapter_size']):
+  if getv(from_object, ['adapter_size']) is not None:
     raise ValueError('adapter_size parameter is not supported in Google AI.')
 
-  if getv(from_object, ['pipeline_root_directory']):
+  if getv(from_object, ['pipeline_root_directory']) is not None:
     raise ValueError(
         'pipeline_root_directory parameter is not supported in Google AI.'
     )
@@ -605,10 +605,10 @@ def _CreateDistillationJobParameters_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['student_model']):
+  if getv(from_object, ['student_model']) is not None:
     raise ValueError('student_model parameter is not supported in Google AI.')
 
-  if getv(from_object, ['teacher_model']):
+  if getv(from_object, ['teacher_model']) is not None:
     raise ValueError('teacher_model parameter is not supported in Google AI.')
 
   if getv(from_object, ['training_dataset']) is not None:

@@ -98,7 +98,7 @@ def _ListFilesParameters_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['config']):
+  if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Vertex AI.')
 
   return to_object
@@ -128,13 +128,13 @@ def _FileStatus_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['details']):
+  if getv(from_object, ['details']) is not None:
     raise ValueError('details parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['message']):
+  if getv(from_object, ['message']) is not None:
     raise ValueError('message parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['code']):
+  if getv(from_object, ['code']) is not None:
     raise ValueError('code parameter is not supported in Vertex AI.')
 
   return to_object
@@ -197,40 +197,40 @@ def _File_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['display_name']):
+  if getv(from_object, ['display_name']) is not None:
     raise ValueError('display_name parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['mime_type']):
+  if getv(from_object, ['mime_type']) is not None:
     raise ValueError('mime_type parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['size_bytes']):
+  if getv(from_object, ['size_bytes']) is not None:
     raise ValueError('size_bytes parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['create_time']):
+  if getv(from_object, ['create_time']) is not None:
     raise ValueError('create_time parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['expiration_time']):
+  if getv(from_object, ['expiration_time']) is not None:
     raise ValueError('expiration_time parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['update_time']):
+  if getv(from_object, ['update_time']) is not None:
     raise ValueError('update_time parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['sha256_hash']):
+  if getv(from_object, ['sha256_hash']) is not None:
     raise ValueError('sha256_hash parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['uri']):
+  if getv(from_object, ['uri']) is not None:
     raise ValueError('uri parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['state']):
+  if getv(from_object, ['state']) is not None:
     raise ValueError('state parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['video_metadata']):
+  if getv(from_object, ['video_metadata']) is not None:
     raise ValueError('video_metadata parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['error']):
+  if getv(from_object, ['error']) is not None:
     raise ValueError('error parameter is not supported in Vertex AI.')
 
   return to_object
@@ -291,10 +291,10 @@ def _CreateFileParameters_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['file']):
+  if getv(from_object, ['file']) is not None:
     raise ValueError('file parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['config']):
+  if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Vertex AI.')
 
   return to_object
@@ -355,10 +355,10 @@ def _GetFileParameters_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['config']):
+  if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Vertex AI.')
 
   return to_object
@@ -419,10 +419,10 @@ def _DeleteFileParameters_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
-  if getv(from_object, ['name']):
+  if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
-  if getv(from_object, ['config']):
+  if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Vertex AI.')
 
   return to_object
