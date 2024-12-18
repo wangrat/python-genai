@@ -569,7 +569,9 @@ class Content(_common.BaseModel):
   )
   role: Optional[str] = Field(
       default=None,
-      description="""Optional. The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset.""",
+      description="""Optional. The producer of the content. Must be either 'user' or
+      'model'. Useful to set for multi-turn conversations, otherwise can be
+      left blank or unset. If role is not specified, SDK will determine the role.""",
   )
 
 
@@ -581,7 +583,9 @@ class ContentDict(TypedDict, total=False):
       a different IANA MIME type."""
 
   role: Optional[str]
-  """Optional. The producer of the content. Must be either 'user' or 'model'. Useful to set for multi-turn conversations, otherwise can be left blank or unset."""
+  """Optional. The producer of the content. Must be either 'user' or
+      'model'. Useful to set for multi-turn conversations, otherwise can be
+      left blank or unset. If role is not specified, SDK will determine the role."""
 
 
 ContentOrDict = Union[Content, ContentDict]
