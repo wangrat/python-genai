@@ -824,10 +824,34 @@ class FunctionDeclaration(_common.BaseModel):
       description="""Optional. Describes the parameters to this function in JSON Schema Object format. Reflects the Open API 3.03 Parameter Object. string Key: the name of the parameter. Parameter names are case sensitive. Schema Value: the Schema defining the type used for the parameter. For function with no parameters, this can be left unset. Parameter names must start with a letter or an underscore and must only contain chars a-z, A-Z, 0-9, or underscores with a maximum length of 64. Example with 1 required and 1 optional parameter: type: OBJECT properties: param1: type: STRING param2: type: INTEGER required: - param1""",
   )
 
-  @staticmethod
-  def from_function(client, func: Callable) -> "FunctionDeclaration":
-    """Converts a function to a FunctionDeclaration."""
+  @classmethod
+  def _get_variant(cls, client) -> str:
+    """Returns the function variant based on the provided client object."""
+    if client.vertexai:
+      return "VERTEX_AI"
+    else:
+      return "GOOGLE_AI"
+
+  @classmethod
+  def from_function_with_options(
+      cls,
+      func: Callable,
+      variant: Literal["GOOGLE_AI", "VERTEX_AI", "DEFAULT"] = "GOOGLE_AI",
+  ) -> "FunctionDeclaration":
+    """Converts a function to a FunctionDeclaration based on an API endpoint.
+
+    Supported endpoints are: 'GOOGLE_AI', 'VERTEX_AI', or 'DEFAULT'.
+    """
     from . import _automatic_function_calling_util
+
+    supported_variants = ["GOOGLE_AI", "VERTEX_AI", "DEFAULT"]
+    if variant not in supported_variants:
+      raise ValueError(
+          f"Unsupported variant: {variant}. Supported variants are:"
+          f" {', '.join(supported_variants)}"
+      )
+
+    # TODO: b/382524014 - Add support for DEFAULT API endpoint.
 
     parameters_properties = {}
     for name, param in inspect.signature(func).parameters.items():
@@ -837,7 +861,7 @@ class FunctionDeclaration(_common.BaseModel):
           inspect.Parameter.POSITIONAL_ONLY,
       ):
         schema = _automatic_function_calling_util._parse_schema_from_parameter(
-            client, param, func.__name__
+            variant, param, func.__name__
         )
         parameters_properties[name] = schema
     declaration = FunctionDeclaration(
@@ -849,13 +873,13 @@ class FunctionDeclaration(_common.BaseModel):
           type="OBJECT",
           properties=parameters_properties,
       )
-      if client.vertexai:
+      if variant == "VERTEX_AI":
         declaration.parameters.required = (
             _automatic_function_calling_util._get_required_fields(
                 declaration.parameters
             )
         )
-    if not client.vertexai:
+    if not variant == "VERTEX_AI":
       return declaration
 
     return_annotation = inspect.signature(func).return_annotation
@@ -864,7 +888,7 @@ class FunctionDeclaration(_common.BaseModel):
 
     declaration.response = (
         _automatic_function_calling_util._parse_schema_from_parameter(
-            client,
+            variant,
             inspect.Parameter(
                 "return_value",
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
@@ -874,6 +898,14 @@ class FunctionDeclaration(_common.BaseModel):
         )
     )
     return declaration
+
+  @classmethod
+  def from_function(cls, client, func: Callable) -> "FunctionDeclaration":
+    """Converts a function to a FunctionDeclaration."""
+    return cls.from_function_with_options(
+        variant=cls._get_variant(client),
+        func=func,
+    )
 
 
 class FunctionDeclarationDict(TypedDict, total=False):
