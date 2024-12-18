@@ -116,7 +116,7 @@ async def test_async_session_send_text(
   session = live.AsyncSession(
       api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
   )
-  await session.send('test')
+  await session.send(input='test')
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'client_content' in sent_data
@@ -134,7 +134,7 @@ async def test_async_session_send_content_dict(
       'content': [{'parts': [{'text': 'test'}]}],
       'turn_complete': True,
   }
-  await session.send(client_content)
+  await session.send(input=client_content)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'client_content' in sent_data
@@ -151,7 +151,7 @@ async def test_async_session_send_content(
   client_content = types.LiveClientContent(
       turns=[types.Content(parts=[types.Part(text='test')])], turn_complete=True
   )
-  await session.send(client_content)
+  await session.send(input=client_content)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'client_content' in sent_data
@@ -167,7 +167,7 @@ async def test_async_session_send_bytes(
   )
   realtime_input = {'data': b'000000', 'mime_type': 'audio/pcm'}
 
-  await session.send(realtime_input)
+  await session.send(input=realtime_input)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'realtime_input' in sent_data
@@ -183,7 +183,7 @@ async def test_async_session_send_blob(
   )
   realtime_input = types.Blob(data=b'000000', mime_type='audio/pcm')
 
-  await session.send(realtime_input)
+  await session.send(input=realtime_input)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'realtime_input' in sent_data
@@ -200,7 +200,7 @@ async def test_async_session_send_realtime_input(
   realtime_input = types.LiveClientRealtimeInput(
       media_chunks=[types.Blob(data='000000', mime_type='audio/pcm')]
   )
-  await session.send(realtime_input)
+  await session.send(input=realtime_input)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'realtime_input' in sent_data
@@ -230,7 +230,7 @@ async def test_async_session_send_tool_response(
           id='some-id',
       )]
     )
-  await session.send(tool_response)
+  await session.send(input=tool_response)
   mock_websocket.send.assert_called_once()
   sent_data = json.loads(mock_websocket.send.call_args[0][0])
   assert 'tool_response' in sent_data
@@ -245,10 +245,10 @@ async def test_async_session_send_error(
       api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
   )
   with pytest.raises(ValueError):
-    await session.send([{'invalid_key': 'invalid_value'}])
+    await session.send(input=[{'invalid_key': 'invalid_value'}])
 
   with pytest.raises(ValueError):
-    await session.send({'invalid_key': 'invalid_value'})
+    await session.send(input={'invalid_key': 'invalid_value'})
 
 
 @pytest.mark.parametrize('vertexai', [True, False])
@@ -385,7 +385,9 @@ async def test_async_session_start_stream(
     yield b'data1'
     yield b'data2'
 
-  async for message in session.start_stream(mock_stream(), "audio/pcm"):
+  async for message in session.start_stream(
+      stream=mock_stream(), mime_type='audio/pcm'
+  ):
     assert isinstance(message, types.LiveServerMessage)
 
 

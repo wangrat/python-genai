@@ -68,6 +68,7 @@ class AsyncSession:
 
   async def send(
       self,
+      *,
       input: Union[
           types.ContentListUnion,
           types.ContentListUnionDict,
@@ -80,6 +81,25 @@ class AsyncSession:
       ],
       end_of_turn: Optional[bool] = False,
   ):
+    """Send input to the model.
+
+    The method will send the input request to the server.
+
+    Args:
+      input: The input request to the model.
+      end_of_turn: Whether the input is the last message in a turn.
+
+    Example usage:
+
+    .. code-block:: python
+
+      client = genai.Client(api_key=API_KEY)
+
+      async with client.aio.live.connect(model='...') as session:
+        await session.send(input='Hello world!', end_of_turn=True)
+        async for message in session.receive():
+          print(message)
+    """
     client_message = self._parse_client_message(input, end_of_turn)
     await self._ws.send(json.dumps(client_message))
 
@@ -113,7 +133,7 @@ class AsyncSession:
       yield result
 
   async def start_stream(
-      self, stream: AsyncIterator[bytes], mime_type: str
+      self, *, stream: AsyncIterator[bytes], mime_type: str
   ) -> AsyncIterator[types.LiveServerMessage]:
     """start a live session from a data stream.
 
@@ -199,7 +219,7 @@ class AsyncSession:
   ):
     async for data in data_stream:
       input = {'data': data, 'mimeType': mime_type}
-      await self.send(input)
+      await self.send(input=input)
       # Give a chance for the receive loop to process responses.
       await asyncio.sleep(10**-12)
     # Give a chance for the receiver to process the last response.
@@ -599,7 +619,10 @@ class AsyncLive(_common.BaseModule):
 
   @contextlib.asynccontextmanager
   async def connect(
-      self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
+      self,
+      *,
+      model: str,
+      config: Optional[types.LiveConnectConfigOrDict] = None,
   ) -> AsyncSession:
     """Connect to the live server.
 
@@ -609,9 +632,9 @@ class AsyncLive(_common.BaseModule):
 
       client = genai.Client(api_key=API_KEY)
       config = {}
-      async with client.aio.live.connect(model='gemini-1.0-pro-002', config=config) as session:
+      async with client.aio.live.connect(model='...', config=config) as session:
         await session.send(input='Hello world!', end_of_turn=True)
-        async for message in session:
+        async for message in session.receive():
           print(message)
     """
     base_url = self.api_client._websocket_base_url()
