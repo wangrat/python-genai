@@ -26,7 +26,7 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_generate_content_thought',
         parameters=types._GenerateContentParameters(
-            model='models/gemini-2.0-flash-exp-thinking',
+            model='models/gemini-2.0-flash-thinking-exp',
             contents=t.t_contents(
                 None, 'What is the sum of natural numbers from 1 to 100?'
             ),
@@ -54,7 +54,7 @@ def test_generate_content_has_thought(client):
   contents = 'What is the sum of natural numbers from 1 to 100?'
   config = types.GenerateContentConfig()
   response = client.models.generate_content(
-      model='gemini-2.0-flash-exp-thinking',
+      model='gemini-2.0-flash-thinking-exp',
       contents=contents,
       config=config,
   )
