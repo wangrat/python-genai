@@ -9,4 +9,5 @@
 ### Features
 
 * Add support for Pydantic default value in Automatic Function Calling.
+* Add support for thought.
 * Add support for streaming chat.
