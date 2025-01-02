@@ -2453,7 +2453,10 @@ class GenerateContentResponse(_common.BaseModel):
       default=None, description="""Usage metadata about the response(s)."""
   )
   automatic_function_calling_history: Optional[list[Content]] = None
-  parsed: Union[pydantic.BaseModel, dict] = None
+  parsed: Union[pydantic.BaseModel, dict] = Field(
+      default=None,
+      description="""Parsed response if response_schema is provided. Not available for streaming.""",
+  )
 
   @property
   def text(self) -> Optional[str]:
@@ -2503,12 +2506,21 @@ class GenerateContentResponse(_common.BaseModel):
         response_schema, pydantic.BaseModel
     ):
       # Pydantic schema.
-      result.parsed = response_schema.model_validate_json(result.text)
+      try:
+        result.parsed = response_schema.model_validate_json(result.text)
+      # may not be a valid json per stream response
+      except pydantic.ValidationError:
+        pass
+
     elif isinstance(response_schema, dict) or isinstance(
         response_schema, pydantic.BaseModel
     ):
       # JSON schema.
-      result.parsed = json.loads(result.text)
+      try:
+        result.parsed = json.loads(result.text)
+      # may not be a valid json per stream response
+      except json.decoder.JSONDecodeError:
+        pass
 
     return result
 
