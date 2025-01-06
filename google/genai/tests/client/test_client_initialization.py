@@ -146,6 +146,99 @@ def test_constructor_with_response_payload_in_http_options():
     )
 
 
+def test_constructor_with_invalid_http_options_key():
+  mldev_http_options = {
+      "invalid_version_key": "v1",
+      "base_url": "https://placeholder-fake-url.com/",
+      "headers": {"X-Custom-Header": "custom_value"},
+  }
+  vertexai_http_options = {
+      "api_version": "v1",
+      "base_url": (
+          "https://{self.location}-aiplatform.googleapis.com/{{api_version}}/"
+      ),
+      "invalid_header_key": {"X-Custom-Header": "custom_value"},
+  }
+
+  # Expect value error when HTTPOptions is provided as a dict and contains
+  # an invalid key.
+  try:
+    _ = Client(api_key="google_api_key", http_options=mldev_http_options)
+  except Exception as e:
+    assert isinstance(e, ValueError)
+    assert "Invalid http_options" in str(e)
+
+  # Expect value error when HTTPOptions is provided as a dict and contains
+  # an invalid key.
+  try:
+    _ = Client(
+        vertexai=True,
+        project="fake_project_id",
+        location="fake-location",
+        http_options=vertexai_http_options,
+    )
+  except Exception as e:
+    assert isinstance(e, ValueError)
+    assert "Invalid http_options" in str(e)
+
+
+def test_constructor_with_http_options_as_pydantic_type():
+  mldev_http_options = api_client.HttpOptions(
+      api_version="v1",
+      base_url="https://placeholder-fake-url.com/",
+      headers={"X-Custom-Header": "custom_value"},
+  )
+  vertexai_http_options = api_client.HttpOptions(
+      api_version="v1",
+      base_url=(
+          "https://{self.location}-aiplatform.googleapis.com/{{api_version}}/"
+      ),
+      headers={"X-Custom-Header": "custom_value"},
+  )
+
+  # Test http_options for mldev client.
+  mldev_client = Client(
+      api_key="google_api_key", http_options=mldev_http_options
+  )
+  assert not mldev_client.models.api_client.vertexai
+  assert (
+      mldev_client.models.api_client.get_read_only_http_options()["base_url"]
+      == mldev_http_options.base_url
+  )
+  assert (
+      mldev_client.models.api_client.get_read_only_http_options()["api_version"]
+      == mldev_http_options.api_version
+  )
+
+  assert mldev_client.models.api_client.get_read_only_http_options()["headers"][
+      "X-Custom-Header"] == mldev_http_options.headers["X-Custom-Header"]
+
+  # Test http_options for vertexai client.
+  vertexai_client = Client(
+      vertexai=True,
+      project="fake_project_id",
+      location="fake-location",
+      http_options=vertexai_http_options,
+  )
+  assert vertexai_client.models.api_client.vertexai
+  assert (
+      vertexai_client.models.api_client.get_read_only_http_options()["base_url"]
+      == vertexai_http_options.base_url
+  )
+  assert (
+      vertexai_client.models.api_client.get_read_only_http_options()[
+          "api_version"
+      ]
+      == vertexai_http_options.api_version
+  )
+  assert (
+      vertexai_client.models.api_client.get_read_only_http_options()["headers"][
+          "X-Custom-Header"
+      ]
+      == vertexai_http_options.headers["X-Custom-Header"]
+  )
+
+
 def test_vertexai_from_env_1(monkeypatch):
   project_id = "fake_project_id"
   location = "fake-location"
