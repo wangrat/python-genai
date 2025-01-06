@@ -947,7 +947,7 @@ class Batches(_common.BaseModule):
     Args:
       model (str): The model to use for the batch job.
       src (str): The source of the batch job. Currently supports GCS URI(-s) or
-        Bigquery URI. Example: "gs://path/to/input/data" or
+        BigQuery URI. Example: "gs://path/to/input/data" or
         "bq://projectId.bqDatasetId.bqTableId".
       config (CreateBatchJobConfig): Optional configuration for the batch job.
 
@@ -1243,7 +1243,7 @@ class AsyncBatches(_common.BaseModule):
     Args:
       model (str): The model to use for the batch job.
       src (str): The source of the batch job. Currently supports GCS URI(-s) or
-        Bigquery URI. Example: "gs://path/to/input/data" or
+        BigQuery URI. Example: "gs://path/to/input/data" or
         "bq://projectId.bqDatasetId.bqTableId".
       config (CreateBatchJobConfig): Optional configuration for the batch job.
 
