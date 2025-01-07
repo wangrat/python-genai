@@ -2492,6 +2492,28 @@ class GenerateContentResponse(_common.BaseModel):
     # part.text == '' is different from part.text is None
     return text if any_text_part_text else None
 
+  @property
+  def function_calls(self) -> Optional[list[FunctionCall]]:
+    """Returns the list of function calls in the response."""
+    if (
+        not self.candidates
+        or not self.candidates[0].content
+        or not self.candidates[0].content.parts
+    ):
+      return None
+    if len(self.candidates) > 1:
+      logging.warning(
+          "Warning: there are multiple candidates in the response, returning"
+          " function calls from the first one."
+      )
+    function_calls = [
+        part.function_call
+        for part in self.candidates[0].content.parts
+        if part.function_call is not None
+    ]
+
+    return function_calls if function_calls else None
+
   @classmethod
   def _from_response(
       cls, response: dict[str, object], kwargs: dict[str, object]
