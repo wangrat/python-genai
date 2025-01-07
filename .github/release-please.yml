@@ -1,3 +1,5 @@
 releaseType: python
 handleGHRelease: true
 bumpMinorPreMajor: true
+extraFiles:
+  - version.py
