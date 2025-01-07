@@ -33,6 +33,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 import requests
 
 from . import errors
+from . import version
 
 
 class HttpOptions(BaseModel):
@@ -81,8 +82,7 @@ HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
 
 def _append_library_version_headers(headers: dict[str, str]) -> None:
   """Appends the telemetry header to the headers dict."""
-  # TODO: Automate revisions to the SDK library version.
-  library_label = f'google-genai-sdk/0.3.0'
+  library_label = f'google-genai-sdk/{version.__version__}'
   language_label = 'gl-python/' + sys.version.split()[0]
   version_header_value = f'{library_label} {language_label}'
   if (
