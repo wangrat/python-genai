@@ -109,7 +109,7 @@ class Chat(_BaseChat):
     .. code-block:: python
 
       chat = client.chats.create(model='gemini-1.5-flash')
-      for chunk in chat.send_message_stream('tell me a story')
+      for chunk in chat.send_message_stream('tell me a story'):
         print(chunk.text)
     """
 
@@ -215,7 +215,7 @@ class AsyncChat(_BaseChat):
 
     .. code-block:: python
       chat = client.aio.chats.create(model='gemini-1.5-flash')
-      async for chunk in chat.send_message_stream('tell me a story')
+      async for chunk in chat.send_message_stream('tell me a story'):
         print(chunk.text)
     """
 

@@ -473,6 +473,42 @@ response3 = client.models.edit_image(
 response3.generated_images[0].image.show()
 ```
 
+## Chats
+
+Create a chat session to start a multi-turn conversations with the model.
+
+### Send Message
+
+```python
+chat = client.chats.create(model='gemini-2.0-flash-exp')
+response = chat.send_message('tell me a story')
+print(response.text)
+```
+
+### Streaming
+
+```python
+chat = client.chats.create(model='gemini-2.0-flash-exp')
+for chunk in chat.send_message_stream('tell me a story'):
+  print(chunk.text)
+```
+
+### Async
+
+```python
+chat = client.aio.chats.create(model='gemini-2.0-flash-exp')
+response = await chat.send_message('tell me a story')
+print(response.text)
+```
+
+### Async Streaming
+
+```python
+chat = client.aio.chats.create(model='gemini-2.0-flash-exp')
+async for chunk in chat.send_message_stream('tell me a story'):
+  print(chunk.text)
+```
+
 ## Files (Only Google AI)
 
 ``` python
