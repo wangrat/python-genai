@@ -69,7 +69,7 @@ class HttpOptionsDict(TypedDict):
   """The base URL for the AI platform service endpoint."""
   api_version: Optional[str] = None
   """Specifies the version of the API to use."""
-  headers: Optional[dict[str, Union[str, list[str]]]] = None
+  headers: Optional[dict[str, str]] = None
   """Additional HTTP headers to be sent with the request."""
   response_payload: Optional[dict] = None
   """If set, the response payload will be returned int the supplied dict."""
@@ -133,7 +133,7 @@ def _join_url_path(base_url: str, path: str) -> str:
 
 @dataclass
 class HttpRequest:
-  headers: dict[str, Union[str, list[str]]]
+  headers: dict[str, str]
   url: str
   method: str
   data: Union[dict[str, object], bytes]
