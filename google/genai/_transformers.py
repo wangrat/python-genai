@@ -142,6 +142,30 @@ def t_model(client: _api_client.ApiClient, model: str):
     else:
       return f'models/{model}'
 
+def t_models_url(api_client: _api_client.ApiClient, base_models: bool) -> str:
+  if api_client.vertexai:
+    if base_models:
+      return 'publishers/google/models'
+    else:
+      return 'models'
+  else:
+    if base_models:
+      return 'models'
+    else:
+      return 'tunedModels'
+
+
+def t_extract_models(api_client: _api_client.ApiClient, response: dict) -> list[types.Model]:
+  if response.get('models') is not None:
+    return response.get('models')
+  elif response.get('tunedModels') is not None:
+    return response.get('tunedModels')
+  elif response.get('publisherModels') is not None:
+    return response.get('publisherModels')
+  else:
+    raise ValueError('Cannot determine the models type.')
+
+
 def t_caches_model(api_client: _api_client.ApiClient, model: str):
   model = t_model(api_client, model)
   if not model:

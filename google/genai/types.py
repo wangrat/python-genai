@@ -3863,12 +3863,22 @@ ModelOrDict = Union[Model, ModelDict]
 
 class ListModelsConfig(_common.BaseModel):
 
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
   page_size: Optional[int] = Field(default=None, description="""""")
   page_token: Optional[str] = Field(default=None, description="""""")
   filter: Optional[str] = Field(default=None, description="""""")
+  query_base: Optional[bool] = Field(
+      default=None,
+      description="""Set true to list base models, false to list tuned models.""",
+  )
 
 
 class ListModelsConfigDict(TypedDict, total=False):
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
 
   page_size: Optional[int]
   """"""
@@ -3878,6 +3888,9 @@ class ListModelsConfigDict(TypedDict, total=False):
 
   filter: Optional[str]
   """"""
+
+  query_base: Optional[bool]
+  """Set true to list base models, false to list tuned models."""
 
 
 ListModelsConfigOrDict = Union[ListModelsConfig, ListModelsConfigDict]

@@ -22,7 +22,7 @@ from . import _common
 from . import _extra_utils
 from . import _transformers as t
 from . import types
-from ._api_client import ApiClient
+from ._api_client import ApiClient, HttpOptionsDict
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
 from .pagers import AsyncPager, Pager
@@ -2280,6 +2280,9 @@ def _ListModelsConfig_to_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['page_size']) is not None:
     setv(
         parent_object, ['_query', 'pageSize'], getv(from_object, ['page_size'])
@@ -2294,6 +2297,13 @@ def _ListModelsConfig_to_mldev(
 
   if getv(from_object, ['filter']) is not None:
     setv(parent_object, ['_query', 'filter'], getv(from_object, ['filter']))
+
+  if getv(from_object, ['query_base']) is not None:
+    setv(
+        parent_object,
+        ['_url', 'models_url'],
+        t.t_models_url(api_client, getv(from_object, ['query_base'])),
+    )
 
   return to_object
 
@@ -2304,6 +2314,9 @@ def _ListModelsConfig_to_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['http_options']) is not None:
+    setv(to_object, ['httpOptions'], getv(from_object, ['http_options']))
+
   if getv(from_object, ['page_size']) is not None:
     setv(
         parent_object, ['_query', 'pageSize'], getv(from_object, ['page_size'])
@@ -2318,6 +2331,13 @@ def _ListModelsConfig_to_vertex(
 
   if getv(from_object, ['filter']) is not None:
     setv(parent_object, ['_query', 'filter'], getv(from_object, ['filter']))
+
+  if getv(from_object, ['query_base']) is not None:
+    setv(
+        parent_object,
+        ['_url', 'models_url'],
+        t.t_models_url(api_client, getv(from_object, ['query_base'])),
+    )
 
   return to_object
 
@@ -3524,13 +3544,15 @@ def _ListModelsResponse_from_mldev(
   if getv(from_object, ['nextPageToken']) is not None:
     setv(to_object, ['next_page_token'], getv(from_object, ['nextPageToken']))
 
-  if getv(from_object, ['tunedModels']) is not None:
+  if getv(from_object, ['_self']) is not None:
     setv(
         to_object,
         ['models'],
         [
             _Model_from_mldev(api_client, item, to_object)
-            for item in getv(from_object, ['tunedModels'])
+            for item in t.t_extract_models(
+                api_client, getv(from_object, ['_self'])
+            )
         ],
     )
 
@@ -3546,13 +3568,15 @@ def _ListModelsResponse_from_vertex(
   if getv(from_object, ['nextPageToken']) is not None:
     setv(to_object, ['next_page_token'], getv(from_object, ['nextPageToken']))
 
-  if getv(from_object, ['models']) is not None:
+  if getv(from_object, ['_self']) is not None:
     setv(
         to_object,
         ['models'],
         [
             _Model_from_vertex(api_client, item, to_object)
-            for item in getv(from_object, ['models'])
+            for item in t.t_extract_models(
+                api_client, getv(from_object, ['_self'])
+            )
         ],
     )
 
@@ -4091,12 +4115,12 @@ class Models(_common.BaseModule):
       request_dict = _ListModelsParameters_to_vertex(
           self.api_client, parameter_model
       )
-      path = 'models'.format_map(request_dict.get('_url'))
+      path = '{models_url}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _ListModelsParameters_to_mldev(
           self.api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      path = '{models_url}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4523,17 +4547,24 @@ class Models(_common.BaseModule):
         types._ListModelsParameters(config=config).config
         or types.ListModelsConfig()
     )
-
     if self.api_client.vertexai:
-      # Filter for tuning jobs artifacts by labels.
       config = config.copy()
-      filter_value = config.filter
-      config.filter = (
-          filter_value + '&filter=labels.tune-type:*'
-          if filter_value
-          else 'labels.tune-type:*'
-      )
-
+      if config.query_base:
+        http_options = (
+            config.http_options if config.http_options else HttpOptionsDict()
+        )
+        http_options['skip_project_and_location_in_path'] = True
+        config.http_options = http_options
+      else:
+        # Filter for tuning jobs artifacts by labels.
+        filter_value = config.filter
+        config.filter = (
+            filter_value + '&filter=labels.tune-type:*'
+            if filter_value
+            else 'labels.tune-type:*'
+        )
+    if not config.query_base:
+      config.query_base = False
     return Pager(
         'models',
         self._list,
@@ -4999,12 +5030,12 @@ class AsyncModels(_common.BaseModule):
       request_dict = _ListModelsParameters_to_vertex(
           self.api_client, parameter_model
       )
-      path = 'models'.format_map(request_dict.get('_url'))
+      path = '{models_url}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _ListModelsParameters_to_mldev(
           self.api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      path = '{models_url}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5366,16 +5397,24 @@ class AsyncModels(_common.BaseModule):
         types._ListModelsParameters(config=config).config
         or types.ListModelsConfig()
     )
-
     if self.api_client.vertexai:
-      # Filter for tuning jobs artifacts by labels.
       config = config.copy()
-      filter_value = config.filter
-      config.filter = (
-          filter_value + '&filter=labels.tune-type:*'
-          if filter_value
-          else 'labels.tune-type:*'
-      )
+      if config.query_base:
+        http_options = (
+            config.http_options if config.http_options else HttpOptionsDict()
+        )
+        http_options['skip_project_and_location_in_path'] = True
+        config.http_options = http_options
+      else:
+        # Filter for tuning jobs artifacts by labels.
+        filter_value = config.filter
+        config.filter = (
+            filter_value + '&filter=labels.tune-type:*'
+            if filter_value
+            else 'labels.tune-type:*'
+        )
+    if not config.query_base:
+      config.query_base = False
     return AsyncPager(
         'models',
         self._list,

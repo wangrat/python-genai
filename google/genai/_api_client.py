@@ -60,6 +60,10 @@ class HttpOptions(BaseModel):
       default=None,
       description="""Timeout for the request in seconds.""",
   )
+  skip_project_and_location_in_path: bool = Field(
+      default=False,
+      description="""If set to True, the project and location will not be appended to the path.""",
+  )
 
 
 class HttpOptionsDict(TypedDict):
@@ -75,7 +79,8 @@ class HttpOptionsDict(TypedDict):
   """If set, the response payload will be returned int the supplied dict."""
   timeout: Optional[Union[float, Tuple[float, float]]] = None
   """Timeout for the request in seconds."""
-
+  skip_project_and_location_in_path: bool = False
+  """If set to True, the project and location will not be appended to the path."""
 
 HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
 
@@ -266,7 +271,14 @@ class ApiClient:
       )
     else:
       patched_http_options = self._http_options
-    if self.vertexai and not path.startswith('projects/'):
+    skip_project_and_location_in_path_val = patched_http_options.get(
+        'skip_project_and_location_in_path', False
+    )
+    if (
+        self.vertexai
+        and not path.startswith('projects/')
+        and not skip_project_and_location_in_path_val
+    ):
       path = f'projects/{self.project}/locations/{self.location}/' + path
     url = _join_url_path(
         patched_http_options['base_url'],
