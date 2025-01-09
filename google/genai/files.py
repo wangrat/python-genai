@@ -617,11 +617,11 @@ class Files(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _ListFilesParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files'.format_map(request_dict.get('_url'))
 
@@ -634,23 +634,23 @@ class Files(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListFilesResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListFilesResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListFilesResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def _create(
@@ -664,11 +664,11 @@ class Files(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'upload/v1beta/files'.format_map(request_dict.get('_url'))
 
@@ -681,23 +681,23 @@ class Files(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _CreateFileResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _CreateFileResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.CreateFileResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def get(
@@ -725,11 +725,11 @@ class Files(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _GetFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files/{file}'.format_map(request_dict.get('_url'))
 
@@ -742,17 +742,17 @@ class Files(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _File_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _File_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _File_from_mldev(self.api_client, response_dict)
+      response_dict = _File_from_mldev(self._api_client, response_dict)
 
     return_value = types.File._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def delete(
@@ -779,11 +779,11 @@ class Files(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _DeleteFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files/{file}'.format_map(request_dict.get('_url'))
 
@@ -796,23 +796,23 @@ class Files(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteFileResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteFileResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteFileResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def upload(
@@ -828,7 +828,7 @@ class Files(_common.BaseModule):
         uploaded.
       config: Optional parameters to set `diplay_name`, `mime_type`, and `name`.
     """
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError(
           'Vertex AI does not support creating files. You can upload files to'
           ' GCS files instead.'
@@ -886,12 +886,12 @@ class Files(_common.BaseModule):
       )
     upload_url = response['headers']['X-Goog-Upload-URL']
 
-    return_file = self.api_client.upload_file(
+    return_file = self._api_client.upload_file(
         fs_path, upload_url, file.size_bytes
     )
 
     return types.File._from_response(
-        _File_from_mldev(self.api_client, return_file['file']), None
+        _File_from_mldev(self._api_client, return_file['file']), None
     )
 
   def list(
@@ -931,11 +931,11 @@ class AsyncFiles(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _ListFilesParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files'.format_map(request_dict.get('_url'))
 
@@ -948,23 +948,23 @@ class AsyncFiles(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListFilesResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListFilesResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListFilesResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def _create(
@@ -978,11 +978,11 @@ class AsyncFiles(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'upload/v1beta/files'.format_map(request_dict.get('_url'))
 
@@ -995,23 +995,23 @@ class AsyncFiles(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _CreateFileResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _CreateFileResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.CreateFileResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def get(
@@ -1039,11 +1039,11 @@ class AsyncFiles(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _GetFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files/{file}'.format_map(request_dict.get('_url'))
 
@@ -1056,17 +1056,17 @@ class AsyncFiles(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _File_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _File_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _File_from_mldev(self.api_client, response_dict)
+      response_dict = _File_from_mldev(self._api_client, response_dict)
 
     return_value = types.File._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def delete(
@@ -1093,11 +1093,11 @@ class AsyncFiles(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _DeleteFileParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'files/{file}'.format_map(request_dict.get('_url'))
 
@@ -1110,23 +1110,23 @@ class AsyncFiles(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteFileResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteFileResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteFileResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def upload(
@@ -1142,7 +1142,7 @@ class AsyncFiles(_common.BaseModule):
         uploaded.
       config: Optional parameters to set `diplay_name`, `mime_type`, and `name`.
     """
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       raise ValueError(
           'Vertex AI does not support creating files. You can upload files to'
           ' GCS files instead.'
@@ -1200,12 +1200,12 @@ class AsyncFiles(_common.BaseModule):
       )
     upload_url = response['headers']['X-Goog-Upload-URL']
 
-    return_file = await self.api_client.async_upload_file(
+    return_file = await self._api_client.async_upload_file(
         fs_path, upload_url, file.size_bytes
     )
 
     return types.File._from_response(
-        _File_from_mldev(self.api_client, return_file['file']), None
+        _File_from_mldev(self._api_client, return_file['file']), None
     )
 
   async def list(

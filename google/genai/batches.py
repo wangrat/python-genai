@@ -716,11 +716,11 @@ class Batches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
 
@@ -733,17 +733,17 @@ class Batches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _BatchJob_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _BatchJob_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _BatchJob_from_mldev(self.api_client, response_dict)
+      response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.BatchJob._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def get(
@@ -772,11 +772,11 @@ class Batches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _GetBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
 
@@ -789,17 +789,17 @@ class Batches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _BatchJob_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _BatchJob_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _BatchJob_from_mldev(self.api_client, response_dict)
+      response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.BatchJob._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def cancel(
@@ -813,11 +813,11 @@ class Batches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CancelBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}:cancel'.format_map(
           request_dict.get('_url')
@@ -832,7 +832,7 @@ class Batches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'post', path, request_dict, http_options
     )
 
@@ -843,11 +843,11 @@ class Batches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ListBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
 
@@ -860,23 +860,23 @@ class Batches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListBatchJobResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListBatchJobResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListBatchJobResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def delete(self, *, name: str) -> types.DeleteResourceJob:
@@ -901,11 +901,11 @@ class Batches(_common.BaseModule):
         name=name,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _DeleteBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
 
@@ -918,23 +918,23 @@ class Batches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteResourceJob_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteResourceJob_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteResourceJob._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def create(
@@ -1012,11 +1012,11 @@ class AsyncBatches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
 
@@ -1029,17 +1029,17 @@ class AsyncBatches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _BatchJob_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _BatchJob_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _BatchJob_from_mldev(self.api_client, response_dict)
+      response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.BatchJob._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def get(
@@ -1068,11 +1068,11 @@ class AsyncBatches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _GetBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
 
@@ -1085,17 +1085,17 @@ class AsyncBatches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _BatchJob_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _BatchJob_from_vertex(self._api_client, response_dict)
     else:
-      response_dict = _BatchJob_from_mldev(self.api_client, response_dict)
+      response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.BatchJob._from_response(response_dict, parameter_model)
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def cancel(
@@ -1109,11 +1109,11 @@ class AsyncBatches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CancelBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}:cancel'.format_map(
           request_dict.get('_url')
@@ -1128,7 +1128,7 @@ class AsyncBatches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'post', path, request_dict, http_options
     )
 
@@ -1139,11 +1139,11 @@ class AsyncBatches(_common.BaseModule):
         config=config,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ListBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
 
@@ -1156,23 +1156,23 @@ class AsyncBatches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListBatchJobResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListBatchJobResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListBatchJobResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def delete(self, *, name: str) -> types.DeleteResourceJob:
@@ -1197,11 +1197,11 @@ class AsyncBatches(_common.BaseModule):
         name=name,
     )
 
-    if not self.api_client.vertexai:
+    if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _DeleteBatchJobParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
 
@@ -1214,23 +1214,23 @@ class AsyncBatches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteResourceJob_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteResourceJob_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteResourceJob._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def create(

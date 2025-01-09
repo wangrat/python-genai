@@ -1274,14 +1274,14 @@ class Caches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _CreateCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     else:
       request_dict = _CreateCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1293,19 +1293,21 @@ class Caches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def get(
@@ -1327,14 +1329,14 @@ class Caches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _GetCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _GetCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1346,19 +1348,21 @@ class Caches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def delete(
@@ -1382,14 +1386,14 @@ class Caches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _DeleteCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _DeleteCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1401,23 +1405,23 @@ class Caches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteCachedContentResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteCachedContentResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteCachedContentResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def update(
@@ -1443,14 +1447,14 @@ class Caches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _UpdateCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _UpdateCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1462,19 +1466,21 @@ class Caches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'patch', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def _list(
@@ -1493,14 +1499,14 @@ class Caches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _ListCachedContentsParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     else:
       request_dict = _ListCachedContentsParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1512,23 +1518,23 @@ class Caches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = self.api_client.request(
+    response_dict = self._api_client.request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListCachedContentsResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListCachedContentsResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListCachedContentsResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   def list(
@@ -1576,14 +1582,14 @@ class AsyncCaches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _CreateCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     else:
       request_dict = _CreateCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1595,19 +1601,21 @@ class AsyncCaches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'post', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def get(
@@ -1629,14 +1637,14 @@ class AsyncCaches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _GetCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _GetCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1648,19 +1656,21 @@ class AsyncCaches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def delete(
@@ -1684,14 +1694,14 @@ class AsyncCaches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _DeleteCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _DeleteCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1703,23 +1713,23 @@ class AsyncCaches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'delete', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _DeleteCachedContentResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _DeleteCachedContentResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.DeleteCachedContentResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def update(
@@ -1745,14 +1755,14 @@ class AsyncCaches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _UpdateCachedContentParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     else:
       request_dict = _UpdateCachedContentParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = '{name}'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1764,19 +1774,21 @@ class AsyncCaches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'patch', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
-      response_dict = _CachedContent_from_vertex(self.api_client, response_dict)
+    if self._api_client.vertexai:
+      response_dict = _CachedContent_from_vertex(
+          self._api_client, response_dict
+      )
     else:
-      response_dict = _CachedContent_from_mldev(self.api_client, response_dict)
+      response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def _list(
@@ -1795,14 +1807,14 @@ class AsyncCaches(_common.BaseModule):
         config=config,
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       request_dict = _ListCachedContentsParameters_to_vertex(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     else:
       request_dict = _ListCachedContentsParameters_to_mldev(
-          self.api_client, parameter_model
+          self._api_client, parameter_model
       )
       path = 'cachedContents'.format_map(request_dict.get('_url'))
     query_params = request_dict.get('_query')
@@ -1814,23 +1826,23 @@ class AsyncCaches(_common.BaseModule):
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.apply_base64_encoding(request_dict)
 
-    response_dict = await self.api_client.async_request(
+    response_dict = await self._api_client.async_request(
         'get', path, request_dict, http_options
     )
 
-    if self.api_client.vertexai:
+    if self._api_client.vertexai:
       response_dict = _ListCachedContentsResponse_from_vertex(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
     else:
       response_dict = _ListCachedContentsResponse_from_mldev(
-          self.api_client, response_dict
+          self._api_client, response_dict
       )
 
     return_value = types.ListCachedContentsResponse._from_response(
         response_dict, parameter_model
     )
-    self.api_client._verify_response(return_value)
+    self._api_client._verify_response(return_value)
     return return_value
 
   async def list(

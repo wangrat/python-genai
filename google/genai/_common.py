@@ -17,7 +17,6 @@
 
 import base64
 import datetime
-import json
 import typing
 from typing import Union
 import uuid
@@ -116,7 +115,7 @@ def get_value_by_path(data: object, keys: list[str]):
 class BaseModule:
 
   def __init__(self, api_client_: _api_client.ApiClient):
-    self.api_client = api_client_
+    self._api_client = api_client_
 
 
 def convert_to_dict(obj: dict[str, object]) -> dict[str, object]:

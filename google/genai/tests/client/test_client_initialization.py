@@ -27,9 +27,9 @@ def test_ml_dev_from_env(monkeypatch):
 
   client = Client()
 
-  assert not client.models.api_client.vertexai
-  assert client.models.api_client.api_key == api_key
-  assert isinstance(client.models.api_client, api_client.ApiClient)
+  assert not client.models._api_client.vertexai
+  assert client.models._api_client.api_key == api_key
+  assert isinstance(client.models._api_client, api_client.ApiClient)
 
 
 def test_ml_dev_from_constructor():
@@ -37,8 +37,8 @@ def test_ml_dev_from_constructor():
 
   client = Client(api_key=api_key)
 
-  assert not client.models.api_client.vertexai
-  assert client.models.api_client.api_key == api_key
+  assert not client.models._api_client.vertexai
+  assert client.models._api_client.api_key == api_key
 
 
 def test_constructor_with_http_options():
@@ -60,22 +60,29 @@ def test_constructor_with_http_options():
   mldev_client = Client(
       api_key="google_api_key", http_options=mldev_http_options
   )
-  assert not mldev_client.models.api_client.vertexai
+  assert not mldev_client.models._api_client.vertexai
   assert (
-      mldev_client.models.api_client.get_read_only_http_options()["base_url"]
+      mldev_client.models._api_client.get_read_only_http_options()["base_url"]
       == "https://placeholder-fake-url.com/"
   )
   assert (
-      mldev_client.models.api_client.get_read_only_http_options()["api_version"]
+      mldev_client.models._api_client.get_read_only_http_options()[
+          "api_version"
+      ]
       == "v1main"
   )
 
-  assert mldev_client.models.api_client.get_read_only_http_options()["headers"][
-      "X-Custom-Header"] == "custom_value_mldev"
+  assert (
+      mldev_client.models._api_client.get_read_only_http_options()["headers"][
+          "X-Custom-Header"
+      ]
+      == "custom_value_mldev"
+  )
 
-  assert mldev_client.models.api_client.get_read_only_http_options()[
-      "timeout"
-  ] == 10.0
+  assert (
+      mldev_client.models._api_client.get_read_only_http_options()["timeout"]
+      == 10.0
+  )
 
   vertexai_client = Client(
       vertexai=True,
@@ -83,27 +90,30 @@ def test_constructor_with_http_options():
       location="fake-location",
       http_options=vertexai_http_options,
   )
-  assert vertexai_client.models.api_client.vertexai
+  assert vertexai_client.models._api_client.vertexai
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()["base_url"]
+      vertexai_client.models._api_client.get_read_only_http_options()[
+          "base_url"
+      ]
       == "https://{self.location}-aiplatform.googleapis.com/{{api_version}}/"
   )
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()[
+      vertexai_client.models._api_client.get_read_only_http_options()[
           "api_version"
       ]
       == "v1"
   )
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()["headers"][
-          "X-Custom-Header"
-      ]
+      vertexai_client.models._api_client.get_read_only_http_options()[
+          "headers"
+      ]["X-Custom-Header"]
       == "custom_value_vertexai"
   )
 
-  assert vertexai_client.models.api_client.get_read_only_http_options()[
-      "timeout"
-  ] == 11.0
+  assert (
+      vertexai_client.models._api_client.get_read_only_http_options()["timeout"]
+      == 11.0
+  )
 
 
 def test_constructor_with_response_payload_in_http_options():
@@ -115,9 +125,7 @@ def test_constructor_with_response_payload_in_http_options():
   }
   vertexai_http_options = {
       "api_version": "v1",
-      "base_url": (
-          "https://{self.location}-aiplatform.googleapis.com/"
-      ),
+      "base_url": "https://{self.location}-aiplatform.googleapis.com/",
       "headers": {"X-Custom-Header": "custom_value"},
       "response_payload": {},
   }
@@ -200,18 +208,24 @@ def test_constructor_with_http_options_as_pydantic_type():
   mldev_client = Client(
       api_key="google_api_key", http_options=mldev_http_options
   )
-  assert not mldev_client.models.api_client.vertexai
+  assert not mldev_client.models._api_client.vertexai
   assert (
-      mldev_client.models.api_client.get_read_only_http_options()["base_url"]
+      mldev_client.models._api_client.get_read_only_http_options()["base_url"]
       == mldev_http_options.base_url
   )
   assert (
-      mldev_client.models.api_client.get_read_only_http_options()["api_version"]
+      mldev_client.models._api_client.get_read_only_http_options()[
+          "api_version"
+      ]
       == mldev_http_options.api_version
   )
 
-  assert mldev_client.models.api_client.get_read_only_http_options()["headers"][
-      "X-Custom-Header"] == mldev_http_options.headers["X-Custom-Header"]
+  assert (
+      mldev_client.models._api_client.get_read_only_http_options()["headers"][
+          "X-Custom-Header"
+      ]
+      == mldev_http_options.headers["X-Custom-Header"]
+  )
 
   # Test http_options for vertexai client.
   vertexai_client = Client(
@@ -220,21 +234,23 @@ def test_constructor_with_http_options_as_pydantic_type():
       location="fake-location",
       http_options=vertexai_http_options,
   )
-  assert vertexai_client.models.api_client.vertexai
+  assert vertexai_client.models._api_client.vertexai
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()["base_url"]
+      vertexai_client.models._api_client.get_read_only_http_options()[
+          "base_url"
+      ]
       == vertexai_http_options.base_url
   )
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()[
+      vertexai_client.models._api_client.get_read_only_http_options()[
           "api_version"
       ]
       == vertexai_http_options.api_version
   )
   assert (
-      vertexai_client.models.api_client.get_read_only_http_options()["headers"][
-          "X-Custom-Header"
-      ]
+      vertexai_client.models._api_client.get_read_only_http_options()[
+          "headers"
+      ]["X-Custom-Header"]
       == vertexai_http_options.headers["X-Custom-Header"]
   )
 
@@ -248,9 +264,9 @@ def test_vertexai_from_env_1(monkeypatch):
 
   client = Client()
 
-  assert client.models.api_client.vertexai
-  assert client.models.api_client.project == project_id
-  assert client.models.api_client.location == location
+  assert client.models._api_client.vertexai
+  assert client.models._api_client.project == project_id
+  assert client.models._api_client.location == location
 
 
 def test_vertexai_from_env_true(monkeypatch):
@@ -262,9 +278,9 @@ def test_vertexai_from_env_true(monkeypatch):
 
   client = Client()
 
-  assert client.models.api_client.vertexai
-  assert client.models.api_client.project == project_id
-  assert client.models.api_client.location == location
+  assert client.models._api_client.vertexai
+  assert client.models._api_client.project == project_id
+  assert client.models._api_client.location == location
 
 
 def test_vertexai_from_constructor():
@@ -277,10 +293,10 @@ def test_vertexai_from_constructor():
       location=location,
   )
 
-  assert client.models.api_client.vertexai
-  assert client.models.api_client.project == project_id
-  assert client.models.api_client.location == location
-  assert isinstance(client.models.api_client, api_client.ApiClient)
+  assert client.models._api_client.vertexai
+  assert client.models._api_client.project == project_id
+  assert client.models._api_client.location == location
+  assert isinstance(client.models._api_client, api_client.ApiClient)
 
 
 def test_invalid_vertexai_constructor():
@@ -322,9 +338,11 @@ def test_replay_client_ml_dev_from_env(monkeypatch, use_vertex: bool):
 
   client = Client()
 
-  assert not client.models.api_client.vertexai
-  assert client.models.api_client.api_key == api_key
-  assert isinstance(client.models.api_client, replay_api_client.ReplayApiClient)
+  assert not client.models._api_client.vertexai
+  assert client.models._api_client.api_key == api_key
+  assert isinstance(
+      client.models._api_client, replay_api_client.ReplayApiClient
+  )
 
 
 def test_replay_client_vertexai_from_env(monkeypatch, use_vertex: bool):
@@ -340,10 +358,12 @@ def test_replay_client_vertexai_from_env(monkeypatch, use_vertex: bool):
 
   client = Client()
 
-  assert client.models.api_client.vertexai
-  assert client.models.api_client.project == project_id
-  assert client.models.api_client.location == location
-  assert isinstance(client.models.api_client, replay_api_client.ReplayApiClient)
+  assert client.models._api_client.vertexai
+  assert client.models._api_client.project == project_id
+  assert client.models._api_client.location == location
+  assert isinstance(
+      client.models._api_client, replay_api_client.ReplayApiClient
+  )
 
 
 def test_change_client_mode_from_env(monkeypatch, use_vertex: bool):
@@ -353,10 +373,10 @@ def test_change_client_mode_from_env(monkeypatch, use_vertex: bool):
 
   client1 = Client()
   assert isinstance(
-      client1.models.api_client, replay_api_client.ReplayApiClient
+      client1.models._api_client, replay_api_client.ReplayApiClient
   )
 
   monkeypatch.setenv("GOOGLE_GENAI_CLIENT_MODE", None)
 
   client2 = Client()
-  assert isinstance(client2.models.api_client, api_client.ApiClient)
+  assert isinstance(client2.models._api_client, api_client.ApiClient)
