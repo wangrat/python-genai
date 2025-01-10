@@ -17,6 +17,7 @@
 
 import mimetypes
 import os
+import pathlib
 from typing import Optional, Union
 from urllib.parse import urlencode
 from . import _common
@@ -818,14 +819,13 @@ class Files(_common.BaseModule):
   def upload(
       self,
       *,
-      path: str,
+      path: str | pathlib.Path | os.PathLike,
       config: Optional[types.UploadFileConfigOrDict] = None,
   ) -> types.File:
     """Calls the API to upload a file using a supported file service.
 
     Args:
-      path: The path to the file or a file-like object (e.g. `BytesIO`) to be
-        uploaded.
+      path: The path or a path-like object points to the file to to be uploaded.
       config: Optional parameters to set `diplay_name`, `mime_type`, and `name`.
     """
     if self._api_client.vertexai:
@@ -1132,14 +1132,13 @@ class AsyncFiles(_common.BaseModule):
   async def upload(
       self,
       *,
-      path: str,
+      path: str | pathlib.Path | os.PathLike,
       config: Optional[types.UploadFileConfigOrDict] = None,
   ) -> types.File:
     """Calls the API to upload a file asynchronously using a supported file service.
 
     Args:
-      path: The path to the file or a file-like object (e.g. `BytesIO`) to be
-        uploaded.
+      path:  The path or a path-like object points to the file to be uploaded.
       config: Optional parameters to set `diplay_name`, `mime_type`, and `name`.
     """
     if self._api_client.vertexai:
