@@ -241,6 +241,8 @@ class AsyncSession:
       )
     if getv(from_object, ['turnComplete']) is not None:
       setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
+    if getv(from_object, ['interrupted']) is not None:
+      setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     return to_object
 
   def _LiveToolCall_from_mldev(
@@ -312,6 +314,8 @@ class AsyncSession:
       )
     if getv(from_object, ['turnComplete']) is not None:
       setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
+    if getv(from_object, ['interrupted']) is not None:
+      setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     return to_object
 
   def _LiveServerMessage_from_vertex(
