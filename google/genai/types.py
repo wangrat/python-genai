@@ -8035,7 +8035,7 @@ class LiveClientMessage(_common.BaseModel):
 
   setup: Optional[LiveClientSetup] = Field(
       default=None,
-      description="""Message to be sent in the first and only first client message.""",
+      description="""Message to be sent by the system when connecting to the API. SDK users should not send this message.""",
   )
   client_content: Optional[LiveClientContent] = Field(
       default=None,
@@ -8054,7 +8054,7 @@ class LiveClientMessageDict(TypedDict, total=False):
   """Messages sent by the client in the API call."""
 
   setup: Optional[LiveClientSetupDict]
-  """Message to be sent in the first and only first client message."""
+  """Message to be sent by the system when connecting to the API. SDK users should not send this message."""
 
   client_content: Optional[LiveClientContentDict]
   """Incremental update of the current conversation delivered from the client."""
