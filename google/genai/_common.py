@@ -185,7 +185,7 @@ class BaseModel(pydantic.BaseModel):
       alias_generator=alias_generators.to_camel,
       populate_by_name=True,
       from_attributes=True,
-      protected_namespaces={},
+      protected_namespaces=(),
       extra='forbid',
       # This allows us to use arbitrary types in the model. E.g. PIL.Image.
       arbitrary_types_allowed=True,
