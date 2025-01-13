@@ -25,7 +25,6 @@ import datetime
 from typing import Any, Literal, Optional, Union
 
 import google.auth
-from pydantic import BaseModel
 from requests.exceptions import HTTPError
 
 from . import errors
@@ -34,6 +33,7 @@ from ._api_client import HttpOptions
 from ._api_client import HttpRequest
 from ._api_client import HttpResponse
 from ._api_client import RequestJsonEncoder
+from ._common import BaseModel
 
 def _redact_version_numbers(version_string: str) -> str:
   """Redacts version numbers in the form x.y.z from a string."""
@@ -264,18 +264,9 @@ class ReplayApiClient(ApiClient):
     replay_file_path = self._get_replay_file_path()
     os.makedirs(os.path.dirname(replay_file_path), exist_ok=True)
     with open(replay_file_path, 'w') as f:
-      replay_session_dict = self.replay_session.model_dump()
-      # Use for non-utf-8 bytes in image/video... output.
-      for interaction in replay_session_dict['interactions']:
-        segments = []
-        for response in interaction['response']['sdk_response_segments']:
-          segments.append(json.loads(json.dumps(
-              response, cls=ResponseJsonEncoder
-          )))
-        interaction['response']['sdk_response_segments'] = segments
       f.write(
           json.dumps(
-              replay_session_dict, indent=2, cls=RequestJsonEncoder
+              self.replay_session.model_dump(mode='json'), indent=2, cls=ResponseJsonEncoder
           )
       )
     self.replay_session = None
@@ -376,15 +367,8 @@ class ReplayApiClient(ApiClient):
     if isinstance(response_model, list):
       response_model = response_model[0]
     print('response_model: ', response_model.model_dump(exclude_none=True))
-    actual = json.dumps(
-        response_model.model_dump(exclude_none=True),
-        cls=ResponseJsonEncoder,
-        sort_keys=True,
-    )
-    expected = json.dumps(
-        interaction.response.sdk_response_segments[self._sdk_response_index],
-        sort_keys=True,
-    )
+    actual = response_model.model_dump(exclude_none=True, mode='json')
+    expected = interaction.response.sdk_response_segments[self._sdk_response_index]
     assert (
         actual == expected
     ), f'SDK response mismatch:\nActual: {actual}\nExpected: {expected}'
@@ -437,36 +421,12 @@ class ReplayApiClient(ApiClient):
       return self._build_response_from_replay(request).text
 
 
+# TODO(b/389693448): Cleanup datetime hacks.
 class ResponseJsonEncoder(json.JSONEncoder):
   """The replay test json encoder for response.
-
-  We need RequestJsonEncoder and ResponseJsonEncoder because:
-    1. In production, we only need RequestJsonEncoder to help json module
-    to convert non-stringable and stringable types to json string. Especially
-    for bytes type, the value of bytes field is encoded to base64 string so it
-    is always stringable and the RequestJsonEncoder doesn't have to deal with
-    utf-8 JSON broken issue.
-    2. In replay test, we also need ResponseJsonEncoder to help json module
-    convert non-stringable and stringable types to json string. But response
-    object returned from SDK method is different from the request api_client
-    sent to server. For the bytes type, there is no base64 string in response
-    anymore, because SDK handles it internally. So bytes type in Response is
-    non-stringable. The ResponseJsonEncoder uses different encoding
-    strategy than the RequestJsonEncoder to deal with utf-8 JSON broken issue.
   """
   def default(self, o):
-    if isinstance(o, bytes):
-      # Use base64.b64encode() to encode bytes to string so that the media bytes
-      # fields are serializable.
-      # o.decode(encoding='utf-8', errors='replace') doesn't work because it
-      # uses a fixed error string `\ufffd` for all non-utf-8 characters,
-      # which cannot be converted back to original bytes. And other languages
-      # only have the original bytes to compare with.
-      # Since we use base64.b64encoding() in replay test, a change that breaks
-      # native bytes can be captured by
-      # test_compute_tokens.py::test_token_bytes_deserialization.
-      return base64.b64encode(o).decode(encoding='utf-8')
-    elif isinstance(o, datetime.datetime):
+    if isinstance(o, datetime.datetime):
       # dt.isoformat() prints "2024-11-15T23:27:45.624657+00:00"
       # but replay files want "2024-11-15T23:27:45.624657Z"
       if o.isoformat().endswith('+00:00'):

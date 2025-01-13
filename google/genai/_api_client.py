@@ -574,13 +574,12 @@ class ApiClient:
     pass
 
 
+# TODO(b/389693448): Cleanup datetime hacks.
 class RequestJsonEncoder(json.JSONEncoder):
   """Encode bytes as strings without modify its content."""
 
   def default(self, o):
-    if isinstance(o, bytes):
-      return o.decode()
-    elif isinstance(o, datetime.datetime):
+    if isinstance(o, datetime.datetime):
       # This Zulu time format is used by the Vertex AI API and the test recorder
       # Using strftime works well, but we want to align with the replay encoder.
       # o.astimezone(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ')

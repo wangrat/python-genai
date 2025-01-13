@@ -167,7 +167,7 @@ def setup(
           # exclude_unset=True is needed to avoid warnings.
           # See https://github.com/pydantic/pydantic/issues/6467.
           json.dumps(
-              test_table_file.model_dump(exclude_unset=True, by_alias=True),
+              test_table_file.model_dump(exclude_unset=True, by_alias=True, mode='json'),
               indent=2,
               cls=ResponseJsonEncoder,
           )
