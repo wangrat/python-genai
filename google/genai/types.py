@@ -218,6 +218,9 @@ EditMode = Literal[
 FileState = Literal["STATE_UNSPECIFIED", "PROCESSING", "ACTIVE", "FAILED"]
 
 
+Modality = Literal["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]
+
+
 class VideoMetadata(_common.BaseModel):
   """Metadata describes the input video content."""
 
@@ -3124,8 +3127,6 @@ class Image(_common.BaseModel):
 
     pathlib.Path(location).write_bytes(self.image_bytes)
 
-
-Modality = Literal["MODALITY_UNSPECIFIED", "TEXT", "IMAGE", "AUDIO"]
 
 JOB_STATES_SUCCEEDED_VERTEX = [
     "JOB_STATE_SUCCEEDED",
