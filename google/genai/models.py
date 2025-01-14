@@ -2547,7 +2547,7 @@ def _CountTokensConfig_to_vertex(
 
   if getv(from_object, ['system_instruction']) is not None:
     setv(
-        to_object,
+        parent_object,
         ['systemInstruction'],
         _Content_to_vertex(
             api_client,
@@ -2558,7 +2558,7 @@ def _CountTokensConfig_to_vertex(
 
   if getv(from_object, ['tools']) is not None:
     setv(
-        to_object,
+        parent_object,
         ['tools'],
         [
             _Tool_to_vertex(api_client, item, to_object)
