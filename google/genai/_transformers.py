@@ -488,5 +488,5 @@ def t_bytes(api_client: _api_client.ApiClient, data: bytes) -> str:
   if api_client.vertexai:
     return base64.b64encode(data).decode('ascii')
   else:
-    return base64.urlsafe_encode(data).decode('ascii')
+    return base64.urlsafe_b64encode(data).decode('ascii')
 
