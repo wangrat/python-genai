@@ -76,6 +76,9 @@ HarmBlockThreshold = Literal[
 Mode = Literal["MODE_UNSPECIFIED", "MODE_DYNAMIC"]
 
 
+State = Literal["STATE_UNSPECIFIED", "ACTIVE", "ERROR"]
+
+
 FinishReason = Literal[
     "FINISH_REASON_UNSPECIFIED",
     "STOP",
@@ -145,9 +148,6 @@ AdapterSize = Literal[
     "ADAPTER_SIZE_SIXTEEN",
     "ADAPTER_SIZE_THIRTY_TWO",
 ]
-
-
-State = Literal["STATE_UNSPECIFIED", "ACTIVE", "ERROR"]
 
 
 DynamicRetrievalConfigMode = Literal["MODE_UNSPECIFIED", "MODE_DYNAMIC"]
@@ -1386,7 +1386,130 @@ class ThinkingConfigDict(TypedDict, total=False):
 ThinkingConfigOrDict = Union[ThinkingConfig, ThinkingConfigDict]
 
 
-PartUnion = Union[Part, PIL.Image.Image, str]
+class FileStatus(_common.BaseModel):
+  """Status of a File that uses a common error model."""
+
+  details: Optional[list[dict[str, Any]]] = Field(
+      default=None,
+      description="""A list of messages that carry the error details. There is a common set of message types for APIs to use.""",
+  )
+  message: Optional[str] = Field(
+      default=None,
+      description="""A list of messages that carry the error details. There is a common set of message types for APIs to use.""",
+  )
+  code: Optional[int] = Field(
+      default=None, description="""The status code. 0 for OK, 1 for CANCELLED"""
+  )
+
+
+class FileStatusDict(TypedDict, total=False):
+  """Status of a File that uses a common error model."""
+
+  details: Optional[list[dict[str, Any]]]
+  """A list of messages that carry the error details. There is a common set of message types for APIs to use."""
+
+  message: Optional[str]
+  """A list of messages that carry the error details. There is a common set of message types for APIs to use."""
+
+  code: Optional[int]
+  """The status code. 0 for OK, 1 for CANCELLED"""
+
+
+FileStatusOrDict = Union[FileStatus, FileStatusDict]
+
+
+class File(_common.BaseModel):
+  """A file uploaded to the API."""
+
+  name: Optional[str] = Field(
+      default=None,
+      description="""The `File` resource name. The ID (name excluding the "files/" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be generated. Example: `files/123-456`""",
+  )
+  display_name: Optional[str] = Field(
+      default=None,
+      description="""Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'""",
+  )
+  mime_type: Optional[str] = Field(
+      default=None, description="""Output only. MIME type of the file."""
+  )
+  size_bytes: Optional[int] = Field(
+      default=None, description="""Output only. Size of the file in bytes."""
+  )
+  create_time: Optional[datetime.datetime] = Field(
+      default=None,
+      description="""Output only. The timestamp of when the `File` was created.""",
+  )
+  expiration_time: Optional[datetime.datetime] = Field(
+      default=None,
+      description="""Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'""",
+  )
+  update_time: Optional[datetime.datetime] = Field(
+      default=None,
+      description="""Output only. The timestamp of when the `File` was last updated.""",
+  )
+  sha256_hash: Optional[bytes] = Field(
+      default=None,
+      description="""Output only. SHA-256 hash of the uploaded bytes.""",
+  )
+  uri: Optional[str] = Field(
+      default=None, description="""Output only. The URI of the `File`."""
+  )
+  state: Optional[FileState] = Field(
+      default=None, description="""Output only. Processing state of the File."""
+  )
+  video_metadata: Optional[dict[str, Any]] = Field(
+      default=None, description="""Output only. Metadata for a video."""
+  )
+  error: Optional[FileStatus] = Field(
+      default=None,
+      description="""Output only. Error status if File processing failed.""",
+  )
+
+
+class FileDict(TypedDict, total=False):
+  """A file uploaded to the API."""
+
+  name: Optional[str]
+  """The `File` resource name. The ID (name excluding the "files/" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be generated. Example: `files/123-456`"""
+
+  display_name: Optional[str]
+  """Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'"""
+
+  mime_type: Optional[str]
+  """Output only. MIME type of the file."""
+
+  size_bytes: Optional[int]
+  """Output only. Size of the file in bytes."""
+
+  create_time: Optional[datetime.datetime]
+  """Output only. The timestamp of when the `File` was created."""
+
+  expiration_time: Optional[datetime.datetime]
+  """Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'"""
+
+  update_time: Optional[datetime.datetime]
+  """Output only. The timestamp of when the `File` was last updated."""
+
+  sha256_hash: Optional[bytes]
+  """Output only. SHA-256 hash of the uploaded bytes."""
+
+  uri: Optional[str]
+  """Output only. The URI of the `File`."""
+
+  state: Optional[FileState]
+  """Output only. Processing state of the File."""
+
+  video_metadata: Optional[dict[str, Any]]
+  """Output only. Metadata for a video."""
+
+  error: Optional[FileStatusDict]
+  """Output only. Error status if File processing failed."""
+
+
+FileOrDict = Union[File, FileDict]
+
+
+PartUnion = Union[File, Part, PIL.Image.Image, str]
 
 
 PartUnionDict = Union[PartUnion, PartDict]
@@ -6207,129 +6330,6 @@ class _ListFilesParametersDict(TypedDict, total=False):
 _ListFilesParametersOrDict = Union[
     _ListFilesParameters, _ListFilesParametersDict
 ]
-
-
-class FileStatus(_common.BaseModel):
-  """Status of a File that uses a common error model."""
-
-  details: Optional[list[dict[str, Any]]] = Field(
-      default=None,
-      description="""A list of messages that carry the error details. There is a common set of message types for APIs to use.""",
-  )
-  message: Optional[str] = Field(
-      default=None,
-      description="""A list of messages that carry the error details. There is a common set of message types for APIs to use.""",
-  )
-  code: Optional[int] = Field(
-      default=None, description="""The status code. 0 for OK, 1 for CANCELLED"""
-  )
-
-
-class FileStatusDict(TypedDict, total=False):
-  """Status of a File that uses a common error model."""
-
-  details: Optional[list[dict[str, Any]]]
-  """A list of messages that carry the error details. There is a common set of message types for APIs to use."""
-
-  message: Optional[str]
-  """A list of messages that carry the error details. There is a common set of message types for APIs to use."""
-
-  code: Optional[int]
-  """The status code. 0 for OK, 1 for CANCELLED"""
-
-
-FileStatusOrDict = Union[FileStatus, FileStatusDict]
-
-
-class File(_common.BaseModel):
-  """A file uploaded to the API."""
-
-  name: Optional[str] = Field(
-      default=None,
-      description="""The `File` resource name. The ID (name excluding the "files/" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be generated. Example: `files/123-456`""",
-  )
-  display_name: Optional[str] = Field(
-      default=None,
-      description="""Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'""",
-  )
-  mime_type: Optional[str] = Field(
-      default=None, description="""Output only. MIME type of the file."""
-  )
-  size_bytes: Optional[int] = Field(
-      default=None, description="""Output only. Size of the file in bytes."""
-  )
-  create_time: Optional[datetime.datetime] = Field(
-      default=None,
-      description="""Output only. The timestamp of when the `File` was created.""",
-  )
-  expiration_time: Optional[datetime.datetime] = Field(
-      default=None,
-      description="""Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'""",
-  )
-  update_time: Optional[datetime.datetime] = Field(
-      default=None,
-      description="""Output only. The timestamp of when the `File` was last updated.""",
-  )
-  sha256_hash: Optional[bytes] = Field(
-      default=None,
-      description="""Output only. SHA-256 hash of the uploaded bytes.""",
-  )
-  uri: Optional[str] = Field(
-      default=None, description="""Output only. The URI of the `File`."""
-  )
-  state: Optional[FileState] = Field(
-      default=None, description="""Output only. Processing state of the File."""
-  )
-  video_metadata: Optional[dict[str, Any]] = Field(
-      default=None, description="""Output only. Metadata for a video."""
-  )
-  error: Optional[FileStatus] = Field(
-      default=None,
-      description="""Output only. Error status if File processing failed.""",
-  )
-
-
-class FileDict(TypedDict, total=False):
-  """A file uploaded to the API."""
-
-  name: Optional[str]
-  """The `File` resource name. The ID (name excluding the "files/" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be generated. Example: `files/123-456`"""
-
-  display_name: Optional[str]
-  """Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'"""
-
-  mime_type: Optional[str]
-  """Output only. MIME type of the file."""
-
-  size_bytes: Optional[int]
-  """Output only. Size of the file in bytes."""
-
-  create_time: Optional[datetime.datetime]
-  """Output only. The timestamp of when the `File` was created."""
-
-  expiration_time: Optional[datetime.datetime]
-  """Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'"""
-
-  update_time: Optional[datetime.datetime]
-  """Output only. The timestamp of when the `File` was last updated."""
-
-  sha256_hash: Optional[bytes]
-  """Output only. SHA-256 hash of the uploaded bytes."""
-
-  uri: Optional[str]
-  """Output only. The URI of the `File`."""
-
-  state: Optional[FileState]
-  """Output only. Processing state of the File."""
-
-  video_metadata: Optional[dict[str, Any]]
-  """Output only. Metadata for a video."""
-
-  error: Optional[FileStatusDict]
-  """Output only. Error status if File processing failed."""
-
-
-FileOrDict = Union[File, FileDict]
 
 
 class ListFilesResponse(_common.BaseModel):

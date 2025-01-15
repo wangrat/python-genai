@@ -49,9 +49,28 @@ The `client.models` modules exposes model inferencing and model getters.
 
 ### Generate Content
 
+#### with text content
+
 ```python
 response = client.models.generate_content(
     model="gemini-2.0-flash-exp", contents="What is your name?"
+)
+print(response.text)
+```
+
+#### with uploaded file (Google AI only)
+download the file in console.
+
+```cmd
+!wget -q https://storage.googleapis.com/generativeai-downloads/data/a11.txt
+```
+
+python code.
+
+```python
+file = client.files.upload(path="a11.text")
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp", contents=["Summarize this file", file]
 )
 print(response.text)
 ```
