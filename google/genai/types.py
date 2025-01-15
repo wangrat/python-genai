@@ -1365,6 +1365,27 @@ AutomaticFunctionCallingConfigOrDict = Union[
 ]
 
 
+class ThinkingConfig(_common.BaseModel):
+  """The thinking features configuration."""
+
+  include_thoughts: Optional[bool] = Field(
+      default=None,
+      description="""Indicates whether to include thoughts in the response. If true, thoughts are returned only if the model supports thought and thoughts are available.
+      """,
+  )
+
+
+class ThinkingConfigDict(TypedDict, total=False):
+  """The thinking features configuration."""
+
+  include_thoughts: Optional[bool]
+  """Indicates whether to include thoughts in the response. If true, thoughts are returned only if the model supports thought and thoughts are available.
+      """
+
+
+ThinkingConfigOrDict = Union[ThinkingConfig, ThinkingConfigDict]
+
+
 PartUnion = Union[Part, PIL.Image.Image, str]
 
 
@@ -1608,6 +1629,11 @@ class GenerateContentConfig(_common.BaseModel):
       description="""The configuration for automatic function calling.
       """,
   )
+  thinking_config: Optional[ThinkingConfig] = Field(
+      default=None,
+      description="""The thinking features configuration.
+      """,
+  )
 
 
 class GenerateContentConfigDict(TypedDict, total=False):
@@ -1731,6 +1757,10 @@ class GenerateContentConfigDict(TypedDict, total=False):
 
   automatic_function_calling: Optional[AutomaticFunctionCallingConfigDict]
   """The configuration for automatic function calling.
+      """
+
+  thinking_config: Optional[ThinkingConfigDict]
+  """The thinking features configuration.
       """
 
 
