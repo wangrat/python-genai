@@ -198,7 +198,6 @@ test_table: list[pytest_helper.TestTableItem] = [
                     )
                 ),
         ),
-        exception_if_vertex='400',
     ),
     pytest_helper.TestTableItem(
         name='test_union_speech_string_config',
@@ -209,7 +208,6 @@ test_table: list[pytest_helper.TestTableItem] = [
                 response_modalities=['audio'], speech_config='charon'
             ),
         ),
-        exception_if_vertex='400',
         has_union=True,
     ),
 ]
