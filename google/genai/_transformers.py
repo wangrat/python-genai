@@ -156,7 +156,9 @@ def t_models_url(api_client: _api_client.ApiClient, base_models: bool) -> str:
 
 
 def t_extract_models(api_client: _api_client.ApiClient, response: dict) -> list[types.Model]:
-  if response.get('models') is not None:
+  if not response:
+    return []
+  elif response.get('models') is not None:
     return response.get('models')
   elif response.get('tunedModels') is not None:
     return response.get('tunedModels')
