@@ -265,9 +265,10 @@ class ApiClient:
         self.api_key = None
       if not self.project and not self.api_key:
         self.project = google.auth.default()[1]
-      if not (self.project or self.location) and not self.api_key:
+      if not ((self.project and self.location) or self.api_key):
         raise ValueError(
-            'Project/location or API key must be set when using the Vertex AI API.'
+            'Project and location or API key must be set when using the Vertex '
+            'AI API.'
         )
       if self.api_key:
         self._http_options['base_url'] = (

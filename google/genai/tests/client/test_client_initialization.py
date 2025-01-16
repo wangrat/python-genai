@@ -347,6 +347,15 @@ def test_invalid_vertexai_constructor2():
     )
 
 
+def test_invalid_vertexai_constructor3():
+  project_id = "fake_project_id"
+  with pytest.raises(ValueError):
+    Client(
+        vertexai=True,
+        project=project_id
+    )
+
+
 def test_vertexai_explicit_arg_precedence1(monkeypatch):
   project_id = "constructor_project_id"
   location = "constructor-location"
