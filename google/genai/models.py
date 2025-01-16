@@ -4592,9 +4592,14 @@ class Models(_common.BaseModule):
       *,
       config: Optional[types.ListModelsConfigOrDict] = None,
   ) -> Pager[types.Model]:
-    """Makes an API request to list the tuned models available to your project.
+    """Makes an API request to list the avaiable models.
 
-    This method only lists tuned models for the Vertex AI API.
+    If `query_base` is set to True in the config, the API will return all
+    available base models. If set to False or not set (default), it will return
+    all tuned models.
+
+    Args:
+      config (ListModelsConfigOrDict): Configuration for retrieving models.
 
     Usage:
 
@@ -4603,6 +4608,10 @@ class Models(_common.BaseModule):
       response=client.models.list(config={'page_size': 5})
       print(response.page)
       # [Model(name='projects/./locations/./models/123', display_name='my_model'
+
+      response=client.models.list(config={'page_size': 5, 'query_base': True})
+      print(response.page)
+      # [Model(name='publishers/google/models/gemini-2.0-flash-exp' ...
     """
 
     config = (
@@ -5442,9 +5451,14 @@ class AsyncModels(_common.BaseModule):
       *,
       config: Optional[types.ListModelsConfigOrDict] = None,
   ) -> AsyncPager[types.Model]:
-    """Makes an API request to list the tuned models available to your project.
+    """Makes an API request to list the avaiable models.
 
-    This method only lists tuned models for the Vertex AI API.
+    If `query_base` is set to True in the config, the API will return all
+    available base models. If set to False or not set (default), it will return
+    all tuned models.
+
+    Args:
+      config (ListModelsConfigOrDict): Configuration for retrieving models.
 
     Usage:
 
@@ -5453,6 +5467,12 @@ class AsyncModels(_common.BaseModule):
       response = await client.aio.models.list(config={'page_size': 5})
       print(response.page)
       # [Model(name='projects/./locations/./models/123', display_name='my_model'
+
+      response = await client.aio.models.list(
+          config={'page_size': 5, 'query_base': True}
+        )
+      print(response.page)
+      # [Model(name='publishers/google/models/gemini-2.0-flash-exp' ...
     """
 
     config = (

@@ -116,6 +116,38 @@ response = client.models.generate_content(
 response
 ```
 
+### List Base Models
+
+To retrieve tuned models, see [list tuned models](#list-tuned-models).
+
+```python
+for model in client.models.list(config={'query_base':True}):
+    print(model)
+```
+
+```python
+pager = client.models.list(config={"page_size": 10, 'query_base':True})
+print(pager.page_size)
+print(pager[0])
+pager.next_page()
+print(pager[0])
+```
+
+#### Async
+
+```python
+async for job in await client.aio.models.list(config={'query_base':True}):
+    print(job)
+```
+
+```python
+async_pager = await client.aio.models.list(config={"page_size": 10, 'query_base':True})
+print(async_pager.page_size)
+print(async_pager[0])
+await async_pager.next_page()
+print(async_pager[0])
+```
+
 ### Safety Settings
 
 ```python
@@ -714,6 +746,8 @@ print(tuned_model)
 ```
 
 ### List Tuned Models
+
+To retrieve base models, see [list base models](#list-base-models).
 
 ```python
 for model in client.models.list(config={"page_size": 10}):
