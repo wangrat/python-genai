@@ -349,10 +349,10 @@ def t_speech_config(
 def t_tool(client: _api_client.ApiClient, origin) -> types.Tool:
   if not origin:
     return None
-  if inspect.isfunction(origin):
+  if inspect.isfunction(origin) or inspect.ismethod(origin):
     return types.Tool(
         function_declarations=[
-            types.FunctionDeclaration.from_function(client, origin)
+            types.FunctionDeclaration.from_callable(client, origin)
         ]
     )
   else:

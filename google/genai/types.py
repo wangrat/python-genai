@@ -896,7 +896,7 @@ class FunctionDeclaration(_common.BaseModel):
     return declaration
 
   @classmethod
-  def from_function(cls, client, func: Callable) -> "FunctionDeclaration":
+  def from_callable(cls, client, func: Callable) -> "FunctionDeclaration":
     """Converts a function to a FunctionDeclaration."""
     return cls.from_function_with_options(
         variant=cls._get_variant(client),
