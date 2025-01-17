@@ -35,7 +35,7 @@ def _resource_name(
     resource_name: str,
     *,
     collection_identifier: str,
-    collection_hirearchy_depth: int = 2,
+    collection_hierarchy_depth: int = 2,
 ):
   # pylint: disable=line-too-long
   """Prepends resource name with project, location, collection_identifier if needed.
@@ -99,7 +99,7 @@ def _resource_name(
       # Check if prepending the collection identifier won't violate the
       # collection hierarchy depth.
       and f'{collection_identifier}/{resource_name}'.count('/') + 1
-      == collection_hirearchy_depth
+      == collection_hierarchy_depth
   )
   if client.vertexai:
     if resource_name.startswith('projects/'):
@@ -463,7 +463,7 @@ def t_resolve_operation(api_client: _api_client.ApiClient, struct: dict):
 
 
 def t_file_name(api_client: _api_client.ApiClient, name: str):
-  # Remove the files/ prefx since it's added to the url path.
+  # Remove the files/ prefix since it's added to the url path.
   if name.startswith('files/'):
     return name.split('files/')[1]
   return name

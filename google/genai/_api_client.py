@@ -200,7 +200,7 @@ class ApiClient:
       ]:
         self.vertexai = True
 
-    # Validate explicitly set intializer values.
+    # Validate explicitly set initializer values.
     if (project or location) and api_key:
       # API cannot consume both project/location and api_key.
       raise ValueError(

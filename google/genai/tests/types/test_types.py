@@ -1283,14 +1283,14 @@ def test_empty_function_with_return_type():
   expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
   expected_schema_vertex.response = types.Schema(type='INTEGER')
 
-  acutal_schema_mldev = types.FunctionDeclaration.from_callable(
+  actual_schema_mldev = types.FunctionDeclaration.from_callable(
       mldev_client, func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
       vertex_client, func_under_test
   )
 
-  assert acutal_schema_mldev == expected_schema_mldev
+  assert actual_schema_mldev == expected_schema_mldev
   assert actual_schema_vertex == expected_schema_vertex
 
 
