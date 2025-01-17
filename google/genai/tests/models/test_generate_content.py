@@ -210,6 +210,25 @@ test_table: list[pytest_helper.TestTableItem] = [
         ),
         has_union=True,
     ),
+    pytest_helper.TestTableItem(
+        name='test_audio_timestamp',
+        parameters=types._GenerateContentParameters(
+            model='gemini-1.5-flash',
+            contents=[types.Content(
+                role='user',
+                parts=[
+                    types.Part(
+                        file_data=types.FileData(
+                            file_uri='gs://cloud-samples-data/generative-ai/audio/pixel.mp3',
+                            mime_type='audio/mpeg')),
+                    types.Part(text="""Can you transcribe this interview, in the
+                           format of timecode, speaker, caption. Use speaker A, 
+                           speaker B, etc. to identify speakers."""),]
+            )],
+            config=types.GenerateContentConfig(audio_timestamp=True),
+        ),
+        exception_if_mldev='not supported',
+    )
 ]
 
 pytestmark = pytest_helper.setup(

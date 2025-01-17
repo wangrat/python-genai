@@ -934,6 +934,9 @@ def _GenerateContentConfig_to_mldev(
         ),
     )
 
+  if getv(from_object, ['audio_timestamp']) is not None:
+    raise ValueError('audio_timestamp parameter is not supported in Google AI.')
+
   if getv(from_object, ['thinking_config']) is not None:
     setv(
         to_object,
@@ -1089,6 +1092,9 @@ def _GenerateContentConfig_to_vertex(
             to_object,
         ),
     )
+
+  if getv(from_object, ['audio_timestamp']) is not None:
+    setv(to_object, ['audioTimestamp'], getv(from_object, ['audio_timestamp']))
 
   if getv(from_object, ['thinking_config']) is not None:
     setv(
