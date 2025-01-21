@@ -146,6 +146,7 @@ class ReplayResponse(BaseModel):
   status_code: int = 200
   headers: dict[str, str]
   body_segments: list[dict[str, object]]
+  byte_segments: Optional[list[bytes]] = None
   sdk_response_segments: list[dict[str, object]]
 
   def model_post_init(self, __context: Any) -> None:
@@ -271,7 +272,7 @@ class ReplayApiClient(ApiClient):
   def _record_interaction(
       self,
       http_request: HttpRequest,
-      http_response: Union[HttpResponse, errors.APIError],
+      http_response: Union[HttpResponse, errors.APIError, bytes],
   ):
     if not self._should_update_replay():
       return
@@ -286,6 +287,9 @@ class ReplayApiClient(ApiClient):
       response = ReplayResponse(
           headers=dict(http_response.headers),
           body_segments=list(http_response.segments()),
+          byte_segments=[
+              seg[:100] + b'...' for seg in http_response.byte_segments()
+          ],
           status_code=http_response.status_code,
           sdk_response_segments=[],
       )
@@ -342,6 +346,7 @@ class ReplayApiClient(ApiClient):
             json.dumps(segment)
             for segment in interaction.response.body_segments
         ],
+        byte_stream=interaction.response.byte_segments,
     )
 
   def _verify_response(self, response_model: BaseModel):
@@ -425,3 +430,20 @@ class ReplayApiClient(ApiClient):
       return result
     else:
       return self._build_response_from_replay(request).text
+
+  def _download_file_request(self, request):
+    self._initialize_replay_session_if_not_loaded()
+    if self._should_call_api():
+      try:
+        result = super()._download_file_request(request)
+      except HTTPError as e:
+        result = HttpResponse(
+            e.response.headers, [json.dumps({'reason': e.response.reason})]
+        )
+        result.status_code = e.response.status_code
+        raise e
+      self._record_interaction(request, result)
+      return result
+    else:
+      return self._build_response_from_replay(request)
+

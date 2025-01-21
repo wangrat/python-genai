@@ -149,10 +149,16 @@ class HttpRequest:
 
 class HttpResponse:
 
-  def __init__(self, headers: dict[str, str], response_stream: Union[Any, str]):
+  def __init__(
+      self,
+      headers: dict[str, str],
+      response_stream: Union[Any, str] = None,
+      byte_stream: Union[Any, bytes] = None,
+  ):
     self.status_code = 200
     self.headers = headers
     self.response_stream = response_stream
+    self.byte_stream = byte_stream
 
   @property
   def text(self) -> str:
@@ -165,6 +171,8 @@ class HttpResponse:
       # list of objects retrieved from replay or from non-streaming API.
       for chunk in self.response_stream:
         yield json.loads(chunk) if chunk else {}
+    elif self.response_stream is None:
+      yield from []
     else:
       # Iterator of objects retrieved from the API.
       for chunk in self.response_stream.iter_lines():
@@ -174,6 +182,17 @@ class HttpResponse:
           if chunk.startswith(b'data: '):
             chunk = chunk[len(b'data: ') :]
           yield json.loads(str(chunk, 'utf-8'))
+
+  def byte_segments(self):
+    if isinstance(self.byte_stream, list):
+      # list of objects retrieved from replay or from non-streaming API.
+      yield from self.byte_stream
+    elif self.byte_stream is None:
+      yield from []
+    else:
+      raise ValueError(
+          'Byte segments are not supported for streaming responses.'
+      )
 
   def copy_to_dict(self, response_payload: dict[str, object]):
     for attribute in dir(self):
@@ -566,6 +585,46 @@ class ApiClient:
       )
     return response.text
 
+  def download_file(self, path: str, http_options):
+    """Downloads the file data.
+
+    Args:
+      path: The request path with query params.
+      http_options: The http options to use for the request.
+
+    returns:
+          The file bytes
+    """
+    http_request = self._build_request(
+        'get', path=path, request_dict={}, http_options=http_options
+    )
+    return self._download_file_request(http_request).byte_stream[0]
+
+  def _download_file_request(
+      self,
+      http_request: HttpRequest,
+  ) -> HttpResponse:
+    data = None
+    if http_request.data:
+      if not isinstance(http_request.data, bytes):
+        data = json.dumps(http_request.data, cls=RequestJsonEncoder)
+      else:
+        data = http_request.data
+
+    http_session = requests.Session()
+    response = http_session.request(
+        method=http_request.method,
+        url=http_request.url,
+        headers=http_request.headers,
+        data=data,
+        timeout=http_request.timeout,
+        stream=False,
+    )
+
+    errors.APIError.raise_for_response(response)
+    return HttpResponse(response.headers, byte_stream=[response.content])
+
+
   async def async_upload_file(
       self,
       file_path: Union[str, io.IOBase],
@@ -613,6 +672,22 @@ class ApiClient:
         file,
         upload_url,
         upload_size,
+    )
+
+  async def async_download_file(self, path: str, http_options):
+    """Downloads the file data.
+
+    Args:
+      path: The request path with query params.
+      http_options: The http options to use for the request.
+
+    returns:
+          The file bytes
+    """
+    return await asyncio.to_thread(
+        self.download_file,
+        path,
+        http_options,
     )
 
   # This method does nothing in the real api client. It is used in the

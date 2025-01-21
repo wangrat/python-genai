@@ -177,8 +177,14 @@ def _File_to_mldev(
   if getv(from_object, ['uri']) is not None:
     setv(to_object, ['uri'], getv(from_object, ['uri']))
 
+  if getv(from_object, ['download_uri']) is not None:
+    setv(to_object, ['downloadUri'], getv(from_object, ['download_uri']))
+
   if getv(from_object, ['state']) is not None:
     setv(to_object, ['state'], getv(from_object, ['state']))
+
+  if getv(from_object, ['source']) is not None:
+    setv(to_object, ['source'], getv(from_object, ['source']))
 
   if getv(from_object, ['video_metadata']) is not None:
     setv(to_object, ['videoMetadata'], getv(from_object, ['video_metadata']))
@@ -228,8 +234,14 @@ def _File_to_vertex(
   if getv(from_object, ['uri']) is not None:
     raise ValueError('uri parameter is not supported in Vertex AI.')
 
+  if getv(from_object, ['download_uri']) is not None:
+    raise ValueError('download_uri parameter is not supported in Vertex AI.')
+
   if getv(from_object, ['state']) is not None:
     raise ValueError('state parameter is not supported in Vertex AI.')
+
+  if getv(from_object, ['source']) is not None:
+    raise ValueError('source parameter is not supported in Vertex AI.')
 
   if getv(from_object, ['video_metadata']) is not None:
     raise ValueError('video_metadata parameter is not supported in Vertex AI.')
@@ -493,8 +505,14 @@ def _File_from_mldev(
   if getv(from_object, ['uri']) is not None:
     setv(to_object, ['uri'], getv(from_object, ['uri']))
 
+  if getv(from_object, ['downloadUri']) is not None:
+    setv(to_object, ['download_uri'], getv(from_object, ['downloadUri']))
+
   if getv(from_object, ['state']) is not None:
     setv(to_object, ['state'], getv(from_object, ['state']))
+
+  if getv(from_object, ['source']) is not None:
+    setv(to_object, ['source'], getv(from_object, ['source']))
 
   if getv(from_object, ['videoMetadata']) is not None:
     setv(to_object, ['video_metadata'], getv(from_object, ['videoMetadata']))
@@ -928,6 +946,74 @@ class Files(_common.BaseModule):
         config,
     )
 
+  def download(
+      self,
+      *,
+      file: Union[str, types.File],
+      config: Optional[types.DownloadFileConfigOrDict] = None,
+  ) -> bytes:
+    """Downloads a file's data from storage.
+
+    Files created by `upload` can't be downloaded. You can tell which files are
+    downloadable by checking the `source` or `download_uri` property.
+
+    Args:
+      file (str): A file name, uri, or file object. Identifying which file to
+        download.
+      config (DownloadFileConfigOrDict): Optional, configuration for the get
+        method.
+
+    Returns:
+      File: The file data as bytes.
+
+    Usage:
+
+    .. code-block:: python
+
+      for file client.files.list():
+        if file.download_uri is not None:
+          break
+      else:
+        raise ValueError('No files found with a `download_uri`.')
+      data = client.files.download(file=file)
+      # data = client.files.download(file=file.name)
+      # data = client.files.download(file=file.download_uri)
+    """
+    if self._api_client.vertexai:
+      raise ValueError(
+          'Vertex AI does not support the Files API. Use GCS files instead.'
+      )
+
+    config_model = None
+    if config:
+      if isinstance(config, dict):
+        config_model = types.DownloadFileConfig(**config)
+      else:
+        config_model = config
+
+    if isinstance(file, types.File) and file.download_uri is None:
+      raise ValueError(
+          "Only generated files can be downloaded, uploaded files can't be "
+          'downloaded. You can tell which files are downloadable by checking '
+          'the `source` or `download_uri` property.'
+      )
+    name = t.t_file_name(self, file)
+
+    path = f'files/{name}:download'
+
+    query_params = {'alt': 'media'}
+    path = f'{path}?{urlencode(query_params)}'
+    http_options = None
+    if getv(config_model, ['http_options']) is not None:
+      http_options = getv(config_model, ['http_options'])
+
+    data = self._api_client.download_file(
+        path,
+        http_options,
+    )
+
+    return data
+
 
 class AsyncFiles(_common.BaseModule):
 
@@ -1263,3 +1349,69 @@ class AsyncFiles(_common.BaseModule):
         await self._list(config=config),
         config,
     )
+
+  async def download(
+      self,
+      *,
+      file: Union[str, types.File],
+      config: Optional[types.DownloadFileConfigOrDict] = None,
+  ) -> bytes:
+    """Downloads a file's data from the file service.
+
+    The Vertex-AI implementation of the API foes not include the file service.
+
+    Files created by `upload` can't be downloaded. You can tell which files are
+    downloadable by checking the `download_uri` property.
+
+    Args:
+      File (str): A file name, uri, or file object. Identifying which file to
+        download.
+      config (DownloadFileConfigOrDict): Optional, configuration for the get
+        method.
+
+    Returns:
+      File: The file data as bytes.
+
+    Usage:
+
+    .. code-block:: python
+
+      for file client.files.list():
+        if file.download_uri is not None:
+          break
+      else:
+        raise ValueError('No files found with a `download_uri`.')
+      data = client.files.download(file=file)
+      # data = client.files.download(file=file.name)
+      # data = client.files.download(file=file.uri)
+    """
+    if self._api_client.vertexai:
+      raise ValueError(
+          'Vertex AI does not support the Files API. Use GCS files instead.'
+      )
+
+    config_model = None
+    if config:
+      if isinstance(config, dict):
+        config_model = types.DownloadFileConfig(**config)
+      else:
+        config_model = config
+
+    name = t.t_file_name(self, file)
+
+    path = f'files/{name}:download'
+
+    http_options = None
+    if getv(config_model, ['http_options']) is not None:
+      http_options = getv(config_model, ['http_options'])
+
+    query_params = {'alt': 'media'}
+    if query_params:
+      path = f'{path}?{urlencode(query_params)}'
+
+    data = await self._api_client.async_download_file(
+        path,
+        http_options,
+    )
+
+    return data

@@ -50,10 +50,10 @@ def _resource_name(
     resource_name: The user input resource name to be completed.
     collection_identifier: The collection identifier to be prepended.
         See collection identifiers in https://google.aip.dev/122.
-    collection_hirearchy_depth: The collection hierarchy depth.
+    collection_hierarchy_depth: The collection hierarchy depth.
         Only set this field when the resource has nested collections.
         For example, `users/vhugo1802/events/birthday-dinner-226`, the
-        collection_identifier is `users` and collection_hirearchy_depth is 4.
+        collection_identifier is `users` and collection_hierarchy_depth is 4.
         See nested collections in https://google.aip.dev/122.
 
   Example:
@@ -467,10 +467,25 @@ def t_resolve_operation(api_client: _api_client.ApiClient, struct: dict):
     return struct
 
 
-def t_file_name(api_client: _api_client.ApiClient, name: str):
+def t_file_name(
+    api_client: _api_client.ApiClient, name: Union[str, types.File]
+):
   # Remove the files/ prefix since it's added to the url path.
-  if name.startswith('files/'):
-    return name.split('files/')[1]
+  if isinstance(name, types.File):
+    name = name.name
+
+  if name is None:
+    raise ValueError('File name is required.')
+
+  if name.startswith('https://'):
+    suffix = name.split('files/')[1]
+    match = re.match('[a-z0-9]+', suffix)
+    if match is None:
+      raise ValueError(f'Could not extract file name from URI: {name}')
+    name = match.group(0)
+  elif name.startswith('files/'):
+    name = name.split('files/')[1]
+
   return name
 
 
@@ -500,4 +515,3 @@ def t_bytes(api_client: _api_client.ApiClient, data: bytes) -> str:
     return base64.b64encode(data).decode('ascii')
   else:
     return base64.urlsafe_b64encode(data).decode('ascii')
-

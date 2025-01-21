@@ -293,6 +293,14 @@ class FileState(_common.CaseInSensitiveEnum):
   FAILED = 'FAILED'
 
 
+class FileSource(_common.CaseInSensitiveEnum):
+  """Source of the File."""
+
+  SOURCE_UNSPECIFIED = 'SOURCE_UNSPECIFIED'
+  UPLOADED = 'UPLOADED'
+  GENERATED = 'GENERATED'
+
+
 class Modality(_common.CaseInSensitiveEnum):
   """Config class for the server content modalities."""
 
@@ -1528,15 +1536,22 @@ class File(_common.BaseModel):
       default=None,
       description="""Output only. The timestamp of when the `File` was last updated.""",
   )
-  sha256_hash: Optional[bytes] = Field(
+  sha256_hash: Optional[str] = Field(
       default=None,
       description="""Output only. SHA-256 hash of the uploaded bytes.""",
   )
   uri: Optional[str] = Field(
       default=None, description="""Output only. The URI of the `File`."""
   )
+  download_uri: Optional[str] = Field(
+      default=None,
+      description="""Output only. The URI of the `File`, only set for downloadable (generated) files.""",
+  )
   state: Optional[FileState] = Field(
       default=None, description="""Output only. Processing state of the File."""
+  )
+  source: Optional[FileSource] = Field(
+      default=None, description="""Output only. The source of the `File`."""
   )
   video_metadata: Optional[dict[str, Any]] = Field(
       default=None, description="""Output only. Metadata for a video."""
@@ -1571,14 +1586,20 @@ class FileDict(TypedDict, total=False):
   update_time: Optional[datetime.datetime]
   """Output only. The timestamp of when the `File` was last updated."""
 
-  sha256_hash: Optional[bytes]
+  sha256_hash: Optional[str]
   """Output only. SHA-256 hash of the uploaded bytes."""
 
   uri: Optional[str]
   """Output only. The URI of the `File`."""
 
+  download_uri: Optional[str]
+  """Output only. The URI of the `File`, only set for downloadable (generated) files."""
+
   state: Optional[FileState]
   """Output only. Processing state of the File."""
+
+  source: Optional[FileSource]
+  """Output only. The source of the `File`."""
 
   video_metadata: Optional[dict[str, Any]]
   """Output only. Metadata for a video."""
@@ -7364,6 +7385,24 @@ class UploadFileConfigDict(TypedDict, total=False):
 
 
 UploadFileConfigOrDict = Union[UploadFileConfig, UploadFileConfigDict]
+
+
+class DownloadFileConfig(_common.BaseModel):
+  """Used to override the default configuration."""
+
+  http_options: Optional[dict[str, Any]] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+
+
+class DownloadFileConfigDict(TypedDict, total=False):
+  """Used to override the default configuration."""
+
+  http_options: Optional[dict[str, Any]]
+  """Used to override HTTP request options."""
+
+
+DownloadFileConfigOrDict = Union[DownloadFileConfig, DownloadFileConfigDict]
 
 
 class UpscaleImageConfig(_common.BaseModel):
