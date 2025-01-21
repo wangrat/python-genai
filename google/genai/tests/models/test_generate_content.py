@@ -492,6 +492,160 @@ def test_pydantic_schema_from_json(client):
   print(response.text)
 
 
+def test_schema_with_union_type_raises(client):
+  with pytest.raises(ValueError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me a random number, could be an integer or a float.',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=int | float,
+        )
+    )
+  assert 'Unsupported schema type' in str(e)
+
+
+def test_list_schema_with_union_type_raises(client):
+  with pytest.raises(ValueError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me a list of 5 random numbers, including integers and floats.',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=list[int | float],
+        )
+    )
+  assert 'Unsupported schema type' in str(e)
+  assert 'list' in str(e)
+
+
+def test_list_of_pydantic_schema(client):
+  class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States, Canada, and Mexico.',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=list[CountryInfo],
+      )
+  )
+  assert isinstance(response.parsed, list)
+  assert len(response.parsed) == 3
+  assert isinstance(response.parsed[0], CountryInfo)
+
+
+def test_list_of_pydantic_schema_with_dict_config(client):
+  class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States, Canada, and Mexico.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': list[CountryInfo],
+      }
+  )
+  assert isinstance(response.parsed, list)
+  assert len(response.parsed) == 3
+  assert isinstance(response.parsed[0], CountryInfo)
+
+
+def test_list_of_pydantic_schema_with_nested_class(client):
+  class CurrencyInfo(BaseModel):
+    name: str
+    code: str
+    symbol: str
+
+  class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+    currency: CurrencyInfo
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States, Canada, and Mexico.',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=list[CountryInfo],
+      )
+  )
+  assert isinstance(response.parsed, list)
+  assert isinstance(response.parsed[0], CountryInfo)
+  assert isinstance(response.parsed[0].currency, CurrencyInfo)
+
+
+def test_list_of_pydantic_schema_with_nested_list_class(client):
+  class CurrencyInfo(BaseModel):
+    name: str
+    code: str
+    symbol: str
+
+  class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+    currency: list[CurrencyInfo]
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States, Canada, and Mexico.',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=list[CountryInfo],
+      )
+  )
+  assert isinstance(response.parsed, list)
+  assert isinstance(response.parsed[0], CountryInfo)
+  assert isinstance(response.parsed[0].currency, list)
+  assert isinstance(response.parsed[0].currency[0], CurrencyInfo)
+
+
+def test_response_schema_with_unsupported_type_raises(client):
+  class CountryInfo(BaseModel):
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+
+  with pytest.raises(ValueError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me information for the United States, Canada, and Mexico.',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=dict[str, CountryInfo],
+        )
+    )
+    assert 'Unsupported schema type' in str(e)
+    assert 'GenericAlias' in str(e)
+
+
 def test_json_schema(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',

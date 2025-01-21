@@ -19,7 +19,7 @@ import datetime
 import inspect
 import json
 import logging
-from typing import Any, Callable, Literal, Optional, TypedDict, Union
+from typing import Any, Callable, GenericAlias, Literal, Optional, TypedDict, Union
 import PIL.Image
 import pydantic
 from pydantic import Field
@@ -1623,7 +1623,7 @@ ContentUnion = Union[Content, list[PartUnion], PartUnion]
 ContentUnionDict = Union[ContentUnion, ContentDict]
 
 
-SchemaUnion = Union[dict, type, Schema]
+SchemaUnion = Union[dict, type, Schema, GenericAlias]
 
 
 SchemaUnionDict = Union[SchemaUnion, SchemaDict]
@@ -2823,6 +2823,23 @@ class GenerateContentResponse(_common.BaseModel):
       # may not be a valid json per stream response
       except pydantic.ValidationError:
         pass
+
+    elif isinstance(response_schema, GenericAlias) and issubclass(
+        response_schema.__args__[0], pydantic.BaseModel
+    ):
+      # Handle cases where `list[pydantic.BaseModel]` was provided.
+      result.parsed = []
+      pydantic_model_class = response_schema.__args__[0]
+      response_list_json = json.loads(result.text)
+      for json_instance in response_list_json:
+        try:
+          pydantic_model_instance = pydantic_model_class.model_validate_json(
+              json.dumps(json_instance)
+          )
+          result.parsed.append(pydantic_model_instance)
+        # may not be a valid json per stream response
+        except pydantic.ValidationError:
+          pass
 
     elif isinstance(response_schema, dict) or isinstance(
         response_schema, pydantic.BaseModel
