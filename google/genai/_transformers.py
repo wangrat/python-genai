@@ -17,6 +17,7 @@
 
 import base64
 from collections.abc import Iterable, Mapping
+from enum import Enum, EnumMeta
 import inspect
 import io
 import re
@@ -397,6 +398,22 @@ def unpack_defs(schema: dict[str, Any], defs: dict[str, Any]):
         continue
 
 
+def _process_enum(
+    enum: EnumMeta, client: Optional[_api_client.ApiClient] = None
+) -> types.Schema:
+  for member in enum:
+    if not isinstance(member.value, str):
+      raise TypeError(
+          f'Enum member {member.name} value must be a string, got'
+          f' {type(member.value)}'
+      )
+  enum_schema = _build_schema(
+      enum.__name__, {'dummy': (enum, pydantic.Field())}
+  )
+  enum_schema = process_schema(enum_schema, client)
+  return types.Schema.model_validate(enum_schema)
+
+
 def t_schema(
     client: _api_client.ApiClient, origin: Union[types.SchemaUnionDict, Any]
 ) -> Optional[types.Schema]:
@@ -404,10 +421,13 @@ def t_schema(
     return None
   if isinstance(origin, dict):
     return process_schema(origin, client)
+  if isinstance(origin, EnumMeta):
+    return _process_enum(origin, client)
   if isinstance(origin, types.Schema):
     if dict(origin) == dict(types.Schema()):
-      # response_schema value was coerced to an empty Schema instance because it did not adhere to the Schema field annotation
-      raise ValueError(f'Unsupported schema type.')
+      # response_schema value was coerced to an empty Schema instance because it
+      # did not adhere to the Schema field annotation
+      raise ValueError('Empty schema is not supported.')
     schema = process_schema(origin.model_dump(exclude_unset=True), client)
     return types.Schema.model_validate(schema)
   if isinstance(origin, GenericAlias):

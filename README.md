@@ -338,6 +338,55 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
+### Enum Response Schema
+
+#### Text Response
+
+You can set response_mime_type to 'text/x.enum' to return one of those enum
+values as the response.
+
+```python
+class InstrumentEnum(Enum):
+  PERCUSSION = 'Percussion'
+  STRING = 'String'
+  WOODWIND = 'Woodwind'
+  BRASS = 'Brass'
+  KEYBOARD = 'Keyboard'
+
+response = client.models.generate_content(
+      model='gemini-2.0-flash-exp',
+      contents='What instrument plays multiple notes at once?',
+      config={
+          'response_mime_type': 'text/x.enum',
+          'response_schema': InstrumentEnum,
+      },
+  )
+print(response.text)
+```
+
+#### JSON Response
+
+You can also set response_mime_type to 'application/json', the response will be identical but in quotes.
+
+```python
+class InstrumentEnum(Enum):
+  PERCUSSION = 'Percussion'
+  STRING = 'String'
+  WOODWIND = 'Woodwind'
+  BRASS = 'Brass'
+  KEYBOARD = 'Keyboard'
+
+response = client.models.generate_content(
+      model='gemini-2.0-flash-exp',
+      contents='What instrument plays multiple notes at once?',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': InstrumentEnum,
+      },
+  )
+print(response.text)
+```
+
 ### Streaming
 
 #### Streaming for text content

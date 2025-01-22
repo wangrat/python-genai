@@ -16,10 +16,13 @@
 
 from pydantic import BaseModel, ValidationError
 import pytest
+import json
 from ... import _transformers as t
 from ... import errors
 from ... import types
 from .. import pytest_helper
+from enum import Enum
+
 
 safety_settings_with_method = [
     {
@@ -35,6 +38,15 @@ safety_settings_with_method = [
 ]
 
 test_http_options = {'api_version': 'v1', 'headers': {'test': 'headers'}}
+
+
+class InstrumentEnum(Enum):
+  PERCUSSION = 'Percussion'
+  STRING = 'String'
+  WOODWIND = 'Woodwind'
+  BRASS = 'Brass'
+  KEYBOARD = 'Keyboard'
+
 
 test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
@@ -525,7 +537,7 @@ def test_schema_with_union_type_raises(client):
             response_schema=int | float,
         )
     )
-  assert 'Unsupported schema type' in str(e)
+  assert 'Empty schema is not supported' in str(e)
 
 
 def test_list_schema_with_union_type_raises(client):
@@ -667,6 +679,58 @@ def test_response_schema_with_unsupported_type_raises(client):
     )
     assert 'Unsupported schema type' in str(e)
     assert 'GenericAlias' in str(e)
+
+
+def test_enum_schema_with_enum_mime_type(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What instrument plays multiple notes at once?',
+      config={
+          'response_mime_type': 'text/x.enum',
+          'response_schema': InstrumentEnum,
+      },
+  )
+
+  instrument_values = {member.value for member in InstrumentEnum}
+
+  assert response.text in instrument_values
+
+
+def test_enum_schema_with_json_mime_type(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What instrument plays multiple notes at once?',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': InstrumentEnum,
+      },
+  )
+  # "application/json" returns response in double quotes.
+  removed_quotes = response.text.replace('"', '')
+  instrument_values = {member.value for member in InstrumentEnum}
+
+  assert removed_quotes in instrument_values
+
+
+def test_non_string_enum_schema_with_enum_mime_type(client):
+  class IntegerEnum(Enum):
+    PERCUSSION = 1
+    STRING = 2
+    WOODWIND = 3
+    BRASS = 4
+    KEYBOARD = 5
+
+  with pytest.raises(TypeError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='What instrument plays multiple notes at once?',
+        config={
+            'response_mime_type': 'text/x.enum',
+            'response_schema': IntegerEnum,
+        },
+    )
+
+    assert 'value must be a string' in str(e)
 
 
 def test_json_schema(client):
