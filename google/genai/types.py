@@ -494,10 +494,7 @@ FunctionResponseOrDict = Union[FunctionResponse, FunctionResponseDict]
 
 
 class Blob(_common.BaseModel):
-  """Content blob.
-
-  It's preferred to send as text directly rather than raw bytes.
-  """
+  """Content blob."""
 
   data: Optional[bytes] = Field(
       default=None, description="""Required. Raw bytes."""
@@ -509,10 +506,7 @@ class Blob(_common.BaseModel):
 
 
 class BlobDict(TypedDict, total=False):
-  """Content blob.
-
-  It's preferred to send as text directly rather than raw bytes.
-  """
+  """Content blob."""
 
   data: Optional[bytes]
   """Required. Raw bytes."""
