@@ -234,6 +234,14 @@ def _parse_schema_from_parameter(
             func_name,
         )
         if (
+            len(param.annotation.__args__) == 2
+            and type(None) in param.annotation.__args__
+        ):  # Optional type
+          for optional_arg in param.annotation.__args__:
+            if hasattr(optional_arg, '__origin__') and optional_arg.__origin__ is list:
+              # Optional type with list, for example Optional[list[str]]
+              schema.items = schema_in_any_of.items
+        if (
             schema_in_any_of.model_dump_json(exclude_none=True)
             not in unique_types
         ):

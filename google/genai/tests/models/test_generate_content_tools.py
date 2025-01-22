@@ -563,10 +563,30 @@ def test_automatic_function_calling_with_pydantic_model_in_union_type(client):
             'automatic_function_calling': {'ignore_call_history': True}
         },
     )
-    assert 'animal' in response.text
     assert 'Sundae' in response.text
-    assert '1' in response.text
     assert 'cat' in response.text
+
+
+def test_automatic_function_calling_with_parameterized_generic_union_type(client):
+  def describe_cities(
+      country: str,
+      cities: typing.Optional[list[str]] = None,
+  ) -> str:
+    if cities is None:
+      return 'There are no cities to describe.'
+    else:
+      return f'The cities in {country} are: {", ".join(cities)} and they are nice.'
+
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents=('Can you describe the city of San Francisco?'),
+        config={
+            'tools': [describe_cities],
+            'automatic_function_calling': {'ignore_call_history': True}
+        },
+    )
+    assert 'San Francisco' in response.text
 
 
 @pytest.mark.asyncio

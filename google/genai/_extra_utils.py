@@ -138,7 +138,7 @@ def convert_if_exist_pydantic_model(
   # example 2: int | float equivalent to typing.types.UnionType[int, float]
   if get_origin(annotation) in (Union, typing_types.UnionType):
     for arg in get_args(annotation):
-      if isinstance(value, arg) or (
+      if (get_args(arg) and get_origin(arg) is list) or isinstance(value, arg) or (
           isinstance(value, dict) and _is_annotation_pydantic_model(arg)
       ):
         try:

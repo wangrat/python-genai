@@ -1113,6 +1113,40 @@ def test_type_union():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+def test_type_optional_with_list():
+
+  def func_under_test(
+      a: str,
+      b: typing.Optional[list[str]] = None,
+  ):
+    """test type optional with list."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(type='STRING'),
+              'b': types.Schema(
+                  nullable=True,
+                  type='ARRAY',
+                  items=types.Schema(type='STRING')
+              ),
+          },
+          required=['a'],
+      ),
+      description='test type optional with list.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      vertex_client, func_under_test
+  )
+  assert actual_schema_vertex == expected_schema_vertex
+
+
 def test_type_union_with_default_value():
 
   def func_under_test(
