@@ -24,6 +24,7 @@ from ... import client as genai_client
 from ... import types
 from .. import pytest_helper
 
+test_http_options = {'headers': {'test': 'headers'}}
 
 test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
@@ -37,6 +38,12 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_with_config',
         parameters=types._ListModelsParameters(config={'page_size': 3}),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_list_models_with_http_options_in_method',
+        parameters=types._ListModelsParameters(
+            config={'page_size': 3, 'http_options': test_http_options}
+        ),
     ),
 ]
 pytestmark = pytest_helper.setup(
