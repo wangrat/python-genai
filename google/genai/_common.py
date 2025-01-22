@@ -113,12 +113,6 @@ def get_value_by_path(data: object, keys: list[str]):
   return data
 
 
-class BaseModule:
-
-  def __init__(self, api_client_: _api_client.ApiClient):
-    self._api_client = api_client_
-
-
 def convert_to_dict(obj: dict[str, object]) -> dict[str, object]:
   """Recursively converts a given object to a dictionary.
 

@@ -18,6 +18,7 @@
 import logging
 from typing import AsyncIterator, Iterator, Optional, Union
 from urllib.parse import urlencode
+from . import _api_module
 from . import _common
 from . import _extra_utils
 from . import _transformers as t
@@ -3716,7 +3717,7 @@ def _ComputeTokensResponse_from_vertex(
   return to_object
 
 
-class Models(_common.BaseModule):
+class Models(_api_module.BaseModule):
 
   def _generate_content(
       self,
@@ -4685,7 +4686,7 @@ class Models(_common.BaseModule):
     )
 
 
-class AsyncModels(_common.BaseModule):
+class AsyncModels(_api_module.BaseModule):
 
   async def _generate_content(
       self,

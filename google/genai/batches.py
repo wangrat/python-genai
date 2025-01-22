@@ -17,6 +17,7 @@
 
 from typing import Optional, Union
 from urllib.parse import urlencode
+from . import _api_module
 from . import _common
 from . import _extra_utils
 from . import _transformers as t
@@ -609,7 +610,7 @@ def _DeleteResourceJob_from_vertex(
   return to_object
 
 
-class Batches(_common.BaseModule):
+class Batches(_api_module.BaseModule):
 
   def _create(
       self,
@@ -926,7 +927,7 @@ class Batches(_common.BaseModule):
     )
 
 
-class AsyncBatches(_common.BaseModule):
+class AsyncBatches(_api_module.BaseModule):
 
   async def _create(
       self,

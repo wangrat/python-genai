@@ -21,6 +21,7 @@ import os
 import pathlib
 from typing import Optional, Union
 from urllib.parse import urlencode
+from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import types
@@ -499,7 +500,7 @@ def _DeleteFileResponse_from_vertex(
   return to_object
 
 
-class Files(_common.BaseModule):
+class Files(_api_module.BaseModule):
 
   def _list(
       self, *, config: Optional[types.ListFilesConfigOrDict] = None
@@ -915,7 +916,7 @@ class Files(_common.BaseModule):
     return data
 
 
-class AsyncFiles(_common.BaseModule):
+class AsyncFiles(_api_module.BaseModule):
 
   async def _list(
       self, *, config: Optional[types.ListFilesConfigOrDict] = None

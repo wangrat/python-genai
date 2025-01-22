@@ -17,6 +17,7 @@
 
 from typing import Optional, Union
 from urllib.parse import urlencode
+from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import types
@@ -1150,7 +1151,7 @@ def _ListCachedContentsResponse_from_vertex(
   return to_object
 
 
-class Caches(_common.BaseModule):
+class Caches(_api_module.BaseModule):
 
   def create(
       self,
@@ -1473,7 +1474,7 @@ class Caches(_common.BaseModule):
     )
 
 
-class AsyncCaches(_common.BaseModule):
+class AsyncCaches(_api_module.BaseModule):
 
   async def create(
       self,

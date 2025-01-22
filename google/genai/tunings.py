@@ -17,6 +17,7 @@
 
 from typing import Optional, Union
 from urllib.parse import urlencode
+from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import types
@@ -902,7 +903,7 @@ def _TuningJobOrOperation_from_vertex(
   return to_object
 
 
-class Tunings(_common.BaseModule):
+class Tunings(_api_module.BaseModule):
 
   def _get(
       self,
@@ -1186,7 +1187,7 @@ class Tunings(_common.BaseModule):
     return result
 
 
-class AsyncTunings(_common.BaseModule):
+class AsyncTunings(_api_module.BaseModule):
 
   async def _get(
       self,

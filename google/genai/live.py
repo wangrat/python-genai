@@ -25,6 +25,7 @@ from typing import AsyncIterator, Optional, Sequence, Union
 import google.auth
 from websockets import ConnectionClosed
 
+from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import client
@@ -470,7 +471,7 @@ class AsyncSession:
     await self._ws.close()
 
 
-class AsyncLive(_common.BaseModule):
+class AsyncLive(_api_module.BaseModule):
   """AsyncLive."""
 
   def _LiveSetup_to_mldev(
