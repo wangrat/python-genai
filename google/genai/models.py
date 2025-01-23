@@ -1328,7 +1328,7 @@ def _EmbedContentParameters_to_vertex(
   return to_object
 
 
-def _GenerateImageConfig_to_mldev(
+def _GenerateImagesConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -1424,7 +1424,7 @@ def _GenerateImageConfig_to_mldev(
   return to_object
 
 
-def _GenerateImageConfig_to_vertex(
+def _GenerateImagesConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -1528,7 +1528,7 @@ def _GenerateImageConfig_to_vertex(
   return to_object
 
 
-def _GenerateImageParameters_to_mldev(
+def _GenerateImagesParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -1548,7 +1548,7 @@ def _GenerateImageParameters_to_mldev(
     setv(
         to_object,
         ['config'],
-        _GenerateImageConfig_to_mldev(
+        _GenerateImagesConfig_to_mldev(
             api_client, getv(from_object, ['config']), to_object
         ),
     )
@@ -1556,7 +1556,7 @@ def _GenerateImageParameters_to_mldev(
   return to_object
 
 
-def _GenerateImageParameters_to_vertex(
+def _GenerateImagesParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -1576,7 +1576,7 @@ def _GenerateImageParameters_to_vertex(
     setv(
         to_object,
         ['config'],
-        _GenerateImageConfig_to_vertex(
+        _GenerateImagesConfig_to_vertex(
             api_client, getv(from_object, ['config']), to_object
         ),
     )
@@ -3318,7 +3318,7 @@ def _GeneratedImage_from_vertex(
   return to_object
 
 
-def _GenerateImageResponse_from_mldev(
+def _GenerateImagesResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -3337,7 +3337,7 @@ def _GenerateImageResponse_from_mldev(
   return to_object
 
 
-def _GenerateImageResponse_from_vertex(
+def _GenerateImagesResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
     parent_object: dict = None,
@@ -3908,28 +3908,28 @@ class Models(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  def generate_image(
+  def generate_images(
       self,
       *,
       model: str,
       prompt: str,
-      config: Optional[types.GenerateImageConfigOrDict] = None,
-  ) -> types.GenerateImageResponse:
-    """Generates an image based on a text description and configuration.
+      config: Optional[types.GenerateImagesConfigOrDict] = None,
+  ) -> types.GenerateImagesResponse:
+    """Generates images based on a text description and configuration.
 
     Args:
       model (str): The model to use.
-      prompt (str): A text description of the image to generate.
-      config (GenerateImageConfig): Configuration for generation.
+      prompt (str): A text description of the images to generate.
+      config (GenerateImagesConfig): Configuration for generation.
 
     Usage:
 
     .. code-block:: python
 
-      response = client.models.generate_image(
+      response = client.models.generate_images(
         model='imagen-3.0-generate-001',
         prompt='Man with a dog',
-        config=types.GenerateImageConfig(
+        config=types.GenerateImagesConfig(
             number_of_images= 1,
             include_rai_reason= True,
         )
@@ -3938,19 +3938,19 @@ class Models(_api_module.BaseModule):
       # Shows a man with a dog.
     """
 
-    parameter_model = types._GenerateImageParameters(
+    parameter_model = types._GenerateImagesParameters(
         model=model,
         prompt=prompt,
         config=config,
     )
 
     if self._api_client.vertexai:
-      request_dict = _GenerateImageParameters_to_vertex(
+      request_dict = _GenerateImagesParameters_to_vertex(
           self._api_client, parameter_model
       )
       path = '{model}:predict'.format_map(request_dict.get('_url'))
     else:
-      request_dict = _GenerateImageParameters_to_mldev(
+      request_dict = _GenerateImagesParameters_to_mldev(
           self._api_client, parameter_model
       )
       path = '{model}:predict'.format_map(request_dict.get('_url'))
@@ -3971,15 +3971,15 @@ class Models(_api_module.BaseModule):
     )
 
     if self._api_client.vertexai:
-      response_dict = _GenerateImageResponse_from_vertex(
+      response_dict = _GenerateImagesResponse_from_vertex(
           self._api_client, response_dict
       )
     else:
-      response_dict = _GenerateImageResponse_from_mldev(
+      response_dict = _GenerateImagesResponse_from_mldev(
           self._api_client, response_dict
       )
 
-    return_value = types.GenerateImageResponse._from_response(
+    return_value = types.GenerateImagesResponse._from_response(
         response_dict, parameter_model
     )
     self._api_client._verify_response(return_value)
@@ -4877,28 +4877,28 @@ class AsyncModels(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  async def generate_image(
+  async def generate_images(
       self,
       *,
       model: str,
       prompt: str,
-      config: Optional[types.GenerateImageConfigOrDict] = None,
-  ) -> types.GenerateImageResponse:
-    """Generates an image based on a text description and configuration.
+      config: Optional[types.GenerateImagesConfigOrDict] = None,
+  ) -> types.GenerateImagesResponse:
+    """Generates images based on a text description and configuration.
 
     Args:
       model (str): The model to use.
-      prompt (str): A text description of the image to generate.
-      config (GenerateImageConfig): Configuration for generation.
+      prompt (str): A text description of the images to generate.
+      config (GenerateImagesConfig): Configuration for generation.
 
     Usage:
 
     .. code-block:: python
 
-      response = client.models.generate_image(
+      response = client.models.generate_images(
         model='imagen-3.0-generate-001',
         prompt='Man with a dog',
-        config=types.GenerateImageConfig(
+        config=types.GenerateImagesConfig(
             number_of_images= 1,
             include_rai_reason= True,
         )
@@ -4907,19 +4907,19 @@ class AsyncModels(_api_module.BaseModule):
       # Shows a man with a dog.
     """
 
-    parameter_model = types._GenerateImageParameters(
+    parameter_model = types._GenerateImagesParameters(
         model=model,
         prompt=prompt,
         config=config,
     )
 
     if self._api_client.vertexai:
-      request_dict = _GenerateImageParameters_to_vertex(
+      request_dict = _GenerateImagesParameters_to_vertex(
           self._api_client, parameter_model
       )
       path = '{model}:predict'.format_map(request_dict.get('_url'))
     else:
-      request_dict = _GenerateImageParameters_to_mldev(
+      request_dict = _GenerateImagesParameters_to_mldev(
           self._api_client, parameter_model
       )
       path = '{model}:predict'.format_map(request_dict.get('_url'))
@@ -4940,15 +4940,15 @@ class AsyncModels(_api_module.BaseModule):
     )
 
     if self._api_client.vertexai:
-      response_dict = _GenerateImageResponse_from_vertex(
+      response_dict = _GenerateImagesResponse_from_vertex(
           self._api_client, response_dict
       )
     else:
-      response_dict = _GenerateImageResponse_from_mldev(
+      response_dict = _GenerateImagesResponse_from_mldev(
           self._api_client, response_dict
       )
 
-    return_value = types.GenerateImageResponse._from_response(
+    return_value = types.GenerateImagesResponse._from_response(
         response_dict, parameter_model
     )
     self._api_client._verify_response(return_value)

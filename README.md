@@ -516,13 +516,13 @@ print(response)
 
 ### Imagen
 
-#### Generate Image
+#### Generate Images
 
-Support for generate image in Gemini Developer API is behind an allowlist
+Support for generate images in Gemini Developer API is behind an allowlist
 
 ```python
 # Generate Image
-response1 = client.models.generate_image(
+response1 = client.models.generate_images(
     model="imagen-3.0-generate-001",
     prompt="An umbrella in the foreground, and a rainy night sky in the background",
     config=types.GenerateImageConfig(

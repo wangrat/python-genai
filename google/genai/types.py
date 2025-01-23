@@ -3117,8 +3117,8 @@ EmbedContentResponseOrDict = Union[
 ]
 
 
-class GenerateImageConfig(_common.BaseModel):
-  """Class that represents the config for generating an image."""
+class GenerateImagesConfig(_common.BaseModel):
+  """Class that represents the config for generating images."""
 
   http_options: Optional[dict[str, Any]] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -3190,18 +3190,18 @@ class GenerateImageConfig(_common.BaseModel):
   )
   add_watermark: Optional[bool] = Field(
       default=None,
-      description="""Whether to add a watermark to the generated image.
+      description="""Whether to add a watermark to the generated images.
       """,
   )
   aspect_ratio: Optional[str] = Field(
       default=None,
-      description="""Aspect ratio of the generated image.
+      description="""Aspect ratio of the generated images.
       """,
   )
 
 
-class GenerateImageConfigDict(TypedDict, total=False):
-  """Class that represents the config for generating an image."""
+class GenerateImagesConfigDict(TypedDict, total=False):
+  """Class that represents the config for generating images."""
 
   http_options: Optional[dict[str, Any]]
   """Used to override HTTP request options."""
@@ -3260,19 +3260,21 @@ class GenerateImageConfigDict(TypedDict, total=False):
       """
 
   add_watermark: Optional[bool]
-  """Whether to add a watermark to the generated image.
+  """Whether to add a watermark to the generated images.
       """
 
   aspect_ratio: Optional[str]
-  """Aspect ratio of the generated image.
+  """Aspect ratio of the generated images.
       """
 
 
-GenerateImageConfigOrDict = Union[GenerateImageConfig, GenerateImageConfigDict]
+GenerateImagesConfigOrDict = Union[
+    GenerateImagesConfig, GenerateImagesConfigDict
+]
 
 
-class _GenerateImageParameters(_common.BaseModel):
-  """Class that represents the parameters for generating an image."""
+class _GenerateImagesParameters(_common.BaseModel):
+  """Class that represents the parameters for generating images."""
 
   model: Optional[str] = Field(
       default=None,
@@ -3281,34 +3283,34 @@ class _GenerateImageParameters(_common.BaseModel):
   )
   prompt: Optional[str] = Field(
       default=None,
-      description="""Text prompt that typically describes the image to output.
+      description="""Text prompt that typically describes the images to output.
       """,
   )
-  config: Optional[GenerateImageConfig] = Field(
+  config: Optional[GenerateImagesConfig] = Field(
       default=None,
-      description="""Configuration for generating an image.
+      description="""Configuration for generating images.
       """,
   )
 
 
-class _GenerateImageParametersDict(TypedDict, total=False):
-  """Class that represents the parameters for generating an image."""
+class _GenerateImagesParametersDict(TypedDict, total=False):
+  """Class that represents the parameters for generating images."""
 
   model: Optional[str]
   """ID of the model to use. For a list of models, see `Google models
     <https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models>`_."""
 
   prompt: Optional[str]
-  """Text prompt that typically describes the image to output.
+  """Text prompt that typically describes the images to output.
       """
 
-  config: Optional[GenerateImageConfigDict]
-  """Configuration for generating an image.
+  config: Optional[GenerateImagesConfigDict]
+  """Configuration for generating images.
       """
 
 
-_GenerateImageParametersOrDict = Union[
-    _GenerateImageParameters, _GenerateImageParametersDict
+_GenerateImagesParametersOrDict = Union[
+    _GenerateImagesParameters, _GenerateImagesParametersDict
 ]
 
 
@@ -3486,8 +3488,8 @@ class GeneratedImageDict(TypedDict, total=False):
 GeneratedImageOrDict = Union[GeneratedImage, GeneratedImageDict]
 
 
-class GenerateImageResponse(_common.BaseModel):
-  """Class that represents the output image response."""
+class GenerateImagesResponse(_common.BaseModel):
+  """Class that represents the output images response."""
 
   generated_images: Optional[list[GeneratedImage]] = Field(
       default=None,
@@ -3496,16 +3498,16 @@ class GenerateImageResponse(_common.BaseModel):
   )
 
 
-class GenerateImageResponseDict(TypedDict, total=False):
-  """Class that represents the output image response."""
+class GenerateImagesResponseDict(TypedDict, total=False):
+  """Class that represents the output images response."""
 
   generated_images: Optional[list[GeneratedImageDict]]
   """List of generated images.
       """
 
 
-GenerateImageResponseOrDict = Union[
-    GenerateImageResponse, GenerateImageResponseDict
+GenerateImagesResponseOrDict = Union[
+    GenerateImagesResponse, GenerateImagesResponseDict
 ]
 
 

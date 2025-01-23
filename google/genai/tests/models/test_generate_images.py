@@ -25,8 +25,8 @@ from .. import pytest_helper
 test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_simple_prompt',
-        parameters=types._GenerateImageParameters(
-            model='imagen-3.0-generate-001',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-002',
             prompt='Create a blue circle',
             config={'number_of_images': 1, 'output_mime_type': 'image/jpeg'},
         ),
@@ -34,8 +34,8 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_all_vertexai_config_parameters',
         exception_if_mldev='not supported in Google AI',
-        parameters=types._GenerateImageParameters(
-            model='imagen-3.0-generate-001',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-002',
             prompt='Robot holding a red skateboard',
             config={
                 'aspect_ratio': '1:1',
@@ -57,8 +57,8 @@ test_table: list[pytest_helper.TestTableItem] = [
     ),
     pytest_helper.TestTableItem(
         name='test_all_mldev_config_parameters',
-        parameters=types._GenerateImageParameters(
-            model='imagen-3.0-generate-001',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-002',
             prompt='Robot holding a red skateboard',
             config={
                 'aspect_ratio': '1:1',
@@ -78,15 +78,15 @@ test_table: list[pytest_helper.TestTableItem] = [
 pytestmark = pytest_helper.setup(
     file=__file__,
     globals_for_file=globals(),
-    test_method='models.generate_image',
+    test_method='models.generate_images',
     test_table=test_table,
 )
 
 
 @pytest.mark.asyncio
 async def test_simple_prompt_async(client):
-  response = await client.aio.models.generate_image(
-      model='imagen-3.0-generate-001',
+  response = await client.aio.models.generate_images(
+      model='imagen-3.0-generate-002',
       prompt='Create a blue circle',
       config={'number_of_images': 1, 'output_mime_type': 'image/jpeg'},
   )
