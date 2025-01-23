@@ -677,6 +677,58 @@ class ContentDict(TypedDict, total=False):
 ContentOrDict = Union[Content, ContentDict]
 
 
+class HttpOptions(_common.BaseModel):
+  """HTTP options to be used in each of the requests."""
+
+  base_url: Optional[str] = Field(
+      default=None,
+      description="""The base URL for the AI platform service endpoint.""",
+  )
+  api_version: Optional[str] = Field(
+      default=None, description="""Specifies the version of the API to use."""
+  )
+  headers: Optional[dict[str, str]] = Field(
+      default=None,
+      description="""Additional HTTP headers to be sent with the request.""",
+  )
+  timeout: Optional[int] = Field(
+      default=None, description="""Timeout for the request in milliseconds."""
+  )
+  response_payload: Optional[dict[str, any]] = Field(
+      default=None,
+      description="""If set, the response payload will be returned int the supplied dict.""",
+  )
+  skip_project_and_location_in_path: Optional[bool] = Field(
+      default=None,
+      description="""If set to True, the project and location will not be appended to the path.""",
+  )
+
+
+class HttpOptionsDict(TypedDict, total=False):
+  """HTTP options to be used in each of the requests."""
+
+  base_url: Optional[str]
+  """The base URL for the AI platform service endpoint."""
+
+  api_version: Optional[str]
+  """Specifies the version of the API to use."""
+
+  headers: Optional[dict[str, str]]
+  """Additional HTTP headers to be sent with the request."""
+
+  timeout: Optional[int]
+  """Timeout for the request in milliseconds."""
+
+  response_payload: Optional[dict[str, any]]
+  """If set, the response payload will be returned int the supplied dict."""
+
+  skip_project_and_location_in_path: Optional[bool]
+  """If set to True, the project and location will not be appended to the path."""
+
+
+HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
+
+
 class Schema(_common.BaseModel):
   """Schema that defines the format of input and output data.
 
@@ -1709,7 +1761,7 @@ class GenerateContentConfig(_common.BaseModel):
   <https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters>`_.
   """
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   system_instruction: Optional[ContentUnion] = Field(
@@ -1871,7 +1923,7 @@ class GenerateContentConfigDict(TypedDict, total=False):
   <https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters>`_.
   """
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   system_instruction: Optional[ContentUnionDict]
@@ -2879,7 +2931,7 @@ GenerateContentResponseOrDict = Union[
 class EmbedContentConfig(_common.BaseModel):
   """Class for configuring optional parameters for the embed_content method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   task_type: Optional[str] = Field(
@@ -2918,7 +2970,7 @@ class EmbedContentConfig(_common.BaseModel):
 class EmbedContentConfigDict(TypedDict, total=False):
   """Class for configuring optional parameters for the embed_content method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   task_type: Optional[str]
@@ -3120,7 +3172,7 @@ EmbedContentResponseOrDict = Union[
 class GenerateImagesConfig(_common.BaseModel):
   """Class that represents the config for generating images."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   output_gcs_uri: Optional[str] = Field(
@@ -3203,7 +3255,7 @@ class GenerateImagesConfig(_common.BaseModel):
 class GenerateImagesConfigDict(TypedDict, total=False):
   """Class that represents the config for generating images."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   output_gcs_uri: Optional[str]
@@ -3692,7 +3744,7 @@ _ReferenceImageAPIOrDict = Union[_ReferenceImageAPI, _ReferenceImageAPIDict]
 class EditImageConfig(_common.BaseModel):
   """Configuration for editing an image."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   output_gcs_uri: Optional[str] = Field(
@@ -3769,7 +3821,7 @@ class EditImageConfig(_common.BaseModel):
 class EditImageConfigDict(TypedDict, total=False):
   """Configuration for editing an image."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   output_gcs_uri: Optional[str]
@@ -3896,7 +3948,7 @@ class _UpscaleImageAPIConfig(_common.BaseModel):
   to be modifiable or exposed to users in the SDK method.
   """
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   include_rai_reason: Optional[bool] = Field(
@@ -3924,7 +3976,7 @@ class _UpscaleImageAPIConfigDict(TypedDict, total=False):
   to be modifiable or exposed to users in the SDK method.
   """
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   include_rai_reason: Optional[bool]
@@ -4010,7 +4062,7 @@ UpscaleImageResponseOrDict = Union[
 class GetModelConfig(_common.BaseModel):
   """Optional parameters for models.get method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -4018,7 +4070,7 @@ class GetModelConfig(_common.BaseModel):
 class GetModelConfigDict(TypedDict, total=False):
   """Optional parameters for models.get method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -4192,7 +4244,7 @@ ModelOrDict = Union[Model, ModelDict]
 
 class ListModelsConfig(_common.BaseModel):
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   page_size: Optional[int] = Field(default=None, description="""""")
@@ -4206,7 +4258,7 @@ class ListModelsConfig(_common.BaseModel):
 
 class ListModelsConfigDict(TypedDict, total=False):
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   page_size: Optional[int]
@@ -4261,7 +4313,7 @@ ListModelsResponseOrDict = Union[ListModelsResponse, ListModelsResponseDict]
 
 class UpdateModelConfig(_common.BaseModel):
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   display_name: Optional[str] = Field(default=None, description="""""")
@@ -4270,7 +4322,7 @@ class UpdateModelConfig(_common.BaseModel):
 
 class UpdateModelConfigDict(TypedDict, total=False):
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   display_name: Optional[str]
@@ -4305,19 +4357,15 @@ _UpdateModelParametersOrDict = Union[
 
 class DeleteModelConfig(_common.BaseModel):
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
-  model: Optional[str] = Field(default=None, description="""""")
 
 
 class DeleteModelConfigDict(TypedDict, total=False):
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
-
-  model: Optional[str]
-  """"""
 
 
 DeleteModelConfigOrDict = Union[DeleteModelConfig, DeleteModelConfigDict]
@@ -4470,7 +4518,7 @@ GenerationConfigOrDict = Union[GenerationConfig, GenerationConfigDict]
 class CountTokensConfig(_common.BaseModel):
   """Config for the count_tokens method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   system_instruction: Optional[ContentUnion] = Field(
@@ -4495,7 +4543,7 @@ class CountTokensConfig(_common.BaseModel):
 class CountTokensConfigDict(TypedDict, total=False):
   """Config for the count_tokens method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   system_instruction: Optional[ContentUnionDict]
@@ -4579,7 +4627,7 @@ CountTokensResponseOrDict = Union[CountTokensResponse, CountTokensResponseDict]
 class ComputeTokensConfig(_common.BaseModel):
   """Optional parameters for computing tokens."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -4587,7 +4635,7 @@ class ComputeTokensConfig(_common.BaseModel):
 class ComputeTokensConfigDict(TypedDict, total=False):
   """Optional parameters for computing tokens."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -4687,7 +4735,7 @@ ComputeTokensResponseOrDict = Union[
 class GetTuningJobConfig(_common.BaseModel):
   """Optional parameters for tunings.get method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -4695,7 +4743,7 @@ class GetTuningJobConfig(_common.BaseModel):
 class GetTuningJobConfigDict(TypedDict, total=False):
   """Optional parameters for tunings.get method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -5600,7 +5648,7 @@ TuningJobOrDict = Union[TuningJob, TuningJobDict]
 class ListTuningJobsConfig(_common.BaseModel):
   """Configuration for the list tuning jobs method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   page_size: Optional[int] = Field(default=None, description="""""")
@@ -5611,7 +5659,7 @@ class ListTuningJobsConfig(_common.BaseModel):
 class ListTuningJobsConfigDict(TypedDict, total=False):
   """Configuration for the list tuning jobs method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   page_size: Optional[int]
@@ -5699,7 +5747,7 @@ TuningExampleOrDict = Union[TuningExample, TuningExampleDict]
 
 
 class TuningDataset(_common.BaseModel):
-  """Supervised fune-tuning training dataset."""
+  """Supervised fine-tuning training dataset."""
 
   gcs_uri: Optional[str] = Field(
       default=None,
@@ -5712,7 +5760,7 @@ class TuningDataset(_common.BaseModel):
 
 
 class TuningDatasetDict(TypedDict, total=False):
-  """Supervised fune-tuning training dataset."""
+  """Supervised fine-tuning training dataset."""
 
   gcs_uri: Optional[str]
   """GCS URI of the file containing training dataset in JSONL format."""
@@ -5746,7 +5794,7 @@ TuningValidationDatasetOrDict = Union[
 class CreateTuningJobConfig(_common.BaseModel):
   """Supervised fine-tuning job creation request - optional fields."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   validation_dataset: Optional[TuningValidationDataset] = Field(
@@ -5784,7 +5832,7 @@ class CreateTuningJobConfig(_common.BaseModel):
 class CreateTuningJobConfigDict(TypedDict, total=False):
   """Supervised fine-tuning job creation request - optional fields."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   validation_dataset: Optional[TuningValidationDatasetDict]
@@ -5912,7 +5960,7 @@ DistillationValidationDatasetOrDict = Union[
 class CreateDistillationJobConfig(_common.BaseModel):
   """Distillation job creation request - optional fields."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   validation_dataset: Optional[DistillationValidationDataset] = Field(
@@ -5943,7 +5991,7 @@ class CreateDistillationJobConfig(_common.BaseModel):
 class CreateDistillationJobConfigDict(TypedDict, total=False):
   """Distillation job creation request - optional fields."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   validation_dataset: Optional[DistillationValidationDatasetDict]
@@ -6014,7 +6062,7 @@ _CreateDistillationJobParametersOrDict = Union[
 class CreateCachedContentConfig(_common.BaseModel):
   """Class for configuring optional cached content creation parameters."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   ttl: Optional[str] = Field(
@@ -6055,7 +6103,7 @@ class CreateCachedContentConfig(_common.BaseModel):
 class CreateCachedContentConfigDict(TypedDict, total=False):
   """Class for configuring optional cached content creation parameters."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   ttl: Optional[str]
@@ -6181,7 +6229,7 @@ class CachedContent(_common.BaseModel):
       description="""The name of the publisher model to use for cached content.""",
   )
   create_time: Optional[datetime.datetime] = Field(
-      default=None, description="""Creatation time of the cache entry."""
+      default=None, description="""Creation time of the cache entry."""
   )
   update_time: Optional[datetime.datetime] = Field(
       default=None,
@@ -6209,7 +6257,7 @@ class CachedContentDict(TypedDict, total=False):
   """The name of the publisher model to use for cached content."""
 
   create_time: Optional[datetime.datetime]
-  """Creatation time of the cache entry."""
+  """Creation time of the cache entry."""
 
   update_time: Optional[datetime.datetime]
   """When the cache entry was last updated in UTC time."""
@@ -6227,7 +6275,7 @@ CachedContentOrDict = Union[CachedContent, CachedContentDict]
 class GetCachedContentConfig(_common.BaseModel):
   """Optional parameters for caches.get method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -6235,7 +6283,7 @@ class GetCachedContentConfig(_common.BaseModel):
 class GetCachedContentConfigDict(TypedDict, total=False):
   """Optional parameters for caches.get method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -6279,7 +6327,7 @@ _GetCachedContentParametersOrDict = Union[
 class DeleteCachedContentConfig(_common.BaseModel):
   """Optional parameters for caches.delete method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -6287,7 +6335,7 @@ class DeleteCachedContentConfig(_common.BaseModel):
 class DeleteCachedContentConfigDict(TypedDict, total=False):
   """Optional parameters for caches.delete method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -6348,7 +6396,7 @@ DeleteCachedContentResponseOrDict = Union[
 class UpdateCachedContentConfig(_common.BaseModel):
   """Optional parameters for caches.update method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   ttl: Optional[str] = Field(
@@ -6364,7 +6412,7 @@ class UpdateCachedContentConfig(_common.BaseModel):
 class UpdateCachedContentConfigDict(TypedDict, total=False):
   """Optional parameters for caches.update method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   ttl: Optional[str]
@@ -6412,7 +6460,7 @@ _UpdateCachedContentParametersOrDict = Union[
 class ListCachedContentsConfig(_common.BaseModel):
   """Config for caches.list method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   page_size: Optional[int] = Field(default=None, description="""""")
@@ -6422,7 +6470,7 @@ class ListCachedContentsConfig(_common.BaseModel):
 class ListCachedContentsConfigDict(TypedDict, total=False):
   """Config for caches.list method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   page_size: Optional[int]
@@ -6488,7 +6536,7 @@ ListCachedContentsResponseOrDict = Union[
 class ListFilesConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   page_size: Optional[int] = Field(default=None, description="""""")
@@ -6498,7 +6546,7 @@ class ListFilesConfig(_common.BaseModel):
 class ListFilesConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   page_size: Optional[int]
@@ -6559,7 +6607,7 @@ ListFilesResponseOrDict = Union[ListFilesResponse, ListFilesResponseDict]
 class CreateFileConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -6567,7 +6615,7 @@ class CreateFileConfig(_common.BaseModel):
 class CreateFileConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -6630,7 +6678,7 @@ CreateFileResponseOrDict = Union[CreateFileResponse, CreateFileResponseDict]
 class GetFileConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -6638,7 +6686,7 @@ class GetFileConfig(_common.BaseModel):
 class GetFileConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -6674,7 +6722,7 @@ _GetFileParametersOrDict = Union[_GetFileParameters, _GetFileParametersDict]
 class DeleteFileConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -6682,7 +6730,7 @@ class DeleteFileConfig(_common.BaseModel):
 class DeleteFileConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -6817,7 +6865,7 @@ BatchJobDestinationOrDict = Union[BatchJobDestination, BatchJobDestinationDict]
 class CreateBatchJobConfig(_common.BaseModel):
   """Config class for optional parameters."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   display_name: Optional[str] = Field(
@@ -6836,7 +6884,7 @@ class CreateBatchJobConfig(_common.BaseModel):
 class CreateBatchJobConfigDict(TypedDict, total=False):
   """Config class for optional parameters."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   display_name: Optional[str]
@@ -7023,7 +7071,7 @@ BatchJobOrDict = Union[BatchJob, BatchJobDict]
 class GetBatchJobConfig(_common.BaseModel):
   """Optional parameters."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -7031,7 +7079,7 @@ class GetBatchJobConfig(_common.BaseModel):
 class GetBatchJobConfigDict(TypedDict, total=False):
   """Optional parameters."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -7074,7 +7122,7 @@ _GetBatchJobParametersOrDict = Union[
 class CancelBatchJobConfig(_common.BaseModel):
   """Optional parameters."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -7082,7 +7130,7 @@ class CancelBatchJobConfig(_common.BaseModel):
 class CancelBatchJobConfigDict(TypedDict, total=False):
   """Optional parameters."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -7127,7 +7175,7 @@ _CancelBatchJobParametersOrDict = Union[
 class ListBatchJobConfig(_common.BaseModel):
   """Config class for optional parameters."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   page_size: Optional[int] = Field(default=None, description="""""")
@@ -7138,7 +7186,7 @@ class ListBatchJobConfig(_common.BaseModel):
 class ListBatchJobConfigDict(TypedDict, total=False):
   """Config class for optional parameters."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   page_size: Optional[int]
@@ -7197,7 +7245,7 @@ ListBatchJobResponseOrDict = Union[
 class DeleteBatchJobConfig(_common.BaseModel):
   """Optional parameters for models.get method."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -7205,7 +7253,7 @@ class DeleteBatchJobConfig(_common.BaseModel):
 class DeleteBatchJobConfigDict(TypedDict, total=False):
   """Optional parameters for models.get method."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -7465,7 +7513,7 @@ ReplayFileOrDict = Union[ReplayFile, ReplayFileDict]
 class UploadFileConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   name: Optional[str] = Field(
@@ -7484,7 +7532,7 @@ class UploadFileConfig(_common.BaseModel):
 class UploadFileConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   name: Optional[str]
@@ -7503,7 +7551,7 @@ UploadFileConfigOrDict = Union[UploadFileConfig, UploadFileConfigDict]
 class DownloadFileConfig(_common.BaseModel):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
 
@@ -7511,7 +7559,7 @@ class DownloadFileConfig(_common.BaseModel):
 class DownloadFileConfigDict(TypedDict, total=False):
   """Used to override the default configuration."""
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
 
@@ -7526,7 +7574,7 @@ class UpscaleImageConfig(_common.BaseModel):
   <https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api>`_.
   """
 
-  http_options: Optional[dict[str, Any]] = Field(
+  http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
   )
   include_rai_reason: Optional[bool] = Field(
@@ -7553,7 +7601,7 @@ class UpscaleImageConfigDict(TypedDict, total=False):
   <https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/imagen-api>`_.
   """
 
-  http_options: Optional[dict[str, Any]]
+  http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
 
   include_rai_reason: Optional[bool]

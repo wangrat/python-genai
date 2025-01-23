@@ -36,55 +36,7 @@ import requests
 
 from . import errors
 from . import version
-
-
-class HttpOptions(BaseModel):
-  """HTTP options for the api client."""
-  model_config = ConfigDict(extra='forbid')
-
-  base_url: Optional[str] = Field(
-      default=None,
-      description="""The base URL for the AI platform service endpoint.""",
-  )
-  api_version: Optional[str] = Field(
-      default=None,
-      description="""Specifies the version of the API to use.""",
-  )
-  headers: Optional[dict[str, str]] = Field(
-      default=None,
-      description="""Additional HTTP headers to be sent with the request.""",
-  )
-  response_payload: Optional[dict] = Field(
-      default=None,
-      description="""If set, the response payload will be returned int the supplied dict.""",
-  )
-  timeout: Optional[Union[float, Tuple[float, float]]] = Field(
-      default=None,
-      description="""Timeout for the request in seconds.""",
-  )
-  skip_project_and_location_in_path: bool = Field(
-      default=False,
-      description="""If set to True, the project and location will not be appended to the path.""",
-  )
-
-
-class HttpOptionsDict(TypedDict):
-  """HTTP options for the api client."""
-
-  base_url: Optional[str] = None
-  """The base URL for the AI platform service endpoint."""
-  api_version: Optional[str] = None
-  """Specifies the version of the API to use."""
-  headers: Optional[dict[str, str]] = None
-  """Additional HTTP headers to be sent with the request."""
-  response_payload: Optional[dict] = None
-  """If set, the response payload will be returned int the supplied dict."""
-  timeout: Optional[Union[float, Tuple[float, float]]] = None
-  """Timeout for the request in seconds."""
-  skip_project_and_location_in_path: bool = False
-  """If set to True, the project and location will not be appended to the path."""
-
-HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
+from .types import HttpOptions, HttpOptionsDict, HttpOptionsOrDict
 
 
 def _append_library_version_headers(headers: dict[str, str]) -> None:
@@ -144,7 +96,7 @@ class HttpRequest:
   url: str
   method: str
   data: Union[dict[str, object], bytes]
-  timeout: Optional[Union[float, Tuple[float, float]]] = None
+  timeout: Optional[float] = None
 
 
 class HttpResponse:
@@ -325,7 +277,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsDict = None,
+      http_options: HttpOptionsOrDict = None,
   ) -> HttpRequest:
     # Remove all special dict keys such as _url and _query.
     keys_to_delete = [key for key in request_dict.keys() if key.startswith('_')]
@@ -333,9 +285,14 @@ class ApiClient:
       del request_dict[key]
     # patch the http options with the user provided settings.
     if http_options:
-      patched_http_options = _patch_http_options(
-          self._http_options, http_options
-      )
+      if isinstance(http_options, HttpOptions):
+        patched_http_options = _patch_http_options(
+            self._http_options, http_options.model_dump()
+        )
+      else:
+        patched_http_options = _patch_http_options(
+            self._http_options, http_options
+        )
     else:
       patched_http_options = self._http_options
     skip_project_and_location_in_path_val = patched_http_options.get(
@@ -354,12 +311,19 @@ class ApiClient:
         patched_http_options['base_url'],
         patched_http_options['api_version'] + '/' + path,
     )
+
+    timeout_in_seconds = patched_http_options.get('timeout', None)
+    if timeout_in_seconds:
+      timeout_in_seconds = timeout_in_seconds / 1000.0
+    else:
+      timeout_in_seconds = None
+
     return HttpRequest(
         method=http_method,
         url=url,
         headers=patched_http_options['headers'],
         data=request_dict,
-        timeout=patched_http_options.get('timeout', None),
+        timeout=timeout_in_seconds,
     )
 
   def _request(
@@ -448,14 +412,22 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsDict = None,
+      http_options: HttpOptionsOrDict = None,
   ):
     http_request = self._build_request(
         http_method, path, request_dict, http_options
     )
     response = self._request(http_request, stream=False)
-    if http_options and 'response_payload' in http_options:
-      response.copy_to_dict(http_options['response_payload'])
+    if http_options:
+      if (
+          isinstance(http_options, HttpOptions)
+          and http_options.response_payload is not None
+      ):
+        response.copy_to_dict(http_options.response_payload)
+      elif (
+          isinstance(http_options, dict) and 'response_payload' in http_options
+      ):
+        response.copy_to_dict(http_options['response_payload'])
     return response.text
 
   def request_streamed(
@@ -623,7 +595,6 @@ class ApiClient:
 
     errors.APIError.raise_for_response(response)
     return HttpResponse(response.headers, byte_stream=[response.content])
-
 
   async def async_upload_file(
       self,

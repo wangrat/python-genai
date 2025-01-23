@@ -814,6 +814,9 @@ def _GetCachedContentParameters_to_mldev(
         t.t_cached_content_name(api_client, getv(from_object, ['name'])),
     )
 
+  if getv(from_object, ['config']) is not None:
+    setv(to_object, ['config'], getv(from_object, ['config']))
+
   return to_object
 
 
@@ -829,6 +832,9 @@ def _GetCachedContentParameters_to_vertex(
         ['_url', 'name'],
         t.t_cached_content_name(api_client, getv(from_object, ['name'])),
     )
+
+  if getv(from_object, ['config']) is not None:
+    setv(to_object, ['config'], getv(from_object, ['config']))
 
   return to_object
 
@@ -846,6 +852,9 @@ def _DeleteCachedContentParameters_to_mldev(
         t.t_cached_content_name(api_client, getv(from_object, ['name'])),
     )
 
+  if getv(from_object, ['config']) is not None:
+    setv(to_object, ['config'], getv(from_object, ['config']))
+
   return to_object
 
 
@@ -861,6 +870,9 @@ def _DeleteCachedContentParameters_to_vertex(
         ['_url', 'name'],
         t.t_cached_content_name(api_client, getv(from_object, ['name'])),
     )
+
+  if getv(from_object, ['config']) is not None:
+    setv(to_object, ['config'], getv(from_object, ['config']))
 
   return to_object
 
@@ -1198,12 +1210,15 @@ class Caches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1256,12 +1271,15 @@ class Caches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1316,12 +1334,15 @@ class Caches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1380,12 +1401,15 @@ class Caches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1435,12 +1459,15 @@ class Caches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1521,12 +1548,15 @@ class AsyncCaches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1579,12 +1609,15 @@ class AsyncCaches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1639,12 +1672,15 @@ class AsyncCaches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1703,12 +1739,15 @@ class AsyncCaches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
@@ -1758,12 +1797,15 @@ class AsyncCaches(_api_module.BaseModule):
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
-    http_options = (
-        parameter_model.config.http_options
-        if (hasattr(parameter_model, 'config') and parameter_model.config)
-        else None
-    )
+    # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
     request_dict = _common.convert_to_dict(request_dict)
     request_dict = _common.encode_unserializable_types(request_dict)
 
