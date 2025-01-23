@@ -723,6 +723,22 @@ class Batches(_api_module.BaseModule):
       name: str,
       config: Optional[types.CancelBatchJobConfigOrDict] = None,
   ) -> None:
+    """Cancels a batch job.
+
+    Only available for batch jobs that are running or pending.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/123456789" or
+          "123456789" when project and location are initialized in the client.
+
+    Usage:
+
+    .. code-block:: python
+
+      client.batches.cancel(name='123456789')
+    """
+
     parameter_model = types._CancelBatchJobParameters(
         name=name,
         config=config,
@@ -1040,6 +1056,22 @@ class AsyncBatches(_api_module.BaseModule):
       name: str,
       config: Optional[types.CancelBatchJobConfigOrDict] = None,
   ) -> None:
+    """Cancels a batch job.
+
+    Only available for batch jobs that are running or pending.
+
+    Args:
+      name (str): A fully-qualified BatchJob resource name or ID.
+        Example: "projects/.../locations/.../batchPredictionJobs/123456789" or
+          "123456789" when project and location are initialized in the client.
+
+    Usage:
+
+    .. code-block:: python
+
+      client.batches.cancel(name='123456789')
+    """
+
     parameter_model = types._CancelBatchJobParameters(
         name=name,
         config=config,
