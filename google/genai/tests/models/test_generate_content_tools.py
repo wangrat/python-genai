@@ -894,7 +894,7 @@ class FunctionHolder:
 
 
 def test_class_method_tools(client):
-  # This test is to make sure that class method tools can be used in
+  # This test is to make sure that instance method tools can be used in
   # the generate_content request.
 
   function_holder = FunctionHolder()

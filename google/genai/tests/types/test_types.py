@@ -1611,7 +1611,7 @@ def test_function_with_options_mldev(monkeypatch):
       description='test return type.',
   )
 
-  actual_schema_mldev = types.FunctionDeclaration.from_function_with_options(
+  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_options(
       func_under_test, 'GOOGLE_AI'
   )
 
@@ -1637,7 +1637,7 @@ def test_function_with_options_default_api_client(monkeypatch):
       description='test return type.',
   )
 
-  actual_schema_mldev = types.FunctionDeclaration.from_function_with_options(
+  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_options(
       func_under_test
   )
 
@@ -1668,7 +1668,7 @@ def test_function_with_options_vertex(monkeypatch):
   expected_schema_vertex.response = types.Schema(type='STRING')
   expected_schema_vertex.parameters.required = ['a']
 
-  actual_schema_vertex = types.FunctionDeclaration.from_function_with_options(
+  actual_schema_vertex = types.FunctionDeclaration.from_callable_with_options(
       func_under_test, 'VERTEX_AI'
   )
 
@@ -1694,7 +1694,7 @@ def test_function_with_options_default(monkeypatch):
       description='test return type.',
   )
 
-  actual_schema_default = types.FunctionDeclaration.from_function_with_options(
+  actual_schema_default = types.FunctionDeclaration.from_callable_with_options(
       func_under_test, 'DEFAULT'
   )
 
@@ -1707,7 +1707,7 @@ def test_function_with_options_invalid_variant():
     return ''
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_function_with_options(
+    types.FunctionDeclaration.from_callable_with_options(
         func_under_test, 'UNKNOWN'
     )
 

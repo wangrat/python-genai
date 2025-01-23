@@ -964,12 +964,12 @@ class FunctionDeclaration(_common.BaseModel):
       return 'GOOGLE_AI'
 
   @classmethod
-  def from_function_with_options(
+  def from_callable_with_options(
       cls,
-      func: Callable,
+      callable: Callable,
       variant: Literal['GOOGLE_AI', 'VERTEX_AI', 'DEFAULT'] = 'GOOGLE_AI',
   ) -> 'FunctionDeclaration':
-    """Converts a function to a FunctionDeclaration based on an API endpoint.
+    """Converts a callable to a FunctionDeclaration based on an API endpoint.
 
     Supported endpoints are: 'GOOGLE_AI', 'VERTEX_AI', or 'DEFAULT'.
     """
@@ -985,19 +985,19 @@ class FunctionDeclaration(_common.BaseModel):
     # TODO: b/382524014 - Add support for DEFAULT API endpoint.
 
     parameters_properties = {}
-    for name, param in inspect.signature(func).parameters.items():
+    for name, param in inspect.signature(callable).parameters.items():
       if param.kind in (
           inspect.Parameter.POSITIONAL_OR_KEYWORD,
           inspect.Parameter.KEYWORD_ONLY,
           inspect.Parameter.POSITIONAL_ONLY,
       ):
         schema = _automatic_function_calling_util._parse_schema_from_parameter(
-            variant, param, func.__name__
+            variant, param, callable.__name__
         )
         parameters_properties[name] = schema
     declaration = FunctionDeclaration(
-        name=func.__name__,
-        description=func.__doc__,
+        name=callable.__name__,
+        description=callable.__doc__,
     )
     if parameters_properties:
       declaration.parameters = Schema(
@@ -1013,7 +1013,7 @@ class FunctionDeclaration(_common.BaseModel):
     if not variant == 'VERTEX_AI':
       return declaration
 
-    return_annotation = inspect.signature(func).return_annotation
+    return_annotation = inspect.signature(callable).return_annotation
     if return_annotation is inspect._empty:
       return declaration
 
@@ -1025,17 +1025,17 @@ class FunctionDeclaration(_common.BaseModel):
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
                 annotation=return_annotation,
             ),
-            func.__name__,
+            callable.__name__,
         )
     )
     return declaration
 
   @classmethod
-  def from_callable(cls, client, func: Callable) -> 'FunctionDeclaration':
+  def from_callable(cls, client, callable: Callable) -> 'FunctionDeclaration':
     """Converts a function to a FunctionDeclaration."""
-    return cls.from_function_with_options(
+    return cls.from_callable_with_options(
         variant=cls._get_variant(client),
-        func=func,
+        callable=callable,
     )
 
 
