@@ -15,6 +15,7 @@
 
 
 from pydantic import BaseModel, ValidationError
+from typing import Optional
 import pytest
 import json
 from ... import _transformers as t
@@ -499,6 +500,40 @@ def test_pydantic_schema(client):
       },
   )
   assert isinstance(response.parsed, CountryInfo)
+
+
+def test_pydantic_schema_with_none(client):
+  class CountryInfo(BaseModel):
+    name: str
+    total_area_sq_mi: int | None = None
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information of the United States.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': CountryInfo,
+      },
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert type(response.parsed.total_area_sq_mi) in [int, None]
+
+
+def test_pydantic_schema_with_optional_none(client):
+  class CountryInfo(BaseModel):
+    name: str
+    total_area_sq_mi: Optional[int] = None
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information of the United States but don\'t include the total area.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': CountryInfo,
+      },
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert response.parsed.total_area_sq_mi is None
 
 
 def test_pydantic_schema_from_json(client):

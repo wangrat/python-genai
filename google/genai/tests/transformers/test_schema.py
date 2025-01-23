@@ -28,6 +28,7 @@ class CurrencyInfo(pydantic.BaseModel):
   code: str
   symbol: str
 
+
 currency_info_fields = CurrencyInfo.model_fields
 
 
@@ -39,6 +40,7 @@ class CountryInfo(pydantic.BaseModel):
   gdp: int
   official_language: str
   total_area_sq_mi: int
+
 
 country_info_fields = CountryInfo.model_fields
 
@@ -53,7 +55,13 @@ class CountryInfoWithCurrency(pydantic.BaseModel):
   total_area_sq_mi: int
   currency: CurrencyInfo
 
+
 nested_country_info_fields = CountryInfoWithCurrency.model_fields
+
+
+class CountryInfoWithNullFields(pydantic.BaseModel):
+  name: str
+  population: int | None = None
 
 
 def test_build_schema_for_list_of_pydantic_schema():
@@ -103,7 +111,9 @@ def test_t_schema_for_pydantic_schema():
   assert isinstance(transformed_schema, types.Schema)
   for schema_property in transformed_schema.properties:
     assert schema_property in country_info_fields
-    assert isinstance(transformed_schema.properties[schema_property], types.Schema)
+    assert isinstance(
+        transformed_schema.properties[schema_property], types.Schema
+    )
 
 
 def test_t_schema_for_list_of_pydantic_schema():
@@ -114,5 +124,28 @@ def test_t_schema_for_list_of_pydantic_schema():
 
   for schema_property in transformed_schema.items.properties:
     assert schema_property in country_info_fields
-    assert isinstance(transformed_schema.items.properties[schema_property], types.Schema)
+    assert isinstance(
+        transformed_schema.items.properties[schema_property], types.Schema
+    )
 
+
+def test_t_schema_for_null_fields():
+  """Tests t_schema when null fields are present."""
+  transformed_schema = _transformers.t_schema(None, CountryInfoWithNullFields)
+  assert isinstance(transformed_schema, types.Schema)
+  assert transformed_schema.properties['population'].nullable
+
+
+def test_schema_with_no_null_fields_is_unchanged():
+  """Tests handle_null_fields() doesn't change anything when no null fields are present."""
+  test_properties = {
+      'name': {'title': 'Name', 'type': 'string'},
+      'total_area_sq_mi': {
+          'anyOf': [{'type': 'integer'}, {'type': 'float'}],
+          'default': 'null',
+          'title': 'Total Area Sq Mi',
+      },
+  }
+
+  transformed_properties = _transformers.handle_null_fields(test_properties)
+  assert transformed_properties == test_properties

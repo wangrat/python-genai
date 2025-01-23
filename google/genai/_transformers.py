@@ -298,12 +298,82 @@ def t_contents(
     return [t_content(client, contents)]
 
 
+def handle_null_fields(data: dict[str, Any]):
+  """Process null fields in the schema so it is compatible with OpenAPI.
+
+  The OpenAPI spec does not support 'type: 'null' in the schema. This function
+  handles this case by adding 'nullable: True' to the null field and removing
+  the {'type': 'null'} entry.
+
+  https://swagger.io/docs/specification/v3_0/data-models/data-types/#null
+
+  Example of schema properties before and after handling null fields:
+    Before:
+      {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "total_area_sq_mi": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Total Area Sq Mi"
+        }
+      }
+
+    After:
+      {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "total_area_sq_mi": {
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "title": "Total Area Sq Mi"
+        }
+      }
+  """
+
+  for field in list(data.keys()):
+    field_info = data[field]
+    if (
+        isinstance(field_info, dict)
+        and 'type' in field_info
+        and field_info['type'] == 'null'
+    ):
+      data[field]['nullable'] = True
+      del data[field]['type']
+    elif 'anyOf' in field_info:
+      for item in field_info['anyOf']:
+        if 'type' in item and item['type'] == 'null':
+          data[field]['nullable'] = True
+          data[field]['anyOf'].remove({'type': 'null'})
+          if len(data[field]['anyOf']) == 1:
+            # If there is only one type left after removing null, remove the anyOf field.
+            field_type = data[field]['anyOf'][0]['type']
+            data[field]['type'] = field_type
+            del data[field]['anyOf']
+
+  return data
+
+
 def process_schema(
     data: dict[str, Any], client: Optional[_api_client.ApiClient] = None
 ):
   if isinstance(data, dict):
     # Iterate over a copy of keys to allow deletion
     for key in list(data.keys()):
+      if key == 'properties':
+        data[key] = handle_null_fields(data[key])
       # Only delete 'title'for the Gemini API
       if client and not client.vertexai and key == 'title':
         del data[key]
