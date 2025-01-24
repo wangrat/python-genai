@@ -4676,13 +4676,7 @@ class Models(_api_module.BaseModule):
     )
     if self._api_client.vertexai:
       config = config.copy()
-      if config.query_base:
-        http_options = (
-            config.http_options if config.http_options else HttpOptionsDict()
-        )
-        http_options['skip_project_and_location_in_path'] = True
-        config.http_options = http_options
-      else:
+      if not config.query_base:
         # Filter for tuning jobs artifacts by labels.
         filter_value = config.filter
         config.filter = (

@@ -295,13 +295,18 @@ class ApiClient:
         )
     else:
       patched_http_options = self._http_options
-    skip_project_and_location_in_path_val = patched_http_options.get(
-        'skip_project_and_location_in_path', False
-    )
+    # Skip adding project and locations when getting Vertex AI base models.
+    query_vertex_base_models = False
+    if (
+        self.vertexai
+        and http_method == 'get'
+        and path.startswith('publishers/google/models')
+    ):
+      query_vertex_base_models = True
     if (
         self.vertexai
         and not path.startswith('projects/')
-        and not skip_project_and_location_in_path_val
+        and not query_vertex_base_models
         and not self.api_key
     ):
       path = f'projects/{self.project}/locations/{self.location}/' + path

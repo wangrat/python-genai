@@ -36,6 +36,10 @@ test_table: list[pytest_helper.TestTableItem] = [
         parameters=types._ListModelsParameters(config={'query_base': True}),
     ),
     pytest_helper.TestTableItem(
+        name='test_base_models_with_config',
+        parameters=types._ListModelsParameters(config={'query_base': True, 'page_size': 10}),
+    ),
+    pytest_helper.TestTableItem(
         name='test_with_config',
         parameters=types._ListModelsParameters(config={'page_size': 3}),
     ),

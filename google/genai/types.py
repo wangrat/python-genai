@@ -698,10 +698,6 @@ class HttpOptions(_common.BaseModel):
       default=None,
       description="""If set, the response payload will be returned int the supplied dict.""",
   )
-  skip_project_and_location_in_path: Optional[bool] = Field(
-      default=None,
-      description="""If set to True, the project and location will not be appended to the path.""",
-  )
 
 
 class HttpOptionsDict(TypedDict, total=False):
@@ -721,9 +717,6 @@ class HttpOptionsDict(TypedDict, total=False):
 
   response_payload: Optional[dict[str, any]]
   """If set, the response payload will be returned int the supplied dict."""
-
-  skip_project_and_location_in_path: Optional[bool]
-  """If set to True, the project and location will not be appended to the path."""
 
 
 HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
