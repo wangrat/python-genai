@@ -15,46 +15,25 @@
 
 from ... import errors
 from .. import pytest_helper
-from ... import _api_client
-
-# TODO: b/372730941 - Re-enable this test once HTTP options are supported for
-# all languages.
-"""
-test_table: list[pytest_helper.TestTableItem] = [
-    pytest_helper.TestTableItem(
-        name='test_generate_content_thought',
-        parameters=types._GenerateContentParameters(
-            model='models/gemini-2.0-flash-thinking-exp',
-            contents=t.t_contents(
-                None, 'What is the sum of natural numbers from 1 to 100?'
-            ),
-        ),
-        exception_if_vertex='404',
-        skip_in_api_mode=(
-            'Requires HTTP options support (not currently present in Go SDK).'
-        ),
-    ),
-]
-"""
-
 
 pytestmark = pytest_helper.setup(
     file=__file__,
     globals_for_file=globals(),
-    test_method='models.generate_content',
 )
 
 
 def test_has_thought_with_include_thoughts_v1alpha(client):
   # Thinking config currently only works in v1alpha for Gemini AI API.
   with pytest_helper.exception_if_vertex(client, errors.ClientError):
-    response = client.models.generate_content(
+    chat = client.chats.create(
         model='gemini-2.0-flash-thinking-exp',
-        contents='What is the sum of natural numbers from 1 to 100?',
         config={
             'thinking_config': {'include_thoughts': True},
             'http_options': {'api_version': 'v1alpha'},
         },
+    )
+    response = chat.send_message(
+        'What is the sum of natural numbers from 1 to 100?'
     )
     has_thought = False
     thought = ''
@@ -71,12 +50,14 @@ def test_has_thought_with_include_thoughts_v1alpha(client):
 
 def test_has_thought_with_include_thoughts(client):
   with pytest_helper.exception_if_mldev(client, errors.ClientError):
-    response = client.models.generate_content(
+    chat = client.chats.create(
         model='gemini-2.0-flash-thinking-exp-1219',
-        contents='What is the sum of natural numbers from 1 to 100?',
         config={
             'thinking_config': {'include_thoughts': True},
         },
+    )
+    response = chat.send_message(
+        'What is the sum of natural numbers from 1 to 100?'
     )
     has_thought = False
     thought = ''
@@ -92,9 +73,11 @@ def test_has_thought_with_include_thoughts(client):
 
 
 def test_no_thought_with_default_config(client):
-  response = client.models.generate_content(
-      model='gemini-2.0-flash-thinking-exp-1219',
-      contents='What is the sum of natural numbers from 1 to 100?',
+  chat = client.chats.create(
+      model='gemini-2.0-flash-thinking-exp-1219'
+  )
+  response = chat.send_message(
+      'What is the sum of natural numbers from 1 to 100?'
   )
   has_thought = False
   for candidate in response.candidates:
