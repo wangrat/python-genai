@@ -3381,6 +3381,9 @@ class Image(_common.BaseModel):
       or the ``gcs_uri`` field but not both.
       """,
   )
+  mime_type: Optional[str] = Field(
+      default=None, description="""The MIME type of the image."""
+  )
 
   _loaded_image = None
 
@@ -3503,6 +3506,9 @@ class ImageDict(TypedDict, total=False):
   """The image bytes data. ``Image`` can contain a value for this field
       or the ``gcs_uri`` field but not both.
       """
+
+  mime_type: Optional[str]
+  """The MIME type of the image."""
 
 
 ImageOrDict = Union[Image, ImageDict]

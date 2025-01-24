@@ -1600,6 +1600,9 @@ def _Image_to_mldev(
         t.t_bytes(api_client, getv(from_object, ['image_bytes'])),
     )
 
+  if getv(from_object, ['mime_type']) is not None:
+    setv(to_object, ['mimeType'], getv(from_object, ['mime_type']))
+
   return to_object
 
 
@@ -1618,6 +1621,9 @@ def _Image_to_vertex(
         ['bytesBase64Encoded'],
         t.t_bytes(api_client, getv(from_object, ['image_bytes'])),
     )
+
+  if getv(from_object, ['mime_type']) is not None:
+    setv(to_object, ['mimeType'], getv(from_object, ['mime_type']))
 
   return to_object
 
@@ -3216,6 +3222,9 @@ def _Image_from_mldev(
         t.t_bytes(api_client, getv(from_object, ['bytesBase64Encoded'])),
     )
 
+  if getv(from_object, ['mimeType']) is not None:
+    setv(to_object, ['mime_type'], getv(from_object, ['mimeType']))
+
   return to_object
 
 
@@ -3234,6 +3243,9 @@ def _Image_from_vertex(
         ['image_bytes'],
         t.t_bytes(api_client, getv(from_object, ['bytesBase64Encoded'])),
     )
+
+  if getv(from_object, ['mimeType']) is not None:
+    setv(to_object, ['mime_type'], getv(from_object, ['mimeType']))
 
   return to_object
 
