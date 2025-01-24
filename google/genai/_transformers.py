@@ -501,9 +501,7 @@ def t_schema(
     schema = process_schema(origin.model_dump(exclude_unset=True), client)
     return types.Schema.model_validate(schema)
   if isinstance(origin, GenericAlias):
-    if origin.__origin__ is list:
-      if isinstance(origin.__args__[0], typing.types.UnionType):
-        raise ValueError(f'Unsupported schema type: GenericAlias {origin}')
+    if origin.__origin__ is list and inspect.isclass(origin.__args__[0]):
       if issubclass(origin.__args__[0], pydantic.BaseModel):
         # Handle cases where response schema is `list[pydantic.BaseModel]`
         list_schema = _build_schema(

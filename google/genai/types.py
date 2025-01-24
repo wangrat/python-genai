@@ -2834,8 +2834,12 @@ class GenerateContentResponse(_common.BaseModel):
     response_schema = _common.get_value_by_path(
         kwargs, ['config', 'response_schema']
     )
-    if inspect.isclass(response_schema) and issubclass(
-        response_schema, pydantic.BaseModel
+    if (
+        inspect.isclass(response_schema)
+        and not (
+            isinstance(response_schema, GenericAlias)
+        )  # Needed for Python 3.9 and 3.10
+        and issubclass(response_schema, pydantic.BaseModel)
     ):
       # Pydantic schema.
       try:

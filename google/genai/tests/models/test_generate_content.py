@@ -18,6 +18,7 @@ from pydantic import BaseModel, ValidationError
 from typing import Optional
 import pytest
 import json
+import sys
 from ... import _transformers as t
 from ... import errors
 from ... import types
@@ -502,6 +503,10 @@ def test_pydantic_schema(client):
   assert isinstance(response.parsed, CountryInfo)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
 def test_pydantic_schema_with_none(client):
   class CountryInfo(BaseModel):
     name: str
@@ -562,6 +567,10 @@ def test_pydantic_schema_from_json(client):
   print(response.text)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
 def test_schema_with_union_type_raises(client):
   with pytest.raises(ValueError) as e:
     client.models.generate_content(
@@ -575,6 +584,10 @@ def test_schema_with_union_type_raises(client):
   assert 'Empty schema is not supported' in str(e)
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
 def test_list_schema_with_union_type_raises(client):
   with pytest.raises(ValueError) as e:
     client.models.generate_content(
