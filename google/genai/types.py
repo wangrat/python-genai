@@ -8010,7 +8010,7 @@ class LiveServerContent(_common.BaseModel):
   )
   interrupted: Optional[bool] = Field(
       default=None,
-      description="""If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue. If the client is playing out the content in realtime, this is a good signal to stop and empty the current playback queue.""",
+      description="""If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue.""",
   )
 
 
@@ -8028,7 +8028,7 @@ class LiveServerContentDict(TypedDict, total=False):
   """If true, indicates that the model is done generating. Generation will only start in response to additional client messages. Can be set alongside `content`, indicating that the `content` is the last in the turn."""
 
   interrupted: Optional[bool]
-  """If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue. If the client is playing out the content in realtime, this is a good signal to stop and empty the current playback queue."""
+  """If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue."""
 
 
 LiveServerContentOrDict = Union[LiveServerContent, LiveServerContentDict]
