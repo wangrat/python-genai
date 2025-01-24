@@ -33,7 +33,7 @@ test_table: list[pytest_helper.TestTableItem] = [
     ),
     pytest_helper.TestTableItem(
         name='test_all_vertexai_config_parameters',
-        exception_if_mldev='not supported in Google AI',
+        exception_if_mldev='not supported in Gemini API',
         parameters=types._GenerateImagesParameters(
             model='imagen-3.0-generate-002',
             prompt='Robot holding a red skateboard',

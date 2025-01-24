@@ -34,7 +34,7 @@ def _Part_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['video_metadata']) is not None:
-    raise ValueError('video_metadata parameter is not supported in Google AI.')
+    raise ValueError('video_metadata parameter is not supported in Gemini API.')
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
@@ -166,51 +166,51 @@ def _Schema_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['min_items']) is not None:
-    raise ValueError('min_items parameter is not supported in Google AI.')
+    raise ValueError('min_items parameter is not supported in Gemini API.')
 
   if getv(from_object, ['example']) is not None:
-    raise ValueError('example parameter is not supported in Google AI.')
+    raise ValueError('example parameter is not supported in Gemini API.')
 
   if getv(from_object, ['property_ordering']) is not None:
     raise ValueError(
-        'property_ordering parameter is not supported in Google AI.'
+        'property_ordering parameter is not supported in Gemini API.'
     )
 
   if getv(from_object, ['pattern']) is not None:
-    raise ValueError('pattern parameter is not supported in Google AI.')
+    raise ValueError('pattern parameter is not supported in Gemini API.')
 
   if getv(from_object, ['minimum']) is not None:
-    raise ValueError('minimum parameter is not supported in Google AI.')
+    raise ValueError('minimum parameter is not supported in Gemini API.')
 
   if getv(from_object, ['default']) is not None:
-    raise ValueError('default parameter is not supported in Google AI.')
+    raise ValueError('default parameter is not supported in Gemini API.')
 
   if getv(from_object, ['any_of']) is not None:
-    raise ValueError('any_of parameter is not supported in Google AI.')
+    raise ValueError('any_of parameter is not supported in Gemini API.')
 
   if getv(from_object, ['max_length']) is not None:
-    raise ValueError('max_length parameter is not supported in Google AI.')
+    raise ValueError('max_length parameter is not supported in Gemini API.')
 
   if getv(from_object, ['title']) is not None:
-    raise ValueError('title parameter is not supported in Google AI.')
+    raise ValueError('title parameter is not supported in Gemini API.')
 
   if getv(from_object, ['min_length']) is not None:
-    raise ValueError('min_length parameter is not supported in Google AI.')
+    raise ValueError('min_length parameter is not supported in Gemini API.')
 
   if getv(from_object, ['min_properties']) is not None:
-    raise ValueError('min_properties parameter is not supported in Google AI.')
+    raise ValueError('min_properties parameter is not supported in Gemini API.')
 
   if getv(from_object, ['max_items']) is not None:
-    raise ValueError('max_items parameter is not supported in Google AI.')
+    raise ValueError('max_items parameter is not supported in Gemini API.')
 
   if getv(from_object, ['maximum']) is not None:
-    raise ValueError('maximum parameter is not supported in Google AI.')
+    raise ValueError('maximum parameter is not supported in Gemini API.')
 
   if getv(from_object, ['nullable']) is not None:
-    raise ValueError('nullable parameter is not supported in Google AI.')
+    raise ValueError('nullable parameter is not supported in Gemini API.')
 
   if getv(from_object, ['max_properties']) is not None:
-    raise ValueError('max_properties parameter is not supported in Google AI.')
+    raise ValueError('max_properties parameter is not supported in Gemini API.')
 
   if getv(from_object, ['type']) is not None:
     setv(to_object, ['type'], getv(from_object, ['type']))
@@ -322,7 +322,7 @@ def _FunctionDeclaration_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['response']) is not None:
-    raise ValueError('response parameter is not supported in Google AI.')
+    raise ValueError('response parameter is not supported in Gemini API.')
 
   if getv(from_object, ['description']) is not None:
     setv(to_object, ['description'], getv(from_object, ['description']))
@@ -478,7 +478,7 @@ def _Tool_to_mldev(
     )
 
   if getv(from_object, ['retrieval']) is not None:
-    raise ValueError('retrieval parameter is not supported in Google AI.')
+    raise ValueError('retrieval parameter is not supported in Gemini API.')
 
   if getv(from_object, ['google_search']) is not None:
     setv(
@@ -1234,7 +1234,7 @@ class Caches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1295,7 +1295,7 @@ class Caches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1360,7 +1360,7 @@ class Caches(_api_module.BaseModule):
       )
 
     return_value = types.DeleteCachedContentResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1425,7 +1425,7 @@ class Caches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1485,7 +1485,7 @@ class Caches(_api_module.BaseModule):
       )
 
     return_value = types.ListCachedContentsResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1572,7 +1572,7 @@ class AsyncCaches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1633,7 +1633,7 @@ class AsyncCaches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1698,7 +1698,7 @@ class AsyncCaches(_api_module.BaseModule):
       )
 
     return_value = types.DeleteCachedContentResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1763,7 +1763,7 @@ class AsyncCaches(_api_module.BaseModule):
       response_dict = _CachedContent_from_mldev(self._api_client, response_dict)
 
     return_value = types.CachedContent._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1823,7 +1823,7 @@ class AsyncCaches(_api_module.BaseModule):
       )
 
     return_value = types.ListCachedContentsResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value

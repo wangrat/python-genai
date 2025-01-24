@@ -30,7 +30,8 @@ class SubPart(types.Part):
 def test_factory_method_from_uri_part():
 
   my_part = SubPart.from_uri(
-      'gs://generativeai-downloads/images/scones.jpg', 'image/jpeg'
+      file_uri='gs://generativeai-downloads/images/scones.jpg',
+      mime_type='image/jpeg',
   )
   assert (
       my_part.file_data.file_uri
@@ -41,48 +42,54 @@ def test_factory_method_from_uri_part():
 
 
 def test_factory_method_from_text_part():
-  my_part = SubPart.from_text('What is your name?')
+  my_part = SubPart.from_text(text='What is your name?')
   assert my_part.text == 'What is your name?'
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_bytes_part():
-  my_part = SubPart.from_bytes(b'123', 'text/plain')
+  my_part = SubPart.from_bytes(data=b'123', mime_type='text/plain')
   assert my_part.inline_data.data == b'123'
   assert my_part.inline_data.mime_type == 'text/plain'
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_function_call_part():
-  my_part = SubPart.from_function_call('func', {'arg': 'value'})
+  my_part = SubPart.from_function_call(name='func', args={'arg': 'value'})
   assert my_part.function_call.name == 'func'
   assert my_part.function_call.args == {'arg': 'value'}
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_function_response_part():
-  my_part = SubPart.from_function_response('func', {'response': 'value'})
+  my_part = SubPart.from_function_response(
+      name='func', response={'response': 'value'}
+  )
   assert my_part.function_response.name == 'func'
   assert my_part.function_response.response == {'response': 'value'}
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_video_metadata_part():
-  my_part = SubPart.from_video_metadata('10s', '20s')
-  assert my_part.video_metadata.end_offset == '10s'
-  assert my_part.video_metadata.start_offset == '20s'
+  my_part = SubPart.from_video_metadata(start_offset='10s', end_offset='20s')
+  assert my_part.video_metadata.end_offset == '20s'
+  assert my_part.video_metadata.start_offset == '10s'
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_executable_code_part():
-  my_part = SubPart.from_executable_code('print("hello")', 'PYTHON')
+  my_part = SubPart.from_executable_code(
+      code='print("hello")', language='PYTHON'
+  )
   assert my_part.executable_code.code == 'print("hello")'
   assert my_part.executable_code.language == 'PYTHON'
   assert isinstance(my_part, SubPart)
 
 
 def test_factory_method_from_code_execution_result_part():
-  my_part = SubPart.from_code_execution_result('OUTCOME_OK', 'print("hello")')
+  my_part = SubPart.from_code_execution_result(
+      outcome='OUTCOME_OK', output='print("hello")'
+  )
   assert my_part.code_execution_result.outcome == 'OUTCOME_OK'
   assert my_part.code_execution_result.output == 'print("hello")'
   assert isinstance(my_part, SubPart)
@@ -110,10 +117,10 @@ def test_empty_function():
   expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -159,10 +166,10 @@ def test_built_in_primitives_and_compounds():
   ]
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -175,9 +182,13 @@ def test_default_value_not_compatible_built_in_type():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 def test_default_value_built_in_type():
@@ -200,10 +211,12 @@ def test_default_value_built_in_type():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
 
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
   assert actual_schema_vertex == expected_schema_vertex
 
@@ -257,9 +270,13 @@ def test_unsupported_built_in_primitives_compounds():
   ]
   for func_under_test in all_func_under_test:
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
 
 
 @pytest.mark.skipif(
@@ -303,9 +320,11 @@ def test_built_in_union_type():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -323,9 +342,13 @@ def test_default_value_not_compatible_built_in_union_type():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 @pytest.mark.skipif(
@@ -378,9 +401,11 @@ def test_default_value_built_in_union_type():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -409,10 +434,10 @@ def test_generic_alias_literal():
   expected_schema_vertex.parameters.required = ['a']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -442,9 +467,11 @@ def test_default_value_generic_alias_literal():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -456,9 +483,13 @@ def test_default_value_generic_alias_literal_not_compatible():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 def test_default_value_not_compatible_generic_alias_literal():
@@ -467,9 +498,13 @@ def test_default_value_not_compatible_generic_alias_literal():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 def test_generic_alias_array():
@@ -496,10 +531,10 @@ def test_generic_alias_array():
   expected_schema_vertex.parameters.required = ['a']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -553,9 +588,11 @@ def test_generic_alias_complex_array():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
   assert actual_schema_vertex == expected_schema_vertex
 
@@ -636,9 +673,11 @@ def test_generic_alias_complex_array_with_default_value():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -664,9 +703,13 @@ def test_generic_alias_complex_array_with_default_value_not_compatible():
 
   for func_under_test in [func_under_test1, func_under_test2]:
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
 
 
 def test_generic_alias_object():
@@ -691,10 +734,10 @@ def test_generic_alias_object():
   expected_schema_vertex.parameters.required = ['a']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -762,9 +805,13 @@ def test_uncommon_generic_alias_object():
 
   for func_under_test in all_func_under_test:
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
 
 
 def test_generic_alias_object_with_default_value():
@@ -788,9 +835,11 @@ def test_generic_alias_object_with_default_value():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -802,9 +851,13 @@ def test_generic_alias_object_with_default_value_not_compatible():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 def test_pydantic_model():
@@ -866,10 +919,10 @@ def test_pydantic_model():
   expected_schema_vertex.parameters.required = ['a', 'b']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -910,10 +963,10 @@ def test_pydantic_model_in_list_type():
   expected_schema_vertex.parameters.required = ['a']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -970,9 +1023,11 @@ def test_pydantic_model_in_union_type():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -1015,9 +1070,11 @@ def test_pydantic_model_with_default_value():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -1038,9 +1095,13 @@ def test_custom_class():
     pass
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
 
 
 def test_type_union():
@@ -1105,9 +1166,11 @@ def test_type_union():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -1129,9 +1192,7 @@ def test_type_optional_with_list():
           properties={
               'a': types.Schema(type='STRING'),
               'b': types.Schema(
-                  nullable=True,
-                  type='ARRAY',
-                  items=types.Schema(type='STRING')
+                  nullable=True, type='ARRAY', items=types.Schema(type='STRING')
               ),
           },
           required=['a'],
@@ -1140,9 +1201,11 @@ def test_type_optional_with_list():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
   assert actual_schema_vertex == expected_schema_vertex
 
@@ -1213,10 +1276,12 @@ def test_type_union_with_default_value():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
 
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -1240,9 +1305,13 @@ def test_type_union_with_default_value_not_compatible():
 
   for func_under_test in all_func_under_test:
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
 
 
 @pytest.mark.skipif(
@@ -1297,9 +1366,11 @@ def test_type_nullable():
   )
 
   with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(mldev_client, func_under_test)
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
@@ -1318,10 +1389,10 @@ def test_empty_function_with_return_type():
   expected_schema_vertex.response = types.Schema(type='INTEGER')
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1348,10 +1419,10 @@ def test_simple_function_with_return_type():
   expected_schema_vertex.parameters.required = ['a']
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1387,10 +1458,10 @@ def test_builtin_union_return_type():
   )
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1424,10 +1495,10 @@ def test_typing_union_return_type():
   )
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1450,10 +1521,10 @@ def test_return_type_optional():
   )
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1502,10 +1573,10 @@ def test_return_type_pydantic_model():
   )
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
-      mldev_client, func_under_test
+      client=mldev_client, callable=func_under_test
   )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
-      vertex_client, func_under_test
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1585,11 +1656,13 @@ def test_function_with_return_type_not_supported():
         description=None,
     )
     actual_schema_mldev = types.FunctionDeclaration.from_callable(
-        mldev_client, func_under_test
+        client=mldev_client, callable=func_under_test
     )
     assert actual_schema_mldev == expected_schema_mldev
     with pytest.raises(ValueError):
-      types.FunctionDeclaration.from_callable(vertex_client, func_under_test)
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
 
 
 def test_function_with_options_mldev(monkeypatch):
@@ -1611,14 +1684,14 @@ def test_function_with_options_mldev(monkeypatch):
       description='test return type.',
   )
 
-  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_options(
-      func_under_test, 'GOOGLE_AI'
+  actual_schema_mldev = types.FunctionDeclaration.from_callable(
+      client=mldev_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
 
 
-def test_function_with_options_default_api_client(monkeypatch):
+def test_function_gemini_api(monkeypatch):
   api_key = 'google_api_key'
   monkeypatch.setenv('GOOGLE_API_KEY', api_key)
 
@@ -1637,8 +1710,8 @@ def test_function_with_options_default_api_client(monkeypatch):
       description='test return type.',
   )
 
-  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_options(
-      func_under_test
+  actual_schema_mldev = types.FunctionDeclaration.from_callable(
+      client=mldev_client, callable=func_under_test
   )
 
   assert actual_schema_mldev == expected_schema_mldev
@@ -1668,48 +1741,11 @@ def test_function_with_options_vertex(monkeypatch):
   expected_schema_vertex.response = types.Schema(type='STRING')
   expected_schema_vertex.parameters.required = ['a']
 
-  actual_schema_vertex = types.FunctionDeclaration.from_callable_with_options(
-      func_under_test, 'VERTEX_AI'
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
   )
 
   assert actual_schema_vertex == expected_schema_vertex
-
-
-def test_function_with_options_default(monkeypatch):
-  api_key = 'google_api_key'
-  monkeypatch.setenv('GOOGLE_API_KEY', api_key)
-
-  def func_under_test(a: int) -> str:
-    """test return type."""
-    return ''
-
-  expected_schema_mldev = types.FunctionDeclaration(
-      name='func_under_test',
-      parameters=types.Schema(
-          type='OBJECT',
-          properties={
-              'a': types.Schema(type='INTEGER'),
-          },
-      ),
-      description='test return type.',
-  )
-
-  actual_schema_default = types.FunctionDeclaration.from_callable_with_options(
-      func_under_test, 'DEFAULT'
-  )
-
-  assert actual_schema_default == expected_schema_mldev
-
-
-def test_function_with_options_invalid_variant():
-  def func_under_test(a: int) -> str:
-    """test return type."""
-    return ''
-
-  with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable_with_options(
-        func_under_test, 'UNKNOWN'
-    )
 
 
 def test_case_insensitive_enum():

@@ -581,7 +581,7 @@ class Files(_api_module.BaseModule):
       )
 
     return_value = types.ListFilesResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -634,7 +634,7 @@ class Files(_api_module.BaseModule):
       )
 
     return_value = types.CreateFileResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -696,7 +696,9 @@ class Files(_api_module.BaseModule):
     else:
       response_dict = _File_from_mldev(self._api_client, response_dict)
 
-    return_value = types.File._from_response(response_dict, parameter_model)
+    return_value = types.File._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -761,7 +763,7 @@ class Files(_api_module.BaseModule):
       )
 
     return_value = types.DeleteFileResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1009,7 +1011,7 @@ class AsyncFiles(_api_module.BaseModule):
       )
 
     return_value = types.ListFilesResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1062,7 +1064,7 @@ class AsyncFiles(_api_module.BaseModule):
       )
 
     return_value = types.CreateFileResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1124,7 +1126,9 @@ class AsyncFiles(_api_module.BaseModule):
     else:
       response_dict = _File_from_mldev(self._api_client, response_dict)
 
-    return_value = types.File._from_response(response_dict, parameter_model)
+    return_value = types.File._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -1189,7 +1193,7 @@ class AsyncFiles(_api_module.BaseModule):
       )
 
     return_value = types.DeleteFileResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value

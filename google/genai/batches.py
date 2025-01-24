@@ -35,13 +35,13 @@ def _BatchJobSource_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
-    raise ValueError('format parameter is not supported in Google AI.')
+    raise ValueError('format parameter is not supported in Gemini API.')
 
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   if getv(from_object, ['bigquery_uri']) is not None:
-    raise ValueError('bigquery_uri parameter is not supported in Google AI.')
+    raise ValueError('bigquery_uri parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -75,13 +75,13 @@ def _BatchJobDestination_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
-    raise ValueError('format parameter is not supported in Google AI.')
+    raise ValueError('format parameter is not supported in Gemini API.')
 
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   if getv(from_object, ['bigquery_uri']) is not None:
-    raise ValueError('bigquery_uri parameter is not supported in Google AI.')
+    raise ValueError('bigquery_uri parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -123,7 +123,7 @@ def _CreateBatchJobConfig_to_mldev(
     setv(parent_object, ['displayName'], getv(from_object, ['display_name']))
 
   if getv(from_object, ['dest']) is not None:
-    raise ValueError('dest parameter is not supported in Google AI.')
+    raise ValueError('dest parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -159,10 +159,10 @@ def _CreateBatchJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
-    raise ValueError('model parameter is not supported in Google AI.')
+    raise ValueError('model parameter is not supported in Gemini API.')
 
   if getv(from_object, ['src']) is not None:
-    raise ValueError('src parameter is not supported in Google AI.')
+    raise ValueError('src parameter is not supported in Gemini API.')
 
   if getv(from_object, ['config']) is not None:
     setv(
@@ -219,7 +219,7 @@ def _GetBatchJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
-    raise ValueError('name parameter is not supported in Google AI.')
+    raise ValueError('name parameter is not supported in Gemini API.')
 
   if getv(from_object, ['config']) is not None:
     setv(to_object, ['config'], getv(from_object, ['config']))
@@ -253,7 +253,7 @@ def _CancelBatchJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
-    raise ValueError('name parameter is not supported in Google AI.')
+    raise ValueError('name parameter is not supported in Gemini API.')
 
   if getv(from_object, ['config']) is not None:
     setv(to_object, ['config'], getv(from_object, ['config']))
@@ -300,7 +300,7 @@ def _ListBatchJobConfig_to_mldev(
     )
 
   if getv(from_object, ['filter']) is not None:
-    raise ValueError('filter parameter is not supported in Google AI.')
+    raise ValueError('filter parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -337,7 +337,7 @@ def _ListBatchJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
-    raise ValueError('config parameter is not supported in Google AI.')
+    raise ValueError('config parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -367,7 +367,7 @@ def _DeleteBatchJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
-    raise ValueError('name parameter is not supported in Google AI.')
+    raise ValueError('name parameter is not supported in Gemini API.')
 
   if getv(from_object, ['config']) is not None:
     setv(to_object, ['config'], getv(from_object, ['config']))
@@ -675,7 +675,9 @@ class Batches(_api_module.BaseModule):
     else:
       response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
-    return_value = types.BatchJob._from_response(response_dict, parameter_model)
+    return_value = types.BatchJob._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -737,7 +739,9 @@ class Batches(_api_module.BaseModule):
     else:
       response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
-    return_value = types.BatchJob._from_response(response_dict, parameter_model)
+    return_value = types.BatchJob._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -841,7 +845,7 @@ class Batches(_api_module.BaseModule):
       )
 
     return_value = types.ListBatchJobResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -911,7 +915,7 @@ class Batches(_api_module.BaseModule):
       )
 
     return_value = types.DeleteResourceJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1023,7 +1027,9 @@ class AsyncBatches(_api_module.BaseModule):
     else:
       response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
-    return_value = types.BatchJob._from_response(response_dict, parameter_model)
+    return_value = types.BatchJob._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -1085,7 +1091,9 @@ class AsyncBatches(_api_module.BaseModule):
     else:
       response_dict = _BatchJob_from_mldev(self._api_client, response_dict)
 
-    return_value = types.BatchJob._from_response(response_dict, parameter_model)
+    return_value = types.BatchJob._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
     self._api_client._verify_response(return_value)
     return return_value
 
@@ -1189,7 +1197,7 @@ class AsyncBatches(_api_module.BaseModule):
       )
 
     return_value = types.ListBatchJobResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1259,7 +1267,7 @@ class AsyncBatches(_api_module.BaseModule):
       )
 
     return_value = types.DeleteResourceJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value

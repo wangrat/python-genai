@@ -180,7 +180,7 @@ def _TuningDataset_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   if getv(from_object, ['examples']) is not None:
     setv(
@@ -221,7 +221,7 @@ def _TuningValidationDataset_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -247,7 +247,7 @@ def _CreateTuningJobConfig_to_mldev(
 
   if getv(from_object, ['validation_dataset']) is not None:
     raise ValueError(
-        'validation_dataset parameter is not supported in Google AI.'
+        'validation_dataset parameter is not supported in Gemini API.'
     )
 
   if getv(from_object, ['tuned_model_display_name']) is not None:
@@ -258,7 +258,7 @@ def _CreateTuningJobConfig_to_mldev(
     )
 
   if getv(from_object, ['description']) is not None:
-    raise ValueError('description parameter is not supported in Google AI.')
+    raise ValueError('description parameter is not supported in Gemini API.')
 
   if getv(from_object, ['epoch_count']) is not None:
     setv(
@@ -275,7 +275,7 @@ def _CreateTuningJobConfig_to_mldev(
     )
 
   if getv(from_object, ['adapter_size']) is not None:
-    raise ValueError('adapter_size parameter is not supported in Google AI.')
+    raise ValueError('adapter_size parameter is not supported in Gemini API.')
 
   if getv(from_object, ['batch_size']) is not None:
     setv(
@@ -417,7 +417,7 @@ def _DistillationDataset_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -445,7 +445,7 @@ def _DistillationValidationDataset_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Google AI.')
+    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -471,7 +471,7 @@ def _CreateDistillationJobConfig_to_mldev(
 
   if getv(from_object, ['validation_dataset']) is not None:
     raise ValueError(
-        'validation_dataset parameter is not supported in Google AI.'
+        'validation_dataset parameter is not supported in Gemini API.'
     )
 
   if getv(from_object, ['tuned_model_display_name']) is not None:
@@ -496,11 +496,11 @@ def _CreateDistillationJobConfig_to_mldev(
     )
 
   if getv(from_object, ['adapter_size']) is not None:
-    raise ValueError('adapter_size parameter is not supported in Google AI.')
+    raise ValueError('adapter_size parameter is not supported in Gemini API.')
 
   if getv(from_object, ['pipeline_root_directory']) is not None:
     raise ValueError(
-        'pipeline_root_directory parameter is not supported in Google AI.'
+        'pipeline_root_directory parameter is not supported in Gemini API.'
     )
 
   return to_object
@@ -567,10 +567,10 @@ def _CreateDistillationJobParameters_to_mldev(
 ) -> dict:
   to_object = {}
   if getv(from_object, ['student_model']) is not None:
-    raise ValueError('student_model parameter is not supported in Google AI.')
+    raise ValueError('student_model parameter is not supported in Gemini API.')
 
   if getv(from_object, ['teacher_model']) is not None:
-    raise ValueError('teacher_model parameter is not supported in Google AI.')
+    raise ValueError('teacher_model parameter is not supported in Gemini API.')
 
   if getv(from_object, ['training_dataset']) is not None:
     setv(
@@ -966,7 +966,7 @@ class Tunings(_api_module.BaseModule):
       response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.TuningJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1026,7 +1026,7 @@ class Tunings(_api_module.BaseModule):
       )
 
     return_value = types.ListTuningJobsResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1094,7 +1094,7 @@ class Tunings(_api_module.BaseModule):
       )
 
     return_value = types.TuningJobOrOperation._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     ).tuning_job
     self._api_client._verify_response(return_value)
     return return_value
@@ -1159,7 +1159,7 @@ class Tunings(_api_module.BaseModule):
       response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.TuningJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1262,7 +1262,7 @@ class AsyncTunings(_api_module.BaseModule):
       response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.TuningJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1322,7 +1322,7 @@ class AsyncTunings(_api_module.BaseModule):
       )
 
     return_value = types.ListTuningJobsResponse._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value
@@ -1390,7 +1390,7 @@ class AsyncTunings(_api_module.BaseModule):
       )
 
     return_value = types.TuningJobOrOperation._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     ).tuning_job
     self._api_client._verify_response(return_value)
     return return_value
@@ -1455,7 +1455,7 @@ class AsyncTunings(_api_module.BaseModule):
       response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
 
     return_value = types.TuningJob._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
     return return_value

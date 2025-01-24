@@ -219,7 +219,7 @@ def t_part(client: _api_client.ApiClient, part: PartType) -> types.Part:
   if isinstance(part, types.File):
     if not part.uri or not part.mime_type:
       raise ValueError('file uri and mime_type are required.')
-    return types.Part.from_uri(part.uri, part.mime_type)
+    return types.Part.from_uri(file_uri=part.uri, mime_type=part.mime_type)
   else:
     return part
 
@@ -554,7 +554,9 @@ def t_tool(client: _api_client.ApiClient, origin) -> types.Tool:
   if inspect.isfunction(origin) or inspect.ismethod(origin):
     return types.Tool(
         function_declarations=[
-            types.FunctionDeclaration.from_callable(client, origin)
+            types.FunctionDeclaration.from_callable(
+                client=client, callable=origin
+            )
         ]
     )
   else:

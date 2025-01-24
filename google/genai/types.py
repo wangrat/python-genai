@@ -560,16 +560,16 @@ class Part(_common.BaseModel):
   )
 
   @classmethod
-  def from_uri(cls, file_uri: str, mime_type: str) -> 'Part':
+  def from_uri(cls, *, file_uri: str, mime_type: str) -> 'Part':
     file_data = FileData(file_uri=file_uri, mime_type=mime_type)
     return cls(file_data=file_data)
 
   @classmethod
-  def from_text(cls, text: str) -> 'Part':
+  def from_text(cls, *, text: str) -> 'Part':
     return cls(text=text)
 
   @classmethod
-  def from_bytes(cls, data: bytes, mime_type: str) -> 'Part':
+  def from_bytes(cls, *, data: bytes, mime_type: str) -> 'Part':
     inline_data = Blob(
         data=data,
         mime_type=mime_type,
@@ -577,31 +577,33 @@ class Part(_common.BaseModel):
     return cls(inline_data=inline_data)
 
   @classmethod
-  def from_function_call(cls, name: str, args: dict[str, Any]) -> 'Part':
+  def from_function_call(cls, *, name: str, args: dict[str, Any]) -> 'Part':
     function_call = FunctionCall(name=name, args=args)
     return cls(function_call=function_call)
 
   @classmethod
   def from_function_response(
-      cls, name: str, response: dict[str, Any]
+      cls, *, name: str, response: dict[str, Any]
   ) -> 'Part':
     function_response = FunctionResponse(name=name, response=response)
     return cls(function_response=function_response)
 
   @classmethod
-  def from_video_metadata(cls, end_offset: str, start_offset: str) -> 'Part':
+  def from_video_metadata(cls, *, start_offset: str, end_offset: str) -> 'Part':
     video_metadata = VideoMetadata(
         end_offset=end_offset, start_offset=start_offset
     )
     return cls(video_metadata=video_metadata)
 
   @classmethod
-  def from_executable_code(cls, code: str, language: Language) -> 'Part':
+  def from_executable_code(cls, *, code: str, language: Language) -> 'Part':
     executable_code = ExecutableCode(code=code, language=language)
     return cls(executable_code=executable_code)
 
   @classmethod
-  def from_code_execution_result(cls, outcome: Outcome, output: str) -> 'Part':
+  def from_code_execution_result(
+      cls, *, outcome: Outcome, output: str
+  ) -> 'Part':
     code_execution_result = CodeExecutionResult(outcome=outcome, output=output)
     return cls(code_execution_result=code_execution_result)
 
@@ -949,33 +951,14 @@ class FunctionDeclaration(_common.BaseModel):
   )
 
   @classmethod
-  def _get_variant(cls, client) -> str:
-    """Returns the function variant based on the provided client object."""
-    if client.vertexai:
-      return 'VERTEX_AI'
-    else:
-      return 'GOOGLE_AI'
-
-  @classmethod
-  def from_callable_with_options(
+  def from_callable(
       cls,
+      *,
+      client,
       callable: Callable,
-      variant: Literal['GOOGLE_AI', 'VERTEX_AI', 'DEFAULT'] = 'GOOGLE_AI',
   ) -> 'FunctionDeclaration':
-    """Converts a callable to a FunctionDeclaration based on an API endpoint.
-
-    Supported endpoints are: 'GOOGLE_AI', 'VERTEX_AI', or 'DEFAULT'.
-    """
+    """Converts a Callable to a FunctionDeclaration based on the client."""
     from . import _automatic_function_calling_util
-
-    supported_variants = ['GOOGLE_AI', 'VERTEX_AI', 'DEFAULT']
-    if variant not in supported_variants:
-      raise ValueError(
-          f'Unsupported variant: {variant}. Supported variants are:'
-          f' {", ".join(supported_variants)}'
-      )
-
-    # TODO: b/382524014 - Add support for DEFAULT API endpoint.
 
     parameters_properties = {}
     for name, param in inspect.signature(callable).parameters.items():
@@ -985,7 +968,7 @@ class FunctionDeclaration(_common.BaseModel):
           inspect.Parameter.POSITIONAL_ONLY,
       ):
         schema = _automatic_function_calling_util._parse_schema_from_parameter(
-            variant, param, callable.__name__
+            client, param, callable.__name__
         )
         parameters_properties[name] = schema
     declaration = FunctionDeclaration(
@@ -997,13 +980,13 @@ class FunctionDeclaration(_common.BaseModel):
           type='OBJECT',
           properties=parameters_properties,
       )
-      if variant == 'VERTEX_AI':
+      if client.vertexai:
         declaration.parameters.required = (
             _automatic_function_calling_util._get_required_fields(
                 declaration.parameters
             )
         )
-    if not variant == 'VERTEX_AI':
+    if not client.vertexai:
       return declaration
 
     return_annotation = inspect.signature(callable).return_annotation
@@ -1012,7 +995,7 @@ class FunctionDeclaration(_common.BaseModel):
 
     declaration.response = (
         _automatic_function_calling_util._parse_schema_from_parameter(
-            variant,
+            client,
             inspect.Parameter(
                 'return_value',
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
@@ -1022,14 +1005,6 @@ class FunctionDeclaration(_common.BaseModel):
         )
     )
     return declaration
-
-  @classmethod
-  def from_callable(cls, client, callable: Callable) -> 'FunctionDeclaration':
-    """Converts a function to a FunctionDeclaration."""
-    return cls.from_callable_with_options(
-        variant=cls._get_variant(client),
-        callable=callable,
-    )
 
 
 class FunctionDeclarationDict(TypedDict, total=False):
@@ -2851,7 +2826,7 @@ class GenerateContentResponse(_common.BaseModel):
 
   @classmethod
   def _from_response(
-      cls, response: dict[str, object], kwargs: dict[str, object]
+      cls, *, response: dict[str, object], kwargs: dict[str, object]
   ):
     result = super()._from_response(response, kwargs)
 
@@ -3382,8 +3357,8 @@ class Image(_common.BaseModel):
 
   """Image."""
 
-  @staticmethod
-  def from_file(location: str) -> 'Image':
+  @classmethod
+  def from_file(cls, *, location: str) -> 'Image':
     """Lazy-loads an image from a local file or Google Cloud Storage.
 
     Args:
@@ -3409,11 +3384,11 @@ class Image(_common.BaseModel):
       location = urllib.parse.urlunparse(parsed_url)
 
     if parsed_url.scheme == 'gs':
-      return Image(gcs_uri=location)
+      return cls(gcs_uri=location)
 
     # Load image from local path
     image_bytes = pathlib.Path(location).read_bytes()
-    image = Image(image_bytes=image_bytes)
+    image = cls(image_bytes=image_bytes)
     return image
 
   def show(self):
