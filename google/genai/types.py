@@ -7150,7 +7150,7 @@ _CancelBatchJobParametersOrDict = Union[
 ]
 
 
-class ListBatchJobConfig(_common.BaseModel):
+class ListBatchJobsConfig(_common.BaseModel):
   """Config class for optional parameters."""
 
   http_options: Optional[HttpOptions] = Field(
@@ -7161,7 +7161,7 @@ class ListBatchJobConfig(_common.BaseModel):
   filter: Optional[str] = Field(default=None, description="""""")
 
 
-class ListBatchJobConfigDict(TypedDict, total=False):
+class ListBatchJobsConfigDict(TypedDict, total=False):
   """Config class for optional parameters."""
 
   http_options: Optional[HttpOptionsDict]
@@ -7177,35 +7177,37 @@ class ListBatchJobConfigDict(TypedDict, total=False):
   """"""
 
 
-ListBatchJobConfigOrDict = Union[ListBatchJobConfig, ListBatchJobConfigDict]
+ListBatchJobsConfigOrDict = Union[ListBatchJobsConfig, ListBatchJobsConfigDict]
 
 
-class _ListBatchJobParameters(_common.BaseModel):
+class _ListBatchJobsParameters(_common.BaseModel):
   """Config class for batches.list parameters."""
 
-  config: Optional[ListBatchJobConfig] = Field(default=None, description="""""")
+  config: Optional[ListBatchJobsConfig] = Field(
+      default=None, description=""""""
+  )
 
 
-class _ListBatchJobParametersDict(TypedDict, total=False):
+class _ListBatchJobsParametersDict(TypedDict, total=False):
   """Config class for batches.list parameters."""
 
-  config: Optional[ListBatchJobConfigDict]
+  config: Optional[ListBatchJobsConfigDict]
   """"""
 
 
-_ListBatchJobParametersOrDict = Union[
-    _ListBatchJobParameters, _ListBatchJobParametersDict
+_ListBatchJobsParametersOrDict = Union[
+    _ListBatchJobsParameters, _ListBatchJobsParametersDict
 ]
 
 
-class ListBatchJobResponse(_common.BaseModel):
+class ListBatchJobsResponse(_common.BaseModel):
   """Config class for batches.list return value."""
 
   next_page_token: Optional[str] = Field(default=None, description="""""")
   batch_jobs: Optional[list[BatchJob]] = Field(default=None, description="""""")
 
 
-class ListBatchJobResponseDict(TypedDict, total=False):
+class ListBatchJobsResponseDict(TypedDict, total=False):
   """Config class for batches.list return value."""
 
   next_page_token: Optional[str]
@@ -7215,8 +7217,8 @@ class ListBatchJobResponseDict(TypedDict, total=False):
   """"""
 
 
-ListBatchJobResponseOrDict = Union[
-    ListBatchJobResponse, ListBatchJobResponseDict
+ListBatchJobsResponseOrDict = Union[
+    ListBatchJobsResponse, ListBatchJobsResponseDict
 ]
 
 
