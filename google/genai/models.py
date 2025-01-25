@@ -1423,6 +1423,13 @@ def _GenerateImagesConfig_to_mldev(
         getv(from_object, ['aspect_ratio']),
     )
 
+  if getv(from_object, ['enhance_prompt']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'enhancePrompt'],
+        getv(from_object, ['enhance_prompt']),
+    )
+
   return to_object
 
 
@@ -1525,6 +1532,13 @@ def _GenerateImagesConfig_to_vertex(
         parent_object,
         ['parameters', 'aspectRatio'],
         getv(from_object, ['aspect_ratio']),
+    )
+
+  if getv(from_object, ['enhance_prompt']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'enhancePrompt'],
+        getv(from_object, ['enhance_prompt']),
     )
 
   return to_object

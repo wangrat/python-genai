@@ -3222,6 +3222,11 @@ class GenerateImagesConfig(_common.BaseModel):
       description="""Aspect ratio of the generated images.
       """,
   )
+  enhance_prompt: Optional[bool] = Field(
+      default=None,
+      description="""Whether to use the prompt rewriting logic.
+      """,
+  )
 
 
 class GenerateImagesConfigDict(TypedDict, total=False):
@@ -3289,6 +3294,10 @@ class GenerateImagesConfigDict(TypedDict, total=False):
 
   aspect_ratio: Optional[str]
   """Aspect ratio of the generated images.
+      """
+
+  enhance_prompt: Optional[bool]
+  """Whether to use the prompt rewriting logic.
       """
 
 
