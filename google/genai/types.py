@@ -164,7 +164,7 @@ class DeploymentResourcesType(_common.CaseInSensitiveEnum):
 
 
 class JobState(_common.CaseInSensitiveEnum):
-  """Config class for the job state."""
+  """Job state."""
 
   JOB_STATE_UNSPECIFIED = 'JOB_STATE_UNSPECIFIED'
   JOB_STATE_QUEUED = 'JOB_STATE_QUEUED'
@@ -192,14 +192,14 @@ class AdapterSize(_common.CaseInSensitiveEnum):
 
 
 class DynamicRetrievalConfigMode(_common.CaseInSensitiveEnum):
-  """Config class for the dynamic retrieval config mode."""
+  """Config for the dynamic retrieval config mode."""
 
   MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
   MODE_DYNAMIC = 'MODE_DYNAMIC'
 
 
 class FunctionCallingConfigMode(_common.CaseInSensitiveEnum):
-  """Config class for the function calling config mode."""
+  """Config for the function calling config mode."""
 
   MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
   AUTO = 'AUTO'
@@ -302,7 +302,7 @@ class FileSource(_common.CaseInSensitiveEnum):
 
 
 class Modality(_common.CaseInSensitiveEnum):
-  """Config class for the server content modalities."""
+  """Server content modalities."""
 
   MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
   TEXT = 'TEXT'
@@ -1723,7 +1723,7 @@ SpeechConfigUnionDict = Union[SpeechConfigUnion, SpeechConfigDict]
 
 
 class GenerateContentConfig(_common.BaseModel):
-  """Class for configuring optional model parameters.
+  """Optional model configuration parameters.
 
   For more information, see `Content generation parameters
   <https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters>`_.
@@ -1885,7 +1885,7 @@ class GenerateContentConfig(_common.BaseModel):
 
 
 class GenerateContentConfigDict(TypedDict, total=False):
-  """Class for configuring optional model parameters.
+  """Optional model configuration parameters.
 
   For more information, see `Content generation parameters
   <https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/content-generation-parameters>`_.
@@ -2032,7 +2032,7 @@ ContentListUnionDict = Union[list[ContentUnionDict], ContentUnionDict]
 
 
 class _GenerateContentParameters(_common.BaseModel):
-  """Class for configuring the content of the request to the model."""
+  """Config for models.generate_content parameters."""
 
   model: Optional[str] = Field(
       default=None,
@@ -2052,7 +2052,7 @@ class _GenerateContentParameters(_common.BaseModel):
 
 
 class _GenerateContentParametersDict(TypedDict, total=False):
-  """Class for configuring the content of the request to the model."""
+  """Config for models.generate_content parameters."""
 
   model: Optional[str]
   """ID of the model to use. For a list of models, see `Google models
@@ -2174,7 +2174,7 @@ CitationOrDict = Union[Citation, CitationDict]
 
 
 class CitationMetadata(_common.BaseModel):
-  """Class for citation information when the model quotes another source."""
+  """Citation information when the model quotes another source."""
 
   citations: Optional[list[Citation]] = Field(
       default=None,
@@ -2186,7 +2186,7 @@ class CitationMetadata(_common.BaseModel):
 
 
 class CitationMetadataDict(TypedDict, total=False):
-  """Class for citation information when the model quotes another source."""
+  """Citation information when the model quotes another source."""
 
   citations: Optional[list[CitationDict]]
   """Contains citation information when the model directly quotes, at
@@ -2579,7 +2579,7 @@ SafetyRatingOrDict = Union[SafetyRating, SafetyRatingDict]
 
 
 class Candidate(_common.BaseModel):
-  """Class containing a response candidate generated from the model."""
+  """A response candidate generated from the model."""
 
   content: Optional[Content] = Field(
       default=None,
@@ -2627,7 +2627,7 @@ class Candidate(_common.BaseModel):
 
 
 class CandidateDict(TypedDict, total=False):
-  """Class containing a response candidate generated from the model."""
+  """A response candidate generated from the model."""
 
   content: Optional[ContentDict]
   """Contains the multi-part content of the response.
@@ -2901,7 +2901,7 @@ GenerateContentResponseOrDict = Union[
 
 
 class EmbedContentConfig(_common.BaseModel):
-  """Class for configuring optional parameters for the embed_content method."""
+  """Optional parameters for the embed_content method."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -2940,7 +2940,7 @@ class EmbedContentConfig(_common.BaseModel):
 
 
 class EmbedContentConfigDict(TypedDict, total=False):
-  """Class for configuring optional parameters for the embed_content method."""
+  """Optional parameters for the embed_content method."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -3142,7 +3142,7 @@ EmbedContentResponseOrDict = Union[
 
 
 class GenerateImagesConfig(_common.BaseModel):
-  """Class that represents the config for generating images."""
+  """The config for generating an images."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -3230,7 +3230,7 @@ class GenerateImagesConfig(_common.BaseModel):
 
 
 class GenerateImagesConfigDict(TypedDict, total=False):
-  """Class that represents the config for generating images."""
+  """The config for generating an images."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -3307,7 +3307,7 @@ GenerateImagesConfigOrDict = Union[
 
 
 class _GenerateImagesParameters(_common.BaseModel):
-  """Class that represents the parameters for generating images."""
+  """The parameters for generating images."""
 
   model: Optional[str] = Field(
       default=None,
@@ -3327,7 +3327,7 @@ class _GenerateImagesParameters(_common.BaseModel):
 
 
 class _GenerateImagesParametersDict(TypedDict, total=False):
-  """Class that represents the parameters for generating images."""
+  """The parameters for generating images."""
 
   model: Optional[str]
   """ID of the model to use. For a list of models, see `Google models
@@ -3348,7 +3348,7 @@ _GenerateImagesParametersOrDict = Union[
 
 
 class Image(_common.BaseModel):
-  """Class that represents an image."""
+  """An image."""
 
   gcs_uri: Optional[str] = Field(
       default=None,
@@ -3476,7 +3476,7 @@ JOB_STATES_ENDED = JOB_STATES_ENDED_VERTEX + JOB_STATES_ENDED_MLDEV
 
 
 class ImageDict(TypedDict, total=False):
-  """Class that represents an image."""
+  """An image."""
 
   gcs_uri: Optional[str]
   """The Cloud Storage URI of the image. ``Image`` can contain a value
@@ -3496,7 +3496,7 @@ ImageOrDict = Union[Image, ImageDict]
 
 
 class GeneratedImage(_common.BaseModel):
-  """Class that represents an output image."""
+  """An output image."""
 
   image: Optional[Image] = Field(
       default=None,
@@ -3512,7 +3512,7 @@ class GeneratedImage(_common.BaseModel):
 
 
 class GeneratedImageDict(TypedDict, total=False):
-  """Class that represents an output image."""
+  """An output image."""
 
   image: Optional[ImageDict]
   """The output image data.
@@ -3528,7 +3528,7 @@ GeneratedImageOrDict = Union[GeneratedImage, GeneratedImageDict]
 
 
 class GenerateImagesResponse(_common.BaseModel):
-  """Class that represents the output images response."""
+  """The output images response."""
 
   generated_images: Optional[list[GeneratedImage]] = Field(
       default=None,
@@ -3538,7 +3538,7 @@ class GenerateImagesResponse(_common.BaseModel):
 
 
 class GenerateImagesResponseDict(TypedDict, total=False):
-  """Class that represents the output images response."""
+  """The output images response."""
 
   generated_images: Optional[list[GeneratedImageDict]]
   """List of generated images.
@@ -6047,7 +6047,7 @@ _CreateDistillationJobParametersOrDict = Union[
 
 
 class CreateCachedContentConfig(_common.BaseModel):
-  """Class for configuring optional cached content creation parameters."""
+  """Optional configuration for cached content creation."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -6088,7 +6088,7 @@ class CreateCachedContentConfig(_common.BaseModel):
 
 
 class CreateCachedContentConfigDict(TypedDict, total=False):
-  """Class for configuring optional cached content creation parameters."""
+  """Optional configuration for cached content creation."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -6768,7 +6768,7 @@ DeleteFileResponseOrDict = Union[DeleteFileResponse, DeleteFileResponseDict]
 
 
 class BatchJobSource(_common.BaseModel):
-  """Config class for `src` parameter."""
+  """Config for `src` parameter."""
 
   format: Optional[str] = Field(
       default=None,
@@ -6789,7 +6789,7 @@ class BatchJobSource(_common.BaseModel):
 
 
 class BatchJobSourceDict(TypedDict, total=False):
-  """Config class for `src` parameter."""
+  """Config for `src` parameter."""
 
   format: Optional[str]
   """Storage format of the input files. Must be one of:
@@ -6809,7 +6809,7 @@ BatchJobSourceOrDict = Union[BatchJobSource, BatchJobSourceDict]
 
 
 class BatchJobDestination(_common.BaseModel):
-  """Config class for `des` parameter."""
+  """Config for `des` parameter."""
 
   format: Optional[str] = Field(
       default=None,
@@ -6830,7 +6830,7 @@ class BatchJobDestination(_common.BaseModel):
 
 
 class BatchJobDestinationDict(TypedDict, total=False):
-  """Config class for `des` parameter."""
+  """Config for `des` parameter."""
 
   format: Optional[str]
   """Storage format of the output files. Must be one of:
@@ -6850,7 +6850,7 @@ BatchJobDestinationOrDict = Union[BatchJobDestination, BatchJobDestinationDict]
 
 
 class CreateBatchJobConfig(_common.BaseModel):
-  """Config class for optional parameters."""
+  """Config for optional parameters."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -6869,7 +6869,7 @@ class CreateBatchJobConfig(_common.BaseModel):
 
 
 class CreateBatchJobConfigDict(TypedDict, total=False):
-  """Config class for optional parameters."""
+  """Config for optional parameters."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -6890,7 +6890,7 @@ CreateBatchJobConfigOrDict = Union[
 
 
 class _CreateBatchJobParameters(_common.BaseModel):
-  """Config class for batches.create parameters."""
+  """Config for batches.create parameters."""
 
   model: Optional[str] = Field(
       default=None,
@@ -6911,7 +6911,7 @@ class _CreateBatchJobParameters(_common.BaseModel):
 
 
 class _CreateBatchJobParametersDict(TypedDict, total=False):
-  """Config class for batches.create parameters."""
+  """Config for batches.create parameters."""
 
   model: Optional[str]
   """The name of the model to produces the predictions via the BatchJob.
@@ -6933,7 +6933,7 @@ _CreateBatchJobParametersOrDict = Union[
 
 
 class JobError(_common.BaseModel):
-  """Config class for the job error."""
+  """Job error."""
 
   details: Optional[list[str]] = Field(
       default=None,
@@ -6947,7 +6947,7 @@ class JobError(_common.BaseModel):
 
 
 class JobErrorDict(TypedDict, total=False):
-  """Config class for the job error."""
+  """Job error."""
 
   details: Optional[list[str]]
   """A list of messages that carry the error details. There is a common set of message types for APIs to use."""
@@ -6963,7 +6963,7 @@ JobErrorOrDict = Union[JobError, JobErrorDict]
 
 
 class BatchJob(_common.BaseModel):
-  """Config class for batches.create return value."""
+  """Config for batches.create return value."""
 
   name: Optional[str] = Field(
       default=None, description="""Output only. Resource name of the Job."""
@@ -7013,7 +7013,7 @@ class BatchJob(_common.BaseModel):
 
 
 class BatchJobDict(TypedDict, total=False):
-  """Config class for batches.create return value."""
+  """Config for batches.create return value."""
 
   name: Optional[str]
   """Output only. Resource name of the Job."""
@@ -7074,7 +7074,7 @@ GetBatchJobConfigOrDict = Union[GetBatchJobConfig, GetBatchJobConfigDict]
 
 
 class _GetBatchJobParameters(_common.BaseModel):
-  """Config class for batches.get parameters."""
+  """Config for batches.get parameters."""
 
   name: Optional[str] = Field(
       default=None,
@@ -7089,7 +7089,7 @@ class _GetBatchJobParameters(_common.BaseModel):
 
 
 class _GetBatchJobParametersDict(TypedDict, total=False):
-  """Config class for batches.get parameters."""
+  """Config for batches.get parameters."""
 
   name: Optional[str]
   """A fully-qualified BatchJob resource name or ID.
@@ -7127,7 +7127,7 @@ CancelBatchJobConfigOrDict = Union[
 
 
 class _CancelBatchJobParameters(_common.BaseModel):
-  """Config class for batches.cancel parameters."""
+  """Config for batches.cancel parameters."""
 
   name: Optional[str] = Field(
       default=None,
@@ -7142,7 +7142,7 @@ class _CancelBatchJobParameters(_common.BaseModel):
 
 
 class _CancelBatchJobParametersDict(TypedDict, total=False):
-  """Config class for batches.cancel parameters."""
+  """Config for batches.cancel parameters."""
 
   name: Optional[str]
   """A fully-qualified BatchJob resource name or ID.
@@ -7160,7 +7160,7 @@ _CancelBatchJobParametersOrDict = Union[
 
 
 class ListBatchJobsConfig(_common.BaseModel):
-  """Config class for optional parameters."""
+  """Config for optional parameters."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -7171,7 +7171,7 @@ class ListBatchJobsConfig(_common.BaseModel):
 
 
 class ListBatchJobsConfigDict(TypedDict, total=False):
-  """Config class for optional parameters."""
+  """Config for optional parameters."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -7190,7 +7190,7 @@ ListBatchJobsConfigOrDict = Union[ListBatchJobsConfig, ListBatchJobsConfigDict]
 
 
 class _ListBatchJobsParameters(_common.BaseModel):
-  """Config class for batches.list parameters."""
+  """Config for batches.list parameters."""
 
   config: Optional[ListBatchJobsConfig] = Field(
       default=None, description=""""""
@@ -7198,7 +7198,7 @@ class _ListBatchJobsParameters(_common.BaseModel):
 
 
 class _ListBatchJobsParametersDict(TypedDict, total=False):
-  """Config class for batches.list parameters."""
+  """Config for batches.list parameters."""
 
   config: Optional[ListBatchJobsConfigDict]
   """"""
@@ -7210,14 +7210,14 @@ _ListBatchJobsParametersOrDict = Union[
 
 
 class ListBatchJobsResponse(_common.BaseModel):
-  """Config class for batches.list return value."""
+  """Config for batches.list return value."""
 
   next_page_token: Optional[str] = Field(default=None, description="""""")
   batch_jobs: Optional[list[BatchJob]] = Field(default=None, description="""""")
 
 
 class ListBatchJobsResponseDict(TypedDict, total=False):
-  """Config class for batches.list return value."""
+  """Config for batches.list return value."""
 
   next_page_token: Optional[str]
   """"""
@@ -7252,7 +7252,7 @@ DeleteBatchJobConfigOrDict = Union[
 
 
 class _DeleteBatchJobParameters(_common.BaseModel):
-  """Config class for batches.delete parameters."""
+  """Config for batches.delete parameters."""
 
   name: Optional[str] = Field(
       default=None,
@@ -7267,7 +7267,7 @@ class _DeleteBatchJobParameters(_common.BaseModel):
 
 
 class _DeleteBatchJobParametersDict(TypedDict, total=False):
-  """Config class for batches.delete parameters."""
+  """Config for batches.delete parameters."""
 
   name: Optional[str]
   """A fully-qualified BatchJob resource name or ID.
@@ -7285,7 +7285,7 @@ _DeleteBatchJobParametersOrDict = Union[
 
 
 class DeleteResourceJob(_common.BaseModel):
-  """Config class for the return value of delete operation."""
+  """The return value of delete operation."""
 
   name: Optional[str] = Field(default=None, description="""""")
   done: Optional[bool] = Field(default=None, description="""""")
@@ -7293,7 +7293,7 @@ class DeleteResourceJob(_common.BaseModel):
 
 
 class DeleteResourceJobDict(TypedDict, total=False):
-  """Config class for the return value of delete operation."""
+  """The return value of delete operation."""
 
   name: Optional[str]
   """"""
@@ -7648,7 +7648,7 @@ UpscaleImageParametersOrDict = Union[
 
 
 class RawReferenceImage(_common.BaseModel):
-  """Class that represents a Raw reference image.
+  """A raw reference image.
 
   A raw reference image represents the base image to edit, provided by the user.
   It can optionally be provided in addition to a mask reference image or
@@ -7679,7 +7679,7 @@ class RawReferenceImage(_common.BaseModel):
 
 
 class RawReferenceImageDict(TypedDict, total=False):
-  """Class that represents a Raw reference image.
+  """A raw reference image.
 
   A raw reference image represents the base image to edit, provided by the user.
   It can optionally be provided in addition to a mask reference image or
@@ -7700,7 +7700,7 @@ RawReferenceImageOrDict = Union[RawReferenceImage, RawReferenceImageDict]
 
 
 class MaskReferenceImage(_common.BaseModel):
-  """Class that represents a Mask reference image.
+  """A mask reference image.
 
   This encapsulates either a mask image provided by the user and configs for
   the user provided mask, or only config parameters for the model to generate
@@ -7745,7 +7745,7 @@ class MaskReferenceImage(_common.BaseModel):
 
 
 class MaskReferenceImageDict(TypedDict, total=False):
-  """Class that represents a Mask reference image.
+  """A mask reference image.
 
   This encapsulates either a mask image provided by the user and configs for
   the user provided mask, or only config parameters for the model to generate
@@ -7773,7 +7773,7 @@ MaskReferenceImageOrDict = Union[MaskReferenceImage, MaskReferenceImageDict]
 
 
 class ControlReferenceImage(_common.BaseModel):
-  """Class that represents a Control reference image.
+  """A control reference image.
 
   The image of the control reference image is either a control image provided
   by the user, or a regular image which the backend will use to generate a
@@ -7818,7 +7818,7 @@ class ControlReferenceImage(_common.BaseModel):
 
 
 class ControlReferenceImageDict(TypedDict, total=False):
-  """Class that represents a Control reference image.
+  """A control reference image.
 
   The image of the control reference image is either a control image provided
   by the user, or a regular image which the backend will use to generate a
@@ -7848,7 +7848,7 @@ ControlReferenceImageOrDict = Union[
 
 
 class StyleReferenceImage(_common.BaseModel):
-  """Class that represents a Style reference image.
+  """A style reference image.
 
   This encapsulates a style reference image provided by the user, and
   additionally optional config parameters for the style reference image.
@@ -7891,7 +7891,7 @@ class StyleReferenceImage(_common.BaseModel):
 
 
 class StyleReferenceImageDict(TypedDict, total=False):
-  """Class that represents a Style reference image.
+  """A style reference image.
 
   This encapsulates a style reference image provided by the user, and
   additionally optional config parameters for the style reference image.
@@ -7917,7 +7917,7 @@ StyleReferenceImageOrDict = Union[StyleReferenceImage, StyleReferenceImageDict]
 
 
 class SubjectReferenceImage(_common.BaseModel):
-  """Class that represents a Subject reference image.
+  """A subject reference image.
 
   This encapsulates a subject reference image provided by the user, and
   additionally optional config parameters for the subject reference image.
@@ -7960,7 +7960,7 @@ class SubjectReferenceImage(_common.BaseModel):
 
 
 class SubjectReferenceImageDict(TypedDict, total=False):
-  """Class that represents a Subject reference image.
+  """A subject reference image.
 
   This encapsulates a subject reference image provided by the user, and
   additionally optional config parameters for the subject reference image.
@@ -8179,7 +8179,17 @@ class LiveClientSetup(_common.BaseModel):
   )
   generation_config: Optional[GenerationConfig] = Field(
       default=None,
-      description="""The generation configuration for the session.""",
+      description="""The generation configuration for the session.
+
+The following fields are supported:
+- `response_logprobs`
+- `response_mime_type`
+- `logprobs`
+- `response_schema`
+- `stop_sequence`
+- `routing_config`
+- `audio_timestamp`
+      """,
   )
   system_instruction: Optional[Content] = Field(
       default=None,
@@ -8207,7 +8217,17 @@ class LiveClientSetupDict(TypedDict, total=False):
       """
 
   generation_config: Optional[GenerationConfigDict]
-  """The generation configuration for the session."""
+  """The generation configuration for the session.
+
+The following fields are supported:
+- `response_logprobs`
+- `response_mime_type`
+- `logprobs`
+- `response_schema`
+- `stop_sequence`
+- `routing_config`
+- `audio_timestamp`
+      """
 
   system_instruction: Optional[ContentDict]
   """The user provided system instructions for the model.
@@ -8239,7 +8259,7 @@ class LiveClientContent(_common.BaseModel):
       description="""The content appended to the current conversation with the model.
 
       For single-turn queries, this is a single instance. For multi-turn
-      queries, this is a repeated field that contains conversation history +
+      queries, this is a repeated field that contains conversation history and
       latest request.
       """,
   )
@@ -8264,7 +8284,7 @@ class LiveClientContentDict(TypedDict, total=False):
   """The content appended to the current conversation with the model.
 
       For single-turn queries, this is a single instance. For multi-turn
-      queries, this is a repeated field that contains conversation history +
+      queries, this is a repeated field that contains conversation history and
       latest request.
       """
 
@@ -8281,16 +8301,17 @@ class LiveClientRealtimeInput(_common.BaseModel):
   """User input that is sent in real time.
 
   This is different from `ClientContentUpdate` in a few ways:
-  - Can be sent continuously without interruption the model generation.
-  - If there is a need to mix data interleaved across the
-    `ClientContentUpdate` and the `RealtimeUpdate`, server will attempt to
-    optimize for best response, but there are no guarantees.
-  - End of turn is not explicitly specified, but is rather derived from user
-    activity, e.g. end of speech.
-  - Even before the end of turn, the data will be processed incrementally
-    to optimize for a fast start of the response from the model.
-  - Is always assumed to be the user's input (cannot be used to populate
-    conversation history).
+
+    - Can be sent continuously without interruption to model generation.
+    - If there is a need to mix data interleaved across the
+      `ClientContentUpdate` and the `RealtimeUpdate`, server attempts to
+      optimize for best response, but there are no guarantees.
+    - End of turn is not explicitly specified, but is rather derived from user
+      activity (for example, end of speech).
+    - Even before the end of turn, the data is processed incrementally
+      to optimize for a fast start of the response from the model.
+    - Is always assumed to be the user's input (cannot be used to populate
+      conversation history).
   """
 
   media_chunks: Optional[list[Blob]] = Field(
@@ -8302,16 +8323,17 @@ class LiveClientRealtimeInputDict(TypedDict, total=False):
   """User input that is sent in real time.
 
   This is different from `ClientContentUpdate` in a few ways:
-  - Can be sent continuously without interruption the model generation.
-  - If there is a need to mix data interleaved across the
-    `ClientContentUpdate` and the `RealtimeUpdate`, server will attempt to
-    optimize for best response, but there are no guarantees.
-  - End of turn is not explicitly specified, but is rather derived from user
-    activity, e.g. end of speech.
-  - Even before the end of turn, the data will be processed incrementally
-    to optimize for a fast start of the response from the model.
-  - Is always assumed to be the user's input (cannot be used to populate
-    conversation history).
+
+    - Can be sent continuously without interruption to model generation.
+    - If there is a need to mix data interleaved across the
+      `ClientContentUpdate` and the `RealtimeUpdate`, server attempts to
+      optimize for best response, but there are no guarantees.
+    - End of turn is not explicitly specified, but is rather derived from user
+      activity (for example, end of speech).
+    - Even before the end of turn, the data is processed incrementally
+      to optimize for a fast start of the response from the model.
+    - Is always assumed to be the user's input (cannot be used to populate
+      conversation history).
   """
 
   media_chunks: Optional[list[BlobDict]]
@@ -8401,7 +8423,7 @@ LiveClientMessageOrDict = Union[LiveClientMessage, LiveClientMessageDict]
 
 
 class LiveConnectConfig(_common.BaseModel):
-  """Config class for the session."""
+  """Session config for the API connection."""
 
   generation_config: Optional[GenerationConfig] = Field(
       default=None,
@@ -8435,7 +8457,7 @@ class LiveConnectConfig(_common.BaseModel):
 
 
 class LiveConnectConfigDict(TypedDict, total=False):
-  """Config class for the session."""
+  """Session config for the API connection."""
 
   generation_config: Optional[GenerationConfigDict]
   """The generation configuration for the session."""
