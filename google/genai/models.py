@@ -1365,6 +1365,9 @@ def _GenerateImagesConfig_to_mldev(
     raise ValueError('seed parameter is not supported in Gemini API.')
 
   if getv(from_object, ['safety_filter_level']) is not None:
+    _SafetyFilterLevel_to_mldev_enum_validate(
+        getv(from_object, ['safety_filter_level'])
+    )
     setv(
         parent_object,
         ['parameters', 'safetySetting'],
@@ -1372,6 +1375,9 @@ def _GenerateImagesConfig_to_mldev(
     )
 
   if getv(from_object, ['person_generation']) is not None:
+    _PersonGeneration_to_mldev_enum_validate(
+        getv(from_object, ['person_generation'])
+    )
     setv(
         parent_object,
         ['parameters', 'personGeneration'],
@@ -1922,6 +1928,9 @@ def _EditImageConfig_to_mldev(
     raise ValueError('seed parameter is not supported in Gemini API.')
 
   if getv(from_object, ['safety_filter_level']) is not None:
+    _SafetyFilterLevel_to_mldev_enum_validate(
+        getv(from_object, ['safety_filter_level'])
+    )
     setv(
         parent_object,
         ['parameters', 'safetySetting'],
@@ -1929,6 +1938,9 @@ def _EditImageConfig_to_mldev(
     )
 
   if getv(from_object, ['person_generation']) is not None:
+    _PersonGeneration_to_mldev_enum_validate(
+        getv(from_object, ['person_generation'])
+    )
     setv(
         parent_object,
         ['parameters', 'personGeneration'],
@@ -1971,6 +1983,7 @@ def _EditImageConfig_to_mldev(
     )
 
   if getv(from_object, ['edit_mode']) is not None:
+    _EditMode_to_mldev_enum_validate(getv(from_object, ['edit_mode']))
     setv(
         parent_object,
         ['parameters', 'editMode'],
@@ -2770,6 +2783,71 @@ def _ComputeTokensParameters_to_vertex(
     setv(to_object, ['config'], getv(from_object, ['config']))
 
   return to_object
+
+
+def _MediaResolution_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set([
+      'MEDIA_RESOLUTION_UNSPECIFIED',
+      'MEDIA_RESOLUTION_LOW',
+      'MEDIA_RESOLUTION_MEDIUM',
+      'MEDIA_RESOLUTION_HIGH',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _SafetyFilterLevel_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set(['BLOCK_NONE']):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _PersonGeneration_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set(['ALLOW_ALL']):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _MaskReferenceMode_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set([
+      'MASK_MODE_DEFAULT',
+      'MASK_MODE_USER_PROVIDED',
+      'MASK_MODE_BACKGROUND',
+      'MASK_MODE_FOREGROUND',
+      'MASK_MODE_SEMANTIC',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _ControlReferenceType_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set([
+      'CONTROL_TYPE_DEFAULT',
+      'CONTROL_TYPE_CANNY',
+      'CONTROL_TYPE_SCRIBBLE',
+      'CONTROL_TYPE_FACE_MESH',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _SubjectReferenceType_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set([
+      'SUBJECT_TYPE_DEFAULT',
+      'SUBJECT_TYPE_PERSON',
+      'SUBJECT_TYPE_ANIMAL',
+      'SUBJECT_TYPE_PRODUCT',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
+
+
+def _EditMode_to_mldev_enum_validate(enum_value: any):
+  if enum_value in set([
+      'EDIT_MODE_DEFAULT',
+      'EDIT_MODE_INPAINT_REMOVAL',
+      'EDIT_MODE_INPAINT_INSERTION',
+      'EDIT_MODE_OUTPAINT',
+      'EDIT_MODE_CONTROLLED_EDITING',
+      'EDIT_MODE_STYLE',
+      'EDIT_MODE_BGSWAP',
+      'EDIT_MODE_PRODUCT_IMAGE',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
 
 
 def _Part_from_mldev(

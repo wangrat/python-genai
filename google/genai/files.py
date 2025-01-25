@@ -351,6 +351,16 @@ def _DeleteFileParameters_to_vertex(
   return to_object
 
 
+def _FileState_to_vertex_enum_validate(enum_value: any):
+  if enum_value in set(['STATE_UNSPECIFIED', 'PROCESSING', 'ACTIVE', 'FAILED']):
+    raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
+
+
+def _FileSource_to_vertex_enum_validate(enum_value: any):
+  if enum_value in set(['SOURCE_UNSPECIFIED', 'UPLOADED', 'GENERATED']):
+    raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
+
+
 def _FileStatus_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],

@@ -57,6 +57,72 @@ test_table: list[pytest_helper.TestTableItem] = [
         ),
     ),
     pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_person_generation_enum_parameters',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'person_generation': 'ALLOW_ALL',
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_person_generation_enum_parameters_2',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'person_generation': 'allow_all',
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_person_generation_enum_parameters_3',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'person_generation': types.PersonGeneration.ALLOW_ALL,
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_safety_filter_level_enum_parameters',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'safety_filter_level': 'BLOCK_NONE',
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_safety_filter_level_enum_parameters_2',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'safety_filter_level': 'block_none',
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_all_vertexai_config_safety_filter_level_enum_parameters_3',
+        exception_if_mldev='enum value is not supported',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Robot holding a red skateboard',
+            config={
+                'safety_filter_level': types.SafetyFilterLevel.BLOCK_NONE,
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
         name='test_all_mldev_config_parameters',
         parameters=types._GenerateImagesParameters(
             model='imagen-3.0-generate-002',
