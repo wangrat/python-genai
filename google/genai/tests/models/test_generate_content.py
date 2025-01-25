@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+import enum
 
 from pydantic import BaseModel, ValidationError
 from typing import Optional
@@ -484,7 +485,9 @@ def test_safety_settings_on_difference_stream_with_lower_enum(client):
 
 def test_pydantic_schema(client):
   class CountryInfo(BaseModel):
-    name: str
+    # We need at least one test with `title` in properties in case the schema
+    # edits go wrong.
+    title: str
     population: int
     capital: str
     continent: str
@@ -501,6 +504,48 @@ def test_pydantic_schema(client):
       },
   )
   assert isinstance(response.parsed, CountryInfo)
+
+def test_repeated_pydantic_schema(client):
+  # This tests the defs handling on the pydantic side.
+  class Person(BaseModel):
+    name: str
+
+  class Relationship(BaseModel):
+    relationship: str
+    person1: Person
+    person2: Person
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Create a couple.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': Relationship,
+      },
+  )
+  assert isinstance(response.parsed, Relationship)
+
+def test_int_schema(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents="what's your favorite number?",
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': int,
+      },
+  )
+  assert isinstance(response.parsed, int)
+
+def test_nested_list_of_int_schema(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents="Can you return two matrices, a 2x3 and a 3x4?",
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': list[list[list[int]]],
+      },
+  )
+  assert isinstance(response.parsed[0][0][0], int)
 
 
 @pytest.mark.skipif(
@@ -575,13 +620,13 @@ def test_schema_with_union_type_raises(client):
   with pytest.raises(ValueError) as e:
     client.models.generate_content(
         model='gemini-1.5-flash',
-        contents='Give me a random number, could be an integer or a float.',
-        config=types.GenerateContentConfig(
+        contents='Give me a random number, either as an integers or written out as words.',
+        config=types.GenerateContentConfig.model_validate(dict(
             response_mime_type='application/json',
-            response_schema=int | float,
-        )
+            response_schema=int | str,
+        ))
     )
-  assert 'Empty schema is not supported' in str(e)
+  assert 'Unsupported schema type' in str(e)
 
 
 @pytest.mark.skipif(
@@ -589,17 +634,18 @@ def test_schema_with_union_type_raises(client):
     reason='| is not supported in Python 3.9',
 )
 def test_list_schema_with_union_type_raises(client):
-  with pytest.raises(ValueError) as e:
-    client.models.generate_content(
+  with pytest_helper.exception_if_mldev(client, errors.ClientError):
+    response = client.models.generate_content(
         model='gemini-1.5-flash',
-        contents='Give me a list of 5 random numbers, including integers and floats.',
+        contents='Give me a list of 5 random numbers, including some integers and some written out as words.',
         config=types.GenerateContentConfig(
             response_mime_type='application/json',
-            response_schema=list[int | float],
+            response_schema=list[int | str],
         )
     )
-  assert 'Unsupported schema type' in str(e)
-  assert 'list' in str(e)
+    for item in response.parsed:
+      assert isinstance(item, int) or isinstance(item, str)
+
 
 
 def test_list_of_pydantic_schema(client):
@@ -624,6 +670,24 @@ def test_list_of_pydantic_schema(client):
   assert len(response.parsed) == 3
   assert isinstance(response.parsed[0], CountryInfo)
 
+def test_nested_list_of_pydantic_schema(client):
+  class Recipe(BaseModel):
+    name: str
+    cook_time: str
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents="I\'m writing three recipe books, one each for United States, Canada, and Mexico. "
+               "Can you give some recipe ideas, at least 2 per book?",
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=list[list[Recipe]],
+      )
+  )
+  assert isinstance(response.parsed, list)
+  assert len(response.parsed) == 3
+  assert isinstance(response.parsed[0][0], Recipe)
+
 
 def test_list_of_pydantic_schema_with_dict_config(client):
   class CountryInfo(BaseModel):
@@ -646,6 +710,44 @@ def test_list_of_pydantic_schema_with_dict_config(client):
   assert isinstance(response.parsed, list)
   assert len(response.parsed) == 3
   assert isinstance(response.parsed[0], CountryInfo)
+
+def test_pydantic_schema_with_nested_class(client):
+  class CurrencyInfo(BaseModel):
+    name: str
+
+  class CountryInfo(BaseModel):
+    name: str
+    currency: CurrencyInfo
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=CountryInfo,
+      )
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert isinstance(response.parsed.currency, CurrencyInfo)
+
+def test_pydantic_schema_with_nested_list_class(client):
+  class CurrencyInfo(BaseModel):
+    name: str
+
+  class CountryInfo(BaseModel):
+    name: str
+    currency: list[CurrencyInfo]
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States.',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=CountryInfo,
+      )
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert isinstance(response.parsed.currency[0], CurrencyInfo)
 
 
 def test_list_of_pydantic_schema_with_nested_class(client):

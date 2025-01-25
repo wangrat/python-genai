@@ -16,7 +16,7 @@
 
 """Tests schema processing methods in the _transformers module."""
 
-
+import copy
 import pydantic
 
 from ... import _transformers
@@ -58,18 +58,14 @@ class CountryInfoWithCurrency(pydantic.BaseModel):
 
 nested_country_info_fields = CountryInfoWithCurrency.model_fields
 
-
 class CountryInfoWithNullFields(pydantic.BaseModel):
   name: str
   population: int | None = None
 
-
 def test_build_schema_for_list_of_pydantic_schema():
   """Tests _build_schema() when list[pydantic.BaseModel] is provided to response_schema."""
 
-  list_schema = _transformers._build_schema(
-      'dummy', {'dummy': (CountryInfo, pydantic.Field())}
-  )
+  list_schema = _transformers.t_schema(None, CountryInfo).model_dump()
 
   assert isinstance(list_schema, dict)
 
@@ -78,8 +74,8 @@ def test_build_schema_for_list_of_pydantic_schema():
     assert 'type' in list_schema['properties'][field_name]
     assert field_name in country_info_fields
     field_type_str = country_info_fields[field_name].annotation.__name__
-    assert list_schema['properties'][field_name]['type'].startswith(
-        field_type_str
+    assert list_schema['properties'][field_name]['type'].lower().startswith(
+        field_type_str.lower()
     )
     assert 'required' in list_schema
     assert list_schema['required'] == list(country_info_fields.keys())
@@ -87,9 +83,7 @@ def test_build_schema_for_list_of_pydantic_schema():
 
 def test_build_schema_for_list_of_nested_pydantic_schema():
   """Tests _build_schema() when list[pydantic.BaseModel] is provided to response_schema and the pydantic.BaseModel has nested pydantic fields."""
-  list_schema = _transformers._build_schema(
-      'dummy', {'dummy': (CountryInfoWithCurrency, pydantic.Field())}
-  )
+  list_schema = _transformers.t_schema(None, CountryInfoWithCurrency).model_dump()
 
   assert isinstance(list_schema, dict)
 
@@ -147,5 +141,7 @@ def test_schema_with_no_null_fields_is_unchanged():
       },
   }
 
-  transformed_properties = _transformers.handle_null_fields(test_properties)
-  assert transformed_properties == test_properties
+  for name, schema in test_properties.items():
+    schema_before = copy.deepcopy(schema)
+    _transformers.handle_null_fields(schema)
+    assert schema_before == schema

@@ -2847,27 +2847,30 @@ class GenerateContentResponse(_common.BaseModel):
       # may not be a valid json per stream response
       except pydantic.ValidationError:
         pass
+      except json.decoder.JSONDecodeError:
+        pass
 
-    elif isinstance(response_schema, GenericAlias) and issubclass(
-        response_schema.__args__[0], pydantic.BaseModel
+    elif isinstance(response_schema, GenericAlias) or isinstance(
+        response_schema, type
     ):
-      # Handle cases where `list[pydantic.BaseModel]` was provided.
-      result.parsed = []
-      pydantic_model_class = response_schema.__args__[0]
-      response_list_json = json.loads(result.text)
-      for json_instance in response_list_json:
-        try:
-          pydantic_model_instance = pydantic_model_class.model_validate_json(
-              json.dumps(json_instance)
-          )
-          result.parsed.append(pydantic_model_instance)
-        # may not be a valid json per stream response
-        except pydantic.ValidationError:
-          pass
+
+      class Placeholder(pydantic.BaseModel):
+        placeholder: response_schema
+
+      try:
+        parsed = {'placeholder': json.loads(result.text)}
+        placeholder = Placeholder.model_validate(parsed)
+        result.parsed = placeholder.placeholder
+      except json.decoder.JSONDecodeError:
+        pass
+      except pydantic.ValidationError:
+        pass
 
     elif isinstance(response_schema, dict) or isinstance(
-        response_schema, pydantic.BaseModel
+        response_schema, Schema
     ):
+      # With just the Schema, we don't know what pydantic model the user would
+      # want the result converted to. So just return json.
       # JSON schema.
       try:
         result.parsed = json.loads(result.text)
