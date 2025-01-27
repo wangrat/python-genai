@@ -146,7 +146,7 @@ class HttpResponse:
           'Byte segments are not supported for streaming responses.'
       )
 
-  def copy_to_dict(self, response_payload: dict[str, object]):
+  def _copy_to_dict(self, response_payload: dict[str, object]):
     for attribute in dir(self):
       response_payload[attribute] = copy.deepcopy(getattr(self, attribute))
 
@@ -426,13 +426,14 @@ class ApiClient:
     if http_options:
       if (
           isinstance(http_options, HttpOptions)
-          and http_options.response_payload is not None
+          and http_options.deprecated_response_payload is not None
       ):
-        response.copy_to_dict(http_options.response_payload)
+        response._copy_to_dict(http_options.deprecated_response_payload)
       elif (
-          isinstance(http_options, dict) and 'response_payload' in http_options
+          isinstance(http_options, dict)
+          and 'deprecated_response_payload' in http_options
       ):
-        response.copy_to_dict(http_options['response_payload'])
+        response._copy_to_dict(http_options['deprecated_response_payload'])
     return response.text
 
   def request_streamed(
@@ -447,8 +448,10 @@ class ApiClient:
     )
 
     session_response = self._request(http_request, stream=True)
-    if http_options and 'response_payload' in http_options:
-      session_response.copy_to_dict(http_options['response_payload'])
+    if http_options and 'deprecated_response_payload' in http_options:
+      session_response._copy_to_dict(
+          http_options['deprecated_response_payload']
+      )
     for chunk in session_response.segments():
       yield chunk
 
@@ -464,8 +467,8 @@ class ApiClient:
     )
 
     result = await self._async_request(http_request=http_request, stream=False)
-    if http_options and 'response_payload' in http_options:
-      result.copy_to_dict(http_options['response_payload'])
+    if http_options and 'deprecated_response_payload' in http_options:
+      result._copy_to_dict(http_options['deprecated_response_payload'])
     return result.text
 
   async def async_request_streamed(
@@ -483,8 +486,8 @@ class ApiClient:
 
     for chunk in response.segments():
       yield chunk
-    if http_options and 'response_payload' in http_options:
-      response.copy_to_dict(http_options['response_payload'])
+    if http_options and 'deprecated_response_payload' in http_options:
+      response._copy_to_dict(http_options['deprecated_response_payload'])
 
   def upload_file(
       self, file_path: Union[str, io.IOBase], upload_url: str, upload_size: int

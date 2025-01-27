@@ -852,7 +852,7 @@ class Files(_api_module.BaseModule):
               'X-Goog-Upload-Header-Content-Length': f'{file.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file.mime_type}',
           },
-          'response_payload': response,
+          'deprecated_response_payload': response,
       }
     self._create(file=file, config={'http_options': http_options})
 
@@ -1283,7 +1283,7 @@ class AsyncFiles(_api_module.BaseModule):
               'X-Goog-Upload-Header-Content-Length': f'{file.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file.mime_type}',
           },
-          'response_payload': response,
+          'deprecated_response_payload': response,
       }
     await self._create(file=file, config={'http_options': http_options})
     if (

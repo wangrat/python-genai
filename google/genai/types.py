@@ -712,9 +712,9 @@ class HttpOptions(_common.BaseModel):
   timeout: Optional[int] = Field(
       default=None, description="""Timeout for the request in milliseconds."""
   )
-  response_payload: Optional[dict[str, any]] = Field(
+  deprecated_response_payload: Optional[dict[str, any]] = Field(
       default=None,
-      description="""If set, the response payload will be returned int the supplied dict.""",
+      description="""This field is deprecated. If set, the response payload will be returned int the supplied dict.""",
   )
 
 
@@ -733,8 +733,8 @@ class HttpOptionsDict(TypedDict, total=False):
   timeout: Optional[int]
   """Timeout for the request in milliseconds."""
 
-  response_payload: Optional[dict[str, any]]
-  """If set, the response payload will be returned int the supplied dict."""
+  deprecated_response_payload: Optional[dict[str, any]]
+  """This field is deprecated. If set, the response payload will be returned int the supplied dict."""
 
 
 HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
