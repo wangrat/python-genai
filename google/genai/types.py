@@ -19,11 +19,27 @@ import datetime
 import inspect
 import json
 import logging
-from typing import Any, Callable, GenericAlias, Literal, Optional, TypedDict, Union
-import PIL.Image
+import typing
+from typing import Any, Callable, GenericAlias, Literal, Optional, Type, TypedDict, Union
 import pydantic
 from pydantic import Field
 from . import _common
+
+_is_pillow_image_imported = False
+if typing.TYPE_CHECKING:
+  import PIL.Image
+
+  PIL_Image = PIL.Image.Image
+  _is_pillow_image_imported = True
+else:
+  PIL_Image: Type = Any
+  try:
+    import PIL.Image
+
+    PIL_Image = PIL.Image.Image
+    _is_pillow_image_imported = True
+  except ImportError:
+    PIL_Image = None
 
 
 class Outcome(_common.CaseInSensitiveEnum):
@@ -1624,8 +1640,10 @@ class FileDict(TypedDict, total=False):
 
 FileOrDict = Union[File, FileDict]
 
-
-PartUnion = Union[File, Part, PIL.Image.Image, str]
+if _is_pillow_image_imported:
+  PartUnion = Union[File, Part, PIL_Image, str]
+else:
+  PartUnion = Union[File, Part, str]
 
 
 PartUnionDict = Union[PartUnion, PartDict]
@@ -3417,11 +3435,7 @@ class Image(_common.BaseModel):
     except ImportError:
       IPython_display = None
 
-    try:
-      from PIL import Image as PIL_Image
-    except ImportError:
-      PIL_Image = None
-    if PIL_Image and IPython_display:
+    if IPython_display:
       IPython_display.display(self._pil_image)
 
   @property
@@ -3436,7 +3450,7 @@ class Image(_common.BaseModel):
       if not PIL_Image:
         raise RuntimeError(
             'The PIL module is not available. Please install the Pillow'
-            ' package.'
+            ' package. `pip install pillow`'
         )
       self._loaded_image = PIL_Image.open(io.BytesIO(self.image_bytes))
     return self._loaded_image
