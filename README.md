@@ -752,7 +752,7 @@ print(response.text)
 ## Tunings
 
 `client.tunings` contains tuning job APIs and supports supervised fine
-tuning through `tune` and distillation through `distill`
+tuning through `tune`.
 
 ### Tune
 
@@ -875,43 +875,6 @@ model = client.models.update(
 )
 
 print(model)
-```
-
-### Distillation
-
-Only supported in Vertex AI. Requires allowlist.
-
-```python
-distillation_job = client.tunings.distill(
-    student_model="gemma-2b-1.1-it",
-    teacher_model="gemini-1.5-pro-002",
-    training_dataset=genai.types.DistillationDataset(
-        gcs_uri="gs://cloud-samples-data/ai-platform/generative_ai/gemini-1_5/text/sft_train_data.jsonl",
-    ),
-    config=genai.types.CreateDistillationJobConfig(
-        epoch_count=1,
-        pipeline_root_directory=("gs://my-bucket"),
-    ),
-)
-print(distillation_job)
-```
-
-```python
-completed_states = set(
-    [
-        "JOB_STATE_SUCCEEDED",
-        "JOB_STATE_FAILED",
-        "JOB_STATE_CANCELLED",
-        "JOB_STATE_PAUSED",
-    ]
-)
-
-while distillation_job.state not in completed_states:
-    print(distillation_job.state)
-    distillation_job = client.tunings.get(name=distillation_job.name)
-    time.sleep(10)
-
-print(distillation_job)
 ```
 
 

@@ -410,230 +410,6 @@ def _CreateTuningJobParameters_to_vertex(
   return to_object
 
 
-def _DistillationDataset_to_mldev(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
-
-  return to_object
-
-
-def _DistillationDataset_to_vertex(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['gcs_uri']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec', 'trainingDatasetUri'],
-        getv(from_object, ['gcs_uri']),
-    )
-
-  return to_object
-
-
-def _DistillationValidationDataset_to_mldev(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['gcs_uri']) is not None:
-    raise ValueError('gcs_uri parameter is not supported in Gemini API.')
-
-  return to_object
-
-
-def _DistillationValidationDataset_to_vertex(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['gcs_uri']) is not None:
-    setv(to_object, ['validationDatasetUri'], getv(from_object, ['gcs_uri']))
-
-  return to_object
-
-
-def _CreateDistillationJobConfig_to_mldev(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-
-  if getv(from_object, ['validation_dataset']) is not None:
-    raise ValueError(
-        'validation_dataset parameter is not supported in Gemini API.'
-    )
-
-  if getv(from_object, ['tuned_model_display_name']) is not None:
-    setv(
-        parent_object,
-        ['displayName'],
-        getv(from_object, ['tuned_model_display_name']),
-    )
-
-  if getv(from_object, ['epoch_count']) is not None:
-    setv(
-        parent_object,
-        ['tuningTask', 'hyperparameters', 'epochCount'],
-        getv(from_object, ['epoch_count']),
-    )
-
-  if getv(from_object, ['learning_rate_multiplier']) is not None:
-    setv(
-        parent_object,
-        ['tuningTask', 'hyperparameters', 'learningRateMultiplier'],
-        getv(from_object, ['learning_rate_multiplier']),
-    )
-
-  if getv(from_object, ['adapter_size']) is not None:
-    raise ValueError('adapter_size parameter is not supported in Gemini API.')
-
-  if getv(from_object, ['pipeline_root_directory']) is not None:
-    raise ValueError(
-        'pipeline_root_directory parameter is not supported in Gemini API.'
-    )
-
-  return to_object
-
-
-def _CreateDistillationJobConfig_to_vertex(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-
-  if getv(from_object, ['validation_dataset']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec'],
-        _DistillationValidationDataset_to_vertex(
-            api_client, getv(from_object, ['validation_dataset']), to_object
-        ),
-    )
-
-  if getv(from_object, ['tuned_model_display_name']) is not None:
-    setv(
-        parent_object,
-        ['tunedModelDisplayName'],
-        getv(from_object, ['tuned_model_display_name']),
-    )
-
-  if getv(from_object, ['epoch_count']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec', 'hyperParameters', 'epochCount'],
-        getv(from_object, ['epoch_count']),
-    )
-
-  if getv(from_object, ['learning_rate_multiplier']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec', 'hyperParameters', 'learningRateMultiplier'],
-        getv(from_object, ['learning_rate_multiplier']),
-    )
-
-  if getv(from_object, ['adapter_size']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec', 'hyperParameters', 'adapterSize'],
-        getv(from_object, ['adapter_size']),
-    )
-
-  if getv(from_object, ['pipeline_root_directory']) is not None:
-    setv(
-        parent_object,
-        ['distillationSpec', 'pipelineRootDirectory'],
-        getv(from_object, ['pipeline_root_directory']),
-    )
-
-  return to_object
-
-
-def _CreateDistillationJobParameters_to_mldev(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['student_model']) is not None:
-    raise ValueError('student_model parameter is not supported in Gemini API.')
-
-  if getv(from_object, ['teacher_model']) is not None:
-    raise ValueError('teacher_model parameter is not supported in Gemini API.')
-
-  if getv(from_object, ['training_dataset']) is not None:
-    setv(
-        to_object,
-        ['tuningTask', 'trainingData'],
-        _DistillationDataset_to_mldev(
-            api_client, getv(from_object, ['training_dataset']), to_object
-        ),
-    )
-
-  if getv(from_object, ['config']) is not None:
-    setv(
-        to_object,
-        ['config'],
-        _CreateDistillationJobConfig_to_mldev(
-            api_client, getv(from_object, ['config']), to_object
-        ),
-    )
-
-  return to_object
-
-
-def _CreateDistillationJobParameters_to_vertex(
-    api_client: ApiClient,
-    from_object: Union[dict, object],
-    parent_object: dict = None,
-) -> dict:
-  to_object = {}
-  if getv(from_object, ['student_model']) is not None:
-    setv(
-        to_object,
-        ['distillationSpec', 'studentModel'],
-        getv(from_object, ['student_model']),
-    )
-
-  if getv(from_object, ['teacher_model']) is not None:
-    setv(
-        to_object,
-        ['distillationSpec', 'baseTeacherModel'],
-        getv(from_object, ['teacher_model']),
-    )
-
-  if getv(from_object, ['training_dataset']) is not None:
-    setv(
-        to_object,
-        ['distillationSpec', 'trainingDatasetUri'],
-        _DistillationDataset_to_vertex(
-            api_client, getv(from_object, ['training_dataset']), to_object
-        ),
-    )
-
-  if getv(from_object, ['config']) is not None:
-    setv(
-        to_object,
-        ['config'],
-        _CreateDistillationJobConfig_to_vertex(
-            api_client, getv(from_object, ['config']), to_object
-        ),
-    )
-
-  return to_object
-
-
 def _TunedModel_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
@@ -715,11 +491,21 @@ def _TuningJob_from_mldev(
         ),
     )
 
+  if getv(from_object, ['distillationSpec']) is not None:
+    setv(
+        to_object,
+        ['distillation_spec'],
+        getv(from_object, ['distillationSpec']),
+    )
+
   if getv(from_object, ['experiment']) is not None:
     setv(to_object, ['experiment'], getv(from_object, ['experiment']))
 
   if getv(from_object, ['labels']) is not None:
     setv(to_object, ['labels'], getv(from_object, ['labels']))
+
+  if getv(from_object, ['pipelineJob']) is not None:
+    setv(to_object, ['pipeline_job'], getv(from_object, ['pipelineJob']))
 
   if getv(from_object, ['tunedModelDisplayName']) is not None:
     setv(
@@ -792,13 +578,6 @@ def _TuningJob_from_vertex(
   if getv(from_object, ['encryptionSpec']) is not None:
     setv(to_object, ['encryption_spec'], getv(from_object, ['encryptionSpec']))
 
-  if getv(from_object, ['distillationSpec']) is not None:
-    setv(
-        to_object,
-        ['distillation_spec'],
-        getv(from_object, ['distillationSpec']),
-    )
-
   if getv(from_object, ['partnerModelTuningSpec']) is not None:
     setv(
         to_object,
@@ -806,14 +585,21 @@ def _TuningJob_from_vertex(
         getv(from_object, ['partnerModelTuningSpec']),
     )
 
-  if getv(from_object, ['pipelineJob']) is not None:
-    setv(to_object, ['pipeline_job'], getv(from_object, ['pipelineJob']))
+  if getv(from_object, ['distillationSpec']) is not None:
+    setv(
+        to_object,
+        ['distillation_spec'],
+        getv(from_object, ['distillationSpec']),
+    )
 
   if getv(from_object, ['experiment']) is not None:
     setv(to_object, ['experiment'], getv(from_object, ['experiment']))
 
   if getv(from_object, ['labels']) is not None:
     setv(to_object, ['labels'], getv(from_object, ['labels']))
+
+  if getv(from_object, ['pipelineJob']) is not None:
+    setv(to_object, ['pipeline_job'], getv(from_object, ['pipelineJob']))
 
   if getv(from_object, ['tunedModelDisplayName']) is not None:
     setv(
@@ -1099,71 +885,6 @@ class Tunings(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  def distill(
-      self,
-      *,
-      student_model: str,
-      teacher_model: str,
-      training_dataset: types.DistillationDatasetOrDict,
-      config: Optional[types.CreateDistillationJobConfigOrDict] = None,
-  ) -> types.TuningJob:
-    """Creates a distillation job.
-
-    Args:
-      student_model: The name of the model to tune.
-      teacher_model: The name of the model to distill from.
-      training_dataset: The training dataset to use.
-      config: The configuration to use for the distillation job.
-
-    Returns:
-      A TuningJob object.
-    """
-
-    parameter_model = types._CreateDistillationJobParameters(
-        student_model=student_model,
-        teacher_model=teacher_model,
-        training_dataset=training_dataset,
-        config=config,
-    )
-
-    if not self._api_client.vertexai:
-      raise ValueError('This method is only supported in the Vertex AI client.')
-    else:
-      request_dict = _CreateDistillationJobParameters_to_vertex(
-          self._api_client, parameter_model
-      )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
-
-    query_params = request_dict.get('_query')
-    if query_params:
-      path = f'{path}?{urlencode(query_params)}'
-    # TODO: remove the hack that pops config.
-    request_dict.pop('config', None)
-
-    http_options = None
-    if isinstance(config, dict):
-      http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
-      http_options = config.http_options
-
-    request_dict = _common.convert_to_dict(request_dict)
-    request_dict = _common.encode_unserializable_types(request_dict)
-
-    response_dict = self._api_client.request(
-        'post', path, request_dict, http_options
-    )
-
-    if self._api_client.vertexai:
-      response_dict = _TuningJob_from_vertex(self._api_client, response_dict)
-    else:
-      response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
-
-    return_value = types.TuningJob._from_response(
-        response=response_dict, kwargs=parameter_model
-    )
-    self._api_client._verify_response(return_value)
-    return return_value
-
   def list(
       self, *, config: Optional[types.ListTuningJobsConfigOrDict] = None
   ) -> Pager[types.TuningJob]:
@@ -1392,71 +1113,6 @@ class AsyncTunings(_api_module.BaseModule):
     return_value = types.TuningJobOrOperation._from_response(
         response=response_dict, kwargs=parameter_model
     ).tuning_job
-    self._api_client._verify_response(return_value)
-    return return_value
-
-  async def distill(
-      self,
-      *,
-      student_model: str,
-      teacher_model: str,
-      training_dataset: types.DistillationDatasetOrDict,
-      config: Optional[types.CreateDistillationJobConfigOrDict] = None,
-  ) -> types.TuningJob:
-    """Creates a distillation job.
-
-    Args:
-      student_model: The name of the model to tune.
-      teacher_model: The name of the model to distill from.
-      training_dataset: The training dataset to use.
-      config: The configuration to use for the distillation job.
-
-    Returns:
-      A TuningJob object.
-    """
-
-    parameter_model = types._CreateDistillationJobParameters(
-        student_model=student_model,
-        teacher_model=teacher_model,
-        training_dataset=training_dataset,
-        config=config,
-    )
-
-    if not self._api_client.vertexai:
-      raise ValueError('This method is only supported in the Vertex AI client.')
-    else:
-      request_dict = _CreateDistillationJobParameters_to_vertex(
-          self._api_client, parameter_model
-      )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
-
-    query_params = request_dict.get('_query')
-    if query_params:
-      path = f'{path}?{urlencode(query_params)}'
-    # TODO: remove the hack that pops config.
-    request_dict.pop('config', None)
-
-    http_options = None
-    if isinstance(config, dict):
-      http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
-      http_options = config.http_options
-
-    request_dict = _common.convert_to_dict(request_dict)
-    request_dict = _common.encode_unserializable_types(request_dict)
-
-    response_dict = await self._api_client.async_request(
-        'post', path, request_dict, http_options
-    )
-
-    if self._api_client.vertexai:
-      response_dict = _TuningJob_from_vertex(self._api_client, response_dict)
-    else:
-      response_dict = _TuningJob_from_mldev(self._api_client, response_dict)
-
-    return_value = types.TuningJob._from_response(
-        response=response_dict, kwargs=parameter_model
-    )
     self._api_client._verify_response(return_value)
     return return_value
 

@@ -5366,6 +5366,41 @@ class EncryptionSpecDict(TypedDict, total=False):
 EncryptionSpecOrDict = Union[EncryptionSpec, EncryptionSpecDict]
 
 
+class PartnerModelTuningSpec(_common.BaseModel):
+  """Tuning spec for Partner models."""
+
+  hyper_parameters: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""Hyperparameters for tuning. The accepted hyper_parameters and their valid range of values will differ depending on the base model.""",
+  )
+  training_dataset_uri: Optional[str] = Field(
+      default=None,
+      description="""Required. Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file.""",
+  )
+  validation_dataset_uri: Optional[str] = Field(
+      default=None,
+      description="""Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file.""",
+  )
+
+
+class PartnerModelTuningSpecDict(TypedDict, total=False):
+  """Tuning spec for Partner models."""
+
+  hyper_parameters: Optional[dict[str, Any]]
+  """Hyperparameters for tuning. The accepted hyper_parameters and their valid range of values will differ depending on the base model."""
+
+  training_dataset_uri: Optional[str]
+  """Required. Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file."""
+
+  validation_dataset_uri: Optional[str]
+  """Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file."""
+
+
+PartnerModelTuningSpecOrDict = Union[
+    PartnerModelTuningSpec, PartnerModelTuningSpecDict
+]
+
+
 class DistillationHyperParameters(_common.BaseModel):
   """Hyperparameters for Distillation."""
 
@@ -5461,41 +5496,6 @@ class DistillationSpecDict(TypedDict, total=False):
 DistillationSpecOrDict = Union[DistillationSpec, DistillationSpecDict]
 
 
-class PartnerModelTuningSpec(_common.BaseModel):
-  """Tuning spec for Partner models."""
-
-  hyper_parameters: Optional[dict[str, Any]] = Field(
-      default=None,
-      description="""Hyperparameters for tuning. The accepted hyper_parameters and their valid range of values will differ depending on the base model.""",
-  )
-  training_dataset_uri: Optional[str] = Field(
-      default=None,
-      description="""Required. Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file.""",
-  )
-  validation_dataset_uri: Optional[str] = Field(
-      default=None,
-      description="""Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file.""",
-  )
-
-
-class PartnerModelTuningSpecDict(TypedDict, total=False):
-  """Tuning spec for Partner models."""
-
-  hyper_parameters: Optional[dict[str, Any]]
-  """Hyperparameters for tuning. The accepted hyper_parameters and their valid range of values will differ depending on the base model."""
-
-  training_dataset_uri: Optional[str]
-  """Required. Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file."""
-
-  validation_dataset_uri: Optional[str]
-  """Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file."""
-
-
-PartnerModelTuningSpecOrDict = Union[
-    PartnerModelTuningSpec, PartnerModelTuningSpecDict
-]
-
-
 class TuningJob(_common.BaseModel):
   """A tuning job."""
 
@@ -5550,16 +5550,12 @@ class TuningJob(_common.BaseModel):
       default=None,
       description="""Customer-managed encryption key options for a TuningJob. If this is set, then all resources created by the TuningJob will be encrypted with the provided encryption key.""",
   )
-  distillation_spec: Optional[DistillationSpec] = Field(
-      default=None, description="""Tuning Spec for Distillation."""
-  )
   partner_model_tuning_spec: Optional[PartnerModelTuningSpec] = Field(
       default=None,
       description="""Tuning Spec for open sourced and third party Partner models.""",
   )
-  pipeline_job: Optional[str] = Field(
-      default=None,
-      description="""Output only. The resource name of the PipelineJob associated with the TuningJob. Format: `projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`.""",
+  distillation_spec: Optional[DistillationSpec] = Field(
+      default=None, description="""Tuning Spec for Distillation."""
   )
   experiment: Optional[str] = Field(
       default=None,
@@ -5568,6 +5564,10 @@ class TuningJob(_common.BaseModel):
   labels: Optional[dict[str, str]] = Field(
       default=None,
       description="""Optional. The labels with user-defined metadata to organize TuningJob and generated resources such as Model and Endpoint. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels.""",
+  )
+  pipeline_job: Optional[str] = Field(
+      default=None,
+      description="""Output only. The resource name of the PipelineJob associated with the TuningJob. Format: `projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`.""",
   )
   tuned_model_display_name: Optional[str] = Field(
       default=None,
@@ -5627,20 +5627,20 @@ class TuningJobDict(TypedDict, total=False):
   encryption_spec: Optional[EncryptionSpecDict]
   """Customer-managed encryption key options for a TuningJob. If this is set, then all resources created by the TuningJob will be encrypted with the provided encryption key."""
 
-  distillation_spec: Optional[DistillationSpecDict]
-  """Tuning Spec for Distillation."""
-
   partner_model_tuning_spec: Optional[PartnerModelTuningSpecDict]
   """Tuning Spec for open sourced and third party Partner models."""
 
-  pipeline_job: Optional[str]
-  """Output only. The resource name of the PipelineJob associated with the TuningJob. Format: `projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`."""
+  distillation_spec: Optional[DistillationSpecDict]
+  """Tuning Spec for Distillation."""
 
   experiment: Optional[str]
   """Output only. The Experiment associated with this TuningJob."""
 
   labels: Optional[dict[str, str]]
   """Optional. The labels with user-defined metadata to organize TuningJob and generated resources such as Model and Endpoint. Label keys and values can be no longer than 64 characters (Unicode codepoints), can only contain lowercase letters, numeric characters, underscores and dashes. International characters are allowed. See https://goo.gl/xmQnxf for more information and examples of labels."""
+
+  pipeline_job: Optional[str]
+  """Output only. The resource name of the PipelineJob associated with the TuningJob. Format: `projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`."""
 
   tuned_model_display_name: Optional[str]
   """Optional. The display name of the TunedModel. The name can be up to 128 characters long and can consist of any UTF-8 characters."""
@@ -5918,148 +5918,6 @@ class TuningJobOrOperationDict(TypedDict, total=False):
 
 TuningJobOrOperationOrDict = Union[
     TuningJobOrOperation, TuningJobOrOperationDict
-]
-
-
-class DistillationDataset(_common.BaseModel):
-  """Training dataset."""
-
-  gcs_uri: Optional[str] = Field(
-      default=None,
-      description="""GCS URI of the file containing training dataset in JSONL format.""",
-  )
-
-
-class DistillationDatasetDict(TypedDict, total=False):
-  """Training dataset."""
-
-  gcs_uri: Optional[str]
-  """GCS URI of the file containing training dataset in JSONL format."""
-
-
-DistillationDatasetOrDict = Union[DistillationDataset, DistillationDatasetDict]
-
-
-class DistillationValidationDataset(_common.BaseModel):
-  """Validation dataset."""
-
-  gcs_uri: Optional[str] = Field(
-      default=None,
-      description="""GCS URI of the file containing validation dataset in JSONL format.""",
-  )
-
-
-class DistillationValidationDatasetDict(TypedDict, total=False):
-  """Validation dataset."""
-
-  gcs_uri: Optional[str]
-  """GCS URI of the file containing validation dataset in JSONL format."""
-
-
-DistillationValidationDatasetOrDict = Union[
-    DistillationValidationDataset, DistillationValidationDatasetDict
-]
-
-
-class CreateDistillationJobConfig(_common.BaseModel):
-  """Distillation job creation request - optional fields."""
-
-  http_options: Optional[HttpOptions] = Field(
-      default=None, description="""Used to override HTTP request options."""
-  )
-  validation_dataset: Optional[DistillationValidationDataset] = Field(
-      default=None,
-      description="""Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file.""",
-  )
-  tuned_model_display_name: Optional[str] = Field(
-      default=None,
-      description="""The display name of the tuned Model. The name can be up to 128 characters long and can consist of any UTF-8 characters.""",
-  )
-  epoch_count: Optional[int] = Field(
-      default=None,
-      description="""Number of complete passes the model makes over the entire training dataset during training.""",
-  )
-  learning_rate_multiplier: Optional[float] = Field(
-      default=None,
-      description="""Multiplier for adjusting the default learning rate.""",
-  )
-  adapter_size: Optional[AdapterSize] = Field(
-      default=None, description="""Adapter size for tuning."""
-  )
-  pipeline_root_directory: Optional[str] = Field(
-      default=None,
-      description="""The resource name of the PipelineJob associated with the TuningJob. Format:`projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`.""",
-  )
-
-
-class CreateDistillationJobConfigDict(TypedDict, total=False):
-  """Distillation job creation request - optional fields."""
-
-  http_options: Optional[HttpOptionsDict]
-  """Used to override HTTP request options."""
-
-  validation_dataset: Optional[DistillationValidationDatasetDict]
-  """Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file."""
-
-  tuned_model_display_name: Optional[str]
-  """The display name of the tuned Model. The name can be up to 128 characters long and can consist of any UTF-8 characters."""
-
-  epoch_count: Optional[int]
-  """Number of complete passes the model makes over the entire training dataset during training."""
-
-  learning_rate_multiplier: Optional[float]
-  """Multiplier for adjusting the default learning rate."""
-
-  adapter_size: Optional[AdapterSize]
-  """Adapter size for tuning."""
-
-  pipeline_root_directory: Optional[str]
-  """The resource name of the PipelineJob associated with the TuningJob. Format:`projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}`."""
-
-
-CreateDistillationJobConfigOrDict = Union[
-    CreateDistillationJobConfig, CreateDistillationJobConfigDict
-]
-
-
-class _CreateDistillationJobParameters(_common.BaseModel):
-  """Distillation job creation parameters - optional fields."""
-
-  student_model: Optional[str] = Field(
-      default=None,
-      description="""The student model that is being tuned, e.g. ``google/gemma-2b-1.1-it``.""",
-  )
-  teacher_model: Optional[str] = Field(
-      default=None,
-      description="""The teacher model that is being distilled from, e.g. ``gemini-1.0-pro-002``.""",
-  )
-  training_dataset: Optional[DistillationDataset] = Field(
-      default=None,
-      description="""Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file.""",
-  )
-  config: Optional[CreateDistillationJobConfig] = Field(
-      default=None, description="""Configuration for the distillation job."""
-  )
-
-
-class _CreateDistillationJobParametersDict(TypedDict, total=False):
-  """Distillation job creation parameters - optional fields."""
-
-  student_model: Optional[str]
-  """The student model that is being tuned, e.g. ``google/gemma-2b-1.1-it``."""
-
-  teacher_model: Optional[str]
-  """The teacher model that is being distilled from, e.g. ``gemini-1.0-pro-002``."""
-
-  training_dataset: Optional[DistillationDatasetDict]
-  """Cloud Storage path to file containing training dataset for tuning. The dataset must be formatted as a JSONL file."""
-
-  config: Optional[CreateDistillationJobConfigDict]
-  """Configuration for the distillation job."""
-
-
-_CreateDistillationJobParametersOrDict = Union[
-    _CreateDistillationJobParameters, _CreateDistillationJobParametersDict
 ]
 
 
