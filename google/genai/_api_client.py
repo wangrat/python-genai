@@ -367,7 +367,7 @@ class ApiClient:
       )
       errors.APIError.raise_for_response(response)
       return HttpResponse(
-          response.headers, response if stream else [response.json]
+          response.headers, response if stream else [response.text]
       )
     else:
       return self._request_unauthorized(http_request, stream)
@@ -395,7 +395,7 @@ class ApiClient:
     )
     errors.APIError.raise_for_response(response)
     return HttpResponse(
-        response.headers, response if stream else [response.json]
+        response.headers, response if stream else [response.text]
     )
 
   async def _async_request(
