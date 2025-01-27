@@ -491,7 +491,7 @@ print(response.text)
 ### Streaming
 
 ```python
-async for response in client.aio.models.generate_content_stream(
+async for response in await client.aio.models.generate_content_stream(
     model="gemini-2.0-flash-exp", contents="Tell me a story in 300 words."
 ):
     print(response.text, end="")
@@ -660,7 +660,7 @@ print(response.text)
 
 ```python
 chat = client.aio.chats.create(model="gemini-2.0-flash-exp")
-async for chunk in chat.send_message_stream("tell me a story"):
+async for chunk in await chat.send_message_stream("tell me a story"):
     print(chunk.text)
 ```
 

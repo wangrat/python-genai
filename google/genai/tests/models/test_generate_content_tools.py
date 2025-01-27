@@ -625,7 +625,7 @@ def test_with_1_empty_tool(client):
 
 @pytest.mark.asyncio
 async def test_google_search_retrieval_stream_async(client):
-  async for part in client.aio.models.generate_content_stream(
+  async for part in await client.aio.models.generate_content_stream(
       model='gemini-1.5-flash',
       contents='Why is the sky blue?',
       config={'tools': [{'google_search_retrieval': {}}]},
@@ -636,7 +636,7 @@ async def test_google_search_retrieval_stream_async(client):
 @pytest.mark.asyncio
 async def test_vai_search_stream_async(client):
   if client._api_client.vertexai:
-    async for part in client.aio.models.generate_content_stream(
+    async for part in await client.aio.models.generate_content_stream(
         model='gemini-1.5-flash',
         contents='what is vertex ai search?',
         config={
@@ -652,7 +652,7 @@ async def test_vai_search_stream_async(client):
       pass
   else:
     with pytest.raises(ValueError) as e:
-      async for part in client.aio.models.generate_content_stream(
+      async for part in await client.aio.models.generate_content_stream(
           model='gemini-1.5-flash',
           contents='Why is the sky blue?',
           config={

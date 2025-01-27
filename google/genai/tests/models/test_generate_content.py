@@ -298,7 +298,7 @@ def test_sync_stream(client):
 @pytest.mark.asyncio
 async def test_async_stream(client):
   chunks = 0
-  async for part in client.aio.models.generate_content_stream(
+  async for part in await client.aio.models.generate_content_stream(
       model='gemini-1.5-flash', contents='Tell me a story in 300 words.',
       config={
           'http_options': test_http_options,
@@ -352,7 +352,7 @@ async def test_simple_shared_generation_config_async(client):
 @pytest.mark.asyncio
 async def test_simple_shared_generation_config_stream_async(client):
   chunks = 0
-  async for part in client.aio.models.generate_content_stream(
+  async for part in await client.aio.models.generate_content_stream(
       model='gemini-1.5-flash',
       contents='tell me a story in 300 words',
       config={

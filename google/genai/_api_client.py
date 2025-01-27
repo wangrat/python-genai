@@ -111,6 +111,17 @@ class HttpResponse:
     self.headers = headers
     self.response_stream = response_stream
     self.byte_stream = byte_stream
+    self.segment_iterator = self.segments()
+
+  # Async iterator for async streaming.
+  def __aiter__(self):
+    return self
+
+  async def __anext__(self):
+    try:
+      return next(self.segment_iterator)
+    except StopIteration:
+      raise StopAsyncIteration
 
   @property
   def text(self) -> str:
@@ -147,6 +158,8 @@ class HttpResponse:
       )
 
   def _copy_to_dict(self, response_payload: dict[str, object]):
+    # Cannot pickle 'generator' object.
+    delattr(self, 'segment_iterator')
     for attribute in dir(self):
       response_payload[attribute] = copy.deepcopy(getattr(self, attribute))
 
@@ -484,10 +497,12 @@ class ApiClient:
 
     response = await self._async_request(http_request=http_request, stream=True)
 
-    for chunk in response.segments():
-      yield chunk
     if http_options and 'deprecated_response_payload' in http_options:
       response._copy_to_dict(http_options['deprecated_response_payload'])
+    async def async_generator():
+      async for chunk in response:
+        yield chunk
+    return async_generator()
 
   def upload_file(
       self, file_path: Union[str, io.IOBase], upload_url: str, upload_size: int

@@ -352,7 +352,7 @@ async def test_async_history(client):
 async def test_async_stream_text(client):
   chat = client.aio.chats.create(model='gemini-1.5-flash')
   chunks = 0
-  async for chunk in chat.send_message_stream('tell me a story in 100 words'):
+  async for chunk in await chat.send_message_stream('tell me a story in 100 words'):
     chunks += 1
 
   assert chunks > 2
@@ -362,7 +362,7 @@ async def test_async_stream_text(client):
 async def test_async_stream_part(client):
   chat = client.aio.chats.create(model='gemini-1.5-flash')
   chunks = 0
-  async for chunk in chat.send_message_stream(
+  async for chunk in await chat.send_message_stream(
       types.Part.from_text(text='tell me a story in 100 words')
   ):
     chunks += 1
@@ -374,7 +374,7 @@ async def test_async_stream_part(client):
 async def test_async_stream_parts(client):
   chat = client.aio.chats.create(model='gemini-1.5-flash')
   chunks = 0
-  async for chunk in chat.send_message_stream(
+  async for chunk in await chat.send_message_stream(
       [
           types.Part.from_text(text='tell me a story in 100 words'),
           types.Part.from_text(text='the story is about a car'),
@@ -391,20 +391,20 @@ async def test_async_stream_function_calling(client):
       model='gemini-2.0-flash-exp',
       config={'tools': [divide_intergers_with_customized_math_rule]},
   )
-  async for chunk in chat.send_message_stream('what is the result of 100/2?'):
+  async for chunk in await chat.send_message_stream('what is the result of 100/2?'):
     pass
-  async for chunk in chat.send_message_stream('what is the result of 50/2?'):
+  async for chunk in await chat.send_message_stream('what is the result of 50/2?'):
     pass
 
 
 @pytest.mark.asyncio
 async def test_async_stream_send_2_messages(client):
   chat = client.aio.chats.create(model='gemini-1.5-flash')
-  async for chunk in chat.send_message_stream(
+  async for chunk in await chat.send_message_stream(
       'write a python function to check if a year is a leap year'
   ):
     pass
-  async for chunk in chat.send_message_stream(
+  async for chunk in await chat.send_message_stream(
       'write a unit test for the function'
   ):
     pass
