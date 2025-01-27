@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-"""Live client."""
+"""Live client. The live module is experimental."""
 
 import asyncio
 import base64
@@ -61,7 +61,7 @@ _FUNCTION_RESPONSE_REQUIRES_ID = (
 
 
 class AsyncSession:
-  """AsyncSession."""
+  """AsyncSession. The live module is experimental."""
 
   def __init__(self, api_client: client.ApiClient, websocket: ClientConnection):
     self._api_client = api_client
@@ -111,6 +111,8 @@ class AsyncSession:
     is function call, user must call `send` with the function response to
     continue the turn.
 
+    The live module is experimental.
+
     Yields:
       The model responses from the server.
 
@@ -141,6 +143,8 @@ class AsyncSession:
     This method will start two async tasks. One task will be used to send the
     input stream to the model and the other task will be used to receive the
     responses from the model.
+
+    The live module is experimental.
 
     Args:
       stream: An iterator that yields the model response.
@@ -471,7 +475,7 @@ class AsyncSession:
 
 
 class AsyncLive(_api_module.BaseModule):
-  """AsyncLive."""
+  """AsyncLive. The live module is experimental."""
 
   def _LiveSetup_to_mldev(
       self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
@@ -637,6 +641,8 @@ class AsyncLive(_api_module.BaseModule):
       config: Optional[types.LiveConnectConfigOrDict] = None,
   ) -> AsyncSession:
     """Connect to the live server.
+
+    The live module is experimental.
 
     Usage:
 
