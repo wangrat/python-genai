@@ -99,7 +99,7 @@ dictionaries. You can get the type from `google.genai.types`.
 ```python
 response = client.models.generate_content(
     model="gemini-2.0-flash-exp",
-    contents=types.Part.from_text("Why is the sky blue?"),
+    contents=types.Part.from_text(text="Why is the sky blue?"),
     config=types.GenerateContentConfig(
         temperature=0,
         top_p=0.95,
@@ -142,7 +142,7 @@ for part in response.candidates[0].content.parts:
 
 ```python
 response = client.models.generate_content(
-    model='gemini-2.0-flash-thinking-exp-1219',
+    model='gemini-2.0-flash-thinking-exp-01-21',
     contents='What is the sum of natural numbers from 1 to 100?',
     config=types.GenerateContentConfig(
         thinking_config=types.ThinkingConfig(include_thoughts=True),
