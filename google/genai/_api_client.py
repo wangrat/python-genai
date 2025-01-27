@@ -124,7 +124,7 @@ class HttpResponse:
       raise StopAsyncIteration
 
   @property
-  def text(self) -> str:
+  def json(self) -> Any:
     if not self.response_stream[0]:  # Empty response
       return ''
     return json.loads(self.response_stream[0])
@@ -367,7 +367,7 @@ class ApiClient:
       )
       errors.APIError.raise_for_response(response)
       return HttpResponse(
-          response.headers, response if stream else [response.text]
+          response.headers, response if stream else [response.json]
       )
     else:
       return self._request_unauthorized(http_request, stream)
@@ -395,7 +395,7 @@ class ApiClient:
     )
     errors.APIError.raise_for_response(response)
     return HttpResponse(
-        response.headers, response if stream else [response.text]
+        response.headers, response if stream else [response.json]
     )
 
   async def _async_request(
@@ -447,7 +447,7 @@ class ApiClient:
           and 'deprecated_response_payload' in http_options
       ):
         response._copy_to_dict(http_options['deprecated_response_payload'])
-    return response.text
+    return response.json
 
   def request_streamed(
       self,
@@ -482,7 +482,7 @@ class ApiClient:
     result = await self._async_request(http_request=http_request, stream=False)
     if http_options and 'deprecated_response_payload' in http_options:
       result._copy_to_dict(http_options['deprecated_response_payload'])
-    return result.text
+    return result.json
 
   async def async_request_streamed(
       self,
@@ -570,15 +570,15 @@ class ApiClient:
       if upload_size <= offset:  # Status is not finalized.
         raise ValueError(
             'All content has been uploaded, but the upload status is not'
-            f' finalized. {response.headers}, body: {response.text}'
+            f' finalized. {response.headers}, body: {response.json}'
         )
 
     if response.headers['X-Goog-Upload-Status'] != 'final':
       raise ValueError(
           'Failed to upload file: Upload status is not finalized. headers:'
-          f' {response.headers}, body: {response.text}'
+          f' {response.headers}, body: {response.json}'
       )
-    return response.text
+    return response.json
 
   def download_file(self, path: str, http_options):
     """Downloads the file data.

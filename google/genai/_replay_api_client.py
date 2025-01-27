@@ -397,7 +397,7 @@ class ReplayApiClient(ApiClient):
         # segments since the stream has been consumed.
       else:
         self._record_interaction(http_request, result)
-      _debug_print('api mode result: %s' % result.text)
+      _debug_print('api mode result: %s' % result.json)
       return result
     else:
       return self._build_response_from_replay(http_request)
@@ -429,7 +429,7 @@ class ReplayApiClient(ApiClient):
       self._record_interaction(request, HttpResponse({}, [json.dumps(result)]))
       return result
     else:
-      return self._build_response_from_replay(request).text
+      return self._build_response_from_replay(request).json
 
   def _download_file_request(self, request):
     self._initialize_replay_session_if_not_loaded()
