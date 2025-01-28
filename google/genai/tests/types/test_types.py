@@ -917,6 +917,16 @@ def test_pydantic_model():
 
   expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
   expected_schema_vertex.parameters.required = ['a', 'b']
+  expected_schema_vertex.parameters.properties['a'].required = ['a_simple', 'b_simple']
+  expected_schema_vertex.parameters.properties['b'].required = ['a_complex','b_complex']
+  expected_schema_vertex.parameters.properties['b'].properties['a_complex'].required = [
+      'a_simple',
+      'b_simple',
+  ]
+  expected_schema_vertex.parameters.properties['b'].properties['b_complex'].items.required = [
+      'a_simple',
+      'b_simple',
+  ]
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
       client=mldev_client, callable=func_under_test
@@ -961,6 +971,10 @@ def test_pydantic_model_in_list_type():
   )
   expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
   expected_schema_vertex.parameters.required = ['a']
+  expected_schema_vertex.parameters.properties['a'].items.required = [
+      'a_simple',
+      'b_simple',
+  ]
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(
       client=mldev_client, callable=func_under_test
@@ -1021,6 +1035,16 @@ def test_pydantic_model_in_union_type():
       ),
       description='test pydantic model in union type.',
   )
+  expected_schema_vertex.parameters.properties['animal'].any_of[0].required = [
+      'name',
+      'age',
+      'like_purring'
+  ]
+  expected_schema_vertex.parameters.properties['animal'].any_of[1].required = [
+      'name',
+      'age',
+      'like_barking'
+  ]
 
   with pytest.raises(ValueError):
     types.FunctionDeclaration.from_callable(
@@ -1063,6 +1087,7 @@ def test_pydantic_model_with_default_value():
                           type='STRING',
                       ),
                   },
+                  required=[]
               )
           },
           required=[],
@@ -1558,6 +1583,7 @@ def test_return_type_pydantic_model():
                   'a_simple': types.Schema(type='INTEGER'),
                   'b_simple': types.Schema(type='STRING'),
               },
+              required=['a_simple', 'b_simple'],
           ),
           'b_complex': types.Schema(
               type='ARRAY',
@@ -1567,9 +1593,11 @@ def test_return_type_pydantic_model():
                       'a_simple': types.Schema(type='INTEGER'),
                       'b_simple': types.Schema(type='STRING'),
                   },
+                  required=['a_simple', 'b_simple']
               ),
           ),
       },
+      required=['a_complex', 'b_complex'],
   )
 
   actual_schema_mldev = types.FunctionDeclaration.from_callable(

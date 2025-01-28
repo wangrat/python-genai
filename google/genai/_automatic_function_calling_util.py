@@ -293,6 +293,8 @@ def _parse_schema_from_parameter(
           ),
           func_name,
       )
+    if client.vertexai:
+      schema.required = _get_required_fields(schema)
     _raise_if_schema_unsupported(client, schema)
     return schema
   raise ValueError(
