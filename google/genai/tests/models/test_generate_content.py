@@ -730,6 +730,33 @@ def test_pydantic_schema_with_nested_class(client):
   assert isinstance(response.parsed, CountryInfo)
   assert isinstance(response.parsed.currency, CurrencyInfo)
 
+
+def test_pydantic_schema_with_nested_enum(client):
+  class Continent(Enum):
+    ASIA = 'Asia'
+    AFRICA = 'Africa'
+    ANTARCTICA = 'Antarctica'
+    EUROPE = 'Europe'
+    NORTH_AMERICA = 'North America'
+    SOUTH_AMERICA = 'South America'
+    AUSTRALIA = 'Australia'
+
+  class CountryInfo(BaseModel):
+    name: str
+    continent: Continent
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information for the United States',
+      config=types.GenerateContentConfig(
+          response_mime_type='application/json',
+          response_schema=CountryInfo,
+      )
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert isinstance(response.parsed.continent, Continent)
+
+
 def test_pydantic_schema_with_nested_list_class(client):
   class CurrencyInfo(BaseModel):
     name: str
@@ -844,6 +871,36 @@ def test_enum_schema_with_enum_mime_type(client):
   instrument_values = {member.value for member in InstrumentEnum}
 
   assert response.text in instrument_values
+  assert isinstance(response.parsed, InstrumentEnum)
+
+
+def test_list_of_enum_schema_with_enum_mime_type(client):
+  with pytest.raises(errors.ClientError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='What instrument plays single note at once?',
+        config={
+            'response_mime_type': 'text/x.enum',
+            'response_schema': list[InstrumentEnum],
+        },
+    )
+  assert '400' in str(e)
+
+
+def test_list_of_enum_schema_with_json_mime_type(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What instrument plays single note at once?',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': list[InstrumentEnum],
+      },
+  )
+
+  assert isinstance(response.parsed, list)
+  assert response.parsed
+  for item in response.parsed:
+    assert isinstance(item, InstrumentEnum)
 
 
 def test_enum_schema_with_json_mime_type(client):
@@ -860,6 +917,7 @@ def test_enum_schema_with_json_mime_type(client):
   instrument_values = {member.value for member in InstrumentEnum}
 
   assert removed_quotes in instrument_values
+  assert isinstance(response.parsed, InstrumentEnum)
 
 
 def test_non_string_enum_schema_with_enum_mime_type(client):
