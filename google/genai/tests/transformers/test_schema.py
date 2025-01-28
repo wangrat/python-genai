@@ -19,6 +19,8 @@
 import copy
 import pydantic
 
+from typing import Union
+
 from ... import _transformers
 from ... import types
 
@@ -60,7 +62,7 @@ nested_country_info_fields = CountryInfoWithCurrency.model_fields
 
 class CountryInfoWithNullFields(pydantic.BaseModel):
   name: str
-  population: int | None = None
+  population: Union[int, None] = None
 
 def test_build_schema_for_list_of_pydantic_schema():
   """Tests _build_schema() when list[pydantic.BaseModel] is provided to response_schema."""

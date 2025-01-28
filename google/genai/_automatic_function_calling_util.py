@@ -14,10 +14,17 @@
 #
 
 import inspect
-import types as typing_types
+import sys
+import types as builtin_types
+import typing
 from typing import Any, Callable, Literal, Union, _GenericAlias, get_args, get_origin
 import pydantic
 from . import types
+
+if sys.version_info >= (3, 10):
+  UnionType = builtin_types.UnionType
+else:
+  UnionType = typing._UnionGenericAlias
 
 _py_builtin_type_to_schema_type = {
     str: 'STRING',
@@ -74,11 +81,11 @@ def _is_default_value_compatible(
 
   if (
       isinstance(annotation, _GenericAlias)
-      or isinstance(annotation, typing_types.GenericAlias)
-      or isinstance(annotation, typing_types.UnionType)
+      or isinstance(annotation, builtin_types.GenericAlias)
+      or isinstance(annotation, UnionType)
   ):
     origin = get_origin(annotation)
-    if origin in (Union, typing_types.UnionType):
+    if origin in (Union, UnionType):
       return any(
           _is_default_value_compatible(default_value, arg)
           for arg in get_args(annotation)
@@ -134,9 +141,9 @@ def _parse_schema_from_parameter(
     _raise_if_schema_unsupported(client, schema)
     return schema
   if (
-      isinstance(param.annotation, typing_types.UnionType)
+      isinstance(param.annotation, UnionType)
       # only parse simple UnionType, example int | str | float | bool
-      # complex types.UnionType will be invoked in raise branch
+      # complex UnionType will be invoked in raise branch
       and all(
           (_is_builtin_primitive_or_compound(arg) or arg is type(None))
           for arg in get_args(param.annotation)
@@ -175,7 +182,7 @@ def _parse_schema_from_parameter(
     _raise_if_schema_unsupported(client, schema)
     return schema
   if isinstance(param.annotation, _GenericAlias) or isinstance(
-      param.annotation, typing_types.GenericAlias
+      param.annotation, builtin_types.GenericAlias
   ):
     origin = get_origin(param.annotation)
     args = get_args(param.annotation)

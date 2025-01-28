@@ -17,7 +17,9 @@
 
 import inspect
 import logging
-from typing import Any, Callable, Dict, Optional, Union, get_args, get_origin, types as typing_types
+import typing
+from typing import Any, Callable, Dict, Optional, Union, get_args, get_origin
+import sys
 
 import pydantic
 
@@ -25,6 +27,10 @@ from . import _common
 from . import errors
 from . import types
 
+if sys.version_info >= (3, 10):
+  from types import UnionType
+else:
+  UnionType = typing._UnionGenericAlias
 
 _DEFAULT_MAX_REMOTE_CALLS_AFC = 10
 
@@ -134,8 +140,8 @@ def convert_if_exist_pydantic_model(
         for k, v in value.items()
     }
   # example 1: typing.Union[int, float]
-  # example 2: int | float equivalent to typing.types.UnionType[int, float]
-  if get_origin(annotation) in (Union, typing_types.UnionType):
+  # example 2: int | float equivalent to UnionType[int, float]
+  if get_origin(annotation) in (Union, UnionType):
     for arg in get_args(annotation):
       if (
           (get_args(arg) and get_origin(arg) is list)
