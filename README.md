@@ -70,9 +70,10 @@ download the file in console.
 python code.
 
 ```python
-file = client.files.upload(path="a11.text")
+file = client.files.upload(path="a11.txt")
 response = client.models.generate_content(
-    model="gemini-2.0-flash-exp", contents=["Summarize this file", file]
+    model="gemini-2.0-flash-exp",
+    contents=["Could you summarize this file?", file]
 )
 print(response.text)
 ```
