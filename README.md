@@ -55,12 +55,12 @@ The `client.models` modules exposes model inferencing and model getters.
 
 ```python
 response = client.models.generate_content(
-    model="gemini-2.0-flash-exp", contents="What is your name?"
+    model="gemini-2.0-flash-exp", contents="why is the sky blue?"
 )
 print(response.text)
 ```
 
-#### with uploaded file (Google AI only)
+#### with uploaded file (Gemini API only)
 download the file in console.
 
 ```cmd
@@ -113,7 +113,7 @@ response = client.models.generate_content(
     ),
 )
 
-response
+print(response.text)
 ```
 
 ### Thinking
@@ -240,10 +240,10 @@ Then you will receive a function call part in the response.
 function = types.FunctionDeclaration(
     name="get_current_weather",
     description="Get the current weather in a given location",
-    parameters=types.FunctionParameters(
+    parameters=types.Schema(
         type="OBJECT",
         properties={
-            "location": types.ParameterType(
+            "location": types.Schema(
                 type="STRING",
                 description="The city and state, e.g. San Francisco, CA",
             ),
@@ -271,10 +271,9 @@ The following example shows how to do it for a simple function invocation.
 ```python
 user_prompt_content = types.Content(
     role="user",
-    parts=[types.Part.from_text("What is the weather like in Boston?")],
+    parts=[types.Part.from_text(text="What is the weather like in Boston?")],
 )
-function_call_content = response.candidates[0].content
-function_call_part = function_call_content.parts[0]
+function_call_part = response.function_calls[0]
 
 
 try:
@@ -405,6 +404,8 @@ print(response.text)
 You can also set response_mime_type to 'application/json', the response will be identical but in quotes.
 
 ```python
+from enum import Enum
+
 class InstrumentEnum(Enum):
   PERCUSSION = 'Percussion'
   STRING = 'String'
@@ -491,10 +492,10 @@ print(response.text)
 ### Streaming
 
 ```python
-async for response in await client.aio.models.generate_content_stream(
+async for chunk in await client.aio.models.generate_content_stream(
     model="gemini-2.0-flash-exp", contents="Tell me a story in 300 words."
 ):
-    print(response.text, end="")
+    print(chunk.text, end="")
 ```
 
 ### Count Tokens and Compute Tokens
@@ -502,7 +503,7 @@ async for response in await client.aio.models.generate_content_stream(
 ```python
 response = client.models.count_tokens(
     model="gemini-2.0-flash-exp",
-    contents="What is your name?",
+    contents="why is the sky blue?",
 )
 print(response)
 ```
@@ -514,7 +515,7 @@ Compute tokens is only supported in Vertex AI.
 ```python
 response = client.models.compute_tokens(
     model="gemini-2.0-flash-exp",
-    contents="What is your name?",
+    contents="why is the sky blue?",
 )
 print(response)
 ```
@@ -524,7 +525,7 @@ print(response)
 ```python
 response = await client.aio.models.count_tokens(
     model="gemini-2.0-flash-exp",
-    contents="What is your name?",
+    contents="why is the sky blue?",
 )
 print(response)
 ```
@@ -534,7 +535,7 @@ print(response)
 ```python
 response = client.models.embed_content(
     model="text-embedding-004",
-    contents="What is your name?",
+    contents="why is the sky blue?",
 )
 print(response)
 ```
@@ -543,7 +544,7 @@ print(response)
 # multiple contents with config
 response = client.models.embed_content(
     model="text-embedding-004",
-    contents=["What is your name?", "What is your age?"],
+    contents=["why is the sky blue?", "What is your age?"],
     config=types.EmbedContentConfig(output_dimensionality=10),
 )
 
@@ -559,9 +560,9 @@ Support for generate images in Gemini Developer API is behind an allowlist
 ```python
 # Generate Image
 response1 = client.models.generate_images(
-    model="imagen-3.0-generate-001",
+    model="imagen-3.0-generate-002",
     prompt="An umbrella in the foreground, and a rainy night sky in the background",
-    config=types.GenerateImageConfig(
+    config=types.GenerateImagesConfig(
         negative_prompt="human",
         number_of_images=1,
         include_rai_reason=True,
@@ -736,7 +737,7 @@ cached_content = client.caches.create(
 cached_content = client.caches.get(name=cached_content.name)
 ```
 
-### Generate Content
+### Generate Content with Caches
 
 ```python
 response = client.models.generate_content(
@@ -817,7 +818,7 @@ while tuning_job.state in running_states:
 ```python
 response = client.models.generate_content(
     model=tuning_job.tuned_model.endpoint,
-    contents="What is your name?",
+    contents="why is the sky blue?",
 )
 
 print(response.text)
@@ -952,12 +953,12 @@ job
 ### List
 
 ```python
-for job in client.batches.list(config=types.ListBatchJobConfig(page_size=10)):
+for job in client.batches.list(config=types.ListBatchJobsConfig(page_size=10)):
     print(job)
 ```
 
 ```python
-pager = client.batches.list(config=types.ListBatchJobConfig(page_size=10))
+pager = client.batches.list(config=types.ListBatchJobsConfig(page_size=10))
 print(pager.page_size)
 print(pager[0])
 pager.next_page()
@@ -968,14 +969,14 @@ print(pager[0])
 
 ```python
 async for job in await client.aio.batches.list(
-    config=types.ListBatchJobConfig(page_size=10)
+    config=types.ListBatchJobsConfig(page_size=10)
 ):
     print(job)
 ```
 
 ```python
 async_pager = await client.aio.batches.list(
-    config=types.ListBatchJobConfig(page_size=10)
+    config=types.ListBatchJobsConfig(page_size=10)
 )
 print(async_pager.page_size)
 print(async_pager[0])
