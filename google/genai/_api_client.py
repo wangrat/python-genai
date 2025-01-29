@@ -255,7 +255,7 @@ class ApiClient:
             'Project and location or API key must be set when using the Vertex '
             'AI API.'
         )
-      if self.api_key:
+      if self.api_key or self.location == 'global':
         self._http_options['base_url'] = (
             f'https://aiplatform.googleapis.com/'
         )

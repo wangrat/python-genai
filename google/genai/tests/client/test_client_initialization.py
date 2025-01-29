@@ -593,3 +593,21 @@ def test_vertexai_apikey_combo3(monkeypatch):
   assert client.models._api_client.location == location
   assert "aiplatform" in client._api_client._http_options["base_url"]
   assert isinstance(client.models._api_client, api_client.ApiClient)
+
+
+def test_vertexai_global_endpoint(monkeypatch):
+  # Vertex AI uses global endpoint when location is global.
+  project_id = "fake_project_id"
+  location = "global"
+  monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", project_id)
+  monkeypatch.setenv("GOOGLE_CLOUD_LOCATION", location)
+
+  client = Client(vertexai=True, location=location)
+
+  assert client.models._api_client.vertexai
+  assert client.models._api_client.project == project_id
+  assert client.models._api_client.location == location
+  assert client.models._api_client._http_options["base_url"] == (
+      "https://aiplatform.googleapis.com/"
+  )
+  assert isinstance(client.models._api_client, api_client.ApiClient)
