@@ -7190,6 +7190,147 @@ class DeleteResourceJobDict(TypedDict, total=False):
 DeleteResourceJobOrDict = Union[DeleteResourceJob, DeleteResourceJobDict]
 
 
+class GetOperationConfig(_common.BaseModel):
+
+  http_options: Optional[HttpOptions] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+
+
+class GetOperationConfigDict(TypedDict, total=False):
+
+  http_options: Optional[HttpOptionsDict]
+  """Used to override HTTP request options."""
+
+
+GetOperationConfigOrDict = Union[GetOperationConfig, GetOperationConfigDict]
+
+
+class _GetOperationParameters(_common.BaseModel):
+  """Parameters for the GET method."""
+
+  operation_name: Optional[str] = Field(
+      default=None,
+      description="""The server-assigned name for the operation.""",
+  )
+  config: Optional[GetOperationConfig] = Field(
+      default=None,
+      description="""Used to override the default configuration.""",
+  )
+
+
+class _GetOperationParametersDict(TypedDict, total=False):
+  """Parameters for the GET method."""
+
+  operation_name: Optional[str]
+  """The server-assigned name for the operation."""
+
+  config: Optional[GetOperationConfigDict]
+  """Used to override the default configuration."""
+
+
+_GetOperationParametersOrDict = Union[
+    _GetOperationParameters, _GetOperationParametersDict
+]
+
+
+class Operation(_common.BaseModel):
+  """A long-running operation."""
+
+  name: Optional[str] = Field(
+      default=None,
+      description="""The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.""",
+  )
+  metadata: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any.""",
+  )
+  done: Optional[bool] = Field(
+      default=None,
+      description="""If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.""",
+  )
+  error: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""The error result of the operation in case of failure or cancellation.""",
+  )
+  response: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""The normal response of the operation in case of success.""",
+  )
+
+
+class OperationDict(TypedDict, total=False):
+  """A long-running operation."""
+
+  name: Optional[str]
+  """The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`."""
+
+  metadata: Optional[dict[str, Any]]
+  """Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any."""
+
+  done: Optional[bool]
+  """If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available."""
+
+  error: Optional[dict[str, Any]]
+  """The error result of the operation in case of failure or cancellation."""
+
+  response: Optional[dict[str, Any]]
+  """The normal response of the operation in case of success."""
+
+
+OperationOrDict = Union[Operation, OperationDict]
+
+
+class FetchPredictOperationConfig(_common.BaseModel):
+
+  http_options: Optional[HttpOptions] = Field(
+      default=None, description="""Used to override HTTP request options."""
+  )
+
+
+class FetchPredictOperationConfigDict(TypedDict, total=False):
+
+  http_options: Optional[HttpOptionsDict]
+  """Used to override HTTP request options."""
+
+
+FetchPredictOperationConfigOrDict = Union[
+    FetchPredictOperationConfig, FetchPredictOperationConfigDict
+]
+
+
+class _FetchPredictOperationParameters(_common.BaseModel):
+  """Parameters for the fetchPredictOperation method."""
+
+  operation_name: Optional[str] = Field(
+      default=None,
+      description="""The server-assigned name for the operation.""",
+  )
+  resource_name: Optional[str] = Field(default=None, description="""""")
+  config: Optional[FetchPredictOperationConfig] = Field(
+      default=None,
+      description="""Used to override the default configuration.""",
+  )
+
+
+class _FetchPredictOperationParametersDict(TypedDict, total=False):
+  """Parameters for the fetchPredictOperation method."""
+
+  operation_name: Optional[str]
+  """The server-assigned name for the operation."""
+
+  resource_name: Optional[str]
+  """"""
+
+  config: Optional[FetchPredictOperationConfigDict]
+  """Used to override the default configuration."""
+
+
+_FetchPredictOperationParametersOrDict = Union[
+    _FetchPredictOperationParameters, _FetchPredictOperationParametersDict
+]
+
+
 class TestTableItem(_common.BaseModel):
 
   name: Optional[str] = Field(
