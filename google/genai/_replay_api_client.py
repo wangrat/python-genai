@@ -79,6 +79,11 @@ def _redact_request_url(url: str) -> str:
       result,
   )
   result = re.sub(
+      r'.*aiplatform.googleapis.com/[^/]+/',
+      '{VERTEX_URL_PREFIX}/',
+      result,
+  )
+  result = re.sub(
       r'https://generativelanguage.googleapis.com/[^/]+',
       '{MLDEV_URL_PREFIX}',
       result,

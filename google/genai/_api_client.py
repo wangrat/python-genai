@@ -273,7 +273,7 @@ class ApiClient:
       self._http_options['api_version'] = 'v1beta'
     # Default options for both clients.
     self._http_options['headers'] = {'Content-Type': 'application/json'}
-    if self.api_key and not self.vertexai:
+    if self.api_key:
       self._http_options['headers']['x-goog-api-key'] = self.api_key
     # Update the http options with the user provided http options.
     if http_options:
@@ -323,8 +323,6 @@ class ApiClient:
         and not self.api_key
     ):
       path = f'projects/{self.project}/locations/{self.location}/' + path
-    elif self.vertexai and self.api_key:
-      path = f'{path}?key={self.api_key}'
     url = _join_url_path(
         patched_http_options['base_url'],
         patched_http_options['api_version'] + '/' + path,
