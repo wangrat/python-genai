@@ -21,6 +21,7 @@ import enum
 import typing
 from typing import Union
 import uuid
+import warnings
 
 import pydantic
 from pydantic import alias_generators
@@ -213,8 +214,16 @@ class CaseInSensitiveEnum(str, enum.Enum):
     except KeyError:
       try:
         return cls[value.lower()]  # Try to access directly with lowercase
-      except KeyError as e:
-        raise ValueError(f"{value} is not a valid {cls.__name__}") from e
+      except KeyError:
+        warnings.warn(f"{value} is not a valid {cls.__name__}")
+        try:
+          # Creating a enum instance based on the value
+          unknown_enum_val = cls._new_member_(cls)  # pylint: disable=protected-access,attribute-error
+          unknown_enum_val._name_ = str(value)  # pylint: disable=protected-access
+          unknown_enum_val._value_ = value  # pylint: disable=protected-access
+          return unknown_enum_val
+        except:
+          return None
 
 
 def timestamped_unique_name() -> str:

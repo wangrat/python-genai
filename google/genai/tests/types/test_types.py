@@ -1787,3 +1787,10 @@ def test_case_insensitive_enum_with_pydantic_model():
 
   assert TestModel(test_enum='STRING').test_enum == types.Type.STRING
   assert TestModel(test_enum='string').test_enum == types.Type.STRING
+
+
+def test_unknown_enum_value():
+  with pytest.warns(Warning, match='is not a valid'):
+    enum_instance = types.Type('float')
+    assert enum_instance.name == 'float'
+    assert enum_instance.value == 'float'
