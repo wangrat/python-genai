@@ -14,20 +14,30 @@
 #
 
 
-"""Tests for generate_image."""
+"""Tests for generate_images."""
 
 import pytest
 
 from ... import types
 from .. import pytest_helper
 
+IMAGEN_MODEL_LATEST = 'imagen-3.0-generate-002'
 
 test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_simple_prompt',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-002',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Create a blue circle',
+            config={'number_of_images': 1, 'output_mime_type': 'image/jpeg'},
+        ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_simple_prompt_001',
+        parameters=types._GenerateImagesParameters(
+            model='imagen-3.0-generate-001',
+            prompt='Create a blue circle',
+            # 001 model does not support prompt enhancement.
             config={'number_of_images': 1, 'output_mime_type': 'image/jpeg'},
         ),
     ),
@@ -35,7 +45,7 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_parameters',
         exception_if_mldev='not supported in Gemini API',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-002',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'aspect_ratio': '1:1',
@@ -48,11 +58,11 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'include_rai_reason': True,
                 'output_mime_type': 'image/jpeg',
                 'output_compression_quality': 80,
+                'enhance_prompt': True,
                 # The below parameters are not supported in Google AI.
                 'add_watermark': False,
                 'seed': 1337,
                 'language': 'en',
-                'enhance_prompt': True
             },
         ),
     ),
@@ -60,10 +70,12 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_person_generation_enum_parameters',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'person_generation': 'ALLOW_ALL',
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
@@ -71,10 +83,12 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_person_generation_enum_parameters_2',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'person_generation': 'allow_all',
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
@@ -82,10 +96,12 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_person_generation_enum_parameters_3',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'person_generation': types.PersonGeneration.ALLOW_ALL,
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
@@ -93,10 +109,12 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_safety_filter_level_enum_parameters',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'safety_filter_level': 'BLOCK_NONE',
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
@@ -104,10 +122,12 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_safety_filter_level_enum_parameters_2',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'safety_filter_level': 'block_none',
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
@@ -115,17 +135,19 @@ test_table: list[pytest_helper.TestTableItem] = [
         name='test_all_vertexai_config_safety_filter_level_enum_parameters_3',
         exception_if_mldev='enum value is not supported',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-001',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'safety_filter_level': types.SafetyFilterLevel.BLOCK_NONE,
+                'number_of_images': 1,
+                'output_mime_type': 'image/jpeg',
             },
         ),
     ),
     pytest_helper.TestTableItem(
         name='test_all_mldev_config_parameters',
         parameters=types._GenerateImagesParameters(
-            model='imagen-3.0-generate-002',
+            model=IMAGEN_MODEL_LATEST,
             prompt='Robot holding a red skateboard',
             config={
                 'aspect_ratio': '1:1',
@@ -153,7 +175,7 @@ pytestmark = pytest_helper.setup(
 @pytest.mark.asyncio
 async def test_simple_prompt_async(client):
   response = await client.aio.models.generate_images(
-      model='imagen-3.0-generate-002',
+      model=IMAGEN_MODEL_LATEST,
       prompt='Create a blue circle',
       config={'number_of_images': 1, 'output_mime_type': 'image/jpeg'},
   )

@@ -3533,6 +3533,12 @@ class GeneratedImage(_common.BaseModel):
       response.
       """,
   )
+  enhanced_prompt: Optional[str] = Field(
+      default=None,
+      description="""The rewritten prompt used for the image generation if the prompt
+      enhancer is enabled.
+      """,
+  )
 
 
 class GeneratedImageDict(TypedDict, total=False):
@@ -3545,6 +3551,11 @@ class GeneratedImageDict(TypedDict, total=False):
   rai_filtered_reason: Optional[str]
   """Responsible AI filter reason if the image is filtered out of the
       response.
+      """
+
+  enhanced_prompt: Optional[str]
+  """The rewritten prompt used for the image generation if the prompt
+      enhancer is enabled.
       """
 
 

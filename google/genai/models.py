@@ -3366,6 +3366,9 @@ def _GeneratedImage_from_mldev(
         getv(from_object, ['raiFilteredReason']),
     )
 
+  if getv(from_object, ['prompt']) is not None:
+    setv(to_object, ['enhanced_prompt'], getv(from_object, ['prompt']))
+
   return to_object
 
 
@@ -3388,6 +3391,9 @@ def _GeneratedImage_from_vertex(
         ['rai_filtered_reason'],
         getv(from_object, ['raiFilteredReason']),
     )
+
+  if getv(from_object, ['prompt']) is not None:
+    setv(to_object, ['enhanced_prompt'], getv(from_object, ['prompt']))
 
   return to_object
 
