@@ -1863,6 +1863,10 @@ class GenerateContentConfig(_common.BaseModel):
       description="""Associates model output to a specific function call.
       """,
   )
+  labels: Optional[dict[str, str]] = Field(
+      default=None,
+      description="""Labels with user-defined metadata to break down billed charges.""",
+  )
   cached_content: Optional[str] = Field(
       default=None,
       description="""Resource name of a context cache that can be used in subsequent
@@ -2006,6 +2010,9 @@ class GenerateContentConfigDict(TypedDict, total=False):
   tool_config: Optional[ToolConfigDict]
   """Associates model output to a specific function call.
       """
+
+  labels: Optional[dict[str, str]]
+  """Labels with user-defined metadata to break down billed charges."""
 
   cached_content: Optional[str]
   """Resource name of a context cache that can be used in subsequent

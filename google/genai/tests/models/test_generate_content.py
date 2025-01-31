@@ -136,6 +136,17 @@ test_table: list[pytest_helper.TestTableItem] = [
         ),
     ),
     pytest_helper.TestTableItem(
+        name='test_labels',
+        exception_if_mldev='not supported',
+        parameters=types._GenerateContentParameters(
+            model='gemini-1.5-flash-002',
+            contents=t.t_contents(None, 'What is your name?'),
+            config={
+                'labels': {'label1': 'value1', 'label2': 'value2'},
+            },
+        ),
+    ),
+    pytest_helper.TestTableItem(
         name='test_simple_shared_generation_config',
         parameters=types._GenerateContentParameters(
             model='gemini-1.5-flash-002',
