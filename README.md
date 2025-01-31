@@ -117,42 +117,6 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
-### Thinking
-
-The Gemini 2.0 Flash Thinking model is an experimental model that could return
-"thoughts" as part of its response.
-
-#### Gemini Developer API
-
-Thinking config is only available in v1alpha for Gemini AI API.
-
-```python
-response = client.models.generate_content(
-    model='gemini-2.0-flash-thinking-exp',
-    contents='What is the sum of natural numbers from 1 to 100?',
-    config=types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(include_thoughts=True),
-        http_options=types.HttpOptions(api_version='v1alpha'),
-    )
-)
-for part in response.candidates[0].content.parts:
-    print(part)
-```
-
-#### Vertex AI API
-
-```python
-response = client.models.generate_content(
-    model='gemini-2.0-flash-thinking-exp-01-21',
-    contents='What is the sum of natural numbers from 1 to 100?',
-    config=types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(include_thoughts=True),
-    )
-)
-for part in response.candidates[0].content.parts:
-    print(part)
-```
-
 ### List Base Models
 
 To retrieve tuned models, see [list tuned models](#list-tuned-models).
