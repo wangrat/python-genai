@@ -19,7 +19,7 @@ import io
 import mimetypes
 import os
 import pathlib
-from typing import Optional, Union
+from typing import Any, Optional, Union
 from urllib.parse import urlencode
 from . import _api_module
 from . import _common
@@ -351,12 +351,12 @@ def _DeleteFileParameters_to_vertex(
   return to_object
 
 
-def _FileState_to_vertex_enum_validate(enum_value: any):
+def _FileState_to_vertex_enum_validate(enum_value: Any):
   if enum_value in set(['STATE_UNSPECIFIED', 'PROCESSING', 'ACTIVE', 'FAILED']):
     raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
 
 
-def _FileSource_to_vertex_enum_validate(enum_value: any):
+def _FileSource_to_vertex_enum_validate(enum_value: Any):
   if enum_value in set(['SOURCE_UNSPECIFIED', 'UPLOADED', 'GENERATED']):
     raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
 
