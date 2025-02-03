@@ -29,11 +29,11 @@ test_http_options = {'headers': {'test': 'headers'}}
 test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_tuned_models',
-        parameters=types._ListModelsParameters(),
+        parameters=types._ListModelsParameters(config={'query_base': False}),
     ),
     pytest_helper.TestTableItem(
         name='test_base_models',
-        parameters=types._ListModelsParameters(config={'query_base': True}),
+        parameters=types._ListModelsParameters(),
     ),
     pytest_helper.TestTableItem(
         name='test_base_models_with_config',

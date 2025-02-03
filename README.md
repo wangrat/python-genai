@@ -122,12 +122,12 @@ print(response.text)
 To retrieve tuned models, see [list tuned models](#list-tuned-models).
 
 ```python
-for model in client.models.list(config={'query_base':True}):
+for model in client.models.list():
     print(model)
 ```
 
 ```python
-pager = client.models.list(config={"page_size": 10, 'query_base':True})
+pager = client.models.list(config={"page_size": 10})
 print(pager.page_size)
 print(pager[0])
 pager.next_page()
@@ -137,12 +137,12 @@ print(pager[0])
 #### Async
 
 ```python
-async for job in await client.aio.models.list(config={'query_base':True}):
+async for job in await client.aio.models.list():
     print(job)
 ```
 
 ```python
-async_pager = await client.aio.models.list(config={"page_size": 10, 'query_base':True})
+async_pager = await client.aio.models.list(config={"page_size": 10})
 print(async_pager.page_size)
 print(async_pager[0])
 await async_pager.next_page()
@@ -801,12 +801,12 @@ print(tuned_model)
 To retrieve base models, see [list base models](#list-base-models).
 
 ```python
-for model in client.models.list(config={"page_size": 10}):
+for model in client.models.list(config={"page_size": 10, "query_base": False}):
     print(model)
 ```
 
 ```python
-pager = client.models.list(config={"page_size": 10})
+pager = client.models.list(config={"page_size": 10, "query_base": False})
 print(pager.page_size)
 print(pager[0])
 pager.next_page()
@@ -816,12 +816,12 @@ print(pager[0])
 #### Async
 
 ```python
-async for job in await client.aio.models.list(config={"page_size": 10}):
+async for job in await client.aio.models.list(config={"page_size": 10, "query_base": False}):
     print(job)
 ```
 
 ```python
-async_pager = await client.aio.models.list(config={"page_size": 10})
+async_pager = await client.aio.models.list(config={"page_size": 10, "query_base": False})
 print(async_pager.page_size)
 print(async_pager[0])
 await async_pager.next_page()
