@@ -494,6 +494,8 @@ def _CreateFileResponse_from_mldev(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['httpHeaders']) is not None:
+    setv(to_object, ['http_headers'], getv(from_object, ['httpHeaders']))
 
   return to_object
 
@@ -504,6 +506,8 @@ def _CreateFileResponse_from_vertex(
     parent_object: dict = None,
 ) -> dict:
   to_object = {}
+  if getv(from_object, ['httpHeaders']) is not None:
+    setv(to_object, ['http_headers'], getv(from_object, ['httpHeaders']))
 
   return to_object
 
@@ -840,7 +844,7 @@ class Files(_api_module.BaseModule):
             'Unknown mime type: Could not determine the mimetype for your'
             ' file\n    please set the `mime_type` argument'
         )
-    response = {}
+
     if config_model and config_model.http_options:
       http_options = config_model.http_options
     else:
@@ -853,19 +857,20 @@ class Files(_api_module.BaseModule):
               'X-Goog-Upload-Header-Content-Length': f'{file_obj.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file_obj.mime_type}',
           },
-          'deprecated_response_payload': response,
       }
-    self._create(file=file_obj, config={'http_options': http_options})
+    response = self._create(
+        file=file_obj, config={'http_options': http_options}
+    )
 
     if (
-        'headers' not in response
-        or 'X-Goog-Upload-URL' not in response['headers']
+        response.http_headers is None
+        or 'X-Goog-Upload-URL' not in response.http_headers
     ):
       raise KeyError(
           'Failed to create file. Upload URL did not returned from the create'
           ' file request.'
       )
-    upload_url = response['headers']['X-Goog-Upload-URL']
+    upload_url = response.http_headers['X-Goog-Upload-URL']
 
     if isinstance(file, io.IOBase):
       return_file = self._api_client.upload_file(
@@ -1272,7 +1277,6 @@ class AsyncFiles(_api_module.BaseModule):
             ' file\n    please set the `mime_type` argument'
         )
 
-    response = {}
     if config_model and config_model.http_options:
       http_options = config_model.http_options
     else:
@@ -1285,18 +1289,20 @@ class AsyncFiles(_api_module.BaseModule):
               'X-Goog-Upload-Header-Content-Length': f'{file_obj.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file_obj.mime_type}',
           },
-          'deprecated_response_payload': response,
       }
-    await self._create(file=file_obj, config={'http_options': http_options})
+    response = await self._create(
+        file=file_obj, config={'http_options': http_options}
+    )
+
     if (
-        'headers' not in response
-        or 'X-Goog-Upload-URL' not in response['headers']
+        response.http_headers is None
+        or 'X-Goog-Upload-URL' not in response.http_headers
     ):
       raise KeyError(
           'Failed to create file. Upload URL did not returned from the create'
           ' file request.'
       )
-    upload_url = response['headers']['X-Goog-Upload-URL']
+    upload_url = response.http_headers['X-Goog-Upload-URL']
 
     if isinstance(file, io.IOBase):
       return_file = await self._api_client.async_upload_file(

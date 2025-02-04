@@ -99,6 +99,19 @@ class HttpRequest:
   timeout: Optional[float] = None
 
 
+# TODO(b/394358912): Update this class to use a SDKResponse class that can be
+# generated and used for all languages.
+@dataclass
+class BaseResponse:
+  http_headers: dict[str, str]
+
+  @property
+  def dict(self) -> dict[str, Any]:
+    if isinstance(self, dict):
+      return self
+    return {'httpHeaders': self.http_headers}
+
+
 class HttpResponse:
 
   def __init__(
@@ -434,18 +447,12 @@ class ApiClient:
         http_method, path, request_dict, http_options
     )
     response = self._request(http_request, stream=False)
-    if http_options:
-      if (
-          isinstance(http_options, HttpOptions)
-          and http_options.deprecated_response_payload is not None
-      ):
-        response._copy_to_dict(http_options.deprecated_response_payload)
-      elif (
-          isinstance(http_options, dict)
-          and 'deprecated_response_payload' in http_options
-      ):
-        response._copy_to_dict(http_options['deprecated_response_payload'])
-    return response.json
+    json_response = response.json
+    if not json_response:
+      base_response = BaseResponse(response.headers).dict
+      return base_response
+
+    return json_response
 
   def request_streamed(
       self,
@@ -459,10 +466,6 @@ class ApiClient:
     )
 
     session_response = self._request(http_request, stream=True)
-    if http_options and 'deprecated_response_payload' in http_options:
-      session_response._copy_to_dict(
-          http_options['deprecated_response_payload']
-      )
     for chunk in session_response.segments():
       yield chunk
 
@@ -478,9 +481,11 @@ class ApiClient:
     )
 
     result = await self._async_request(http_request=http_request, stream=False)
-    if http_options and 'deprecated_response_payload' in http_options:
-      result._copy_to_dict(http_options['deprecated_response_payload'])
-    return result.json
+    json_response = result.json
+    if not json_response:
+      base_response = BaseResponse(result.headers).dict
+      return base_response
+    return json_response
 
   async def async_request_streamed(
       self,
@@ -495,8 +500,6 @@ class ApiClient:
 
     response = await self._async_request(http_request=http_request, stream=True)
 
-    if http_options and 'deprecated_response_payload' in http_options:
-      response._copy_to_dict(http_options['deprecated_response_payload'])
     async def async_generator():
       async for chunk in response:
         yield chunk

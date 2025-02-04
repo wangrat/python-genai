@@ -723,10 +723,6 @@ class HttpOptions(_common.BaseModel):
   timeout: Optional[int] = Field(
       default=None, description="""Timeout for the request in milliseconds."""
   )
-  deprecated_response_payload: Optional[dict[str, Any]] = Field(
-      default=None,
-      description="""This field is deprecated. If set, the response payload will be returned int the supplied dict.""",
-  )
 
 
 class HttpOptionsDict(TypedDict, total=False):
@@ -743,9 +739,6 @@ class HttpOptionsDict(TypedDict, total=False):
 
   timeout: Optional[int]
   """Timeout for the request in milliseconds."""
-
-  deprecated_response_payload: Optional[dict[str, Any]]
-  """This field is deprecated. If set, the response payload will be returned int the supplied dict."""
 
 
 HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
@@ -6583,13 +6576,17 @@ _CreateFileParametersOrDict = Union[
 class CreateFileResponse(_common.BaseModel):
   """Response for the create file method."""
 
-  pass
+  http_headers: Optional[dict[str, str]] = Field(
+      default=None,
+      description="""Used to retain the HTTP headers in the request""",
+  )
 
 
 class CreateFileResponseDict(TypedDict, total=False):
   """Response for the create file method."""
 
-  pass
+  http_headers: Optional[dict[str, str]]
+  """Used to retain the HTTP headers in the request"""
 
 
 CreateFileResponseOrDict = Union[CreateFileResponse, CreateFileResponseDict]
