@@ -39,6 +39,23 @@ client = genai.Client(
 )
 ```
 
+To set the API version use `http_options`. For example, to set the API version
+to `v1` for Vertex AI:
+
+```python
+client = genai.Client(
+    vertexai=True, project='your-project-id', location='us-central1',
+    http_options={'api_version': 'v1'}
+)
+```
+
+To set the API version to `v1alpha` for the Gemini API:
+
+```python
+client = genai.Client(api_key='GEMINI_API_KEY',
+                      http_options={'api_version': 'v1alpha'})
+```
+
 ## Types
 
 Parameter types can be specified as either dictionaries(`TypedDict`) or
