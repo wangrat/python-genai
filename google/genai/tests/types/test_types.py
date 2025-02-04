@@ -223,7 +223,7 @@ def test_default_value_built_in_type():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_unsupported_built_in_primitives_compounds():
   def func_under_test1(a: bytes):
@@ -281,7 +281,7 @@ def test_unsupported_built_in_primitives_compounds():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_built_in_union_type():
 
@@ -332,7 +332,7 @@ def test_built_in_union_type():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_default_value_not_compatible_built_in_union_type():
   def func_under_test(
@@ -353,7 +353,7 @@ def test_default_value_not_compatible_built_in_union_type():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_default_value_built_in_union_type():
 
@@ -543,7 +543,7 @@ def test_generic_alias_array():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_generic_alias_complex_array():
 
@@ -599,7 +599,7 @@ def test_generic_alias_complex_array():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_generic_alias_complex_array_with_default_value():
 
@@ -685,7 +685,7 @@ def test_generic_alias_complex_array_with_default_value():
 
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
-    reason='| is only supported in Python 3.9 and above.',
+    reason='| is only supported in Python 3.10 and above.',
 )
 def test_generic_alias_complex_array_with_default_value_not_compatible():
 
@@ -1129,6 +1129,10 @@ def test_custom_class():
     )
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is only supported in Python 3.10 and above.',
+)
 def test_type_union():
 
   def func_under_test(
@@ -1237,6 +1241,10 @@ def test_type_optional_with_list():
   assert actual_schema_mldev == expected_schema_mldev
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is only supported in Python 3.10 and above.',
+)
 def test_type_union_with_default_value():
 
   def func_under_test(
@@ -1314,6 +1322,10 @@ def test_type_union_with_default_value():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is only supported in Python 3.10 and above.',
+)
 def test_type_union_with_default_value_not_compatible():
 
   def func_under_test1(
@@ -1681,6 +1693,7 @@ def test_function_with_return_type_not_supported():
       func_under_test15,
   ]
   for i, func_under_test in enumerate(all_func_under_test):
+
     expected_schema_mldev = types.FunctionDeclaration(
         name=f'func_under_test{i+1}',
         description=None,
