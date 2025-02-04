@@ -15,6 +15,7 @@
 
 
 import os
+import sys
 
 import PIL.Image
 from pydantic import BaseModel, ValidationError
@@ -192,6 +193,13 @@ def test_with_afc_history(client):
   assert '51' in chat_history[3].parts[0].text
 
 
+@pytest.mark.skipif(
+    sys.version_info >= (3, 13),
+    reason=(
+        'object type is dumped as <Type.OBJECT: "OBJECT"> as opposed to'
+        ' "OBJECT" in Python 3.13'
+    ),
+)
 def test_with_afc_multiple_remote_calls(client):
 
   house_fns = [power_disco_ball, start_music, dim_lights]
@@ -239,6 +247,13 @@ def test_with_afc_multiple_remote_calls(client):
   assert curated_history[7].parts[0].function_call
 
 
+@pytest.mark.skipif(
+    sys.version_info >= (3, 13),
+    reason=(
+        'object type is dumped as <Type.OBJECT: "OBJECT"> as opposed to'
+        ' "OBJECT" in Python 3.13'
+    ),
+)
 def test_with_afc_multiple_remote_calls_async(client):
 
   house_fns = [power_disco_ball, start_music, dim_lights]

@@ -17,9 +17,13 @@ import inspect
 import sys
 import types as builtin_types
 import typing
-from typing import Any, Callable, Literal, Union, _GenericAlias, get_args, get_origin
+from typing import _GenericAlias, Any, Callable, get_args, get_origin, Literal, Union
+
 import pydantic
+
+from . import _extra_utils
 from . import types
+
 
 if sys.version_info >= (3, 10):
   VersionedUnionType = builtin_types.UnionType
@@ -268,9 +272,8 @@ def _parse_schema_from_parameter(
       return schema
       # all other generic alias will be invoked in raise branch
   if (
-      inspect.isclass(param.annotation)
       # for user defined class, we only support pydantic model
-      and issubclass(param.annotation, pydantic.BaseModel)
+      _extra_utils.is_annotation_pydantic_model(param.annotation)
   ):
     if (
         param.default is not inspect.Parameter.empty

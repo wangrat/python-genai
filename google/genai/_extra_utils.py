@@ -108,16 +108,22 @@ def convert_number_values_for_function_call_args(
   return args
 
 
-def _is_annotation_pydantic_model(annotation: Any) -> bool:
-  return inspect.isclass(annotation) and issubclass(
-      annotation, pydantic.BaseModel
-  )
+def is_annotation_pydantic_model(annotation: Any) -> bool:
+  try:
+    return inspect.isclass(annotation) and issubclass(
+        annotation, pydantic.BaseModel
+    )
+  # for python 3.10 and below, inspect.isclass(annotation) has inconsistent
+  # results with versions above. for example, inspect.isclass(dict[str, int]) is
+  # True in 3.10 and below but False in 3.11 and above.
+  except TypeError:
+    return False
 
 
 def convert_if_exist_pydantic_model(
     value: Any, annotation: Any, param_name: str, func_name: str
 ) -> Any:
-  if isinstance(value, dict) and _is_annotation_pydantic_model(annotation):
+  if isinstance(value, dict) and is_annotation_pydantic_model(annotation):
     try:
       return annotation(**value)
     except pydantic.ValidationError as e:
@@ -146,7 +152,7 @@ def convert_if_exist_pydantic_model(
       if (
           (get_args(arg) and get_origin(arg) is list)
           or isinstance(value, arg)
-          or (isinstance(value, dict) and _is_annotation_pydantic_model(arg))
+          or (isinstance(value, dict) and is_annotation_pydantic_model(arg))
       ):
         try:
           return convert_if_exist_pydantic_model(
