@@ -4702,15 +4702,18 @@ class Models(_api_module.BaseModule):
       )
       if not func_response_parts:
         break
-      contents = t.t_contents(self._api_client, contents)
-      contents.append(response.candidates[0].content)
-      contents.append(
-          types.Content(
-              role='user',
-              parts=func_response_parts,
-          )
+      func_call_content = response.candidates[0].content
+      func_response_content = types.Content(
+          role='user',
+          parts=func_response_parts,
       )
-      automatic_function_calling_history.extend(contents)
+      contents = t.t_contents(self._api_client, contents)
+      if not automatic_function_calling_history:
+        automatic_function_calling_history.extend(contents)
+      contents.append(func_call_content)
+      contents.append(func_response_content)
+      automatic_function_calling_history.append(func_call_content)
+      automatic_function_calling_history.append(func_response_content)
     if _extra_utils.should_append_afc_history(config):
       response.automatic_function_calling_history = (
           automatic_function_calling_history
@@ -5700,15 +5703,18 @@ class AsyncModels(_api_module.BaseModule):
       )
       if not func_response_parts:
         break
-      contents = t.t_contents(self._api_client, contents)
-      contents.append(response.candidates[0].content)
-      contents.append(
-          types.Content(
-              role='user',
-              parts=func_response_parts,
-          )
+      func_call_content = response.candidates[0].content
+      func_response_content = types.Content(
+          role='user',
+          parts=func_response_parts,
       )
-      automatic_function_calling_history.extend(contents)
+      contents = t.t_contents(self._api_client, contents)
+      if not automatic_function_calling_history:
+        automatic_function_calling_history.extend(contents)
+      contents.append(func_call_content)
+      contents.append(func_response_content)
+      automatic_function_calling_history.append(func_call_content)
+      automatic_function_calling_history.append(func_response_content)
 
     if _extra_utils.should_append_afc_history(config):
       response.automatic_function_calling_history = (
