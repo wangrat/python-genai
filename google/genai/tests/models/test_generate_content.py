@@ -516,6 +516,36 @@ def test_pydantic_schema(client):
   )
   assert isinstance(response.parsed, CountryInfo)
 
+
+def test_pydantic_schema_with_default_value(client):
+  class Restaurant(BaseModel):
+    name: str
+    rating: int = 0
+    city: Optional[str] = 'New York'
+
+  if client._api_client.vertexai:
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Can you recommend a restaurant for me?',
+        config={
+            'response_mime_type': 'application/json',
+            'response_schema': Restaurant,
+        },
+    )
+    assert isinstance(response.parsed, Restaurant)
+  else:
+    with pytest.raises(ValueError) as e:
+      client.models.generate_content(
+          model='gemini-1.5-flash',
+          contents='Can you recommend a restaurant for me?',
+          config={
+              'response_mime_type': 'application/json',
+              'response_schema': Restaurant,
+          },
+      )
+    assert 'Default value is not supported' in str(e)
+
+
 def test_repeated_pydantic_schema(client):
   # This tests the defs handling on the pydantic side.
   class Person(BaseModel):
@@ -644,8 +674,8 @@ def test_schema_with_union_type_raises(client):
     sys.version_info < (3, 10),
     reason='| is not supported in Python 3.9',
 )
-def test_list_schema_with_union_type_raises(client):
-  with pytest_helper.exception_if_mldev(client, errors.ClientError):
+def test_list_schema_with_union_type(client):
+  if client._api_client.vertexai:
     response = client.models.generate_content(
         model='gemini-1.5-flash',
         contents='Give me a list of 5 random numbers, including some integers and some written out as words.',
@@ -656,7 +686,17 @@ def test_list_schema_with_union_type_raises(client):
     )
     for item in response.parsed:
       assert isinstance(item, int) or isinstance(item, str)
-
+  else:
+    with pytest.raises(ValueError) as e:
+      client.models.generate_content(
+          model='gemini-1.5-flash',
+          contents='Give me a random number, either as an integers or written out as words.',
+          config=types.GenerateContentConfig(
+              response_mime_type='application/json',
+              response_schema=list[int | str],
+          )
+      )
+    assert 'AnyOf is not supported' in str(e)
 
 
 def test_list_of_pydantic_schema(client):

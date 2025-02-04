@@ -1210,7 +1210,7 @@ def test_type_optional_with_list():
     """test type optional with list."""
     pass
 
-  expected_schema_vertex = types.FunctionDeclaration(
+  expected_schema_mldev = types.FunctionDeclaration(
       name='func_under_test',
       parameters=types.Schema(
           type='OBJECT',
@@ -1220,19 +1220,21 @@ def test_type_optional_with_list():
                   nullable=True, type='ARRAY', items=types.Schema(type='STRING')
               ),
           },
-          required=['a'],
       ),
       description='test type optional with list.',
   )
+  expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
+  expected_schema_vertex.parameters.required = ['a']
 
-  with pytest.raises(ValueError):
-    types.FunctionDeclaration.from_callable(
-        client=mldev_client, callable=func_under_test
-    )
+  actual_schema_mldev = types.FunctionDeclaration.from_callable(
+      client=mldev_client, callable=func_under_test
+  )
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
       client=vertex_client, callable=func_under_test
   )
+
   assert actual_schema_vertex == expected_schema_vertex
+  assert actual_schema_mldev == expected_schema_mldev
 
 
 def test_type_union_with_default_value():

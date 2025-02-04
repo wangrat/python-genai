@@ -225,6 +225,7 @@ PartType = Union[types.Part, types.PartDict, str, 'PIL.Image.Image']
 def t_part(client: _api_client.ApiClient, part: PartType) -> types.Part:
   try:
     import PIL.Image
+
     PIL_Image = PIL.Image.Image
   except ImportError:
     PIL_Image = None
@@ -342,7 +343,7 @@ def handle_null_fields(schema: dict[str, Any]):
               "type": "null"
             }
           ],
-          "default": null,
+          "default": None,
           "title": "Total Area Sq Mi"
         }
       }
@@ -356,16 +357,12 @@ def handle_null_fields(schema: dict[str, Any]):
         "total_area_sq_mi": {
           "type": "integer",
           "nullable": true,
-          "default": null,
+          "default": None,
           "title": "Total Area Sq Mi"
         }
       }
   """
-  if (
-      isinstance(schema, dict)
-      and 'type' in schema
-      and schema['type'] == 'null'
-  ):
+  if schema.get('type', None) == 'null':
     schema['nullable'] = True
     del schema['type']
   elif 'anyOf' in schema:
@@ -445,6 +442,11 @@ def process_schema(
   if client and not client.vertexai:
     schema.pop('title', None)
 
+    if schema.get('default') is not None:
+      raise ValueError(
+          'Default value is not supported in the response schema for the Gemmini API.'
+      )
+
   if defs is None:
     defs = schema.pop('$defs', {})
     for _, sub_schema in defs.items():
@@ -454,6 +456,10 @@ def process_schema(
 
   any_of = schema.get('anyOf', None)
   if any_of is not None:
+    if not client.vertexai:
+      raise ValueError(
+          'AnyOf is not supported in the response schema for the Gemini API.'
+      )
     for sub_schema in any_of:
       process_schema(sub_schema, client, defs)
     return

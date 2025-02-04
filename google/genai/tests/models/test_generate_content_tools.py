@@ -577,16 +577,15 @@ def test_automatic_function_calling_with_parameterized_generic_union_type(client
     else:
       return f'The cities in {country} are: {", ".join(cities)} and they are nice.'
 
-  with pytest_helper.exception_if_mldev(client, ValueError):
-    response = client.models.generate_content(
-        model='gemini-1.5-flash',
-        contents=('Can you describe the city of San Francisco?'),
-        config={
-            'tools': [describe_cities],
-            'automatic_function_calling': {'ignore_call_history': True}
-        },
-    )
-    assert 'San Francisco' in response.text
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents=('Can you describe the city of San Francisco?'),
+      config={
+          'tools': [describe_cities],
+          'automatic_function_calling': {'ignore_call_history': True}
+      },
+  )
+  assert 'San Francisco' in response.text
 
 
 @pytest.mark.asyncio

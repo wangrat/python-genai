@@ -45,7 +45,8 @@ def _is_builtin_primitive_or_compound(
 def _raise_for_any_of_if_mldev(schema: types.Schema):
   if schema.any_of:
     raise ValueError(
-        'AnyOf is not supported in function declaration schema for Google AI.'
+        'AnyOf is not supported in function declaration schema for'
+        ' the Gemini API.'
     )
 
 
@@ -53,15 +54,7 @@ def _raise_for_default_if_mldev(schema: types.Schema):
   if schema.default is not None:
     raise ValueError(
         'Default value is not supported in function declaration schema for'
-        ' Google AI.'
-    )
-
-
-def _raise_for_nullable_if_mldev(schema: types.Schema):
-  if schema.nullable:
-    raise ValueError(
-        'Nullable is not supported in function declaration schema for'
-        ' Google AI.'
+        ' the Gemini API.'
     )
 
 
@@ -69,7 +62,6 @@ def _raise_if_schema_unsupported(client, schema: types.Schema):
   if not client.vertexai:
     _raise_for_any_of_if_mldev(schema)
     _raise_for_default_if_mldev(schema)
-    _raise_for_nullable_if_mldev(schema)
 
 
 def _is_default_value_compatible(
