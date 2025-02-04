@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-
+import sys
 import typing
 import pydantic
 import pytest
@@ -252,6 +252,13 @@ def test_google_search_retrieval_stream(client):
     pass
 
 
+@pytest.mark.skipif(
+    sys.version_info >= (3, 13),
+    reason=(
+        'object type is dumped as <Type.OBJECT: "OBJECT"> as opposed to'
+        ' "OBJECT" in Python 3.13'
+    ),
+)
 def test_function_calling_without_implementation(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
