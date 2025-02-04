@@ -22,9 +22,9 @@ import pydantic
 from . import types
 
 if sys.version_info >= (3, 10):
-  UnionType = builtin_types.UnionType
+  VersionedUnionType = builtin_types.UnionType
 else:
-  UnionType = typing._UnionGenericAlias
+  VersionedUnionType = typing._UnionGenericAlias
 
 _py_builtin_type_to_schema_type = {
     str: 'STRING',
@@ -74,10 +74,10 @@ def _is_default_value_compatible(
   if (
       isinstance(annotation, _GenericAlias)
       or isinstance(annotation, builtin_types.GenericAlias)
-      or isinstance(annotation, UnionType)
+      or isinstance(annotation, VersionedUnionType)
   ):
     origin = get_origin(annotation)
-    if origin in (Union, UnionType):
+    if origin in (Union, VersionedUnionType):
       return any(
           _is_default_value_compatible(default_value, arg)
           for arg in get_args(annotation)
@@ -133,7 +133,7 @@ def _parse_schema_from_parameter(
     _raise_if_schema_unsupported(client, schema)
     return schema
   if (
-      isinstance(param.annotation, UnionType)
+      isinstance(param.annotation, VersionedUnionType)
       # only parse simple UnionType, example int | str | float | bool
       # complex UnionType will be invoked in raise branch
       and all(
@@ -221,7 +221,11 @@ def _parse_schema_from_parameter(
       schema.type = 'OBJECT'
       unique_types = set()
       for arg in args:
-        if arg.__name__ == 'NoneType':  # Optional type
+        # The first check is for NoneType in Python 3.9, since the __name__
+        # attribute is not available in Python 3.9
+        if type(arg) is type(None) or (
+            hasattr(arg, '__name__') and arg.__name__ == 'NoneType'
+        ):  # Optional type
           schema.nullable = True
           continue
         schema_in_any_of = _parse_schema_from_parameter(

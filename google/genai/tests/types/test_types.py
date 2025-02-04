@@ -330,6 +330,53 @@ def test_built_in_union_type():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+def test_built_in_union_type_all_py_versions():
+
+  def func_under_test(
+      a: typing.Union[int, str , float , bool],
+      b: typing.Union[list, dict],
+  ):
+    """test built in union type."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='INTEGER'),
+                      types.Schema(type='STRING'),
+                      types.Schema(type='NUMBER'),
+                      types.Schema(type='BOOLEAN'),
+                  ],
+              ),
+              'b': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+              ),
+          },
+          required=['a', 'b'],
+      ),
+      description='test built in union type.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
     reason='| is only supported in Python 3.10 and above.',
@@ -337,6 +384,23 @@ def test_built_in_union_type():
 def test_default_value_not_compatible_built_in_union_type():
   def func_under_test(
       a: int | str = 1.1,
+  ):
+    """test default value not compatible built in union type."""
+    pass
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=vertex_client, callable=func_under_test
+    )
+
+
+def test_default_value_not_compatible_built_in_union_type_all_py_versions():
+  def func_under_test(
+      a: typing.Union[int, str] = 1.1,
   ):
     """test default value not compatible built in union type."""
     pass
@@ -361,6 +425,62 @@ def test_default_value_built_in_union_type():
       a: int | str = '1',
       b: list | dict = [],
       c: list | dict = {},
+  ):
+    """test default value built in union type."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='INTEGER'),
+                      types.Schema(type='STRING'),
+                  ],
+                  default='1',
+              ),
+              'b': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+                  default=[],
+              ),
+              'c': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+                  default={},
+              ),
+          },
+          required=[],
+      ),
+      description='test default value built in union type.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
+def test_default_value_built_in_union_type_all_py_versions():
+
+  def func_under_test(
+      a: typing.Union[int, str] = '1',
+      b: typing.Union[list, dict] = [],
+      c: typing.Union[list, dict] = {},
   ):
     """test default value built in union type."""
     pass
@@ -597,6 +717,58 @@ def test_generic_alias_complex_array():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+def test_generic_alias_complex_array_all_py_versions():
+
+  def func_under_test(
+      a: typing.List[typing.Union[int, str, float, bool]],
+      b: typing.List[typing.Union[list, dict]],
+  ):
+    """test generic alias complex array."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='ARRAY',
+                  items=types.Schema(
+                      type='OBJECT',
+                      any_of=[
+                          types.Schema(type='INTEGER'),
+                          types.Schema(type='STRING'),
+                          types.Schema(type='NUMBER'),
+                          types.Schema(type='BOOLEAN'),
+                      ],
+                  ),
+              ),
+              'b': types.Schema(
+                  type='ARRAY',
+                  items=types.Schema(
+                      type='OBJECT',
+                      any_of=[
+                          types.Schema(type='ARRAY'),
+                          types.Schema(type='OBJECT'),
+                      ],
+                  ),
+              ),
+          },
+          required=['a', 'b'],
+      ),
+      description='test generic alias complex array.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+  assert actual_schema_vertex == expected_schema_vertex
+
+
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
     reason='| is only supported in Python 3.10 and above.',
@@ -617,6 +789,88 @@ def test_generic_alias_complex_array_with_default_value():
           False,
       ],
       c: typing.List[typing.List[int] | int] = [[1], 2],
+  ):
+    """test generic alias complex array with default value."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='ARRAY',
+                  items=types.Schema(
+                      type='OBJECT',
+                      any_of=[
+                          types.Schema(type='INTEGER'),
+                          types.Schema(type='STRING'),
+                          types.Schema(type='NUMBER'),
+                          types.Schema(type='BOOLEAN'),
+                      ],
+                  ),
+                  default=[1, 'a', 1.1, True],
+              ),
+              'b': types.Schema(
+                  type='ARRAY',
+                  items=types.Schema(
+                      type='OBJECT',
+                      any_of=[
+                          types.Schema(type='INTEGER'),
+                          types.Schema(type='STRING'),
+                          types.Schema(type='NUMBER'),
+                          types.Schema(type='BOOLEAN'),
+                      ],
+                  ),
+                  default=[11, 'aa', 1.11, False],
+              ),
+              'c': types.Schema(
+                  type='ARRAY',
+                  items=types.Schema(
+                      type='OBJECT',
+                      any_of=[
+                          types.Schema(
+                              type='ARRAY',
+                              items=types.Schema(type='INTEGER'),
+                          ),
+                          types.Schema(type='INTEGER'),
+                      ],
+                  ),
+                  default=[[1], 2],
+              ),
+          },
+          required=[],
+      ),
+      description='test generic alias complex array with default value.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
+def test_generic_alias_complex_array_with_default_value_all_py_versions():
+
+  def func_under_test(
+      a: typing.List[typing.Union[int, str, float, bool]] = [
+          1,
+          'a',
+          1.1,
+          True,
+      ],
+      b: list[typing.Union[int, str, float, bool]] = [
+          11,
+          'aa',
+          1.11,
+          False,
+      ],
+      c: typing.List[typing.Union[typing.List[int], int]] = [[1], 2],
   ):
     """test generic alias complex array with default value."""
     pass
@@ -710,6 +964,32 @@ def test_generic_alias_complex_array_with_default_value_not_compatible():
       types.FunctionDeclaration.from_callable(
           client=vertex_client, callable=func_under_test
       )
+
+
+def test_generic_alias_complex_array_with_default_value_not_compatible_all_py_versions():
+
+  def func_under_test1(
+      a: typing.List[typing.Union[int, str, float, bool]] = [1, 'a', 1.1, True, []],
+  ):
+    """test generic alias complex array with default value not compatible."""
+    pass
+
+  def func_under_test2(
+      a: list[typing.Union[int, str, float, bool]] = [1, 'a', 1.1, True, []],
+  ):
+    """test generic alias complex array with default value not compatible."""
+    pass
+
+  for func_under_test in [func_under_test1, func_under_test2]:
+    with pytest.raises(ValueError):
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
+    with pytest.raises(ValueError):
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
+
 
 
 def test_generic_alias_object():
@@ -1205,6 +1485,70 @@ def test_type_union():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+def test_type_union_all_py_versions():
+
+  def func_under_test(
+      a: typing.Union[int, str],
+      b: typing.Union[list, dict],
+      c: typing.Union[typing.List[typing.Union[int, float]], dict],
+  ):
+    """test type union."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='INTEGER'),
+                      types.Schema(type='STRING'),
+                  ],
+              ),
+              'b': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+              ),
+              'c': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(
+                          type='ARRAY',
+                          items=types.Schema(
+                              type='OBJECT',
+                              any_of=[
+                                  types.Schema(type='INTEGER'),
+                                  types.Schema(type='NUMBER'),
+                              ],
+                          ),
+                      ),
+                      types.Schema(
+                          type='OBJECT',
+                      ),
+                  ],
+              ),
+          },
+          required=['a', 'b', 'c'],
+      ),
+      description='test type union.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
 def test_type_optional_with_list():
 
   def func_under_test(
@@ -1322,6 +1666,74 @@ def test_type_union_with_default_value():
   assert actual_schema_vertex == expected_schema_vertex
 
 
+def test_type_union_with_default_value_all_py_versions():
+
+  def func_under_test(
+      a: typing.Union[int, str] = 1,
+      b: typing.Union[list, dict] = [1],
+      c: typing.Union[typing.List[typing.Union[int, float]], dict] = {},
+  ):
+    """test type union with default value."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='INTEGER'),
+                      types.Schema(type='STRING'),
+                  ],
+                  default=1,
+              ),
+              'b': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+                  default=[1],
+              ),
+              'c': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(
+                          type='ARRAY',
+                          items=types.Schema(
+                              type='OBJECT',
+                              any_of=[
+                                  types.Schema(type='INTEGER'),
+                                  types.Schema(type='NUMBER'),
+                              ],
+                          ),
+                      ),
+                      types.Schema(
+                          type='OBJECT',
+                      ),
+                  ],
+                  default={},
+              ),
+          },
+          required=[],
+      ),
+      description='test type union with default value.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
 @pytest.mark.skipif(
     sys.version_info < (3, 10),
     reason='| is only supported in Python 3.10 and above.',
@@ -1336,6 +1748,33 @@ def test_type_union_with_default_value_not_compatible():
 
   def func_under_test2(
       a: list | dict = 1,
+  ):
+    """test type union with default value not compatible."""
+    pass
+
+  all_func_under_test = [func_under_test1, func_under_test2]
+
+  for func_under_test in all_func_under_test:
+    with pytest.raises(ValueError):
+      types.FunctionDeclaration.from_callable(
+          client=mldev_client, callable=func_under_test
+      )
+    with pytest.raises(ValueError):
+      types.FunctionDeclaration.from_callable(
+          client=vertex_client, callable=func_under_test
+      )
+
+
+def test_type_union_with_default_value_not_compatible_all_py_versions():
+
+  def func_under_test1(
+      a: typing.Union[typing.List[typing.Union[int, float]], dict] = 1,
+  ):
+    """test type union with default value not compatible."""
+    pass
+
+  def func_under_test2(
+      a: typing.Union[list, dict] = 1,
   ):
     """test type union with default value not compatible."""
     pass
@@ -1381,6 +1820,55 @@ def test_type_nullable():
                   ],
                   nullable=True,
               ),
+              'b': types.Schema(
+                  type='ARRAY',
+                  nullable=True,
+              ),
+              'c': types.Schema(
+                  type='OBJECT',
+                  any_of=[
+                      types.Schema(type='ARRAY'),
+                      types.Schema(type='OBJECT'),
+                  ],
+                  nullable=True,
+              ),
+              'd': types.Schema(
+                  type='INTEGER',
+                  nullable=True,
+                  default=None,
+              ),
+          },
+          required=[],
+      ),
+      description='test type nullable.',
+  )
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable(
+        client=mldev_client, callable=func_under_test
+    )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
+def test_type_nullable_all_py_versions():
+
+  def func_under_test(
+      b: typing.Union[list, None],
+      c: typing.Union[list, dict, None],
+      d: typing.Optional[int] = None,
+  ):
+    """test type nullable."""
+    pass
+
+  expected_schema_vertex = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
               'b': types.Schema(
                   type='ARRAY',
                   nullable=True,
@@ -1475,6 +1963,41 @@ def test_simple_function_with_return_type():
 def test_builtin_union_return_type():
 
   def func_under_test() -> int | str | float | bool | list | dict | None:
+    """test builtin union return type."""
+    pass
+
+  expected_schema_mldev = types.FunctionDeclaration(
+      name='func_under_test',
+      description='test builtin union return type.',
+  )
+  expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
+  expected_schema_vertex.response = types.Schema(
+      type='OBJECT',
+      any_of=[
+          types.Schema(type='INTEGER'),
+          types.Schema(type='STRING'),
+          types.Schema(type='NUMBER'),
+          types.Schema(type='BOOLEAN'),
+          types.Schema(type='ARRAY'),
+          types.Schema(type='OBJECT'),
+      ],
+      nullable=True,
+  )
+
+  actual_schema_mldev = types.FunctionDeclaration.from_callable(
+      client=mldev_client, callable=func_under_test
+  )
+  actual_schema_vertex = types.FunctionDeclaration.from_callable(
+      client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_mldev == expected_schema_mldev
+  assert actual_schema_vertex == expected_schema_vertex
+
+
+def test_builtin_union_return_type_all_py_versions():
+
+  def func_under_test() -> typing.Union[int, str, float, bool, list, dict, None]:
     """test builtin union return type."""
     pass
 

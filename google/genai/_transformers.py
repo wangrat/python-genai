@@ -34,10 +34,12 @@ import pydantic
 from . import _api_client
 from . import types
 
-if sys.version_info >= (3, 11):
-  from types import UnionType
+if sys.version_info >= (3, 10):
+  VersionedUnionType = typing.types.UnionType
+  _UNION_TYPES = (typing.Union, typing.types.UnionType)
 else:
-  UnionType = typing._UnionGenericAlias
+  VersionedUnionType = typing._UnionGenericAlias
+  _UNION_TYPES = (typing.Union,)
 
 
 def _resource_name(
@@ -461,7 +463,14 @@ def process_schema(
           'AnyOf is not supported in the response schema for the Gemini API.'
       )
     for sub_schema in any_of:
-      process_schema(sub_schema, client, defs)
+      # $ref is present in any_of if the schema is a union of Pydantic classes
+      ref_key = sub_schema.get('$ref', None)
+      if ref_key is None:
+        process_schema(sub_schema, client, defs)
+      else:
+        ref = defs[ref_key.split('defs/')[-1]]
+        any_of.append(ref)
+    schema['anyOf'] = [item for item in any_of if '$ref' not in item]
     return
 
   schema_type = schema.get('type', None)
@@ -532,15 +541,18 @@ def t_schema(
   if (
       # in Python 3.9 Generic alias list[int] counts as a type,
       # and breaks issubclass because it's not a class.
-      not isinstance(origin, GenericAlias) and 
-      isinstance(origin, type) and 
+      not isinstance(origin, GenericAlias) and
+      isinstance(origin, type) and
       issubclass(origin, pydantic.BaseModel)
   ):
     schema = origin.model_json_schema()
     process_schema(schema, client)
     return types.Schema.model_validate(schema)
   elif (
-        isinstance(origin, GenericAlias) or isinstance(origin, type) or isinstance(origin, UnionType)
+      isinstance(origin, GenericAlias)
+      or isinstance(origin, type)
+      or isinstance(origin, VersionedUnionType)
+      or typing.get_origin(origin) in _UNION_TYPES
   ):
     class Placeholder(pydantic.BaseModel):
       placeholder: origin

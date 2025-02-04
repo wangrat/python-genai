@@ -20,11 +20,21 @@ from enum import Enum, EnumMeta
 import inspect
 import json
 import logging
+import sys
 import typing
 from typing import Any, Callable, GenericAlias, Literal, Optional, Type, TypedDict, Union
 import pydantic
 from pydantic import Field
 from . import _common
+
+if sys.version_info >= (3, 10):
+  # Supports both Union[t1, t2] and t1 | t2
+  VersionedUnionType = Union[typing.types.UnionType, typing._UnionGenericAlias]
+  _UNION_TYPES = (typing.Union, typing.types.UnionType)
+else:
+  # Supports only Union[t1, t2]
+  VersionedUnionType = typing._UnionGenericAlias
+  _UNION_TYPES = (typing.Union,)
 
 _is_pillow_image_imported = False
 if typing.TYPE_CHECKING:
@@ -1656,7 +1666,7 @@ ContentUnion = Union[Content, list[PartUnion], PartUnion]
 ContentUnionDict = Union[ContentUnion, ContentDict]
 
 
-SchemaUnion = Union[dict, type, Schema, GenericAlias]
+SchemaUnion = Union[dict, type, Schema, GenericAlias, VersionedUnionType]
 
 
 SchemaUnionDict = Union[SchemaUnion, SchemaDict]
@@ -2909,6 +2919,29 @@ class GenerateContentResponse(_common.BaseModel):
       # may not be a valid json per stream response
       except json.decoder.JSONDecodeError:
         pass
+    elif typing.get_origin(response_schema) in _UNION_TYPES:
+      # Union schema.
+      union_types = typing.get_args(response_schema)
+      for union_type in union_types:
+        if issubclass(union_type, pydantic.BaseModel):
+          try:
+
+            class Placeholder(pydantic.BaseModel):
+              placeholder: response_schema
+
+            parsed = {'placeholder': json.loads(result.text)}
+            placeholder = Placeholder.model_validate(parsed)
+            result.parsed = placeholder.placeholder
+          except json.decoder.JSONDecodeError:
+            pass
+          except pydantic.ValidationError:
+            pass
+        else:
+          try:
+            result.parsed = json.loads(result.text)
+          # may not be a valid json per stream response
+          except json.decoder.JSONDecodeError:
+            pass
 
     return result
 

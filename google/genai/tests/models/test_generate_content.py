@@ -16,7 +16,7 @@
 import enum
 
 from pydantic import BaseModel, ValidationError
-from typing import Optional
+from typing import Optional, Union
 import pytest
 import json
 import sys
@@ -566,6 +566,7 @@ def test_repeated_pydantic_schema(client):
   )
   assert isinstance(response.parsed, Relationship)
 
+
 def test_int_schema(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',
@@ -576,6 +577,7 @@ def test_int_schema(client):
       },
   )
   assert isinstance(response.parsed, int)
+
 
 def test_nested_list_of_int_schema(client):
   response = client.models.generate_content(
@@ -657,9 +659,10 @@ def test_pydantic_schema_from_json(client):
     sys.version_info < (3, 10),
     reason='| is not supported in Python 3.9',
 )
-def test_schema_with_union_type_raises(client):
-  with pytest.raises(ValueError) as e:
-    client.models.generate_content(
+def test_schema_with_union_type(client):
+  # TODO(b/392920967): any_of is not supported in mldev
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
         model='gemini-1.5-flash',
         contents='Give me a random number, either as an integers or written out as words.',
         config=types.GenerateContentConfig.model_validate(dict(
@@ -667,7 +670,21 @@ def test_schema_with_union_type_raises(client):
             response_schema=int | str,
         ))
     )
-  assert 'Unsupported schema type' in str(e)
+    assert type(response.parsed) in (int, str)
+
+
+def test_schema_with_union_type_all_py_versions(client):
+  # TODO(b/392920967): any_of is not supported in mldev
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents="Give me a random number, either an integer or a float.",
+        config={
+            'response_mime_type': 'application/json',
+            'response_schema': Union[int, float],
+        },
+    )
+    assert type(response.parsed) in (int, float)
 
 
 @pytest.mark.skipif(
@@ -699,6 +716,31 @@ def test_list_schema_with_union_type(client):
     assert 'AnyOf is not supported' in str(e)
 
 
+def test_list_schema_with_union_type_all_py_versions(client):
+  if client._api_client.vertexai:
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me a list of 5 random numbers, including some integers and some written out as words.',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=list[Union[int, str]],
+        )
+    )
+    for item in response.parsed:
+      assert isinstance(item, int) or isinstance(item, str)
+  else:
+    with pytest.raises(ValueError) as e:
+      client.models.generate_content(
+          model='gemini-1.5-flash',
+          contents='Give me a random number, either as an integers or written out as words.',
+          config=types.GenerateContentConfig(
+              response_mime_type='application/json',
+              response_schema=list[Union[int, str]],
+          )
+      )
+    assert 'AnyOf is not supported' in str(e)
+
+
 def test_list_of_pydantic_schema(client):
   class CountryInfo(BaseModel):
     name: str
@@ -720,6 +762,7 @@ def test_list_of_pydantic_schema(client):
   assert isinstance(response.parsed, list)
   assert len(response.parsed) == 3
   assert isinstance(response.parsed[0], CountryInfo)
+
 
 def test_nested_list_of_pydantic_schema(client):
   class Recipe(BaseModel):
@@ -762,6 +805,7 @@ def test_list_of_pydantic_schema_with_dict_config(client):
   assert len(response.parsed) == 3
   assert isinstance(response.parsed[0], CountryInfo)
 
+
 def test_pydantic_schema_with_nested_class(client):
   class CurrencyInfo(BaseModel):
     name: str
@@ -780,6 +824,96 @@ def test_pydantic_schema_with_nested_class(client):
   )
   assert isinstance(response.parsed, CountryInfo)
   assert isinstance(response.parsed.currency, CurrencyInfo)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
+def test_pydantic_schema_with_union_type(client):
+
+  class CountryInfo(BaseModel):
+    name: str
+    restaurants_per_capita: int | float
+
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me information for the United States',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=CountryInfo,
+        )
+    )
+    assert isinstance(response.parsed, CountryInfo)
+    assert type(response.parsed.restaurants_per_capita) in (int, float)
+
+
+def test_pydantic_schema_with_union_type_all_py_versions(client):
+
+  class CountryInfo(BaseModel):
+    name: str
+    restaurants_per_capita: Union[int, float]
+
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me information for the United States',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=CountryInfo,
+        )
+    )
+    assert isinstance(response.parsed, CountryInfo)
+    assert type(response.parsed.restaurants_per_capita) in (int, float)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
+def test_union_of_pydantic_schema(client):
+
+  class SongLyric(BaseModel):
+    song_name: str
+    lyric: str
+    artist: str
+
+  class FunFact(BaseModel):
+    fun_fact: str
+
+  with pytest_helper.exception_if_mldev(client, ValueError):
+      response = client.models.generate_content(
+          model='gemini-1.5-flash',
+          contents='Can you give me a Taylor Swift song lyric or a fun fact?',
+          config=types.GenerateContentConfig(
+              response_mime_type='application/json',
+              response_schema=SongLyric | FunFact,
+          )
+      )
+      assert type(response.parsed) in (SongLyric, FunFact)
+
+
+def test_union_of_pydantic_schema_all_py_versions(client):
+
+  class SongLyric(BaseModel):
+    song_name: str
+    lyric: str
+    artist: str
+
+  class FunFact(BaseModel):
+    fun_fact: str
+
+  with pytest_helper.exception_if_mldev(client, ValueError):
+      response = client.models.generate_content(
+          model='gemini-1.5-flash',
+          contents='Can you give me a Taylor Swift song lyric or a fun fact?',
+          config=types.GenerateContentConfig(
+              response_mime_type='application/json',
+              response_schema=Union[SongLyric, FunFact],
+          )
+      )
+      assert type(response.parsed) in (SongLyric, FunFact)
 
 
 def test_pydantic_schema_with_nested_enum(client):
