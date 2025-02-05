@@ -58,11 +58,11 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'include_rai_reason': True,
                 'output_mime_type': 'image/jpeg',
                 'output_compression_quality': 80,
-                'enhance_prompt': True,
                 # The below parameters are not supported in Google AI.
                 'add_watermark': False,
                 'seed': 1337,
                 'language': 'en',
+                'enhance_prompt': True,
             },
         ),
     ),
@@ -159,7 +159,6 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'include_rai_reason': True,
                 'output_mime_type': 'image/jpeg',
                 'output_compression_quality': 80,
-                'enhance_prompt': True
             },
         ),
     ),

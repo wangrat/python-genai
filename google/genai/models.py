@@ -1436,11 +1436,7 @@ def _GenerateImagesConfig_to_mldev(
     )
 
   if getv(from_object, ['enhance_prompt']) is not None:
-    setv(
-        parent_object,
-        ['parameters', 'enhancePrompt'],
-        getv(from_object, ['enhance_prompt']),
-    )
+    raise ValueError('enhance_prompt parameter is not supported in Gemini API.')
 
   return to_object
 
@@ -3371,9 +3367,6 @@ def _GeneratedImage_from_mldev(
         ['rai_filtered_reason'],
         getv(from_object, ['raiFilteredReason']),
     )
-
-  if getv(from_object, ['prompt']) is not None:
-    setv(to_object, ['enhanced_prompt'], getv(from_object, ['prompt']))
 
   return to_object
 
