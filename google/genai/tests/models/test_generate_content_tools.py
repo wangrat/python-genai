@@ -946,3 +946,35 @@ def test_class_method_tools(client):
       },
   )
   assert 'FunctionHolder' in response.text
+
+
+def test_disable_afc_in_any_mode(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config=types.GenerateContentConfig(
+          tools=[divide_integers],
+          automatic_function_calling=types.AutomaticFunctionCallingConfig(
+              disable=True
+          ),
+          tool_config=types.ToolConfig(
+              function_calling_config=types.FunctionCallingConfig(mode='ANY')
+          ),
+      ),
+  )
+
+
+def test_afc_once_in_any_mode(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config=types.GenerateContentConfig(
+          tools=[divide_integers],
+          automatic_function_calling=types.AutomaticFunctionCallingConfig(
+              maximum_remote_calls=2
+          ),
+          tool_config=types.ToolConfig(
+              function_calling_config=types.FunctionCallingConfig(mode='ANY')
+          ),
+      ),
+  )

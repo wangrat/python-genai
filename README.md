@@ -292,6 +292,66 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
+#### Function calling with `ANY` tools config mode
+
+If you configure function calling mode to be `ANY`, then the model will always
+return function call parts. If you also pass a python function as a tool, by
+default the SDK will perform automatic function calling until the remote calls exceed the
+maximum remote call for automatic function calling (default to 10 times).
+
+If you'd like to disable automatic function calling in `ANY` mode:
+
+```python
+def get_current_weather(location: str) -> str:
+    """Returns the current weather.
+
+    Args:
+      location: The city and state, e.g. San Francisco, CA
+    """
+    return "sunny"
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp",
+    contents="What is the weather like in Boston?",
+    config=types.GenerateContentConfig(
+        tools=[get_current_weather],
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(
+            disable=True
+        ),
+        tool_config=types.ToolConfig(
+            function_calling_config=types.FunctionCallingConfig(mode='ANY')
+        ),
+    ),
+)
+```
+
+If you'd like to set `x` number of automatic function call turns, you can
+configure the maximum remote calls to be `x + 1`.
+Assuming you prefer `1` turn for automatic function calling.
+
+```python
+def get_current_weather(location: str) -> str:
+    """Returns the current weather.
+
+    Args:
+      location: The city and state, e.g. San Francisco, CA
+    """
+    return "sunny"
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp",
+    contents="What is the weather like in Boston?",
+    config=types.GenerateContentConfig(
+        tools=[get_current_weather],
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(
+            maximum_remote_calls=2
+        ),
+        tool_config=types.ToolConfig(
+            function_calling_config=types.FunctionCallingConfig(mode='ANY')
+        ),
+    ),
+)
+```
 ### JSON Response Schema
 
 #### Pydantic Model Schema support
