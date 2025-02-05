@@ -3862,7 +3862,7 @@ class Models(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  def generate_content_stream(
+  def _generate_content_stream(
       self,
       *,
       model: str,
@@ -4680,16 +4680,22 @@ class Models(_api_module.BaseModule):
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
     automatic_function_calling_history = []
+    response = None
+    i = 0
     while remaining_remote_calls_afc > 0:
+      i += 1
       response = self._generate_content(
           model=model, contents=contents, config=config
       )
+      logging.info(f'AFC remote call {i} is done.')
       remaining_remote_calls_afc -= 1
       if remaining_remote_calls_afc == 0:
         logging.info('Reached max remote calls for automatic function calling.')
 
       function_map = _extra_utils.get_function_map(config)
       if not function_map:
+        break
+      if not response:
         break
       if (
           not response.candidates
@@ -4719,6 +4725,147 @@ class Models(_api_module.BaseModule):
           automatic_function_calling_history
       )
     return response
+
+  def generate_content_stream(
+      self,
+      *,
+      model: str,
+      contents: Union[types.ContentListUnion, types.ContentListUnionDict],
+      config: Optional[types.GenerateContentConfigOrDict] = None,
+  ) -> Iterator[types.GenerateContentResponse]:
+    """Makes an API request to generate content using a model and yields the model's response in chunks.
+
+    For the `model` parameter, supported format for Vertex AI API includes:
+    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - the full resource name starts with 'projects/', for example:
+      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
+    - the partial resource name with 'publishers/', for example:
+      'publishers/google/models/gemini-1.5-flash-002' or
+      'publishers/meta/models/llama-3.1-405b-instruct-maas'
+    - `/` separated publisher and model name, for example:
+      'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
+
+    For the `model` parameter, supported format for Gemini API includes:
+    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - the model name starts with 'models/', for example:
+      'models/gemini-1.5-flash-002'
+    - if you would like to use a tuned model, the model name starts with
+      'tunedModels/', for example:
+      'tunedModels/1234567890123456789'
+
+    Some models support multimodal input and output.
+
+    Usage:
+
+    .. code-block:: python
+
+      from google.genai import types
+      from google import genai
+
+      client = genai.Client(
+          vertexai=True, project='my-project-id', location='us-central1'
+      )
+
+      for chunk in client.models.generate_content_stream(
+        model='gemini-1.5-flash-002',
+        contents='''What is a good name for a flower shop that specializes in
+          selling bouquets of dried flowers?'''
+      ):
+        print(chunk.text)
+      # **Elegant & Classic:**
+      # * The Dried Bloom
+      # * Everlasting Florals
+      # * Timeless Petals
+
+      for chunk in client.models.generate_content_stream(
+        model='gemini-1.5-flash-002',
+        contents=[
+          types.Part.from_text('What is shown in this image?'),
+          types.Part.from_uri('gs://generativeai-downloads/images/scones.jpg',
+          'image/jpeg')
+        ]
+      ):
+        print(chunk.text)
+      # The image shows a flat lay arrangement of freshly baked blueberry
+      # scones.
+    """
+
+    if _extra_utils.should_disable_afc(config):
+      return self._generate_content_stream(
+          model=model, contents=contents, config=config
+      )
+    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
+    logging.info(
+        f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
+    )
+    automatic_function_calling_history = []
+    chunk = None
+    i = 0
+    while remaining_remote_calls_afc > 0:
+      i += 1
+      response = self._generate_content_stream(
+          model=model, contents=contents, config=config
+      )
+      logging.info(f'AFC remote call {i} is done.')
+      remaining_remote_calls_afc -= 1
+      if remaining_remote_calls_afc == 0:
+        logging.info('Reached max remote calls for automatic function calling.')
+
+      function_map = _extra_utils.get_function_map(config)
+
+      if i == 1:
+        # First request gets a function call.
+        # Then get function response parts.
+        # Yield chunks only if there's no function response parts.
+        for chunk in response:
+          if not function_map:
+            yield chunk
+          else:
+            func_response_parts = _extra_utils.get_function_response_parts(
+                chunk, function_map
+            )
+            if not func_response_parts:
+              yield chunk
+
+      else:
+        #  Second request and beyond, yield chunks.
+        for chunk in response:
+          if _extra_utils.should_append_afc_history(config):
+            chunk.automatic_function_calling_history = (
+                automatic_function_calling_history
+            )
+          yield chunk
+      if not chunk:
+        break
+      if (
+          not chunk
+          or not chunk.candidates
+          or not chunk.candidates[0].content
+          or not chunk.candidates[0].content.parts
+      ):
+        break
+
+      if not function_map:
+        break
+      func_response_parts = _extra_utils.get_function_response_parts(
+          chunk, function_map
+      )
+      if not func_response_parts:
+        break
+
+      # Append function response parts to contents for the next request.
+      func_call_content = chunk.candidates[0].content
+      func_response_content = types.Content(
+          role='user',
+          parts=func_response_parts,
+      )
+      contents = t.t_contents(self._api_client, contents)
+      if not automatic_function_calling_history:
+        automatic_function_calling_history.extend(contents)
+      contents.append(func_call_content)
+      contents.append(func_response_content)
+      automatic_function_calling_history.append(func_call_content)
+      automatic_function_calling_history.append(func_response_content)
 
   def upscale_image(
       self,
@@ -4886,7 +5033,7 @@ class AsyncModels(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  async def generate_content_stream(
+  async def _generate_content_stream(
       self,
       *,
       model: str,
@@ -5681,6 +5828,7 @@ class AsyncModels(_api_module.BaseModule):
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
     automatic_function_calling_history = []
+    response = None
     while remaining_remote_calls_afc > 0:
       response = await self._generate_content(
           model=model, contents=contents, config=config
@@ -5691,6 +5839,8 @@ class AsyncModels(_api_module.BaseModule):
 
       function_map = _extra_utils.get_function_map(config)
       if not function_map:
+        break
+      if not response:
         break
       if (
           not response.candidates
@@ -5721,6 +5871,154 @@ class AsyncModels(_api_module.BaseModule):
           automatic_function_calling_history
       )
     return response
+
+  async def generate_content_stream(
+      self,
+      *,
+      model: str,
+      contents: Union[types.ContentListUnion, types.ContentListUnionDict],
+      config: Optional[types.GenerateContentConfigOrDict] = None,
+  ) -> Awaitable[AsyncIterator[types.GenerateContentResponse]]:
+    """Makes an API request to generate content using a model and yields the model's response in chunks.
+
+    For the `model` parameter, supported format for Vertex AI API includes:
+    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - the full resource name starts with 'projects/', for example:
+      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
+    - the partial resource name with 'publishers/', for example:
+      'publishers/google/models/gemini-1.5-flash-002' or
+      'publishers/meta/models/llama-3.1-405b-instruct-maas'
+    - `/` separated publisher and model name, for example:
+      'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
+
+    For the `model` parameter, supported format for Gemini API includes:
+    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - the model name starts with 'models/', for example:
+      'models/gemini-1.5-flash-002'
+    - if you would like to use a tuned model, the model name starts with
+      'tunedModels/', for example:
+      'tunedModels/1234567890123456789'
+
+    Some models support multimodal input and output.
+
+    Usage:
+
+    .. code-block:: python
+
+      from google.genai import types
+      from google import genai
+
+      client = genai.Client(
+          vertexai=True, project='my-project-id', location='us-central1'
+      )
+
+      async for chunk in await client.aio.models.generate_content_stream(
+        model='gemini-1.5-flash-002',
+        contents='''What is a good name for a flower shop that specializes in
+          selling bouquets of dried flowers?'''
+      ):
+        print(chunk.text)
+      # **Elegant & Classic:**
+      # * The Dried Bloom
+      # * Everlasting Florals
+      # * Timeless Petals
+
+      async for chunk in awiat client.aio.models.generate_content_stream(
+        model='gemini-1.5-flash-002',
+        contents=[
+          types.Part.from_text('What is shown in this image?'),
+          types.Part.from_uri('gs://generativeai-downloads/images/scones.jpg',
+          'image/jpeg')
+        ]
+      ):
+        print(chunk.text)
+      # The image shows a flat lay arrangement of freshly baked blueberry
+      # scones.
+    """
+
+    if _extra_utils.should_disable_afc(config):
+      return self._generate_content_stream(
+          model=model, contents=contents, config=config
+      )
+
+    async def async_generator(model, contents, config):
+      remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
+      logging.info(
+          f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
+      )
+      automatic_function_calling_history = []
+      chunk = None
+      i = 0
+      while remaining_remote_calls_afc > 0:
+        i += 1
+        response = await self._generate_content_stream(
+            model=model, contents=contents, config=config
+        )
+        logging.info(f'AFC remote call {i} is done.')
+        remaining_remote_calls_afc -= 1
+        if remaining_remote_calls_afc == 0:
+          logging.info(
+              'Reached max remote calls for automatic function calling.'
+          )
+
+        function_map = _extra_utils.get_function_map(config)
+
+        if i == 1:
+          # First request gets a function call.
+          # Then get function response parts.
+          # Yield chunks only if there's no function response parts.
+          async for chunk in response:
+            if not function_map:
+              yield chunk
+            else:
+              func_response_parts = _extra_utils.get_function_response_parts(
+                  chunk, function_map
+              )
+              if not func_response_parts:
+                yield chunk
+
+        else:
+          #  Second request and beyond, yield chunks.
+          async for chunk in response:
+
+            if _extra_utils.should_append_afc_history(config):
+              chunk.automatic_function_calling_history = (
+                  automatic_function_calling_history
+              )
+            yield chunk
+
+        if not chunk:
+          break
+        if (
+            not chunk
+            or not chunk.candidates
+            or not chunk.candidates[0].content
+            or not chunk.candidates[0].content.parts
+        ):
+          break
+        if not function_map:
+          break
+        func_response_parts = _extra_utils.get_function_response_parts(
+            chunk, function_map
+        )
+        if not func_response_parts:
+          break
+
+        # Append function response parts to contents for the next request.
+        func_call_content = chunk.candidates[0].content
+        func_response_content = types.Content(
+            role='user',
+            parts=func_response_parts,
+        )
+        contents = t.t_contents(self._api_client, contents)
+        if not automatic_function_calling_history:
+          automatic_function_calling_history.extend(contents)
+        contents.append(func_call_content)
+        contents.append(func_response_content)
+        automatic_function_calling_history.append(func_call_content)
+        automatic_function_calling_history.append(func_response_content)
+
+    return async_generator(model, contents, config)
 
   async def list(
       self,

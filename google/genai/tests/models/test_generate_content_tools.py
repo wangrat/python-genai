@@ -327,6 +327,37 @@ def test_automatic_function_calling(client):
   assert '500' in response.text
 
 
+def test_automatic_function_calling_stream(client):
+  response = client.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
+  )
+  chunks = 0
+  for part in response:
+    chunks += 1
+    assert part.text is not None or part.candidates[0].finish_reason
+
+
+@pytest.mark.asyncio
+async def test_automatic_function_calling_stream_async(client):
+  response = await client.aio.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
+  )
+  chunks = 0
+  async for part in response:
+    chunks += 1
+    assert part.text is not None or part.candidates[0].finish_reason
+
+
 def test_callable_tools_user_disable_afc(client):
   response = client.models.generate_content(
       model='gemini-1.5-flash',

@@ -425,6 +425,7 @@ def test_stream_function_calling(client):
       model='gemini-2.0-flash-exp',
       config={'tools': [divide_intergers_with_customized_math_rule]},
   )
+  # Now we support AFC.
   for chunk in chat.send_message_stream(
       'what is the result of 100/2?',
   ):
@@ -433,6 +434,15 @@ def test_stream_function_calling(client):
       'what is the result of 50/2?',
   ):
     pass
+  chat_history = chat._curated_history
+
+  assert chat_history[0].role == 'user'
+  assert chat_history[0].parts[0].text == 'what is the result of 100/2?'
+
+  assert chat_history[1].role == 'model'
+  # TODO(b/393189004): AFC is supported in the streaming mode. But AFC history
+  # is not converted to _curated_history yet.
+  assert 'The' in chat_history[1].parts[0].text
 
 
 def test_stream_send_2_messages(client):
@@ -527,10 +537,20 @@ async def test_async_stream_function_calling(client):
       model='gemini-2.0-flash-exp',
       config={'tools': [divide_intergers_with_customized_math_rule]},
   )
+  # Now we support AFC.
   async for chunk in await chat.send_message_stream('what is the result of 100/2?'):
     pass
   async for chunk in await chat.send_message_stream('what is the result of 50/2?'):
     pass
+  chat_history = chat._curated_history
+
+  assert chat_history[0].role == 'user'
+  assert chat_history[0].parts[0].text == 'what is the result of 100/2?'
+
+  assert chat_history[1].role == 'model'
+  # TODO(b/393189004): AFC is supported in the streaming mode. But AFC history
+  # is not converted to _curated_history yet.
+  assert 'The' in chat_history[1].parts[0].text
 
 
 @pytest.mark.asyncio
