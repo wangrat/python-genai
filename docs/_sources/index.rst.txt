@@ -11,7 +11,7 @@ Google Gen AI SDK
 :strong:`google-genai` is an initial Python client library for interacting with
 Google's Generative AI APIs.
 
-Google Gen AI Python SDK provides an interface for developers to integrate Google's generative models into their Python applications. It supports the `Gemini Developer API <https://ai.google.dev/gemini-api/docs>`_ and `Vertex AI <https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview>`_ APIs. This is an early release. API is subject to change. Please do not use this SDK in production environments at this stage.
+Google Gen AI Python SDK provides an interface for developers to integrate Google's generative models into their Python applications. It supports the `Gemini Developer API <https://ai.google.dev/gemini-api/docs>`_ and `Vertex AI <https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview>`_ APIs.
 
 Installation
 ------------
@@ -46,6 +46,24 @@ run all the examples to see how it behaves under different APIs.
     client = genai.Client(
         vertexai=True, project="your-project-id", location="us-central1"
     )
+
+To set the API version use ``http_options``. For example, to set the API version to ``v1`` for Vertex AI:
+
+.. code:: python
+
+    client = genai.Client(
+        vertexai=True, project='your-project-id', location='us-central1',
+        http_options={'api_version': 'v1'}
+    )
+
+To set the API version to `v1alpha` for the Gemini API:
+
+.. code:: python
+
+    # Only run this block for Gemini Developer API
+    client = genai.Client(api_key='GEMINI_API_KEY',
+                          http_options={'api_version': 'v1alpha'})
+
 
 Types
 -----
@@ -134,45 +152,6 @@ dictionaries. You can get the type from ``google.genai.types``.
 
     print(response.text)
 
-Thinking Model
----------------
-
-The Gemini 2.0 Flash Thinking model is an experimental model that could return
-"thoughts" as part of its response.
-
-Gemini Developer API
-~~~~~~~~~~~~~~~~~~~~
-
-Thinking config is only available in v1alpha for Gemini AI API.
-
-.. code:: python
-
-    response = client.models.generate_content(
-        model='gemini-2.0-flash-thinking-exp',
-        contents='What is the sum of natural numbers from 1 to 100?',
-        config=types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(include_thoughts=True),
-            http_options=types.HttpOptions(api_version='v1alpha'),
-        )
-    )
-    for part in response.candidates[0].content.parts:
-        print(part)
-
-Vertex AI API
-~~~~~~~~~~~~~~
-
-.. code:: python
-
-    response = client.models.generate_content(
-        model='gemini-2.0-flash-thinking-exp-01-21',
-        contents='What is the sum of natural numbers from 1 to 100?',
-        config=types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(include_thoughts=True),
-        )
-    )
-    for part in response.candidates[0].content.parts:
-        print(part)
-
 List Base Models
 ----------------
 
@@ -180,12 +159,12 @@ To retrieve tuned models, see: :ref:`List Tuned Models`
 
 .. code:: python
 
-    for model in client.models.list(config={'query_base':True}):
+    for model in client.models.list():
         print(model)
 
 .. code:: python
 
-    pager = client.models.list(config={"page_size": 10, 'query_base':True})
+    pager = client.models.list(config={"page_size": 10})
     print(pager.page_size)
     print(pager[0])
     pager.next_page()
@@ -196,12 +175,12 @@ Async
 
 .. code:: python
 
-    async for job in await client.aio.models.list(config={'query_base':True}):
+    async for job in await client.aio.models.list():
         print(job)
 
 .. code:: python
 
-    async_pager = await client.aio.models.list(config={"page_size": 10, 'query_base':True})
+    async_pager = await client.aio.models.list(config={"page_size": 10})
     print(async_pager.page_size)
     print(async_pager[0])
     await async_pager.next_page()
@@ -339,6 +318,69 @@ The following example shows how to do it for a simple function invocation.
     )
 
     print(response.text)
+
+
+Function calling with ``ANY`` tools config mode
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you configure function calling mode to be `ANY`, then the model will always
+return function call parts. If you also pass a python function as a tool, by
+default the SDK will perform automatic function calling until the remote calls
+exceed the maximum remote call for automatic function calling (default to 10 times).
+
+If you'd like to disable automatic function calling in `ANY` mode:
+
+.. code-block:: python
+
+   def get_current_weather(location: str) -> str:
+       """Returns the current weather.
+
+       Args:
+         location: The city and state, e.g. San Francisco, CA
+       """
+       return "sunny"
+
+   response = client.models.generate_content(
+       model="gemini-2.0-flash-exp",
+       contents="What is the weather like in Boston?",
+       config=types.GenerateContentConfig(
+           tools=[get_current_weather],
+           automatic_function_calling=types.AutomaticFunctionCallingConfig(
+               disable=True
+           ),
+           tool_config=types.ToolConfig(
+               function_calling_config=types.FunctionCallingConfig(mode='ANY')
+           ),
+       ),
+   )
+
+If you'd like to set ``x`` number of automatic function call turns, you can
+configure the maximum remote calls to be ``x + 1``.
+Assuming you prefer ``1`` turn for automatic function calling:
+
+.. code-block:: python
+
+   def get_current_weather(location: str) -> str:
+       """Returns the current weather.
+
+       Args:
+         location: The city and state, e.g. San Francisco, CA
+       """
+       return "sunny"
+
+   response = client.models.generate_content(
+       model="gemini-2.0-flash-exp",
+       contents="What is the weather like in Boston?",
+       config=types.GenerateContentConfig(
+           tools=[get_current_weather],
+           automatic_function_calling=types.AutomaticFunctionCallingConfig(
+               maximum_remote_calls=2
+           ),
+           tool_config=types.ToolConfig(
+               function_calling_config=types.FunctionCallingConfig(mode='ANY')
+           ),
+       ),
+   )
 
 JSON Response Schema
 --------------------
@@ -902,12 +944,12 @@ To retrieve base models, see: :ref:`List Base Models`
 
 .. code:: python
 
-    for model in client.models.list(config={"page_size": 10}):
+    for model in client.models.list(config={"page_size": 10, "query_base": False}}):
         print(model)
 
 .. code:: python
 
-    pager = client.models.list(config={"page_size": 10})
+    pager = client.models.list(config={"page_size": 10, "query_base": False}})
     print(pager.page_size)
     print(pager[0])
     pager.next_page()
@@ -918,12 +960,12 @@ Async
 
 .. code:: python
 
-    async for job in await client.aio.models.list(config={"page_size": 10}):
+    async for job in await client.aio.models.list(config={"page_size": 10, "query_base": False}}):
         print(job)
 
 .. code:: python
 
-    async_pager = await client.aio.models.list(config={"page_size": 10})
+    async_pager = await client.aio.models.list(config={"page_size": 10, "query_base": False}})
     print(async_pager.page_size)
     print(async_pager[0])
     await async_pager.next_page()

@@ -272,7 +272,7 @@
 <p><a class="reference external" href="https://github.com/googleapis/python-genai">https://github.com/googleapis/python-genai</a></p>
 <p><strong>google-genai</strong> is an initial Python client library for interacting with
 Google’s Generative AI APIs.</p>
-<p>Google Gen AI Python SDK provides an interface for developers to integrate Google’s generative models into their Python applications. It supports the <a class="reference external" href="https://ai.google.dev/gemini-api/docs">Gemini Developer API</a> and <a class="reference external" href="https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview">Vertex AI</a> APIs. This is an early release. API is subject to change. Please do not use this SDK in production environments at this stage.</p>
+<p>Google Gen AI Python SDK provides an interface for developers to integrate Google’s generative models into their Python applications. It supports the <a class="reference external" href="https://ai.google.dev/gemini-api/docs">Gemini Developer API</a> and <a class="reference external" href="https://cloud.google.com/vertex-ai/generative-ai/docs/learn/overview">Vertex AI</a> APIs.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install google-genai</span>
@@ -299,6 +299,19 @@ run all the examples to see how it behaves under different APIs.</p>
 <span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
     <span class="n">vertexai</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="s2">&quot;your-project-id&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s2">&quot;us-central1&quot;</span>
 <span class="p">)</span>
+</pre></div>
+</div>
+<p>To set the API version use <code class="docutils literal notranslate"><span class="pre">http_options</span></code>. For example, to set the API version to <code class="docutils literal notranslate"><span class="pre">v1</span></code> for Vertex AI:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
+    <span class="n">vertexai</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="s1">&#39;your-project-id&#39;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;us-central1&#39;</span><span class="p">,</span>
+    <span class="n">http_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;api_version&#39;</span><span class="p">:</span> <span class="s1">&#39;v1&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To set the API version to <cite>v1alpha</cite> for the Gemini API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only run this block for Gemini Developer API</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s1">&#39;GEMINI_API_KEY&#39;</span><span class="p">,</span>
+                      <span class="n">http_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;api_version&#39;</span><span class="p">:</span> <span class="s1">&#39;v1alpha&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
 </section>
@@ -378,54 +391,25 @@ dictionaries. You can get the type from <code class="docutils literal notranslat
 </pre></div>
 </div>
 </section>
-<section id="thinking-model">
-<h2>Thinking Model<a class="headerlink" href="#thinking-model" title="Link to this heading">¶</a></h2>
-<p>The Gemini 2.0 Flash Thinking model is an experimental model that could return
-“thoughts” as part of its response.</p>
-<p>Thinking config is only available in v1alpha for Gemini AI API.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemini-2.0-flash-thinking-exp&#39;</span><span class="p">,</span>
-    <span class="n">contents</span><span class="o">=</span><span class="s1">&#39;What is the sum of natural numbers from 1 to 100?&#39;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
-        <span class="n">thinking_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ThinkingConfig</span><span class="p">(</span><span class="n">include_thoughts</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">http_options</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">HttpOptions</span><span class="p">(</span><span class="n">api_version</span><span class="o">=</span><span class="s1">&#39;v1alpha&#39;</span><span class="p">),</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-<span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemini-2.0-flash-thinking-exp-01-21&#39;</span><span class="p">,</span>
-    <span class="n">contents</span><span class="o">=</span><span class="s1">&#39;What is the sum of natural numbers from 1 to 100?&#39;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
-        <span class="n">thinking_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ThinkingConfig</span><span class="p">(</span><span class="n">include_thoughts</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-<span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">parts</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">part</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 <section id="list-base-models">
 <h2>List Base Models<a class="headerlink" href="#list-base-models" title="Link to this heading">¶</a></h2>
 <p>To retrieve tuned models, see: <span class="xref std std-ref">List Tuned Models</span></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;query_base&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pager</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;query_base&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pager</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="o">.</span><span class="n">page_size</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">pager</span><span class="o">.</span><span class="n">next_page</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;query_base&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">}):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async_pager</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;query_base&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async_pager</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">async_pager</span><span class="o">.</span><span class="n">page_size</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">async_pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="k">await</span> <span class="n">async_pager</span><span class="o">.</span><span class="n">next_page</span><span class="p">()</span>
@@ -549,6 +533,60 @@ The following example shows how to do it for a simple function invocation.</p>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you configure function calling mode to be <cite>ANY</cite>, then the model will always
+return function call parts. If you also pass a python function as a tool, by
+default the SDK will perform automatic function calling until the remote calls
+exceed the maximum remote call for automatic function calling (default to 10 times).</p>
+<p>If you’d like to disable automatic function calling in <cite>ANY</cite> mode:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current weather.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      location: The city and state, e.g. San Francisco, CA</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;sunny&quot;</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-2.0-flash-exp&quot;</span><span class="p">,</span>
+    <span class="n">contents</span><span class="o">=</span><span class="s2">&quot;What is the weather like in Boston?&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+        <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">get_current_weather</span><span class="p">],</span>
+        <span class="n">automatic_function_calling</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">AutomaticFunctionCallingConfig</span><span class="p">(</span>
+            <span class="n">disable</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">),</span>
+        <span class="n">tool_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ToolConfig</span><span class="p">(</span>
+            <span class="n">function_calling_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FunctionCallingConfig</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ANY&#39;</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>If you’d like to set <code class="docutils literal notranslate"><span class="pre">x</span></code> number of automatic function call turns, you can
+configure the maximum remote calls to be <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">1</span></code>.
+Assuming you prefer <code class="docutils literal notranslate"><span class="pre">1</span></code> turn for automatic function calling:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current weather.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">      location: The city and state, e.g. San Francisco, CA</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;sunny&quot;</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gemini-2.0-flash-exp&quot;</span><span class="p">,</span>
+    <span class="n">contents</span><span class="o">=</span><span class="s2">&quot;What is the weather like in Boston?&quot;</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">GenerateContentConfig</span><span class="p">(</span>
+        <span class="n">tools</span><span class="o">=</span><span class="p">[</span><span class="n">get_current_weather</span><span class="p">],</span>
+        <span class="n">automatic_function_calling</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">AutomaticFunctionCallingConfig</span><span class="p">(</span>
+            <span class="n">maximum_remote_calls</span><span class="o">=</span><span class="mi">2</span>
+        <span class="p">),</span>
+        <span class="n">tool_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">ToolConfig</span><span class="p">(</span>
+            <span class="n">function_calling_config</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FunctionCallingConfig</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;ANY&#39;</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1031,22 +1069,22 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <section id="list-tuned-models">
 <h2>List Tuned Models<a class="headerlink" href="#list-tuned-models" title="Link to this heading">¶</a></h2>
 <p>To retrieve base models, see: <span class="xref std std-ref">List Base Models</span></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;query_base&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pager</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pager</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;query_base&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="o">.</span><span class="n">page_size</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">pager</span><span class="o">.</span><span class="n">next_page</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;query_base&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async_pager</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">async_pager</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;page_size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;query_base&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">async_pager</span><span class="o">.</span><span class="n">page_size</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">async_pager</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="k">await</span> <span class="n">async_pager</span><span class="o">.</span><span class="n">next_page</span><span class="p">()</span>
@@ -1695,8 +1733,14 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.CreateFileConfigDict.http_options"><code class="docutils literal notranslate"><span class="pre">CreateFileConfigDict.http_options</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.CreateFileResponse"><code class="docutils literal notranslate"><span class="pre">CreateFileResponse</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.CreateFileResponseDict"><code class="docutils literal notranslate"><span class="pre">CreateFileResponseDict</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.CreateFileResponse"><code class="docutils literal notranslate"><span class="pre">CreateFileResponse</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.CreateFileResponse.http_headers"><code class="docutils literal notranslate"><span class="pre">CreateFileResponse.http_headers</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.CreateFileResponseDict"><code class="docutils literal notranslate"><span class="pre">CreateFileResponseDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.CreateFileResponseDict.http_headers"><code class="docutils literal notranslate"><span class="pre">CreateFileResponseDict.http_headers</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.CreateTuningJobConfig"><code class="docutils literal notranslate"><span class="pre">CreateTuningJobConfig</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.CreateTuningJobConfig.adapter_size"><code class="docutils literal notranslate"><span class="pre">CreateTuningJobConfig.adapter_size</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.CreateTuningJobConfig.batch_size"><code class="docutils literal notranslate"><span class="pre">CreateTuningJobConfig.batch_size</span></code></a></li>
@@ -2014,6 +2058,14 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.ExecutableCodeDict.language"><code class="docutils literal notranslate"><span class="pre">ExecutableCodeDict.language</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.FetchPredictOperationConfig"><code class="docutils literal notranslate"><span class="pre">FetchPredictOperationConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.FetchPredictOperationConfig.http_options"><code class="docutils literal notranslate"><span class="pre">FetchPredictOperationConfig.http_options</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.FetchPredictOperationConfigDict"><code class="docutils literal notranslate"><span class="pre">FetchPredictOperationConfigDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.FetchPredictOperationConfigDict.http_options"><code class="docutils literal notranslate"><span class="pre">FetchPredictOperationConfigDict.http_options</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.File"><code class="docutils literal notranslate"><span class="pre">File</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.File.create_time"><code class="docutils literal notranslate"><span class="pre">File.create_time</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.File.display_name"><code class="docutils literal notranslate"><span class="pre">File.display_name</span></code></a></li>
@@ -2159,6 +2211,7 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.candidate_count"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.candidate_count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.frequency_penalty"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.frequency_penalty</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.http_options"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.http_options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.labels"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.labels</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.logprobs"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.logprobs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.max_output_tokens"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.max_output_tokens</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfig.media_resolution"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfig.media_resolution</span></code></a></li>
@@ -2188,6 +2241,7 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.candidate_count"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.candidate_count</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.frequency_penalty"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.frequency_penalty</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.http_options"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.http_options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.labels"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.labels</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.logprobs"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.logprobs</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.max_output_tokens"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.max_output_tokens</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GenerateContentConfigDict.media_resolution"><code class="docutils literal notranslate"><span class="pre">GenerateContentConfigDict.media_resolution</span></code></a></li>
@@ -2301,11 +2355,13 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GeneratedImage"><code class="docutils literal notranslate"><span class="pre">GeneratedImage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImage.enhanced_prompt"><code class="docutils literal notranslate"><span class="pre">GeneratedImage.enhanced_prompt</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImage.image"><code class="docutils literal notranslate"><span class="pre">GeneratedImage.image</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImage.rai_filtered_reason"><code class="docutils literal notranslate"><span class="pre">GeneratedImage.rai_filtered_reason</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GeneratedImageDict"><code class="docutils literal notranslate"><span class="pre">GeneratedImageDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImageDict.enhanced_prompt"><code class="docutils literal notranslate"><span class="pre">GeneratedImageDict.enhanced_prompt</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImageDict.image"><code class="docutils literal notranslate"><span class="pre">GeneratedImageDict.image</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GeneratedImageDict.rai_filtered_reason"><code class="docutils literal notranslate"><span class="pre">GeneratedImageDict.rai_filtered_reason</span></code></a></li>
 </ul>
@@ -2402,6 +2458,14 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GetModelConfigDict"><code class="docutils literal notranslate"><span class="pre">GetModelConfigDict</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GetModelConfigDict.http_options"><code class="docutils literal notranslate"><span class="pre">GetModelConfigDict.http_options</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GetOperationConfig"><code class="docutils literal notranslate"><span class="pre">GetOperationConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GetOperationConfig.http_options"><code class="docutils literal notranslate"><span class="pre">GetOperationConfig.http_options</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GetOperationConfigDict"><code class="docutils literal notranslate"><span class="pre">GetOperationConfigDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.GetOperationConfigDict.http_options"><code class="docutils literal notranslate"><span class="pre">GetOperationConfigDict.http_options</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.GetTuningJobConfig"><code class="docutils literal notranslate"><span class="pre">GetTuningJobConfig</span></code></a><ul>
@@ -2551,7 +2615,6 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.HttpOptions"><code class="docutils literal notranslate"><span class="pre">HttpOptions</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptions.api_version"><code class="docutils literal notranslate"><span class="pre">HttpOptions.api_version</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptions.base_url"><code class="docutils literal notranslate"><span class="pre">HttpOptions.base_url</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptions.deprecated_response_payload"><code class="docutils literal notranslate"><span class="pre">HttpOptions.deprecated_response_payload</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptions.headers"><code class="docutils literal notranslate"><span class="pre">HttpOptions.headers</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptions.timeout"><code class="docutils literal notranslate"><span class="pre">HttpOptions.timeout</span></code></a></li>
 </ul>
@@ -2559,7 +2622,6 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict.api_version"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict.api_version</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict.base_url"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict.base_url</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict.deprecated_response_payload"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict.deprecated_response_payload</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict.headers"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict.headers</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.HttpOptionsDict.timeout"><code class="docutils literal notranslate"><span class="pre">HttpOptionsDict.timeout</span></code></a></li>
 </ul>
@@ -2962,6 +3024,22 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.ModelDict.supported_actions"><code class="docutils literal notranslate"><span class="pre">ModelDict.supported_actions</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.ModelDict.tuned_model_info"><code class="docutils literal notranslate"><span class="pre">ModelDict.tuned_model_info</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.ModelDict.version"><code class="docutils literal notranslate"><span class="pre">ModelDict.version</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.Operation"><code class="docutils literal notranslate"><span class="pre">Operation</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.Operation.done"><code class="docutils literal notranslate"><span class="pre">Operation.done</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.Operation.error"><code class="docutils literal notranslate"><span class="pre">Operation.error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.Operation.metadata"><code class="docutils literal notranslate"><span class="pre">Operation.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.Operation.name"><code class="docutils literal notranslate"><span class="pre">Operation.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.Operation.response"><code class="docutils literal notranslate"><span class="pre">Operation.response</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.OperationDict"><code class="docutils literal notranslate"><span class="pre">OperationDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.OperationDict.done"><code class="docutils literal notranslate"><span class="pre">OperationDict.done</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.OperationDict.error"><code class="docutils literal notranslate"><span class="pre">OperationDict.error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.OperationDict.metadata"><code class="docutils literal notranslate"><span class="pre">OperationDict.metadata</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.OperationDict.name"><code class="docutils literal notranslate"><span class="pre">OperationDict.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.OperationDict.response"><code class="docutils literal notranslate"><span class="pre">OperationDict.response</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.Outcome"><code class="docutils literal notranslate"><span class="pre">Outcome</span></code></a><ul>
@@ -3554,14 +3632,6 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.TuningJobDict.update_time"><code class="docutils literal notranslate"><span class="pre">TuningJobDict.update_time</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.TuningJobOrOperation"><code class="docutils literal notranslate"><span class="pre">TuningJobOrOperation</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.TuningJobOrOperation.tuning_job"><code class="docutils literal notranslate"><span class="pre">TuningJobOrOperation.tuning_job</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.TuningJobOrOperationDict"><code class="docutils literal notranslate"><span class="pre">TuningJobOrOperationDict</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.TuningJobOrOperationDict.tuning_job"><code class="docutils literal notranslate"><span class="pre">TuningJobOrOperationDict.tuning_job</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="genai.html#genai.types.TuningValidationDataset"><code class="docutils literal notranslate"><span class="pre">TuningValidationDataset</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="genai.html#genai.types.TuningValidationDataset.gcs_uri"><code class="docutils literal notranslate"><span class="pre">TuningValidationDataset.gcs_uri</span></code></a></li>
 </ul>
@@ -3770,7 +3840,6 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </li>
 <li><a class="reference internal" href="#system-instructions-and-other-configs">System Instructions and Other Configs</a></li>
 <li><a class="reference internal" href="#typed-config">Typed Config</a></li>
-<li><a class="reference internal" href="#thinking-model">Thinking Model</a></li>
 <li><a class="reference internal" href="#list-base-models">List Base Models</a></li>
 <li><a class="reference internal" href="#safety-settings">Safety Settings</a></li>
 <li><a class="reference internal" href="#function-calling">Function Calling</a></li>
