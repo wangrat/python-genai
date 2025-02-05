@@ -29,8 +29,10 @@ from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import client
+from . import errors
 from . import types
 from ._api_client import ApiClient
+from ._common import experimental_warning
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
 from .models import _Content_from_mldev
@@ -633,6 +635,9 @@ class AsyncLive(_api_module.BaseModule):
     return_value['setup'].update(to_object)
     return return_value
 
+  @experimental_warning(
+      "The live API is experimental and may change in future versions.",
+  )
   @contextlib.asynccontextmanager
   async def connect(
       self,

@@ -18,6 +18,7 @@
 import base64
 import datetime
 import enum
+import functools
 import typing
 from typing import Union
 import uuid
@@ -27,6 +28,7 @@ import pydantic
 from pydantic import alias_generators
 
 from . import _api_client
+from . import errors
 
 
 def set_value_by_path(data, keys, value):
@@ -273,3 +275,23 @@ def encode_unserializable_types(data: dict[str, object]) -> dict[str, object]:
     else:
       processed_data[key] = value
   return processed_data
+
+
+def experimental_warning(message: str):
+  """Experimental warning, only warns once."""
+  def decorator(func):
+    warning_done = False
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+      nonlocal warning_done
+      if not warning_done:
+        warning_done = True
+        warnings.warn(
+            message=message,
+            category=errors.ExperimentalWarning,
+            stacklevel=2,
+        )
+      return func(*args, **kwargs)
+    return wrapper
+  return decorator
+
