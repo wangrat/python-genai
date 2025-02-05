@@ -362,7 +362,7 @@ class ReplayApiClient(ApiClient):
     if self._should_update_replay():
       if isinstance(response_model, list):
         response_model = response_model[0]
-      if response_model:
+      if response_model and 'http_headers' in response_model.model_fields:
         response_model.http_headers.pop('Date', None)
       interaction.response.sdk_response_segments.append(
           response_model.model_dump(exclude_none=True)
