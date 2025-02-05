@@ -5954,22 +5954,51 @@ _CreateTuningJobParametersOrDict = Union[
 ]
 
 
-class TuningJobOrOperation(_common.BaseModel):
-  """A tuning job or an long-running-operation that resolves to a tuning job."""
+class Operation(_common.BaseModel):
+  """A long-running operation."""
 
-  tuning_job: Optional[TuningJob] = Field(default=None, description="""""")
+  name: Optional[str] = Field(
+      default=None,
+      description="""The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.""",
+  )
+  metadata: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any.""",
+  )
+  done: Optional[bool] = Field(
+      default=None,
+      description="""If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.""",
+  )
+  error: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""The error result of the operation in case of failure or cancellation.""",
+  )
+  response: Optional[dict[str, Any]] = Field(
+      default=None,
+      description="""The normal response of the operation in case of success.""",
+  )
 
 
-class TuningJobOrOperationDict(TypedDict, total=False):
-  """A tuning job or an long-running-operation that resolves to a tuning job."""
+class OperationDict(TypedDict, total=False):
+  """A long-running operation."""
 
-  tuning_job: Optional[TuningJobDict]
-  """"""
+  name: Optional[str]
+  """The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`."""
+
+  metadata: Optional[dict[str, Any]]
+  """Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any."""
+
+  done: Optional[bool]
+  """If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available."""
+
+  error: Optional[dict[str, Any]]
+  """The error result of the operation in case of failure or cancellation."""
+
+  response: Optional[dict[str, Any]]
+  """The normal response of the operation in case of success."""
 
 
-TuningJobOrOperationOrDict = Union[
-    TuningJobOrOperation, TuningJobOrOperationDict
-]
+OperationOrDict = Union[Operation, OperationDict]
 
 
 class CreateCachedContentConfig(_common.BaseModel):
@@ -7280,53 +7309,6 @@ class _GetOperationParametersDict(TypedDict, total=False):
 _GetOperationParametersOrDict = Union[
     _GetOperationParameters, _GetOperationParametersDict
 ]
-
-
-class Operation(_common.BaseModel):
-  """A long-running operation."""
-
-  name: Optional[str] = Field(
-      default=None,
-      description="""The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.""",
-  )
-  metadata: Optional[dict[str, Any]] = Field(
-      default=None,
-      description="""Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any.""",
-  )
-  done: Optional[bool] = Field(
-      default=None,
-      description="""If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.""",
-  )
-  error: Optional[dict[str, Any]] = Field(
-      default=None,
-      description="""The error result of the operation in case of failure or cancellation.""",
-  )
-  response: Optional[dict[str, Any]] = Field(
-      default=None,
-      description="""The normal response of the operation in case of success.""",
-  )
-
-
-class OperationDict(TypedDict, total=False):
-  """A long-running operation."""
-
-  name: Optional[str]
-  """The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`."""
-
-  metadata: Optional[dict[str, Any]]
-  """Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata.  Any method that returns a long-running operation should document the metadata type, if any."""
-
-  done: Optional[bool]
-  """If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available."""
-
-  error: Optional[dict[str, Any]]
-  """The error result of the operation in case of failure or cancellation."""
-
-  response: Optional[dict[str, Any]]
-  """The normal response of the operation in case of success."""
-
-
-OperationOrDict = Union[Operation, OperationDict]
 
 
 class FetchPredictOperationConfig(_common.BaseModel):
