@@ -13,18 +13,18 @@
 # limitations under the License.
 #
 
-
+import json
 import os
 import sys
 
 import PIL.Image
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
+from pydantic import ValidationError
 import pytest
 
-from ... import _transformers as t
+from .. import pytest_helper
 from ... import errors
 from ... import types
-from .. import pytest_helper
 
 
 IMAGE_FILE_PATH = os.path.abspath(
@@ -138,6 +138,20 @@ def test_uploaded_file_uri(client):
             ),
         ],
     )
+
+
+def test_config_override(client):
+  chat_config = {'candidate_count': 1}
+  chat = client.chats.create(model='gemini-1.5-flash', config=chat_config)
+  request_config = {'candidate_count': 2}
+  request_config_response = chat.send_message(
+      'tell me a story in 100 words',
+      config=request_config)
+  default_config_response = chat.send_message(
+      'tell me a story in 100 words')
+
+  assert len(request_config_response.candidates) == 2
+  assert len(default_config_response.candidates) == 1
 
 
 def test_history(client):
@@ -420,6 +434,24 @@ def test_stream_parts(client):
   assert chunks > 2
 
 
+def test_stream_config_override(client):
+  chat_config = {'response_mime_type': 'text/plain'}
+  chat = client.chats.create(model='gemini-1.5-flash', config=chat_config)
+  request_config = {'response_mime_type': 'application/json'}
+  request_config_text = ''
+  for chunk in chat.send_message_stream(
+      'tell me a story in 100 words', config=request_config
+  ):
+    request_config_text += chunk.text
+  default_config_text = ''
+  for chunk in chat.send_message_stream('tell me a story in 100 words'):
+    default_config_text += chunk.text
+
+  assert json.loads(request_config_text)
+  with pytest.raises(json.JSONDecodeError):
+    json.loads(default_config_text)
+
+
 def test_stream_function_calling(client):
   chat = client.chats.create(
       model='gemini-2.0-flash-exp',
@@ -480,6 +512,21 @@ async def test_async_parts(client):
 
 
 @pytest.mark.asyncio
+async def test_async_config_override(client):
+  chat_config = {'candidate_count': 1}
+  chat = client.aio.chats.create(model='gemini-1.5-flash', config=chat_config)
+  request_config = {'candidate_count': 2}
+  request_config_response = await chat.send_message(
+      'tell me a story in 100 words',
+      config=request_config)
+  default_config_response = await chat.send_message(
+      'tell me a story in 100 words')
+
+  assert len(request_config_response.candidates) == 2
+  assert len(default_config_response.candidates) == 1
+
+
+@pytest.mark.asyncio
 async def test_async_history(client):
   history = [
       types.Content(
@@ -529,6 +576,25 @@ async def test_async_stream_parts(client):
     chunks += 1
 
   assert chunks > 2
+
+
+@pytest.mark.asyncio
+async def test_async_stream_config_override(client):
+  chat_config = {'response_mime_type': 'text/plain'}
+  chat = client.aio.chats.create(model='gemini-1.5-flash', config=chat_config)
+  request_config = {'response_mime_type': 'application/json'}
+  request_config_text = ''
+  async for chunk in await chat.send_message_stream(
+      'tell me a story in 100 words', config=request_config
+  ):
+    request_config_text += chunk.text
+  default_config_text = ''
+  async for chunk in await chat.send_message_stream('tell me a story in 100 words'):
+    default_config_text += chunk.text
+
+  assert json.loads(request_config_text)
+  with pytest.raises(json.JSONDecodeError):
+    json.loads(default_config_text)
 
 
 @pytest.mark.asyncio

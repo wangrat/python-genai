@@ -57,12 +57,16 @@ class Chat(_BaseChat):
   """Chat session."""
 
   def send_message(
-      self, message: Union[list[PartUnionDict], PartUnionDict]
+      self,
+      message: Union[list[PartUnionDict], PartUnionDict],
+      config: Optional[GenerateContentConfigOrDict] = None,
   ) -> GenerateContentResponse:
     """Sends the conversation history with the additional message and returns the model's response.
 
     Args:
       message: The message to send to the model.
+      config:  Optional config to override the default Chat config for this
+        request.
 
     Returns:
       The model's response.
@@ -79,7 +83,7 @@ class Chat(_BaseChat):
     response = self._modules.generate_content(
         model=self._model,
         contents=self._curated_history + [input_content],
-        config=self._config,
+        config=config if config else self._config,
     )
     if _validate_response(response):
       if response.automatic_function_calling_history:
@@ -92,12 +96,16 @@ class Chat(_BaseChat):
     return response
 
   def send_message_stream(
-      self, message: Union[list[PartUnionDict], PartUnionDict]
+      self,
+      message: Union[list[PartUnionDict], PartUnionDict],
+      config: Optional[GenerateContentConfigOrDict] = None,
   ):
     """Sends the conversation history with the additional message and yields the model's response in chunks.
 
     Args:
       message: The message to send to the model.
+      config: Optional config to override the default Chat config for this
+        request.
 
     Yields:
       The model's response in chunks.
@@ -117,7 +125,7 @@ class Chat(_BaseChat):
     for chunk in self._modules.generate_content_stream(
         model=self._model,
         contents=self._curated_history + [input_content],
-        config=self._config,
+        config=config if config else self._config,
     ):
       if _validate_response(chunk):
         output_contents.append(chunk.candidates[0].content)
@@ -164,12 +172,16 @@ class AsyncChat(_BaseChat):
   """Async chat session."""
 
   async def send_message(
-      self, message: Union[list[PartUnionDict], PartUnionDict]
+      self,
+      message: Union[list[PartUnionDict], PartUnionDict],
+      config: Optional[GenerateContentConfigOrDict] = None,
   ) -> GenerateContentResponse:
     """Sends the conversation history with the additional message and returns model's response.
 
     Args:
       message: The message to send to the model.
+      config: Optional config to override the default Chat config for this
+        request.
 
     Returns:
       The model's response.
@@ -186,7 +198,7 @@ class AsyncChat(_BaseChat):
     response = await self._modules.generate_content(
         model=self._model,
         contents=self._curated_history + [input_content],
-        config=self._config,
+        config=config if config else self._config,
     )
     if _validate_response(response):
       if response.automatic_function_calling_history:
@@ -199,12 +211,16 @@ class AsyncChat(_BaseChat):
     return response
 
   async def send_message_stream(
-      self, message: Union[list[PartUnionDict], PartUnionDict]
+      self,
+      message: Union[list[PartUnionDict], PartUnionDict],
+      config: Optional[GenerateContentConfigOrDict] = None,
   ) -> Awaitable[AsyncIterator[GenerateContentResponse]]:
     """Sends the conversation history with the additional message and yields the model's response in chunks.
 
     Args:
       message: The message to send to the model.
+      config: Optional config to override the default Chat config for this
+        request.
 
     Yields:
       The model's response in chunks.
@@ -225,7 +241,7 @@ class AsyncChat(_BaseChat):
       async for chunk in await self._modules.generate_content_stream(
           model=self._model,
           contents=self._curated_history + [input_content],
-          config=self._config,
+          config=config if config else self._config,
       ):
         if _validate_response(chunk):
           output_contents.append(chunk.candidates[0].content)
