@@ -2332,3 +2332,11 @@ def test_unknown_enum_value():
     enum_instance = types.Type('float')
     assert enum_instance.name == 'float'
     assert enum_instance.value == 'float'
+
+
+def test_unknown_enum_value_in_nested_dict():
+  schema = types.SafetyRating._from_response(
+      response={'category': 'NEW_CATEGORY'}, kwargs=None
+  )
+  assert schema.category.name == 'NEW_CATEGORY'
+  assert schema.category.value == 'NEW_CATEGORY'

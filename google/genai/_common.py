@@ -220,7 +220,8 @@ class CaseInSensitiveEnum(str, enum.Enum):
         warnings.warn(f"{value} is not a valid {cls.__name__}")
         try:
           # Creating a enum instance based on the value
-          unknown_enum_val = cls._new_member_(cls)  # pylint: disable=protected-access,attribute-error
+          # We need to use super() to avoid infinite recursion.
+          unknown_enum_val = super().__new__(cls, value)
           unknown_enum_val._name_ = str(value)  # pylint: disable=protected-access
           unknown_enum_val._value_ = value  # pylint: disable=protected-access
           return unknown_enum_val
