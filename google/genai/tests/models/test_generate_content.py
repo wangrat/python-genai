@@ -172,7 +172,6 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'candidate_count': 2,
             },
         ),
-        exception_if_mldev='400',
     ),
     pytest_helper.TestTableItem(
         name='test_safety_settings_on_difference',
