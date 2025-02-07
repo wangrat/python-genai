@@ -15,8 +15,8 @@
 
 import enum
 
-from pydantic import BaseModel, ValidationError
-from typing import Optional, Union
+from pydantic import BaseModel, ValidationError, Field
+from typing import List, Optional, Union
 import pytest
 import json
 import sys
@@ -741,6 +741,68 @@ def test_list_schema_with_union_type_all_py_versions(client):
     assert 'AnyOf is not supported' in str(e)
 
 
+def test_pydantic_schema_with_optional_generic_alias(client):
+  class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    gdp: int
+    official_languages: Optional[List[str]]
+    total_area_sq_mi: int
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information of the United States.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': CountryInfo,
+      },
+  )
+  assert isinstance(response.parsed, CountryInfo)
+  assert isinstance(response.parsed.official_languages, list) or response.parsed.official_languages is None
+
+
+def test_pydantic_schema_with_optional_pydantic(client):
+  class TestPerson(BaseModel):
+    first_name: Optional[str] = Field(
+        description='First name of the person', default=None
+    )
+    last_name: Optional[str] = Field(
+        description='Last name of the person', default=None
+    )
+
+  class TestDocument(BaseModel):
+    case_number: Optional[str] = Field(
+        description='Case number assigned to the claim', default=None
+    )
+    filed_by: Optional[TestPerson] = Field(
+        description='Name of the party that filed or submitted the statement',
+        default=None,
+    )
+
+  test_prompt = """
+  Carefully examine the following document and extract the metadata.
+  Be sure to include the party that filed the document.
+
+  Document Text:
+  --------------
+  Case Number: 20-12345
+  File by: John Doe
+  """
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents=test_prompt,
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': TestDocument,
+      },
+  )
+  assert isinstance(response.parsed, TestDocument)
+  assert isinstance(response.parsed.filed_by, TestPerson)
+
+
 def test_list_of_pydantic_schema(client):
   class CountryInfo(BaseModel):
     name: str
@@ -1086,6 +1148,24 @@ def test_list_of_enum_schema_with_json_mime_type(client):
   assert response.parsed
   for item in response.parsed:
     assert isinstance(item, InstrumentEnum)
+
+
+def test_optional_enum_in_pydantic_schema_with_json_mime_type(client):
+  class InstrumentInfo(BaseModel):
+    instrument: Optional[InstrumentEnum]
+    fun_fact: str
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='What instrument plays single note at once? Include the name of the instrument in your response.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': InstrumentInfo,
+      },
+  )
+
+  assert isinstance(response.parsed, InstrumentInfo)
+  assert isinstance(response.parsed.instrument, InstrumentEnum)
 
 
 def test_enum_schema_with_json_mime_type(client):

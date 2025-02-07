@@ -374,8 +374,8 @@ def handle_null_fields(schema: dict[str, Any]):
         schema['anyOf'].remove({'type': 'null'})
         if len(schema['anyOf']) == 1:
           # If there is only one type left after removing null, remove the anyOf field.
-          field_type = schema['anyOf'][0]['type']
-          schema['type'] = field_type
+          for key,val in schema['anyOf'][0].items():
+            schema[key] = val
           del schema['anyOf']
 
 
@@ -446,7 +446,7 @@ def process_schema(
 
     if schema.get('default') is not None:
       raise ValueError(
-          'Default value is not supported in the response schema for the Gemmini API.'
+          'Default value is not supported in the response schema for the Gemini API.'
       )
 
   if defs is None:
@@ -455,6 +455,15 @@ def process_schema(
       process_schema(sub_schema, client, defs)
 
   handle_null_fields(schema)
+
+  # After removing null fields, Optional fields with only one possible type
+  # will have a $ref key that needs to be flattened
+  # For example: {'default': None, 'description': 'Name of the person', 'nullable': True, '$ref': '#/$defs/TestPerson'}
+  if schema.get('$ref', None):
+    ref = defs[schema.get('$ref').split('defs/')[-1]]
+    for schema_key in list(ref.keys()):
+      schema[schema_key] = ref[schema_key]
+    del schema['$ref']
 
   any_of = schema.get('anyOf', None)
   if any_of is not None:
@@ -501,6 +510,7 @@ def process_schema(
       ref = defs[ref_key.split('defs/')[-1]]
       process_schema(ref, client, defs)
       schema['items'] = ref
+
 
 def _process_enum(
     enum: EnumMeta, client: Optional[_api_client.ApiClient] = None
