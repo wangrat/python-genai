@@ -2231,7 +2231,7 @@ def test_function_with_return_type_not_supported():
       )
 
 
-def test_function_with_options_mldev(monkeypatch):
+def test_function_with_options_gemini_api(monkeypatch):
   api_key = 'google_api_key'
   monkeypatch.setenv('GOOGLE_API_KEY', api_key)
 
@@ -2283,11 +2283,67 @@ def test_function_gemini_api(monkeypatch):
   assert actual_schema_mldev == expected_schema_mldev
 
 
-def test_function_with_options_vertex(monkeypatch):
-  project_id = 'fake_project_id'
-  location = 'fake-location'
-  monkeypatch.setenv('GOOGLE_CLOUD_PROJECT', project_id)
-  monkeypatch.setenv('GOOGLE_CLOUD_LOCATION', location)
+def test_function_with_option_gemini_api(monkeypatch):
+
+  def func_under_test(a: int) -> str:
+    """test return type."""
+    return ''
+
+  expected_schema_mldev = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(type='INTEGER'),
+          },
+      ),
+      description='test return type.',
+  )
+
+  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_api_option(
+      callable=func_under_test, api_option='GEMINI_API'
+  )
+
+  assert actual_schema_mldev == expected_schema_mldev
+
+
+def test_function_with_option_unset(monkeypatch):
+
+  def func_under_test(a: int) -> str:
+    """test return type."""
+    return ''
+
+  expected_schema_mldev = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(type='INTEGER'),
+          },
+      ),
+      description='test return type.',
+  )
+
+  actual_schema_mldev = types.FunctionDeclaration.from_callable_with_api_option(
+      callable=func_under_test
+  )
+
+  assert actual_schema_mldev == expected_schema_mldev
+
+
+def test_function_with_option_unsupported_api_option():
+
+  def func_under_test(a: int) -> str:
+    """test return type."""
+    return ''
+
+  with pytest.raises(ValueError):
+    types.FunctionDeclaration.from_callable_with_api_option(
+        callable=func_under_test, api_option='UNSUPPORTED_API_OPTION'
+    )
+
+
+def test_function_vertex():
 
   def func_under_test(a: int) -> str:
     """test return type."""
@@ -2309,6 +2365,35 @@ def test_function_with_options_vertex(monkeypatch):
 
   actual_schema_vertex = types.FunctionDeclaration.from_callable(
       client=vertex_client, callable=func_under_test
+  )
+
+  assert actual_schema_vertex == expected_schema_vertex
+
+
+def test_function_with_option_vertex(monkeypatch):
+
+  def func_under_test(a: int) -> str:
+    """test return type."""
+    return ''
+
+  expected_schema = types.FunctionDeclaration(
+      name='func_under_test',
+      parameters=types.Schema(
+          type='OBJECT',
+          properties={
+              'a': types.Schema(type='INTEGER'),
+          },
+      ),
+      description='test return type.',
+  )
+  expected_schema_vertex = copy.deepcopy(expected_schema)
+  expected_schema_vertex.response = types.Schema(type='STRING')
+  expected_schema_vertex.parameters.required = ['a']
+
+  actual_schema_vertex = (
+      types.FunctionDeclaration.from_callable_with_api_option(
+          callable=func_under_test, api_option='VERTEX_AI'
+      )
   )
 
   assert actual_schema_vertex == expected_schema_vertex

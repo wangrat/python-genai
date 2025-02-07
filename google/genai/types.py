@@ -971,13 +971,24 @@ class FunctionDeclaration(_common.BaseModel):
   )
 
   @classmethod
-  def from_callable(
+  def from_callable_with_api_option(
       cls,
       *,
-      client,
       callable: Callable,
+      api_option: Literal['VERTEX_AI', 'GEMINI_API'] = 'GEMINI_API',
   ) -> 'FunctionDeclaration':
-    """Converts a Callable to a FunctionDeclaration based on the client."""
+    """Converts a Callable to a FunctionDeclaration based on the API option.
+
+    Supported API option is 'VERTEX_AI' or 'GEMINI_API'. If api_option is unset,
+    it will default to 'GEMINI_API'. If unsupported api_option is provided, it
+    will raise ValueError.
+    """
+    supported_api_options = ['VERTEX_AI', 'GEMINI_API']
+    if api_option not in supported_api_options:
+      raise ValueError(
+          f'Unsupported api_option value: {api_option}. Supported api_option'
+          f' value is one of: {supported_api_options}.'
+      )
     from . import _automatic_function_calling_util
 
     parameters_properties = {}
@@ -988,7 +999,7 @@ class FunctionDeclaration(_common.BaseModel):
           inspect.Parameter.POSITIONAL_ONLY,
       ):
         schema = _automatic_function_calling_util._parse_schema_from_parameter(
-            client, param, callable.__name__
+            api_option, param, callable.__name__
         )
         parameters_properties[name] = schema
     declaration = FunctionDeclaration(
@@ -1000,13 +1011,13 @@ class FunctionDeclaration(_common.BaseModel):
           type='OBJECT',
           properties=parameters_properties,
       )
-      if client.vertexai:
+      if api_option == 'VERTEX_AI':
         declaration.parameters.required = (
             _automatic_function_calling_util._get_required_fields(
                 declaration.parameters
             )
         )
-    if not client.vertexai:
+    if api_option == 'GEMINI_API':
       return declaration
 
     return_annotation = inspect.signature(callable).return_annotation
@@ -1015,7 +1026,7 @@ class FunctionDeclaration(_common.BaseModel):
 
     declaration.response = (
         _automatic_function_calling_util._parse_schema_from_parameter(
-            client,
+            api_option,
             inspect.Parameter(
                 'return_value',
                 inspect.Parameter.POSITIONAL_OR_KEYWORD,
@@ -1025,6 +1036,23 @@ class FunctionDeclaration(_common.BaseModel):
         )
     )
     return declaration
+
+  @classmethod
+  def from_callable(
+      cls,
+      *,
+      client,
+      callable: Callable,
+  ) -> 'FunctionDeclaration':
+    """Converts a Callable to a FunctionDeclaration based on the client."""
+    if client.vertexai:
+      return cls.from_callable_with_api_option(
+          callable=callable, api_option='VERTEX_AI'
+      )
+    else:
+      return cls.from_callable_with_api_option(
+          callable=callable, api_option='GEMINI_API'
+      )
 
 
 class FunctionDeclarationDict(TypedDict, total=False):
