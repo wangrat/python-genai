@@ -4784,15 +4784,18 @@ class Models(_api_module.BaseModule):
     """
 
     if _extra_utils.should_disable_afc(config):
-      return self._generate_content_stream(
+      yield from self._generate_content_stream(
           model=model, contents=contents, config=config
       )
+      return
+
     remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
     logging.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
     automatic_function_calling_history = []
     chunk = None
+    func_response_parts = None
     i = 0
     while remaining_remote_calls_afc > 0:
       i += 1
@@ -4828,6 +4831,10 @@ class Models(_api_module.BaseModule):
                 automatic_function_calling_history
             )
           yield chunk
+        func_response_parts = _extra_utils.get_function_response_parts(
+            chunk, function_map
+        )
+
       if not chunk:
         break
       if (
@@ -4840,9 +4847,6 @@ class Models(_api_module.BaseModule):
 
       if not function_map:
         break
-      func_response_parts = _extra_utils.get_function_response_parts(
-          chunk, function_map
-      )
       if not func_response_parts:
         break
 
@@ -5930,9 +5934,15 @@ class AsyncModels(_api_module.BaseModule):
     """
 
     if _extra_utils.should_disable_afc(config):
-      return self._generate_content_stream(
+      response = await self._generate_content_stream(
           model=model, contents=contents, config=config
       )
+
+      async def base_async_generator(model, contents, config):
+        async for chunk in response:
+          yield chunk
+
+      return base_async_generator(model, contents, config)
 
     async def async_generator(model, contents, config):
       remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
@@ -5979,7 +5989,9 @@ class AsyncModels(_api_module.BaseModule):
                   automatic_function_calling_history
               )
             yield chunk
-
+          func_response_parts = _extra_utils.get_function_response_parts(
+              chunk, function_map
+          )
         if not chunk:
           break
         if (
@@ -5991,9 +6003,7 @@ class AsyncModels(_api_module.BaseModule):
           break
         if not function_map:
           break
-        func_response_parts = _extra_utils.get_function_response_parts(
-            chunk, function_map
-        )
+
         if not func_response_parts:
           break
 

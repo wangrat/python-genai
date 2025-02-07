@@ -342,6 +342,70 @@ def test_automatic_function_calling_stream(client):
     assert part.text is not None or part.candidates[0].finish_reason
 
 
+def test_disable_automatic_function_calling_stream(client):
+  # If AFC is disabled, the response should contain a function call.
+  response = client.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'disable': True},
+      },
+  )
+  chunks = 0
+  for part in response:
+    chunks += 1
+    assert part.candidates[0].content.parts[0].function_call is not None
+
+
+def test_automatic_function_calling_no_function_response_stream(client):
+  response = client.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the weather in Boston?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
+  )
+  chunks = 0
+  for part in response:
+    chunks += 1
+    assert part.text is not None or part.candidates[0].finish_reason
+
+
+@pytest.mark.asyncio
+async def test_disable_automatic_function_calling_stream_async(client):
+  # If AFC is disabled, the response should contain a function call.
+  response = await client.aio.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the result of 1000/2?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'disable': True},
+      },
+  )
+  chunks = 0
+  async for part in response:
+    chunks += 1
+    assert part.candidates[0].content.parts[0].function_call is not None
+
+
+@pytest.mark.asyncio
+async def test_automatic_function_calling_no_function_response_stream_async(client):
+  response = await client.aio.models.generate_content_stream(
+      model='gemini-1.5-flash',
+      contents='what is the weather in Boston?',
+      config={
+          'tools': [divide_integers],
+          'automatic_function_calling': {'ignore_call_history': True},
+      },
+  )
+  chunks = 0
+  async for part in response:
+    chunks += 1
+    assert part.text is not None or part.candidates[0].finish_reason
+
+
 @pytest.mark.asyncio
 async def test_automatic_function_calling_stream_async(client):
   response = await client.aio.models.generate_content_stream(

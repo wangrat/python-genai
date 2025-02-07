@@ -271,8 +271,8 @@ def should_disable_afc(
       and int(config_model.automatic_function_calling.maximum_remote_calls) > 0
   ):
     logging.warning(
-        '`automatic_function_calling.disable` is set to `True`. But'
-        ' `automatic_function_calling.maximum_remote_calls` is set to be a'
+        '`automatic_function_calling.disable` is set to `True`. And'
+        ' `automatic_function_calling.maximum_remote_calls` is a'
         ' positive number'
         f' {config_model.automatic_function_calling.maximum_remote_calls}.'
         ' Disabling automatic function calling. If you want to enable'
