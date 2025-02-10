@@ -452,6 +452,11 @@ def process_schema(
   if schema.get('title') == 'PlaceholderLiteralEnum':
     schema.pop('title', None)
 
+  # If a dict is provided directly to response_schema, it may use `any_of`
+  # instead of `anyOf`. Otherwise model_json_schema() uses `anyOf`
+  if schema.get('any_of', None) is not None:
+    schema['anyOf'] = schema.pop('any_of')
+
   if defs is None:
     defs = schema.pop('$defs', {})
     for _, sub_schema in defs.items():

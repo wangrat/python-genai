@@ -1340,6 +1340,140 @@ def test_json_schema_with_lower_enum(client):
   assert isinstance(response.parsed, dict)
 
 
+def test_json_schema_with_any_of(client):
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me a fruit basket.',
+        config={
+            'response_mime_type': 'application/json',
+            'response_schema': {
+                'type': 'OBJECT',
+                'title': 'Fruit Basket',
+                'description': 'A structured representation of a fruit basket',
+                'required': ['fruit'],
+                'properties': {
+                    'fruit': {
+                        'type': 'ARRAY',
+                        'description': (
+                            'An ordered list of the fruit in the basket'
+                        ),
+                        'items': {
+                            'description': 'A piece of fruit',
+                            'any_of': [
+                                {
+                                    'title': 'Apple',
+                                    'description': 'Describes an apple',
+                                    'type': 'OBJECT',
+                                    'properties': {
+                                        'type': {
+                                            'type': 'STRING',
+                                            'description': "Always 'apple'",
+                                        },
+                                        'color': {
+                                            'type': 'STRING',
+                                            'description': (
+                                                'The color of the apple (e.g.,'
+                                                " 'red')"
+                                            ),
+                                        },
+                                    },
+                                    'property_ordering': ['type', 'color'],
+                                    'required': ['type', 'color'],
+                                },
+                                {
+                                    'title': 'Orange',
+                                    'description': 'Describes an orange',
+                                    'type': 'OBJECT',
+                                    'properties': {
+                                        'type': {
+                                            'type': 'STRING',
+                                            'description': "Always 'orange'",
+                                        },
+                                        'size': {
+                                            'type': 'STRING',
+                                            'description': (
+                                                'The size of the orange (e.g.,'
+                                                " 'medium')"
+                                            ),
+                                        },
+                                    },
+                                    'property_ordering': ['type', 'size'],
+                                    'required': ['type', 'size'],
+                                },
+                            ],
+                        },
+                    }
+                },
+            },
+        },
+    )
+    assert isinstance(response.parsed, dict)
+    assert 'fruit' in response.parsed
+    assert isinstance(response.parsed['fruit'], list)
+    assert 'type' in response.parsed['fruit'][0]
+
+
+def test_schema_with_any_of(client):
+  response_schema=types.Schema(
+      type=types.Type.OBJECT,
+      title='Fruit Basket',
+      description='A structured representation of a fruit basket',
+      properties={
+          'fruit': types.Schema(
+              type=types.Type.ARRAY,
+              description='An ordered list of the fruit in the basket',
+              items=types.Schema(
+                  any_of=[
+                      types.Schema(
+                          title='Apple',
+                          description='Describes an apple',
+                          type=types.Type.OBJECT,
+                          properties={
+                              'type': types.Schema(type=types.Type.STRING, description='Always "apple"'),
+                              'variety': types.Schema(
+                                  type=types.Type.STRING,
+                                  description='The variety of apple (e.g., "Granny Smith")',
+                              ),
+                          },
+                          property_ordering=['type', 'variety'],
+                          required=['type', 'variety'],
+                      ),
+                      types.Schema(
+                          title='Orange',
+                          description='Describes an orange',
+                          type=types.Type.OBJECT,
+                          properties={
+                              'type': types.Schema(type=types.Type.STRING, description='Always "orange"'),
+                              'variety': types.Schema(
+                                  type=types.Type.STRING,
+                                  description='The variety of orange (e.g.,"Navel orange")',
+                              ),
+                          },
+                          property_ordering=['type', 'variety'],
+                          required=['type', 'variety'],
+                      ),
+                  ],
+              ),
+          ),
+      },
+      required=['fruit'],
+  )
+  with pytest_helper.exception_if_mldev(client, ValueError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Give me a fruit basket.',
+        config=types.GenerateContentConfig(
+            response_mime_type='application/json',
+            response_schema=response_schema,
+        ),
+    )
+    assert isinstance(response.parsed, dict)
+    assert 'fruit' in response.parsed
+    assert isinstance(response.parsed['fruit'], list)
+    assert 'type' in response.parsed['fruit'][0]
+
+
 def test_json_schema_with_streaming(client):
 
   response = client.models.generate_content_stream(

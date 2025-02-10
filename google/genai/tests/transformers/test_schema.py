@@ -241,3 +241,69 @@ def test_schema_with_any_of_raises_for_mldev(client):
     )
 
     assert transformed_schema_vertex == expected_schema_vertex
+
+
+@pytest.mark.parametrize('use_vertex', [True, False])
+def test_complex_dict_schema_with_anyof_is_unchanged(client):
+  """When a dict schema is passed to process_schema, the only change should be camel-casing anyOf."""
+  if client.vertexai:
+    dict_schema = {
+        'type': 'OBJECT',
+        'title': 'Fruit Basket',
+        'description': 'A structured representation of a fruit basket',
+        'required': ['fruit'],
+        'properties': {
+            'fruit': {
+                'type': 'ARRAY',
+                'description': 'An ordered list of the fruit in the basket',
+                'items': {
+                    'description': 'A piece of fruit',
+                    'anyOf': [
+                        {
+                            'title': 'Apple',
+                            'description': 'Describes an apple',
+                            'type': 'OBJECT',
+                            'properties': {
+                                'type': {
+                                    'type': 'STRING',
+                                    'description': "Always 'apple'",
+                                },
+                                'color': {
+                                    'type': 'STRING',
+                                    'description': (
+                                        "The color of the apple (e.g., 'red')"
+                                    ),
+                                },
+                            },
+                            'propertyOrdering': ['type', 'color'],
+                            'required': ['type', 'color'],
+                        },
+                        {
+                            'title': 'Orange',
+                            'description': 'Describes an orange',
+                            'type': 'OBJECT',
+                            'properties': {
+                                'type': {
+                                    'type': 'STRING',
+                                    'description': "Always 'orange'",
+                                },
+                                'size': {
+                                    'type': 'STRING',
+                                    'description': (
+                                        "The size of the orange (e.g., 'medium')"
+                                    ),
+                                },
+                            },
+                            'propertyOrdering': ['type', 'size'],
+                            'required': ['type', 'size'],
+                        },
+                    ],
+                },
+            }
+        },
+    }
+
+    schema_before = copy.deepcopy(dict_schema)
+    _transformers.process_schema(dict_schema, client)
+
+    assert schema_before == dict_schema
