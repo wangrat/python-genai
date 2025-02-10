@@ -16,7 +16,7 @@
 import enum
 
 from pydantic import BaseModel, ValidationError, Field
-from typing import List, Optional, Union
+from typing import Literal, List, Optional, Union
 import pytest
 import json
 import sys
@@ -588,6 +588,77 @@ def test_nested_list_of_int_schema(client):
       },
   )
   assert isinstance(response.parsed[0][0][0], int)
+
+
+def test_literal_schema(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Which ice cream flavor should I order?',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': Literal['chocolate', 'vanilla', 'cookie dough'],
+      },
+  )
+
+  allowed_values = ['chocolate', 'vanilla', 'cookie dough']
+  assert isinstance(response.parsed, str)
+  assert response.parsed in allowed_values
+
+
+def test_literal_schema_with_non_string_types_raises(client):
+  with pytest.raises(ValueError) as e:
+    client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents='Which ice cream flavor should I order?',
+        config={
+            'response_mime_type': 'application/json',
+            'response_schema': Literal['chocolate', 'vanilla', 1],
+        },
+    )
+  assert 'validation error' in str(e)
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
+def test_pydantic_schema_with_literal(client):
+  class Movie(BaseModel):
+    name: str
+    genre: Literal['action', 'comedy', 'drama']
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information about the movie "Mean Girls"',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': Movie,
+      },
+  )
+  assert isinstance(response.parsed, Movie)
+  assert isinstance(response.parsed.genre, str)
+  assert response.parsed.genre in ['action', 'comedy', 'drama']
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 10),
+    reason='| is not supported in Python 3.9',
+)
+def test_pydantic_schema_with_single_value_literal(client):
+  class Movie(BaseModel):
+    name: str
+    genre: Literal['action']
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information about the movie "The Matrix"',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': Movie,
+      },
+  )
+  assert isinstance(response.parsed, Movie)
+  assert response.parsed.genre == 'action'
 
 
 @pytest.mark.skipif(

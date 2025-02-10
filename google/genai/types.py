@@ -1937,6 +1937,20 @@ class GenerateContentConfig(_common.BaseModel):
       """,
   )
 
+  @pydantic.field_validator('response_schema', mode='before')
+  @classmethod
+  def _convert_literal_to_enum(cls, value):
+    if typing.get_origin(value) is typing.Literal:
+      enum_vals = typing.get_args(value)
+      if not all(isinstance(arg, str) for arg in enum_vals):
+        # This doesn't stop execution, it tells pydantic to raise a ValidationError
+        # when the class is instantiated with an unsupported Literal
+        raise ValueError(f'Literal type {value} must be a list of strings.')
+      # The title 'PlaceholderLiteralEnum' is removed from the generated Schema
+      # before sending the request
+      return Enum('PlaceholderLiteralEnum', {s: s for s in enum_vals})
+    return value
+
 
 class GenerateContentConfigDict(TypedDict, total=False):
   """Optional model configuration parameters.
@@ -2911,6 +2925,11 @@ class GenerateContentResponse(_common.BaseModel):
       enum_value = result.text.replace('"', '')
       try:
         result.parsed = response_schema(enum_value)
+        if (
+            hasattr(response_schema, '__name__')
+            and response_schema.__name__ == 'PlaceholderLiteralEnum'
+        ):
+          result.parsed = str(response_schema(enum_value).name)
       except ValueError:
         pass
     elif isinstance(response_schema, GenericAlias) or isinstance(

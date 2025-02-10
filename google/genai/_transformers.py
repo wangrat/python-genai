@@ -449,6 +449,9 @@ def process_schema(
           'Default value is not supported in the response schema for the Gemini API.'
       )
 
+  if schema.get('title') == 'PlaceholderLiteralEnum':
+    schema.pop('title', None)
+
   if defs is None:
     defs = schema.pop('$defs', {})
     for _, sub_schema in defs.items():
@@ -486,6 +489,16 @@ def process_schema(
   if isinstance(schema_type, Enum):
     schema_type = schema_type.value
   schema_type = schema_type.upper()
+
+  # model_json_schema() returns a schema with a 'const' field when a Literal with one value is provided as a pydantic field
+  # For example `genre: Literal['action']` becomes: {'const': 'action', 'title': 'Genre', 'type': 'string'}
+  const = schema.get('const', None)
+  if const is not None:
+    if schema_type == 'STRING':
+      schema['enum'] = [const]
+      del schema['const']
+    else:
+      raise ValueError('Literal values must be strings.')
 
   if schema_type == 'OBJECT':
     properties = schema.get('properties', None)
