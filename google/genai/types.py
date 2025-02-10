@@ -2843,7 +2843,7 @@ class GenerateContentResponse(_common.BaseModel):
     text = ''
     any_text_part_text = False
     for part in self.candidates[0].content.parts:
-      for field_name, field_value in part.dict(
+      for field_name, field_value in part.model_dump(
           exclude={'text', 'thought'}
       ).items():
         if field_value is not None:
