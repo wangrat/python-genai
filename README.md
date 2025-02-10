@@ -95,6 +95,37 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
+#### How to structure `contents`
+There are several ways to structure the `contents` in your request.
+
+Provide a single string as shown in the text example above:
+
+```python
+contents='Can you recommend some things to do in Boston and New York in the winter?'
+```
+
+Provide a single `Content` instance with multiple `Part` instances:
+
+```python
+contents=types.Content(parts=[
+    types.Part.from_text(text='Can you recommend some things to do in Boston in the winter?'),
+    types.Part.from_text(text='Can you recommend some things to do in New York in the winter?')
+], role='user')
+```
+
+When sending more than one input type, provide a list with multiple `Content`
+instances:
+
+```python
+contents=[
+    'What is this a picture of?',
+    types.Part.from_uri(
+        file_uri='gs://generativeai-downloads/images/scones.jpg',
+        mime_type='image/jpeg',
+    ),
+],
+```
+
 ### System Instructions and Other Configs
 
 ```python
