@@ -152,7 +152,7 @@ test_table: list[pytest_helper.TestTableItem] = [
             config={
                 'aspect_ratio': '1:1',
                 'guidance_scale': 15.0,
-                'safety_filter_level': 'BLOCK_MEDIUM_AND_ABOVE',
+                'safety_filter_level': 'BLOCK_LOW_AND_ABOVE',
                 'number_of_images': 1,
                 'person_generation': 'DONT_ALLOW',
                 'include_safety_attributes': False,
