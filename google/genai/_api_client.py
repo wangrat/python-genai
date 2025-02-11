@@ -85,7 +85,11 @@ def _patch_http_options(
 
 def _join_url_path(base_url: str, path: str) -> str:
   parsed_base = urlparse(base_url)
-  base_path = parsed_base.path[:-1] if parsed_base.path.endswith('/') else parsed_base.path
+  base_path = (
+      parsed_base.path[:-1]
+      if parsed_base.path.endswith('/')
+      else parsed_base.path
+  )
   path = path[1:] if path.startswith('/') else path
   return urlunparse(parsed_base._replace(path=base_path + '/' + path))
 
@@ -201,12 +205,14 @@ class ApiClient:
     if (project or location) and api_key:
       # API cannot consume both project/location and api_key.
       raise ValueError(
-          'Project/location and API key are mutually exclusive in the client initializer.'
+          'Project/location and API key are mutually exclusive in the client'
+          ' initializer.'
       )
     elif credentials and api_key:
       # API cannot consume both credentials and api_key.
       raise ValueError(
-          'Credentials and API key are mutually exclusive in the client initializer.'
+          'Credentials and API key are mutually exclusive in the client'
+          ' initializer.'
       )
 
     # Validate http_options if a dict is provided.
@@ -215,7 +221,7 @@ class ApiClient:
         HttpOptions.model_validate(http_options)
       except ValidationError as e:
         raise ValueError(f'Invalid http_options: {e}')
-    elif(isinstance(http_options, HttpOptions)):
+    elif isinstance(http_options, HttpOptions):
       http_options = http_options.model_dump()
 
     # Retrieve implicitly set values from the environment.
@@ -269,17 +275,19 @@ class ApiClient:
             'AI API.'
         )
       if self.api_key or self.location == 'global':
-        self._http_options['base_url'] = (
-            f'https://aiplatform.googleapis.com/'
-        )
+        self._http_options['base_url'] = f'https://aiplatform.googleapis.com/'
       else:
         self._http_options['base_url'] = (
             f'https://{self.location}-aiplatform.googleapis.com/'
         )
       self._http_options['api_version'] = 'v1beta1'
-    else:  # ML Dev API
+    else:  # Implicit initialization or missing arguments.
       if not self.api_key:
-        raise ValueError('API key must be set when using the Google AI API.')
+        raise ValueError(
+            'Missing key inputs argument! To use the Google AI API,'
+            'provide (`api_key`) arguments. To use the Google Cloud API,'
+            ' provide (`vertexai`, `project` & `location`) arguments.'
+        )
       self._http_options['base_url'] = (
           'https://generativelanguage.googleapis.com/'
       )
@@ -363,7 +371,7 @@ class ApiClient:
     if self.vertexai and not self.api_key:
       if not self._credentials:
         self._credentials, _ = google.auth.default(
-            scopes=["https://www.googleapis.com/auth/cloud-platform"],
+            scopes=['https://www.googleapis.com/auth/cloud-platform'],
         )
       authed_session = AuthorizedSession(self._credentials)
       authed_session.stream = stream
@@ -371,9 +379,7 @@ class ApiClient:
           http_request.method.upper(),
           http_request.url,
           headers=http_request.headers,
-          data=json.dumps(http_request.data)
-          if http_request.data
-          else None,
+          data=json.dumps(http_request.data) if http_request.data else None,
           timeout=http_request.timeout,
       )
       errors.APIError.raise_for_response(response)
@@ -415,7 +421,7 @@ class ApiClient:
     if self.vertexai:
       if not self._credentials:
         self._credentials, _ = google.auth.default(
-            scopes=["https://www.googleapis.com/auth/cloud-platform"],
+            scopes=['https://www.googleapis.com/auth/cloud-platform'],
         )
       return await asyncio.to_thread(
           self._request,
@@ -503,6 +509,7 @@ class ApiClient:
     async def async_generator():
       async for chunk in response:
         yield chunk
+
     return async_generator()
 
   def upload_file(
