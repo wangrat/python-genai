@@ -22,9 +22,10 @@ import json
 import logging
 import sys
 import typing
-from typing import Any, Callable, GenericAlias, Literal, Optional, Type, TypedDict, Union
+from typing import Any, Callable, GenericAlias, Literal, Optional, Type, Union
 import pydantic
 from pydantic import Field
+from typing_extensions import TypedDict
 from . import _common
 
 if sys.version_info >= (3, 10):

@@ -2425,3 +2425,12 @@ def test_unknown_enum_value_in_nested_dict():
   )
   assert schema.category.name == 'NEW_CATEGORY'
   assert schema.category.value == 'NEW_CATEGORY'
+
+
+# Tests that TypedDict types from types.py are compatible with pydantic
+# pydantic requires TypedDict from typing_extensions for Python <3.12
+def test_typed_dict_pydantic_field():
+  from pydantic import BaseModel
+
+  class MyConfig(BaseModel):
+    config: types.GenerationConfigDict
