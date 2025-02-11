@@ -173,20 +173,10 @@ class Client:
        debug_config (DebugConfig): Config settings that control network behavior
          of the client. This is typically used when running test code.
        http_options (Union[HttpOptions, HttpOptionsDict]): Http options to use
-         for the client. The field deprecated_response_payload should not be set
-         in http_options.
+         for the client.
     """
 
     self._debug_config = debug_config or DebugConfig()
-
-    # Throw ValueError if deprecated_response_payload is set in http_options
-    # due to unpredictable behavior when running multiple coroutines through
-    # client.aio.
-    if http_options and 'deprecated_response_payload' in http_options:
-      raise ValueError(
-          'Setting deprecated_response_payload in http_options is not'
-          ' supported.'
-      )
 
     self._api_client = self._get_api_client(
         vertexai=vertexai,

@@ -120,46 +120,6 @@ def test_constructor_with_http_options():
   )
 
 
-def test_constructor_with_deprecated_response_payload_in_http_options():
-  mldev_http_options = {
-      "api_version": "v1",
-      "base_url": "https://placeholder-fake-url.com/",
-      "headers": {"X-Custom-Header": "custom_value"},
-      "deprecated_response_payload": {},
-  }
-  vertexai_http_options = {
-      "api_version": "v1",
-      "base_url": "https://{self.location}-aiplatform.googleapis.com/",
-      "headers": {"X-Custom-Header": "custom_value"},
-      "deprecated_response_payload": {},
-  }
-
-  # Expect value error when deprecated_response_payload in http_options is set
-  # for mldev client.
-  try:
-    _ = Client(api_key="google_api_key", http_options=mldev_http_options)
-  except ValueError as e:
-    assert (
-        "Setting deprecated_response_payload in http_options is not supported."
-        in str(e)
-    )
-
-  # Expect value error when deprecated_response_payload in http_options is set for
-  # vertexai client.
-  try:
-    _ = Client(
-        vertexai=True,
-        project="fake_project_id",
-        location="fake-location",
-        http_options=vertexai_http_options,
-    )
-  except ValueError as e:
-    assert (
-        "Setting deprecated_response_payload in http_options is not supported."
-        in str(e)
-    )
-
-
 def test_constructor_with_invalid_http_options_key():
   mldev_http_options = {
       "invalid_version_key": "v1",

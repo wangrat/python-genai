@@ -100,7 +100,6 @@ def test_build_request_appends_to_user_agent_headers(monkeypatch):
           url='test/url',
           api_version='1',
           headers={'user-agent': 'test-user-agent'},
-          deprecated_response_payload=None,
       ),
   )
   assert 'test-user-agent' in request.headers['user-agent']
@@ -119,7 +118,6 @@ def test_build_request_appends_to_goog_api_client_headers(monkeypatch):
           url='test/url',
           api_version='1',
           headers={'x-goog-api-client': 'test-goog-api-client'},
-          deprecated_response_payload=None,
       ),
   )
   assert 'google-genai-sdk/' in request.headers['user-agent']
@@ -141,7 +139,6 @@ def test_build_request_keeps_sdk_version_headers(monkeypatch):
           url='test/url',
           api_version='1',
           headers=headers_to_inject,
-          deprecated_response_payload=None,
       ),
   )
   assert 'google-genai-sdk/' in request.headers['user-agent']
