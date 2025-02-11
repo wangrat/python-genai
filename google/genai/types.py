@@ -22,7 +22,7 @@ import json
 import logging
 import sys
 import typing
-from typing import Any, Callable, GenericAlias, Literal, Optional, Type, Union
+from typing import Any, Callable, GenericAlias, Literal, Optional, Union
 import pydantic
 from pydantic import Field
 from typing_extensions import TypedDict
@@ -44,7 +44,7 @@ if typing.TYPE_CHECKING:
   PIL_Image = PIL.Image.Image
   _is_pillow_image_imported = True
 else:
-  PIL_Image: Type = Any
+  PIL_Image: typing.Type = Any
   try:
     import PIL.Image
 
