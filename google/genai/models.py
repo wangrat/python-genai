@@ -6020,8 +6020,8 @@ class AsyncModels(_api_module.BaseModule):
   ) -> AsyncPager[types.Model]:
     """Makes an API request to list the available models.
 
-    If `query_base` is set to True in the config, the API will return all
-    available base models. If set to False or not set (default), it will return
+    If `query_base` is set to True in the config or not set (default), the
+    API will return all available base models. If set to False, it will return
     all tuned models.
 
     Args:
@@ -6046,6 +6046,8 @@ class AsyncModels(_api_module.BaseModule):
         types._ListModelsParameters(config=config).config
         or types.ListModelsConfig()
     )
+    if config.query_base is None:
+      config.query_base = True
     if self._api_client.vertexai:
       config = config.copy()
       if not config.query_base:
@@ -6056,8 +6058,6 @@ class AsyncModels(_api_module.BaseModule):
             if filter_value
             else 'labels.tune-type:*'
         )
-    if not config.query_base:
-      config.query_base = False
     return AsyncPager(
         'models',
         self._list,

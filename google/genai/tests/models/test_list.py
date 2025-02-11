@@ -112,8 +112,8 @@ def test_empty_tuned_models(mock_api_client, client):
 
 
 @pytest.mark.asyncio
-async def test_async_pager(client):
-  pager = await client.aio.models.list(config={'page_size': 10})
+async def test_tuned_models_async_pager(client):
+  pager = await client.aio.models.list(config={'page_size': 10, 'query_base': False})
 
   assert pager.name == 'models'
   assert pager.page_size == 10
@@ -128,7 +128,7 @@ async def test_async_pager(client):
 
 @pytest.mark.asyncio
 async def test_base_models_async_pager(client):
-  pager = await client.aio.models.list(config={'page_size': 10, 'query_base': True})
+  pager = await client.aio.models.list(config={'page_size': 10})
 
   assert pager.name == 'models'
   assert pager.page_size == 10
