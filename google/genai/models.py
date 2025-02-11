@@ -924,8 +924,8 @@ def _GenerateContentConfig_to_mldev(
     )
 
   if getv(from_object, ['media_resolution']) is not None:
-    raise ValueError(
-        'media_resolution parameter is not supported in Gemini API.'
+    setv(
+        to_object, ['mediaResolution'], getv(from_object, ['media_resolution'])
     )
 
   if getv(from_object, ['speech_config']) is not None:
@@ -2785,16 +2785,6 @@ def _ComputeTokensParameters_to_vertex(
     setv(to_object, ['config'], getv(from_object, ['config']))
 
   return to_object
-
-
-def _MediaResolution_to_mldev_enum_validate(enum_value: Any):
-  if enum_value in set([
-      'MEDIA_RESOLUTION_UNSPECIFIED',
-      'MEDIA_RESOLUTION_LOW',
-      'MEDIA_RESOLUTION_MEDIUM',
-      'MEDIA_RESOLUTION_HIGH',
-  ]):
-    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
 
 
 def _SafetyFilterLevel_to_mldev_enum_validate(enum_value: Any):
