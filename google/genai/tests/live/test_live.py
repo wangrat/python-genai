@@ -570,3 +570,276 @@ def test_bidi_setup_to_api_with_config_tools_code_execution(
       model='test_model', config=config
   )
   assert result['setup']['tools'][0] == expected_result['setup']['tools'][0]
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_str(mock_api_client, mock_websocket, vertexai):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  result = session._parse_client_message('test')
+  assert 'client_content' in result
+  assert result == {
+      'client_content': {
+          'turn_complete': False,
+          'turns': [{'role': 'user', 'parts': [{'text': 'test'}]}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_blob(mock_api_client, mock_websocket, vertexai):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  result = session._parse_client_message(
+      types.Blob(data=bytes([0, 0, 0]), mime_type='text/plain')
+  )
+  assert 'realtime_input' in result
+  assert result == {
+      'realtime_input': {
+          'media_chunks': [{'mime_type': 'text/plain', 'data': 'AAAA'}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_blob_dict(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+
+  blob = types.Blob(data=bytes([0, 0, 0]), mime_type='text/plain')
+  blob_dict = blob.model_dump()
+  result = session._parse_client_message(blob_dict)
+  assert 'realtime_input' in result
+  assert result == {
+      'realtime_input': {
+          'media_chunks': [{'mime_type': 'text/plain', 'data': 'AAAA'}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_client_content(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  result = session._parse_client_message(
+      types.LiveClientContent(
+          turn_complete=False,
+          turns=[types.Content(parts=[types.Part(text='test')], role='user')],
+      )
+  )
+  assert 'client_content' in result
+  assert result == {
+      'client_content': {
+          'turn_complete': False,
+          'turns': [{'role': 'user', 'parts': [{'text': 'test'}]}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_client_content_blob(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  client_content = types.LiveClientContent(
+      turn_complete=False,
+      turns=[
+          types.Content(
+              parts=[
+                  types.Part(
+                      inline_data=types.Blob(
+                          data=bytes([0, 0, 0]), mime_type='text/plain'
+                      )
+                  )
+              ],
+              role='user',
+          )
+      ],
+  )
+  result = session._parse_client_message(client_content)
+  assert 'client_content' in result
+  assert (
+      type(
+          result['client_content']['turns'][0]['parts'][0]['inline_data'][
+              'data'
+          ]
+      )
+      == str
+  )
+  assert result == {
+      'client_content': {
+          'turn_complete': False,
+          'turns': [{
+              'role': 'user',
+              'parts': [
+                  {'inline_data': {'mime_type': 'text/plain', 'data': 'AAAA'}}
+              ],
+          }],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_client_content_dict(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  client_content = types.LiveClientContent(
+      turn_complete=False,
+      turns=[
+          types.Content(
+              parts=[
+                  types.Part(
+                      inline_data=types.Blob(
+                          data=bytes([0, 0, 0]), mime_type='text/plain'
+                      )
+                  )
+              ],
+              role='user',
+          )
+      ],
+  )
+  result = session._parse_client_message(
+      client_content.model_dump(mode='json', exclude_none=True)
+  )
+  assert 'client_content' in result
+  assert (
+      type(
+          result['client_content']['turns'][0]['parts'][0]['inline_data'][
+              'data'
+          ]
+      )
+      == str
+  )
+  assert result == {
+      'client_content': {
+          'turn_complete': False,
+          'turns': [{
+              'role': 'user',
+              'parts': [
+                  {'inline_data': {'mime_type': 'text/plain', 'data': 'AAAA'}}
+              ],
+          }],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_realtime_input(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = types.LiveClientRealtimeInput(
+      media_chunks=[types.Blob(data=bytes([0, 0, 0]), mime_type='text/plain')]
+  )
+  result = session._parse_client_message(input)
+  assert 'realtime_input' in result
+  assert result == {
+      'realtime_input': {
+          'media_chunks': [{'mime_type': 'text/plain', 'data': 'AAAA'}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_realtime_input_dict(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = types.LiveClientRealtimeInput(
+      media_chunks=[types.Blob(data=bytes([0, 0, 0]), mime_type='text/plain')]
+  )
+  result = session._parse_client_message(
+      input.model_dump(mode='json', exclude_none=True)
+  )
+  assert 'realtime_input' in result
+  assert result == {
+      'realtime_input': {
+          'media_chunks': [{'mime_type': 'text/plain', 'data': 'AAAA'}],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_tool_response(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = types.LiveClientToolResponse(
+      function_responses=[
+          types.FunctionResponse(
+              id='test_id',
+              name='test_name',
+              response={'result': 'test_response'},
+          )
+      ]
+  )
+  result = session._parse_client_message(input)
+  assert 'tool_response' in result
+  assert result == {
+      'tool_response': {
+          'function_responses': [
+              {
+                  'id': 'test_id',
+                  'name': 'test_name',
+                  'response': {
+                      'result': 'test_response',
+                  },
+              },
+          ],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_realtime_tool_response(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = types.LiveClientToolResponse(
+      function_responses=[
+          types.FunctionResponse(
+              id='test_id',
+              name='test_name',
+              response={'result': 'test_response'},
+          )
+      ]
+  )
+
+  result = session._parse_client_message(
+      input.model_dump(mode='json', exclude_none=True)
+  )
+  assert 'tool_response' in result
+  assert result == {
+      'tool_response': {
+          'function_responses': [
+              {
+                  'id': 'test_id',
+                  'name': 'test_name',
+                  'response': {
+                      'result': 'test_response',
+                  },
+              },
+          ],
+      }
+  }

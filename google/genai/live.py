@@ -359,7 +359,6 @@ class AsyncSession:
           types.ContentListUnionDict,
           types.LiveClientContentOrDict,
           types.LiveClientRealtimeInputOrDict,
-          types.LiveClientRealtimeInputOrDict,
           types.LiveClientToolResponseOrDict,
           types.FunctionResponseOrDict,
           Sequence[types.FunctionResponseOrDict],
@@ -374,7 +373,6 @@ class AsyncSession:
         input['data'] = decoded_data
       input = [input]
     elif isinstance(input, types.Blob):
-      input.data = base64.b64encode(input.data).decode('utf-8')
       input = [input]
     elif isinstance(input, dict) and 'name' in input and 'response' in input:
       # ToolResponse.FunctionResponse
@@ -411,7 +409,7 @@ class AsyncSession:
       if any((isinstance(b, dict) and 'data' in b) for b in input):
         pass
       elif any(isinstance(b, types.Blob) for b in input):
-        input = [b.model_dump(exclude_none=True) for b in input]
+        input = [b.model_dump(exclude_none=True, mode='json') for b in input]
       else:
         raise ValueError(
             f'Unsupported input type "{type(input)}" or input content "{input}"'
@@ -419,11 +417,21 @@ class AsyncSession:
 
       client_message = {'realtime_input': {'media_chunks': input}}
 
-    elif isinstance(input, dict) and 'content' in input:
-      # TODO(b/365983264) Add validation checks for content_update input_dict.
-      client_message = {'client_content': input}
+    elif isinstance(input, dict):
+      if 'content' in input or 'turns' in input:
+        # TODO(b/365983264) Add validation checks for content_update input_dict.
+        client_message = {'client_content': input}
+      elif 'media_chunks' in input:
+        client_message = {'realtime_input': input}
+      elif 'function_responses' in input:
+        client_message = {'tool_response': input}
+      else:
+        raise ValueError(
+          f'Unsupported input type "{type(input)}" or input content "{input}"')
     elif isinstance(input, types.LiveClientRealtimeInput):
-      client_message = {'realtime_input': input.model_dump(exclude_none=True)}
+      client_message = {
+          'realtime_input': input.model_dump(exclude_none=True, mode='json')
+      }
       if isinstance(
           client_message['realtime_input']['media_chunks'][0]['data'], bytes
       ):
@@ -436,20 +444,26 @@ class AsyncSession:
         ]
 
     elif isinstance(input, types.LiveClientContent):
-      client_message = {'client_content': input.model_dump(exclude_none=True)}
+      client_message = {
+          'client_content': input.model_dump(exclude_none=True, mode='json')
+      }
     elif isinstance(input, types.LiveClientToolResponse):
       # ToolResponse.FunctionResponse
       if not (self._api_client.vertexai) and not (
           input.function_responses[0].id
       ):
         raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
-      client_message = {'tool_response': input.model_dump(exclude_none=True)}
+      client_message = {
+          'tool_response': input.model_dump(exclude_none=True, mode='json')
+      }
     elif isinstance(input, types.FunctionResponse):
       if not (self._api_client.vertexai) and not (input.id):
         raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
       client_message = {
           'tool_response': {
-              'function_responses': [input.model_dump(exclude_none=True)]
+              'function_responses': [
+                  input.model_dump(exclude_none=True, mode='json')
+              ]
           }
       }
     elif isinstance(input, Sequence) and isinstance(
@@ -460,7 +474,7 @@ class AsyncSession:
       client_message = {
           'tool_response': {
               'function_responses': [
-                  c.model_dump(exclude_none=True) for c in input
+                  c.model_dump(exclude_none=True, mode='json') for c in input
               ]
           }
       }
