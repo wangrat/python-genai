@@ -516,6 +516,26 @@ def test_pydantic_schema(client):
   assert isinstance(response.parsed, CountryInfo)
 
 
+def test_pydantic_schema_orders_properties(client):
+  class Restaurant(BaseModel):
+    name: str
+    rating: int
+    fun_fact: str
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents='Give me information about a restaurant in Boston.',
+      config={
+          'response_mime_type': 'application/json',
+          'response_schema': Restaurant,
+      },
+  )
+  response_text_json = json.loads(response.text)
+  response_keys = list(response_text_json.keys())
+  assert response_keys[0] == 'name'
+  assert response_keys == list(Restaurant.model_fields.keys())
+
+
 def test_pydantic_schema_with_default_value(client):
   class Restaurant(BaseModel):
     name: str

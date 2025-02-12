@@ -21,10 +21,10 @@ from enum import Enum, EnumMeta
 import inspect
 import io
 import re
+import sys
 import time
 import typing
 from typing import Any, GenericAlias, Optional, Union
-import sys
 
 if typing.TYPE_CHECKING:
   import PIL.Image
@@ -205,12 +205,17 @@ def t_caches_model(api_client: _api_client.ApiClient, model: str):
 def pil_to_blob(img) -> types.Blob:
   try:
     import PIL.PngImagePlugin
+
     PngImagePlugin = PIL.PngImagePlugin
   except ImportError:
     PngImagePlugin = None
 
   bytesio = io.BytesIO()
-  if PngImagePlugin is not None and isinstance(img, PngImagePlugin.PngImageFile) or img.mode == 'RGBA':
+  if (
+      PngImagePlugin is not None
+      and isinstance(img, PngImagePlugin.PngImageFile)
+      or img.mode == 'RGBA'
+  ):
     img.save(bytesio, format='PNG')
     mime_type = 'image/png'
   else:
@@ -382,7 +387,10 @@ def handle_null_fields(schema: dict[str, Any]):
 def process_schema(
     schema: dict[str, Any],
     client: Optional[_api_client.ApiClient] = None,
-    defs: Optional[dict[str, Any]]=None):
+    defs: Optional[dict[str, Any]] = None,
+    *,
+    order_properties: bool = True,
+):
   """Updates the schema and each sub-schema inplace to be API-compatible.
 
   - Removes the `title` field from the schema if the client is not vertexai.
@@ -517,6 +525,16 @@ def process_schema(
         ref = defs[ref_key.split('defs/')[-1]]
         process_schema(ref, client, defs)
         properties[name] = ref
+    if (
+        len(properties.items()) > 1
+        and order_properties
+        and all(
+            ordering_key not in schema
+            for ordering_key in ['property_ordering', 'propertyOrdering']
+        )
+    ):
+      property_names = list(properties.keys())
+      schema['property_ordering'] = property_names
   elif schema_type == 'ARRAY':
     sub_schema = schema.get('items', None)
     if sub_schema is None:
@@ -539,6 +557,7 @@ def _process_enum(
           f'Enum member {member.name} value must be a string, got'
           f' {type(member.value)}'
       )
+
   class Placeholder(pydantic.BaseModel):
     placeholder: enum
 
@@ -554,7 +573,7 @@ def t_schema(
   if not origin:
     return None
   if isinstance(origin, dict):
-    process_schema(origin, client)
+    process_schema(origin, client, order_properties=False)
     return types.Schema.model_validate(origin)
   if isinstance(origin, EnumMeta):
     return _process_enum(origin, client)
@@ -563,15 +582,15 @@ def t_schema(
       # response_schema value was coerced to an empty Schema instance because it did not adhere to the Schema field annotation
       raise ValueError(f'Unsupported schema type.')
     schema = origin.model_dump(exclude_unset=True)
-    process_schema(schema, client)
+    process_schema(schema, client, order_properties=False)
     return types.Schema.model_validate(schema)
 
   if (
       # in Python 3.9 Generic alias list[int] counts as a type,
       # and breaks issubclass because it's not a class.
-      not isinstance(origin, GenericAlias) and
-      isinstance(origin, type) and
-      issubclass(origin, pydantic.BaseModel)
+      not isinstance(origin, GenericAlias)
+      and isinstance(origin, type)
+      and issubclass(origin, pydantic.BaseModel)
   ):
     schema = origin.model_json_schema()
     process_schema(schema, client)
@@ -582,6 +601,7 @@ def t_schema(
       or isinstance(origin, VersionedUnionType)
       or typing.get_origin(origin) in _UNION_TYPES
   ):
+
     class Placeholder(pydantic.BaseModel):
       placeholder: origin
 

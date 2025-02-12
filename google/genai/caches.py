@@ -172,8 +172,10 @@ def _Schema_to_mldev(
     raise ValueError('example parameter is not supported in Gemini API.')
 
   if getv(from_object, ['property_ordering']) is not None:
-    raise ValueError(
-        'property_ordering parameter is not supported in Gemini API.'
+    setv(
+        to_object,
+        ['propertyOrdering'],
+        getv(from_object, ['property_ordering']),
     )
 
   if getv(from_object, ['pattern']) is not None:

@@ -206,6 +206,7 @@ def test_schema_with_default_value_raises_for_mldev(client):
         type='OBJECT',
         required=['name'],
         title='CountryInfoWithDefaultValue',
+        property_ordering=['name', 'population'],
     )
 
     assert transformed_schema_vertex == expected_schema_vertex
@@ -238,6 +239,7 @@ def test_schema_with_any_of_raises_for_mldev(client):
         type='OBJECT',
         required=['name', 'restaurants_per_capita'],
         title='CountryInfoWithAnyOf',
+        property_ordering=['name', 'restaurants_per_capita'],
     )
 
     assert transformed_schema_vertex == expected_schema_vertex
@@ -290,7 +292,8 @@ def test_complex_dict_schema_with_anyof_is_unchanged(client):
                                 'size': {
                                     'type': 'STRING',
                                     'description': (
-                                        "The size of the orange (e.g., 'medium')"
+                                        'The size of the orange (e.g.,'
+                                        " 'medium')"
                                     ),
                                 },
                             },
@@ -307,3 +310,47 @@ def test_complex_dict_schema_with_anyof_is_unchanged(client):
     _transformers.process_schema(dict_schema, client)
 
     assert schema_before == dict_schema
+
+
+def test_t_schema_does_not_change_property_ordering_if_set():
+  """Tests t_schema doesn't overwrite the property_ordering field if already set."""
+
+  schema = CountryInfo.model_json_schema()
+  custom_property_ordering = ['code', 'symbol', 'name']
+  schema['property_ordering'] = custom_property_ordering
+
+  transformed_schema = _transformers.t_schema(None, schema)
+  assert transformed_schema.property_ordering == custom_property_ordering
+
+
+def test_t_schema_does_not_set_property_ordering_for_json_schema():
+  """Tests t_schema doesn't set the property_ordering field for json schemas."""
+
+  schema = CountryInfo.model_json_schema()
+
+  transformed_schema = _transformers.t_schema(None, schema)
+  assert transformed_schema.property_ordering is None
+
+
+def test_t_schema_does_not_set_property_ordering_for_schema_type():
+  """Tests t_schema doesn't set the property_ordering field for Schema types."""
+
+  schema = types.Schema(
+      properties={
+          'name': types.Schema(
+              type='STRING',
+              title='Name',
+          ),
+          'population': types.Schema(
+              type='INTEGER',
+              default=0,
+              title='Population',
+          ),
+      },
+      type='OBJECT',
+      required=['name'],
+      title='CountryInfoWithDefaultValue',
+  )
+
+  transformed_schema = _transformers.t_schema(None, schema)
+  assert transformed_schema.property_ordering is None
