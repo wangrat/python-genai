@@ -1593,7 +1593,7 @@ class File(_common.BaseModel):
   )
   expiration_time: Optional[datetime.datetime] = Field(
       default=None,
-      description="""Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'""",
+      description="""Output only. The timestamp of when the `File` will be deleted. Only set if the `File` is scheduled to expire.""",
   )
   update_time: Optional[datetime.datetime] = Field(
       default=None,
@@ -1644,7 +1644,7 @@ class FileDict(TypedDict, total=False):
   """Output only. The timestamp of when the `File` was created."""
 
   expiration_time: Optional[datetime.datetime]
-  """Optional. The human-readable display name for the `File`. The display name must be no more than 512 characters in length, including spaces. Example: 'Welcome Image'"""
+  """Output only. The timestamp of when the `File` will be deleted. Only set if the `File` is scheduled to expire."""
 
   update_time: Optional[datetime.datetime]
   """Output only. The timestamp of when the `File` was last updated."""
