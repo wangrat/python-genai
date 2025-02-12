@@ -7,7 +7,7 @@
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
         <title>Google Gen AI SDK documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css?v=a0a71c94" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -281,8 +281,8 @@ Google’s Generative AI APIs.</p>
 </section>
 <section id="imports">
 <h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">genai</span>
-<span class="kn">from</span> <span class="nn">google.genai</span> <span class="kn">import</span> <span class="n">types</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">google</span><span class="w"> </span><span class="kn">import</span> <span class="n">genai</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.genai</span><span class="w"> </span><span class="kn">import</span> <span class="n">types</span>
 </pre></div>
 </div>
 </section>
@@ -301,6 +301,26 @@ run all the examples to see how it behaves under different APIs.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>(Optional) Using environment variables:</strong></p>
+<p>You can create a client by configuring the necessary environmental variables.
+Configuration setup instructions depends on whether the user is using the ML Dev
+Gemini API or the Vertex AI Gemini API.</p>
+<p><strong>ML Dev API:</strong> Set <cite>GOOGLE_API_KEY</cite> as shown below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_API_KEY</span><span class="o">=</span><span class="s1">&#39;your-api-key&#39;</span>
+</pre></div>
+</div>
+<p><strong>Vertex AI Gemini API:</strong> Set <cite>GOOGLE_GENAI_USE_VERTEXAI</cite>, <cite>GOOGLE_CLOUD_PROJECT</cite>
+and <cite>GOOGLE_CLOUD_LOCATION</cite>, as shown below:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_GENAI_USE_VERTEXAI</span><span class="o">=</span><span class="nb">false</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_CLOUD_PROJECT</span><span class="o">=</span><span class="s1">&#39;your-project-id&#39;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">GOOGLE_CLOUD_LOCATION</span><span class="o">=</span><span class="s1">&#39;us-central1&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">client</span> <span class="pre">=</span> <span class="pre">genai.Client()</span>
+<span class="pre">`</span></code></p>
+<section id="api-selection">
+<h3>API Selection<a class="headerlink" href="#api-selection" title="Link to this heading">¶</a></h3>
 <p>To set the API version use <code class="docutils literal notranslate"><span class="pre">http_options</span></code>. For example, to set the API version to <code class="docutils literal notranslate"><span class="pre">v1</span></code> for Vertex AI:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">genai</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span>
     <span class="n">vertexai</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="s1">&#39;your-project-id&#39;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;us-central1&#39;</span><span class="p">,</span>
@@ -314,6 +334,7 @@ run all the examples to see how it behaves under different APIs.</p>
                       <span class="n">http_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;api_version&#39;</span><span class="p">:</span> <span class="s1">&#39;v1alpha&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
+</section>
 </section>
 <section id="types">
 <h2>Types<a class="headerlink" href="#types" title="Link to this heading">¶</a></h2>
@@ -343,7 +364,7 @@ getters.</p>
 </pre></div>
 </div>
 <p>python code.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;a11.txt&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;a11.txt&#39;</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemini-2.0-flash-001&#39;</span><span class="p">,</span>
     <span class="n">contents</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Could you summarize this file?&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">]</span>
@@ -465,7 +486,7 @@ dictionaries. You can get the type from <code class="docutils literal notranslat
 <h2>Function Calling<a class="headerlink" href="#function-calling" title="Link to this heading">¶</a></h2>
 <p>You can pass a Python function directly and it will be automatically
 called and responded.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current weather.</span>
 
 <span class="sd">    Args:</span>
@@ -568,7 +589,7 @@ return function call parts. If you also pass a python function as a tool, by
 default the SDK will perform automatic function calling until the remote calls
 exceed the maximum remote call for automatic function calling (default to 10 times).</p>
 <p>If you’d like to disable automatic function calling in <cite>ANY</cite> mode:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current weather.</span>
 
 <span class="sd">    Args:</span>
@@ -594,7 +615,7 @@ exceed the maximum remote call for automatic function calling (default to 10 tim
 <p>If you’d like to set <code class="docutils literal notranslate"><span class="pre">x</span></code> number of automatic function call turns, you can
 configure the maximum remote calls to be <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">1</span></code>.
 Assuming you prefer <code class="docutils literal notranslate"><span class="pre">1</span></code> turn for automatic function calling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_current_weather</span><span class="p">(</span><span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current weather.</span>
 
 <span class="sd">    Args:</span>
@@ -621,10 +642,10 @@ Assuming you prefer <code class="docutils literal notranslate"><span class="pre"
 <section id="json-response-schema">
 <h2>JSON Response Schema<a class="headerlink" href="#json-response-schema" title="Link to this heading">¶</a></h2>
 <p>Schemas can be provided as Pydantic Models.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
 
-<span class="k">class</span> <span class="nc">CountryInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CountryInfo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">population</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">capital</span><span class="p">:</span> <span class="nb">str</span>
@@ -681,9 +702,9 @@ Assuming you prefer <code class="docutils literal notranslate"><span class="pre"
 <h2>Enum Response Schema<a class="headerlink" href="#enum-response-schema" title="Link to this heading">¶</a></h2>
 <p>You can set response_mime_type to ‘text/x.enum’ to return one of those enum
 values as the response.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
-<span class="k">class</span> <span class="nc">InstrumentEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InstrumentEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PERCUSSION</span> <span class="o">=</span> <span class="s1">&#39;Percussion&#39;</span>
     <span class="n">STRING</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
     <span class="n">WOODWIND</span> <span class="o">=</span> <span class="s1">&#39;Woodwind&#39;</span>
@@ -703,7 +724,7 @@ values as the response.</p>
 </div>
 <p>You can also set response_mime_type to ‘application/json’, the response will be
 identical but in quotes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">InstrumentEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">InstrumentEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PERCUSSION</span> <span class="o">=</span> <span class="s1">&#39;Percussion&#39;</span>
     <span class="n">STRING</span> <span class="o">=</span> <span class="s1">&#39;String&#39;</span>
     <span class="n">WOODWIND</span> <span class="o">=</span> <span class="s1">&#39;Woodwind&#39;</span>
@@ -865,7 +886,7 @@ data and use the <code class="docutils literal notranslate"><span class="pre">fr
 <p>Edit image uses a separate model from generate and upscale.</p>
 <p>Edit image is only supported in Vertex AI.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edit the generated image from above</span>
-<span class="kn">from</span> <span class="nn">google.genai.types</span> <span class="kn">import</span> <span class="n">RawReferenceImage</span><span class="p">,</span> <span class="n">MaskReferenceImage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google.genai.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">RawReferenceImage</span><span class="p">,</span> <span class="n">MaskReferenceImage</span>
 
 <span class="n">raw_ref_image</span> <span class="o">=</span> <span class="n">RawReferenceImage</span><span class="p">(</span>
     <span class="n">reference_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -943,17 +964,24 @@ data and use the <code class="docutils literal notranslate"><span class="pre">fr
 </div>
 <section id="upload">
 <h2>Upload<a class="headerlink" href="#upload" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file1</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;2312.11805v3.pdf&#39;</span><span class="p">)</span>
-<span class="n">file2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;2403.05530.pdf&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file1</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;2312.11805v3.pdf&#39;</span><span class="p">)</span>
+<span class="n">file2</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;2403.05530.pdf&#39;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
+<section id="get">
+<h2>Get<a class="headerlink" href="#get" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file1</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;2312.11805v3.pdf&#39;</span><span class="p">)</span>
+<span class="n">file_info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">file1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 <section id="delete">
 <h2>Delete<a class="headerlink" href="#delete" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file3</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;2312.11805v3.pdf&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file3</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">upload</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="s1">&#39;2312.11805v3.pdf&#39;</span><span class="p">)</span>
 
 <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">file3</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
@@ -998,14 +1026,14 @@ data and use the <code class="docutils literal notranslate"><span class="pre">fr
 </pre></div>
 </div>
 </section>
-<section id="get">
-<h2>Get<a class="headerlink" href="#get" title="Link to this heading">¶</a></h2>
+<section id="id7">
+<h2>Get<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cached_content</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">caches</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">cached_content</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="id7">
-<h2>Generate Content<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
+<section id="id8">
+<h2>Generate Content<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">generate_content</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemini-1.5-pro-002&#39;</span><span class="p">,</span>
     <span class="n">contents</span><span class="o">=</span><span class="s1">&#39;Summarize the pdfs&#39;</span><span class="p">,</span>
@@ -1063,7 +1091,7 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <span class="nb">print</span><span class="p">(</span><span class="n">tuning_job</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="n">running_states</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
     <span class="p">[</span>
@@ -1164,8 +1192,8 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <section id="batch-prediction">
 <h1>Batch Prediction<a class="headerlink" href="#batch-prediction" title="Link to this heading">¶</a></h1>
 <p>Only supported in Vertex AI.</p>
-<section id="id8">
-<h2>Create<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h2>Create<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Specify model and source file only, destination and job display name will be auto-populated</span>
 <span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">batches</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
     <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemini-1.5-flash-002&#39;</span><span class="p">,</span>
@@ -1228,8 +1256,8 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </pre></div>
 </div>
 </section>
-<section id="id9">
-<h2>Delete<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<section id="id10">
+<h2>Delete<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Delete the job resource</span>
 <span class="n">delete_job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">batches</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
@@ -3857,7 +3885,10 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li><a class="reference internal" href="#">Google Gen AI SDK</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#imports">Imports</a></li>
-<li><a class="reference internal" href="#create-a-client">Create a client</a></li>
+<li><a class="reference internal" href="#create-a-client">Create a client</a><ul>
+<li><a class="reference internal" href="#api-selection">API Selection</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#types">Types</a></li>
 </ul>
 </li>
@@ -3895,13 +3926,14 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </li>
 <li><a class="reference internal" href="#files">Files</a><ul>
 <li><a class="reference internal" href="#upload">Upload</a></li>
+<li><a class="reference internal" href="#get">Get</a></li>
 <li><a class="reference internal" href="#delete">Delete</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#caches">Caches</a><ul>
 <li><a class="reference internal" href="#create">Create</a></li>
-<li><a class="reference internal" href="#get">Get</a></li>
-<li><a class="reference internal" href="#id7">Generate Content</a></li>
+<li><a class="reference internal" href="#id7">Get</a></li>
+<li><a class="reference internal" href="#id8">Generate Content</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#tunings">Tunings</a><ul>
@@ -3914,9 +3946,9 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 </ul>
 </li>
 <li><a class="reference internal" href="#batch-prediction">Batch Prediction</a><ul>
-<li><a class="reference internal" href="#id8">Create</a></li>
+<li><a class="reference internal" href="#id9">Create</a></li>
 <li><a class="reference internal" href="#list">List</a></li>
-<li><a class="reference internal" href="#id9">Delete</a></li>
+<li><a class="reference internal" href="#id10">Delete</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#reference">Reference</a></li>
