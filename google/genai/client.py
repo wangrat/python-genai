@@ -100,9 +100,9 @@ class Client:
   `api_key="your-api-key"` or by defining `GOOGLE_API_KEY="your-api-key"` as an
   environment variable
 
-  Vertex AI API users can provide inputs argument as `vertexai=false,
+  Vertex AI API users can provide inputs argument as `vertexai=True,
   project="your-project-id", location="us-central1"` or by defining
-  `GOOGLE_GENAI_USE_VERTEXAI=false`, `GOOGLE_CLOUD_PROJECT` and
+  `GOOGLE_GENAI_USE_VERTEXAI=true`, `GOOGLE_CLOUD_PROJECT` and
   `GOOGLE_CLOUD_LOCATION` environment variables.
 
   Attributes:

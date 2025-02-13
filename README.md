@@ -55,7 +55,7 @@ export GOOGLE_API_KEY='your-api-key'
 and `GOOGLE_CLOUD_LOCATION`, as shown below:
 
 ```bash
-export GOOGLE_GENAI_USE_VERTEXAI=false
+export GOOGLE_GENAI_USE_VERTEXAI=true
 export GOOGLE_CLOUD_PROJECT='your-project-id'
 export GOOGLE_CLOUD_LOCATION='us-central1'
 ```
@@ -75,16 +75,20 @@ to `v1` for Vertex AI:
 
 ```python
 client = genai.Client(
-    vertexai=True, project='your-project-id', location='us-central1',
-    http_options={'api_version': 'v1'}
+    vertexai=True,
+    project='your-project-id',
+    location='us-central1',
+    http_options=types.HttpOptions(api_version='v1')
 )
 ```
 
-To set the API version to `v1alpha` for the Gemini API:
+To set the API version to `v1alpha` for the Gemini Developer API:
 
 ```python
-client = genai.Client(api_key='GEMINI_API_KEY',
-                      http_options={'api_version': 'v1alpha'})
+client = genai.Client(
+    api_key='GEMINI_API_KEY',
+    http_options=types.HttpOptions(api_version='v1alpha')
+)
 ```
 
 ## Types
@@ -103,7 +107,7 @@ The `client.models` modules exposes model inferencing and model getters.
 
 ```python
 response = client.models.generate_content(
-    model='gemini-2.0-flash-001', contents='why is the sky blue?'
+    model='gemini-2.0-flash-001', contents='Why is the sky blue?'
 )
 print(response.text)
 ```
@@ -111,7 +115,7 @@ print(response.text)
 #### with uploaded file (Gemini API only)
 download the file in console.
 
-```cmd
+```sh
 !wget -q https://storage.googleapis.com/generativeai-downloads/data/a11.txt
 ```
 
