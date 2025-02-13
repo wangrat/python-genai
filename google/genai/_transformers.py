@@ -20,6 +20,7 @@ from collections.abc import Iterable, Mapping
 from enum import Enum, EnumMeta
 import inspect
 import io
+import logging
 import re
 import sys
 import time
@@ -33,6 +34,8 @@ import pydantic
 
 from . import _api_client
 from . import types
+
+logger = logging.getLogger('google_genai._transformers')
 
 if sys.version_info >= (3, 10):
   VersionedUnionType = typing.types.UnionType
@@ -183,8 +186,15 @@ def t_extract_models(
     return response.get('tunedModels')
   elif response.get('publisherModels') is not None:
     return response.get('publisherModels')
+  elif (
+      response.get('httpHeaders') is not None
+      and response.get('jsonPayload') is None
+  ):
+    return []
   else:
-    raise ValueError('Cannot determine the models type.')
+    logger.warning('Cannot determine the models type.')
+    logger.debug('Cannot determine the models type for response: %s', response)
+    return []
 
 
 def t_caches_model(api_client: _api_client.ApiClient, model: str):

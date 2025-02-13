@@ -21,6 +21,7 @@ from unittest import mock
 import pytest
 
 from ... import client as genai_client
+from ... import _api_client
 from ... import types
 from .. import pytest_helper
 
@@ -96,7 +97,42 @@ def test_base_models_pager(client):
     pager.next_page()
 
 
-def test_empty_tuned_models(mock_api_client, client):
+def test_base_response_with_empty_json_payload_and_http_headers(
+    mock_api_client, client
+):
+  with mock.patch.object(
+      genai_client.Client, '_get_api_client'
+  ) as patch_api_client:
+    patch_api_client.return_value = mock_api_client
+    mock_client = genai_client.Client()
+    base_response = _api_client.BaseResponse(
+        http_headers={'header_key': 'header_value'}
+    )
+    with mock.patch.object(
+        mock_api_client, 'request', return_value=base_response
+    ) as patch_request:
+      patch_request.return_value = {}
+      pager = mock_client.models.list()
+
+      assert len(pager) == 0
+
+
+def test_unknown_json_payload(mock_api_client, client):
+  with mock.patch.object(
+      genai_client.Client, '_get_api_client'
+  ) as patch_api_client:
+    patch_api_client.return_value = mock_api_client
+    mock_client = genai_client.Client()
+    with mock.patch.object(
+        mock_api_client, 'request', return_value={'unknown_key', 'unknown_value'}
+    ) as patch_request:
+      patch_request.return_value = {}
+      pager = mock_client.models.list()
+
+      assert len(pager) == 0
+
+
+def test_empty_api_response(mock_api_client, client):
   with mock.patch.object(
       genai_client.Client, '_get_api_client'
   ) as patch_api_client:

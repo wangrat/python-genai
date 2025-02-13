@@ -27,14 +27,13 @@ import os
 import sys
 from typing import Any, Optional, Tuple, TypedDict, Union
 from urllib.parse import urlparse, urlunparse
-
 import google.auth
 import google.auth.credentials
 from google.auth.transport.requests import AuthorizedSession
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 import requests
-
 from . import errors
+from . import _common
 from . import version
 from .types import HttpOptions, HttpOptionsDict, HttpOptionsOrDict
 
@@ -105,15 +104,14 @@ class HttpRequest:
 
 # TODO(b/394358912): Update this class to use a SDKResponse class that can be
 # generated and used for all languages.
-@dataclass
-class BaseResponse:
-  http_headers: dict[str, str]
+class BaseResponse(_common.BaseModel):
+  http_headers: dict[str, str] = Field(
+      default=None, description='The http headers of the response.'
+  )
 
-  @property
-  def dict(self) -> dict[str, Any]:
-    if isinstance(self, dict):
-      return self
-    return {'httpHeaders': self.http_headers}
+  json_payload: Optional[Any] = Field(
+      default=None, description='The json payload of the response.'
+  )
 
 
 class HttpResponse:
@@ -455,9 +453,9 @@ class ApiClient:
     response = self._request(http_request, stream=False)
     json_response = response.json
     if not json_response:
-      base_response = BaseResponse(response.headers).dict
-      return base_response
-
+      return BaseResponse(http_headers=response.headers).model_dump(
+          by_alias=True
+      )
     return json_response
 
   def request_streamed(
@@ -489,8 +487,7 @@ class ApiClient:
     result = await self._async_request(http_request=http_request, stream=False)
     json_response = result.json
     if not json_response:
-      base_response = BaseResponse(result.headers).dict
-      return base_response
+      return BaseResponse(http_headers=result.headers).model_dump(by_alias=True)
     return json_response
 
   async def async_request_streamed(
