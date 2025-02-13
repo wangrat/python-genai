@@ -1042,3 +1042,19 @@ def test_afc_once_in_any_mode(client):
           ),
       ),
   )
+
+
+def test_code_execution_tool(client):
+  response = client.models.generate_content(
+      model='gemini-2.0-flash-exp',
+      contents=(
+          'What is the sum of the first 50 prime numbers? Generate and run code'
+          ' for the calculation, and make sure you get all 50.'
+      ),
+      config=types.GenerateContentConfig(
+          tools=[types.Tool(code_execution=types.ToolCodeExecution)]
+      ),
+  )
+
+  assert 'def is_prime' in response.executable_code
+  assert 'primes=' in response.code_execution_result

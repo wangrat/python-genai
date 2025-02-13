@@ -2864,7 +2864,7 @@ class GenerateContentResponse(_common.BaseModel):
         if field_value is not None:
           raise ValueError(
               'GenerateContentResponse.text only supports text parts, but got'
-              f' {field_name} part{part}'
+              f' {field_name} part'
           )
       if isinstance(part.text, str):
         if isinstance(part.thought, bool) and part.thought:
@@ -2895,6 +2895,44 @@ class GenerateContentResponse(_common.BaseModel):
     ]
 
     return function_calls if function_calls else None
+
+  @property
+  def executable_code(self) -> Optional[str]:
+    """Returns the executable code in the response."""
+    if (
+        not self.candidates
+        or not self.candidates[0].content
+        or not self.candidates[0].content.parts
+    ):
+      return None
+    if len(self.candidates) > 1:
+      logging.warning(
+          'Warning: there are multiple candidates in the response, returning'
+          ' executable code from the first one.'
+      )
+    for part in self.candidates[0].content.parts:
+      if part.executable_code is not None:
+        return part.executable_code.code
+    return None
+
+  @property
+  def code_execution_result(self) -> Optional[str]:
+    """Returns the code execution result in the response."""
+    if (
+        not self.candidates
+        or not self.candidates[0].content
+        or not self.candidates[0].content.parts
+    ):
+      return None
+    if len(self.candidates) > 1:
+      logging.warning(
+          'Warning: there are multiple candidates in the response, returning'
+          ' code execution result from the first one.'
+      )
+    for part in self.candidates[0].content.parts:
+      if part.code_execution_result is not None:
+        return part.code_execution_result.output
+    return None
 
   @classmethod
   def _from_response(

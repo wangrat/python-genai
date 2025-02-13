@@ -334,3 +334,145 @@ def test_no_function_calls():
       ]
   )
   assert response.function_calls is None
+
+
+def test_executable_code_empty_candidates():
+  response = types.GenerateContentResponse()
+
+  assert response.executable_code is None
+
+
+def test_executable_code_empty_content():
+  response = types.GenerateContentResponse(candidates=[])
+
+  assert response.executable_code is None
+
+
+def test_executable_code_empty_parts():
+  response = types.GenerateContentResponse(candidates=[types.Candidate(
+      content=types.Content()
+  )])
+
+  assert response.executable_code is None
+
+
+def test_executable_code_two_candidates():
+  response = types.GenerateContentResponse(
+      candidates=[
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          executable_code=types.ExecutableCode(
+                              code='print("hello")', language='PYTHON'
+                          )
+                      )
+                  ]
+              )
+          ),
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          executable_code=types.ExecutableCode(
+                              code='print("world")', language='PYTHON'
+                          )
+                      )
+                  ]
+              )
+          ),
+      ]
+  )
+
+  assert response.executable_code == 'print("hello")'
+
+
+def test_executable_code_one_candidate():
+  response = types.GenerateContentResponse(
+      candidates=[
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          executable_code=types.ExecutableCode(
+                              code='print("hello")', language='PYTHON'
+                          )
+                      )
+                  ]
+              )
+          )
+      ]
+  )
+
+  assert response.executable_code == 'print("hello")'
+
+
+def test_code_execution_result_empty_candidates():
+  response = types.GenerateContentResponse()
+
+  assert response.code_execution_result is None, response.code_execution_result
+
+
+def test_code_execution_result_empty_content():
+  response = types.GenerateContentResponse(candidates=[])
+
+  assert response.code_execution_result is None
+
+
+def test_code_execution_result_empty_parts():
+  response = types.GenerateContentResponse(
+      candidates=[types.Candidate(content=types.Content())]
+  )
+
+  assert response.code_execution_result is None
+
+
+def test_code_execution_result_two_candidates():
+  response = types.GenerateContentResponse(
+      candidates=[
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          code_execution_result=types.CodeExecutionResult(
+                              outcome='OUTCOME_OK', output='"hello"'
+                          )
+                      )
+                  ]
+              )
+          ),
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          code_execution_result=types.CodeExecutionResult(
+                              outcome='OUTCOME_ERROR', output='"world"'
+                          )
+                      )
+                  ]
+              )
+          ),
+      ]
+  )
+
+  assert response.code_execution_result == '"hello"'
+
+
+def test_code_execution_result_one_candidate():
+  response = types.GenerateContentResponse(
+      candidates=[
+          types.Candidate(
+              content=types.Content(
+                  parts=[
+                      types.Part(
+                          code_execution_result=types.CodeExecutionResult(
+                              outcome='OUTCOME_OK', output='"hello"'
+                          )
+                      )
+                  ]
+              )
+          )
+      ]
+  )
+
+  assert response.code_execution_result == '"hello"'
