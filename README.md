@@ -1104,3 +1104,20 @@ delete_job = client.batches.delete(name=job.name)
 
 delete_job
 ```
+
+## Error Handling
+
+To handle errors raised by the model service, the SDK provides this [APIError](https://github.com/googleapis/python-genai/blob/main/google/genai/errors.py) class.
+
+```python
+from google.genai import errors
+
+try:
+  client.models.generate_content(
+      model="invalid-model-name",
+      contents="What is your name?",
+  )
+except errors.APIError as e:
+  print(e.code) # 404
+  print(e.message)
+```
