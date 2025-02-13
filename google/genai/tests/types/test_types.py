@@ -333,7 +333,7 @@ def test_built_in_union_type():
 def test_built_in_union_type_all_py_versions():
 
   def func_under_test(
-      a: typing.Union[int, str , float , bool],
+      a: typing.Union[int, str, float, bool],
       b: typing.Union[list, dict],
   ):
     """test built in union type."""
@@ -969,7 +969,13 @@ def test_generic_alias_complex_array_with_default_value_not_compatible():
 def test_generic_alias_complex_array_with_default_value_not_compatible_all_py_versions():
 
   def func_under_test1(
-      a: typing.List[typing.Union[int, str, float, bool]] = [1, 'a', 1.1, True, []],
+      a: typing.List[typing.Union[int, str, float, bool]] = [
+          1,
+          'a',
+          1.1,
+          True,
+          [],
+      ],
   ):
     """test generic alias complex array with default value not compatible."""
     pass
@@ -989,7 +995,6 @@ def test_generic_alias_complex_array_with_default_value_not_compatible_all_py_ve
       types.FunctionDeclaration.from_callable(
           client=vertex_client, callable=func_under_test
       )
-
 
 
 def test_generic_alias_object():
@@ -1197,13 +1202,23 @@ def test_pydantic_model():
 
   expected_schema_vertex = copy.deepcopy(expected_schema_mldev)
   expected_schema_vertex.parameters.required = ['a', 'b']
-  expected_schema_vertex.parameters.properties['a'].required = ['a_simple', 'b_simple']
-  expected_schema_vertex.parameters.properties['b'].required = ['a_complex','b_complex']
-  expected_schema_vertex.parameters.properties['b'].properties['a_complex'].required = [
+  expected_schema_vertex.parameters.properties['a'].required = [
       'a_simple',
       'b_simple',
   ]
-  expected_schema_vertex.parameters.properties['b'].properties['b_complex'].items.required = [
+  expected_schema_vertex.parameters.properties['b'].required = [
+      'a_complex',
+      'b_complex',
+  ]
+  expected_schema_vertex.parameters.properties['b'].properties[
+      'a_complex'
+  ].required = [
+      'a_simple',
+      'b_simple',
+  ]
+  expected_schema_vertex.parameters.properties['b'].properties[
+      'b_complex'
+  ].items.required = [
       'a_simple',
       'b_simple',
   ]
@@ -1318,12 +1333,12 @@ def test_pydantic_model_in_union_type():
   expected_schema_vertex.parameters.properties['animal'].any_of[0].required = [
       'name',
       'age',
-      'like_purring'
+      'like_purring',
   ]
   expected_schema_vertex.parameters.properties['animal'].any_of[1].required = [
       'name',
       'age',
-      'like_barking'
+      'like_barking',
   ]
 
   with pytest.raises(ValueError):
@@ -1367,7 +1382,7 @@ def test_pydantic_model_with_default_value():
                           type='STRING',
                       ),
                   },
-                  required=[]
+                  required=[],
               )
           },
           required=[],
@@ -1997,7 +2012,9 @@ def test_builtin_union_return_type():
 
 def test_builtin_union_return_type_all_py_versions():
 
-  def func_under_test() -> typing.Union[int, str, float, bool, list, dict, None]:
+  def func_under_test() -> (
+      typing.Union[int, str, float, bool, list, dict, None]
+  ):
     """test builtin union return type."""
     pass
 
@@ -2130,7 +2147,7 @@ def test_return_type_pydantic_model():
                       'a_simple': types.Schema(type='INTEGER'),
                       'b_simple': types.Schema(type='STRING'),
                   },
-                  required=['a_simple', 'b_simple']
+                  required=['a_simple', 'b_simple'],
               ),
           ),
       },
@@ -2434,3 +2451,148 @@ def test_typed_dict_pydantic_field():
 
   class MyConfig(BaseModel):
     config: types.GenerationConfigDict
+
+
+def test_model_content_list_part_from_uri():
+  expected_model_content = types.Content(
+      role='model',
+      parts=[
+          types.Part(text='what is this image about?'),
+          types.Part(
+              file_data=types.FileData(
+                  file_uri='gs://generativeai-downloads/images/scones.jpg',
+                  mime_type='image/jpeg',
+              )
+          ),
+      ],
+  )
+
+  actual_model_content = types.ModelContent(
+      parts=[
+          'what is this image about?',
+          types.Part.from_uri(
+              file_uri='gs://generativeai-downloads/images/scones.jpg',
+              mime_type='image/jpeg',
+          ),
+      ]
+  )
+
+  assert expected_model_content.model_dump_json(
+      exclude_none=True
+  ) == actual_model_content.model_dump_json(exclude_none=True)
+
+
+def test_model_content_part_from_uri():
+  expected_model_content = types.Content(
+      role='model',
+      parts=[
+          types.Part(
+              file_data=types.FileData(
+                  file_uri='gs://generativeai-downloads/images/scones.jpg',
+                  mime_type='image/jpeg',
+              )
+          )
+      ],
+  )
+
+  actual_model_content = types.ModelContent(
+      parts=types.Part.from_uri(
+          file_uri='gs://generativeai-downloads/images/scones.jpg',
+          mime_type='image/jpeg',
+      )
+  )
+
+  assert expected_model_content.model_dump_json(
+      exclude_none=True
+  ) == actual_model_content.model_dump_json(exclude_none=True)
+
+
+def test_model_content_from_string():
+  expected_model_content = types.Content(
+      role='model',
+      parts=[types.Part(text='why is the sky blue?')],
+  )
+
+  actual_model_content = types.ModelContent(parts='why is the sky blue?')
+
+  assert expected_model_content.model_dump_json(
+      exclude_none=True
+  ) == actual_model_content.model_dump_json(exclude_none=True)
+
+
+def test_model_content_unsupported_type():
+  with pytest.raises(ValueError):
+    types.ModelContent(parts=123)
+
+
+def test_model_content_empty_list():
+  with pytest.raises(ValueError):
+    types.ModelContent(parts=[])
+
+
+def test_model_content_unsupported_type_in_list():
+  with pytest.raises(ValueError):
+    types.ModelContent(parts=['hi', 123])
+
+
+def test_model_content_unsupported_role():
+  with pytest.raises(ValueError):
+    types.ModelContent(role='user', parts=['hi'])
+
+
+def test_model_content_modify_role():
+  model_content = types.ModelContent(parts=['hi'])
+  with pytest.raises(pydantic.ValidationError):
+    model_content.role = 'user'
+
+
+def test_model_content_modify_parts():
+  expected_model_content = types.Content(
+      role='model',
+      parts=[types.Part(text='hello')],
+  )
+  model_content = types.ModelContent(parts=['hi'])
+  model_content.parts = [types.Part(text='hello')]
+
+  assert expected_model_content.model_dump_json(
+      exclude_none=True
+  ) == model_content.model_dump_json(exclude_none=True)
+
+
+def test_user_content_unsupported_type():
+  with pytest.raises(ValueError):
+    types.UserContent(part=123)
+
+
+def test_user_content_modify_role():
+  user_content = types.UserContent(parts=['hi'])
+  with pytest.raises(pydantic.ValidationError):
+    user_content.role = 'model'
+
+
+def test_user_content_modify_parts():
+  expected_user_content = types.Content(
+      role='user',
+      parts=[types.Part(text='hello')],
+  )
+  user_content = types.UserContent(parts=['hi'])
+  user_content.parts = [types.Part(text='hello')]
+
+  assert expected_user_content.model_dump_json(
+      exclude_none=True
+  ) == user_content.model_dump_json(exclude_none=True)
+
+
+def test_user_content_empty_list():
+  with pytest.raises(ValueError):
+    types.UserContent(parts=[])
+
+
+def test_user_content_unsupported_type_in_list():
+  with pytest.raises(ValueError):
+    types.UserContent(parts=['hi', 123])
+
+
+def test_user_content_unsupported_role():
+  with pytest.raises(ValueError):
+    types.UserContent(role='model', parts=['hi'])

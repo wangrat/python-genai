@@ -399,6 +399,61 @@ def test_from_uri(client):
     )
 
 
+def test_user_content_text(client):
+  response = client.models.generate_content(
+      model='gemini-1.5-flash',
+      contents=types.UserContent(parts='why is the sky blue?'),
+  )
+  assert response.text
+
+
+def test_user_content_part(client):
+  with pytest_helper.exception_if_mldev(client, errors.ClientError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents=types.UserContent(
+            parts=[
+                'what is this image about?',
+                types.Part.from_uri(
+                    file_uri='gs://generativeai-downloads/images/scones.jpg',
+                    mime_type='image/jpeg',
+                ),
+            ]
+        ),
+    )
+    assert response.text
+
+
+def test_model_content_text(client):
+  with pytest_helper.exception_if_mldev(client, errors.ClientError):
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents=[
+            types.UserContent(
+                parts=[
+                    'what is this image about?',
+                    types.Part.from_uri(
+                        file_uri=(
+                            'gs://generativeai-downloads/images/scones.jpg'
+                        ),
+                        mime_type='image/jpeg',
+                    ),
+                ]
+            ),
+            types.ModelContent(
+                parts=(
+                    'The image is about a cozy breakfast or brunch with'
+                    ' blueberry scones, coffee, and fresh flowers.'
+                )
+            ),
+            types.UserContent(
+                parts='Is this a good environment for a family gathering?'
+            ),
+        ],
+    )
+    assert response.text
+
+
 def test_from_uploaded_file_uri(client):
   with pytest_helper.exception_if_vertex(client, errors.ClientError):
     client.models.generate_content(

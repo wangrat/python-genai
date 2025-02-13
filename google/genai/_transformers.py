@@ -264,7 +264,7 @@ def t_part(client: _api_client.ApiClient, part: PartType) -> types.Part:
 def t_parts(
     client: _api_client.ApiClient, parts: Union[list, PartType]
 ) -> list[types.Part]:
-  if parts is None:
+  if not parts:
     raise ValueError('content parts are required.')
   if isinstance(parts, list):
     return [t_part(client, part) for part in parts]
