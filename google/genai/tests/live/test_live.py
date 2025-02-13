@@ -242,6 +242,21 @@ async def test_async_session_send_tool_response(
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
+async def test_async_session_send_input_none(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  await session.send(input=None)
+  mock_websocket.send.assert_called_once()
+  sent_data = json.loads(mock_websocket.send.call_args[0][0])
+  assert 'client_content' in sent_data
+  assert sent_data['client_content']['turn_complete']
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
 async def test_async_session_send_error(
     mock_api_client, mock_websocket, vertexai
 ):
