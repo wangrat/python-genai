@@ -3915,7 +3915,7 @@ class Models(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.EmbedContentConfigOrDict] = None,
   ) -> types.EmbedContentResponse:
-    """Calculates embeddings for the given contents(only text is supported).
+    """Calculates embeddings for the given contents. Only text is supported.
 
     Args:
       model (str): The model to use.
@@ -4007,7 +4007,7 @@ class Models(_api_module.BaseModule):
     .. code-block:: python
 
       response = client.models.generate_images(
-        model='imagen-3.0-generate-001',
+        model='imagen-3.0-generate-002',
         prompt='Man with a dog',
         config=types.GenerateImagesConfig(
             number_of_images= 1,
@@ -4447,10 +4447,11 @@ class Models(_api_module.BaseModule):
   ) -> types.CountTokensResponse:
     """Counts the number of tokens in the given content.
 
+    Multimodal input is supported for Gemini models.
+
     Args:
       model (str): The model to use for counting tokens.
       contents (list[types.Content]): The content to count tokens for.
-        Multimodal input is supported for Gemini models.
       config (CountTokensConfig): The configuration for counting tokens.
 
     Usage:
@@ -4522,14 +4523,15 @@ class Models(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.ComputeTokensConfigOrDict] = None,
   ) -> types.ComputeTokensResponse:
-    """Return a list of tokens based on the input text.
+    """Return a list of tokens based on the input contents.
+
+    Only text is supported.
 
     This method is not supported by the Gemini Developer API.
 
     Args:
       model (str): The model to use.
-      contents (list[shared.Content]): The content to compute tokens for. Only
-        text is supported.
+      contents (list[shared.Content]): The content to compute tokens for.
 
     Usage:
 
@@ -4601,19 +4603,19 @@ class Models(_api_module.BaseModule):
   ) -> types.GenerateContentResponse:
     """Makes an API request to generate content using a model.
 
-    For the `model` parameter, supported format for Vertex AI API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the full resource name starts with 'projects/', for example:
+    For the `model` parameter, supported formats for Vertex AI API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The full resource name starts with 'projects/', for example:
       'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
-    - the partial resource name with 'publishers/', for example:
+    - The partial resource name with 'publishers/', for example:
       'publishers/google/models/gemini-1.5-flash-002' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
       'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
 
-    For the `model` parameter, supported format for Gemini API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the model name starts with 'models/', for example:
+    For the `model` parameter, supported formats for Gemini API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The model name starts with 'models/', for example:
       'models/gemini-1.5-flash-002'
     - if you would like to use a tuned model, the model name starts with
       'tunedModels/', for example:
@@ -4720,21 +4722,21 @@ class Models(_api_module.BaseModule):
   ) -> Iterator[types.GenerateContentResponse]:
     """Makes an API request to generate content using a model and yields the model's response in chunks.
 
-    For the `model` parameter, supported format for Vertex AI API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the full resource name starts with 'projects/', for example:
+    For the `model` parameter, supported formats for Vertex AI API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The full resource name starts with 'projects/', for example:
       'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
-    - the partial resource name with 'publishers/', for example:
+    - The partial resource name with 'publishers/', for example:
       'publishers/google/models/gemini-1.5-flash-002' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
       'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
 
-    For the `model` parameter, supported format for Gemini API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the model name starts with 'models/', for example:
+    For the `model` parameter, supported formats for Gemini API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The model name starts with 'models/', for example:
       'models/gemini-1.5-flash-002'
-    - if you would like to use a tuned model, the model name starts with
+    - If you would like to use a tuned model, the model name starts with
       'tunedModels/', for example:
       'tunedModels/1234567890123456789'
 
@@ -5095,7 +5097,7 @@ class AsyncModels(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.EmbedContentConfigOrDict] = None,
   ) -> types.EmbedContentResponse:
-    """Calculates embeddings for the given contents(only text is supported).
+    """Calculates embeddings for the given contents. Only text is supported.
 
     Args:
       model (str): The model to use.
@@ -5187,7 +5189,7 @@ class AsyncModels(_api_module.BaseModule):
     .. code-block:: python
 
       response = client.models.generate_images(
-        model='imagen-3.0-generate-001',
+        model='imagen-3.0-generate-002',
         prompt='Man with a dog',
         config=types.GenerateImagesConfig(
             number_of_images= 1,
@@ -5627,10 +5629,11 @@ class AsyncModels(_api_module.BaseModule):
   ) -> types.CountTokensResponse:
     """Counts the number of tokens in the given content.
 
+    Multimodal input is supported for Gemini models.
+
     Args:
       model (str): The model to use for counting tokens.
       contents (list[types.Content]): The content to count tokens for.
-        Multimodal input is supported for Gemini models.
       config (CountTokensConfig): The configuration for counting tokens.
 
     Usage:
@@ -5702,14 +5705,15 @@ class AsyncModels(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.ComputeTokensConfigOrDict] = None,
   ) -> types.ComputeTokensResponse:
-    """Return a list of tokens based on the input text.
+    """Return a list of tokens based on the input contents.
+
+    Only text is supported.
 
     This method is not supported by the Gemini Developer API.
 
     Args:
       model (str): The model to use.
-      contents (list[shared.Content]): The content to compute tokens for. Only
-        text is supported.
+      contents (list[shared.Content]): The content to compute tokens for.
 
     Usage:
 
@@ -5870,21 +5874,21 @@ class AsyncModels(_api_module.BaseModule):
   ) -> Awaitable[AsyncIterator[types.GenerateContentResponse]]:
     """Makes an API request to generate content using a model and yields the model's response in chunks.
 
-    For the `model` parameter, supported format for Vertex AI API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the full resource name starts with 'projects/', for example:
+    For the `model` parameter, supported formats for Vertex AI API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The full resource name starts with 'projects/', for example:
       'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
-    - the partial resource name with 'publishers/', for example:
+    - The partial resource name with 'publishers/', for example:
       'publishers/google/models/gemini-1.5-flash-002' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
       'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
 
-    For the `model` parameter, supported format for Gemini API includes:
-    - the Gemini model ID, for example: 'gemini-1.5-flash-002'
-    - the model name starts with 'models/', for example:
+    For the `model` parameter, supported formats for Gemini API include:
+    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The model name starts with 'models/', for example:
       'models/gemini-1.5-flash-002'
-    - if you would like to use a tuned model, the model name starts with
+    - If you would like to use a tuned model, the model name starts with
       'tunedModels/', for example:
       'tunedModels/1234567890123456789'
 
