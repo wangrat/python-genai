@@ -1053,7 +1053,7 @@ class AsyncBatches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      batch_job = client.batches.get(name='123456789')
+      batch_job = await client.aio.batches.get(name='123456789')
       print(f"Batch job: {batch_job.name}, state {batch_job.state}")
     """
 
@@ -1119,7 +1119,7 @@ class AsyncBatches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      client.batches.cancel(name='123456789')
+      await client.aio.batches.cancel(name='123456789')
     """
 
     parameter_model = types._CancelBatchJobParameters(
@@ -1225,7 +1225,7 @@ class AsyncBatches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      client.batches.delete(name='123456789')
+      await client.aio.batches.delete(name='123456789')
     """
 
     parameter_model = types._DeleteBatchJobParameters(

@@ -5110,7 +5110,7 @@ class AsyncModels(_api_module.BaseModule):
 
     .. code-block:: python
 
-      embeddings = client.models.embed_content(
+      embeddings = await client.aio.models.embed_content(
           model= 'text-embedding-004',
           contents=[
               'What is your name?',
@@ -5190,7 +5190,7 @@ class AsyncModels(_api_module.BaseModule):
 
     .. code-block:: python
 
-      response = client.models.generate_images(
+      response = await client.aio.models.generate_images(
         model='imagen-3.0-generate-002',
         prompt='Man with a dog',
         config=types.GenerateImagesConfig(
@@ -5288,7 +5288,7 @@ class AsyncModels(_api_module.BaseModule):
             mask_dilation=0.06,
         ),
       )
-      response = client.models.edit_image(
+      response = await client.aio.models.edit_image(
         model='imagen-3.0-capability-preview-0930',
         prompt='man with dog',
         reference_images=[raw_ref_image, mask_ref_image],
@@ -5642,7 +5642,7 @@ class AsyncModels(_api_module.BaseModule):
 
     .. code-block:: python
 
-      response = client.models.count_tokens(
+      response = await client.aio.models.count_tokens(
           model='gemini-1.5-flash',
           contents='What is your name?',
       )
@@ -5721,7 +5721,7 @@ class AsyncModels(_api_module.BaseModule):
 
     .. code-block:: python
 
-      response = client.models.compute_tokens(
+      response = await client.aio.models.compute_tokens(
           model='gemini-1.5-flash',
           contents='What is your name?',
       )

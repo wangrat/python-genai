@@ -1186,7 +1186,7 @@ class Caches(_api_module.BaseModule):
     .. code-block:: python
 
       contents = ... // Initialize the content to cache.
-      response = await client.aio.caches.create(
+      response = client.caches.create(
           model= ... // The publisher model id
           contents=contents,
           config={
@@ -1254,8 +1254,7 @@ class Caches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      await client.aio.caches.get(name= ... ) // The server-generated resource
-      name.
+      client.caches.get(name= ... ) // The server-generated resource name.
     """
 
     parameter_model = types._GetCachedContentParameters(
@@ -1317,8 +1316,7 @@ class Caches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      await client.aio.caches.delete(name= ... ) // The server-generated
-      resource name.
+      client.caches.delete(name= ... ) // The server-generated resource name.
     """
 
     parameter_model = types._DeleteCachedContentParameters(
@@ -1380,7 +1378,7 @@ class Caches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      response = await client.aio.caches.update(
+      response = client.caches.update(
           name= ... // The server-generated resource name.
           config={
               'ttl': '7600s',
@@ -1442,8 +1440,8 @@ class Caches(_api_module.BaseModule):
 
     .. code-block:: python
 
-      cached_contents = await client.aio.caches.list(config={'page_size': 2})
-      async for cached_content in cached_contents:
+      cached_contents = client.caches.list(config={'page_size': 2})
+      for cached_content in cached_contents:
         print(cached_content)
     """
 

@@ -984,7 +984,7 @@ class AsyncFiles(_api_module.BaseModule):
 
     .. code-block:: python
 
-      pager = client.files.list(config={'page_size': 10})
+      pager = await client.aio.files.list(config={'page_size': 10})
       for file in pager.page:
         print(file.name)
     """
@@ -1104,7 +1104,7 @@ class AsyncFiles(_api_module.BaseModule):
 
     .. code-block:: python
 
-      file = client.files.get(name='files/...')
+      file = await client.aio.files.get(name='files/...')
       print(file.uri)
     """
 
@@ -1167,7 +1167,7 @@ class AsyncFiles(_api_module.BaseModule):
 
     .. code-block:: python
 
-      client.files.delete(name='files/...')
+      await client.aio.files.delete(name='files/...')
     """
 
     parameter_model = types._DeleteFileParameters(
