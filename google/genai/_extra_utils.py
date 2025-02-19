@@ -270,6 +270,9 @@ def should_disable_afc(
       config_model.automatic_function_calling.disable
       and config_model.automatic_function_calling.maximum_remote_calls
       is not None
+      # exclude the case where max_remote_calls is set to 10 by default.
+      and 'maximum_remote_calls'
+      in config_model.automatic_function_calling.model_fields_set
       and int(config_model.automatic_function_calling.maximum_remote_calls) > 0
   ):
     logger.warning(
