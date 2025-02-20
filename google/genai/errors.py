@@ -16,7 +16,8 @@
 """Error classes for the GenAI SDK."""
 
 from typing import Any, Optional, TYPE_CHECKING, Union
-
+import httpx
+import json
 import requests
 
 
@@ -34,7 +35,9 @@ class APIError(Exception):
   response: Optional[Any] = None
 
   def __init__(
-      self, code: int, response: Union[requests.Response, 'ReplayResponse']
+      self,
+      code: int,
+      response: Union[requests.Response, 'ReplayResponse', httpx.Response],
   ):
     self.response = response
 
@@ -47,6 +50,18 @@ class APIError(Exception):
         response_json = {
             'message': response.text,
             'status': response.reason,
+        }
+    elif isinstance(response, httpx.Response):
+      try:
+        response_json = response.json()
+      except (json.decoder.JSONDecodeError, httpx.ResponseNotRead):
+        try:
+          message = response.text
+        except httpx.ResponseNotRead:
+          message = None
+        response_json = {
+            'message': message,
+            'status': response.reason_phrase,
         }
     else:
       response_json = response.body_segments[0].get('error', {})
@@ -89,7 +104,7 @@ class APIError(Exception):
 
   @classmethod
   def raise_for_response(
-      cls, response: Union[requests.Response, 'ReplayResponse']
+      cls, response: Union[requests.Response, 'ReplayResponse', httpx.Response]
   ):
     """Raises an error with detailed error message if the response has an error status."""
     if response.status_code == 200:

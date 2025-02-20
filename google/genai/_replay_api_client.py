@@ -409,6 +409,34 @@ class ReplayApiClient(ApiClient):
     else:
       return self._build_response_from_replay(http_request)
 
+  async def _async_request(
+      self,
+      http_request: HttpRequest,
+      stream: bool = False,
+  ) -> HttpResponse:
+    self._initialize_replay_session_if_not_loaded()
+    if self._should_call_api():
+      _debug_print('api mode request: %s' % http_request)
+      try:
+        result = await super()._async_request(http_request, stream)
+      except errors.APIError as e:
+        self._record_interaction(http_request, e)
+        raise e
+      if stream:
+        result_segments = []
+        async for segment in result.async_segments():
+          result_segments.append(json.dumps(segment))
+        result = HttpResponse(result.headers, result_segments)
+        self._record_interaction(http_request, result)
+        # Need to return a RecordedResponse that rebuilds the response
+        # segments since the stream has been consumed.
+      else:
+        self._record_interaction(http_request, result)
+      _debug_print('api mode result: %s' % result.json)
+      return result
+    else:
+      return self._build_response_from_replay(http_request)
+
   def upload_file(self, file_path: Union[str, io.IOBase], upload_url: str, upload_size: int):
     if isinstance(file_path, io.IOBase):
       offset = file_path.tell()
@@ -453,4 +481,3 @@ class ReplayApiClient(ApiClient):
       return result
     else:
       return self._build_response_from_replay(request)
-

@@ -271,7 +271,7 @@ def test_invalid_vertexai_constructor_empty(monkeypatch):
     monkeypatch.setenv("GOOGLE_CLOUD_PROJECT", "")
     monkeypatch.setenv("GOOGLE_CLOUD_LOCATION", "")
     monkeypatch.setenv("GOOGLE_API_KEY", "")
-    def mock_auth_default():
+    def mock_auth_default(scopes=None):
       return None, None
 
     monkeypatch.setattr(google.auth, "default", mock_auth_default)
