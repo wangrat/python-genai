@@ -27,6 +27,7 @@ from .chats import AsyncChats, Chats
 from .files import AsyncFiles, Files
 from .live import AsyncLive
 from .models import AsyncModels, Models
+from .operations import AsyncOperations, Operations
 from .tunings import AsyncTunings, Tunings
 
 
@@ -42,6 +43,7 @@ class AsyncClient:
     self._batches = AsyncBatches(self._api_client)
     self._files = AsyncFiles(self._api_client)
     self._live = AsyncLive(self._api_client)
+    self._operations = AsyncOperations(self._api_client)
 
   @property
   def models(self) -> AsyncModels:
@@ -71,6 +73,9 @@ class AsyncClient:
   def live(self) -> AsyncLive:
     return self._live
 
+  @property
+  def operations(self) -> AsyncOperations:
+    return self._operations
 
 class DebugConfig(pydantic.BaseModel):
   """Configuration options that change client network behavior when testing."""
@@ -205,6 +210,7 @@ class Client:
     self._caches = Caches(self._api_client)
     self._batches = Batches(self._api_client)
     self._files = Files(self._api_client)
+    self._operations = Operations(self._api_client)
 
   @staticmethod
   def _get_api_client(
@@ -269,6 +275,10 @@ class Client:
   @property
   def files(self) -> Files:
     return self._files
+
+  @property
+  def operations(self) -> Operations:
+    return self._operations
 
   @property
   def vertexai(self) -> bool:

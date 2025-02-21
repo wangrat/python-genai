@@ -60,6 +60,12 @@ def set_value_by_path(data, keys, value):
         for d in data[key_name]:
           set_value_by_path(d, keys[i + 1 :], value)
       return
+    elif key.endswith('[0]'):
+      key_name = key[:-3]
+      if key_name not in data:
+        data[key_name] = [{}]
+      set_value_by_path(data[key_name][0], keys[i + 1 :], value)
+      return
 
     data = data.setdefault(key, {})
 
@@ -104,6 +110,12 @@ def get_value_by_path(data: object, keys: list[str]):
       key_name = key[:-2]
       if key_name in data:
         return [get_value_by_path(d, keys[i + 1 :]) for d in data[key_name]]
+      else:
+        return None
+    elif key.endswith('[0]'):
+      key_name = key[:-3]
+      if key_name in data and data[key_name]:
+        return get_value_by_path(data[key_name][0], keys[i + 1 :])
       else:
         return None
     else:

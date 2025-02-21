@@ -2791,6 +2791,202 @@ def _ComputeTokensParameters_to_vertex(
   return to_object
 
 
+def _GenerateVideosConfig_to_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+
+  if getv(from_object, ['number_of_videos']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'sampleCount'],
+        getv(from_object, ['number_of_videos']),
+    )
+
+  if getv(from_object, ['output_gcs_uri']) is not None:
+    raise ValueError('output_gcs_uri parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['fps']) is not None:
+    raise ValueError('fps parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['duration_seconds']) is not None:
+    raise ValueError(
+        'duration_seconds parameter is not supported in Gemini API.'
+    )
+
+  if getv(from_object, ['seed']) is not None:
+    raise ValueError('seed parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
+    )
+
+  if getv(from_object, ['resolution']) is not None:
+    raise ValueError('resolution parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['person_generation']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'personGeneration'],
+        getv(from_object, ['person_generation']),
+    )
+
+  if getv(from_object, ['pubsub_topic']) is not None:
+    raise ValueError('pubsub_topic parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['negative_prompt']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'negativePrompt'],
+        getv(from_object, ['negative_prompt']),
+    )
+
+  if getv(from_object, ['enhance_prompt']) is not None:
+    raise ValueError('enhance_prompt parameter is not supported in Gemini API.')
+
+  return to_object
+
+
+def _GenerateVideosConfig_to_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+
+  if getv(from_object, ['number_of_videos']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'sampleCount'],
+        getv(from_object, ['number_of_videos']),
+    )
+
+  if getv(from_object, ['output_gcs_uri']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'storageUri'],
+        getv(from_object, ['output_gcs_uri']),
+    )
+
+  if getv(from_object, ['fps']) is not None:
+    setv(parent_object, ['parameters', 'fps'], getv(from_object, ['fps']))
+
+  if getv(from_object, ['duration_seconds']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'durationSeconds'],
+        getv(from_object, ['duration_seconds']),
+    )
+
+  if getv(from_object, ['seed']) is not None:
+    setv(parent_object, ['parameters', 'seed'], getv(from_object, ['seed']))
+
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
+    )
+
+  if getv(from_object, ['resolution']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'resolution'],
+        getv(from_object, ['resolution']),
+    )
+
+  if getv(from_object, ['person_generation']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'personGeneration'],
+        getv(from_object, ['person_generation']),
+    )
+
+  if getv(from_object, ['pubsub_topic']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'pubsubTopic'],
+        getv(from_object, ['pubsub_topic']),
+    )
+
+  if getv(from_object, ['negative_prompt']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'negativePrompt'],
+        getv(from_object, ['negative_prompt']),
+    )
+
+  if getv(from_object, ['enhance_prompt']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'enhancePrompt'],
+        getv(from_object, ['enhance_prompt']),
+    )
+
+  return to_object
+
+
+def _GenerateVideosParameters_to_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['model']) is not None:
+    setv(
+        to_object,
+        ['_url', 'model'],
+        t.t_model(api_client, getv(from_object, ['model'])),
+    )
+
+  if getv(from_object, ['prompt']) is not None:
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _GenerateVideosConfig_to_mldev(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
+
+  return to_object
+
+
+def _GenerateVideosParameters_to_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['model']) is not None:
+    setv(
+        to_object,
+        ['_url', 'model'],
+        t.t_model(api_client, getv(from_object, ['model'])),
+    )
+
+  if getv(from_object, ['prompt']) is not None:
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _GenerateVideosConfig_to_vertex(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
+
+  return to_object
+
+
 def _SafetyFilterLevel_to_mldev_enum_validate(enum_value: Any):
   if enum_value in set(['BLOCK_NONE']):
     raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
@@ -3790,6 +3986,216 @@ def _ComputeTokensResponse_from_vertex(
   return to_object
 
 
+def _Video_from_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['uri']) is not None:
+    setv(to_object, ['uri'], getv(from_object, ['uri']))
+
+  if getv(from_object, ['encodedVideo']) is not None:
+    setv(
+        to_object,
+        ['video_bytes'],
+        t.t_bytes(api_client, getv(from_object, ['encodedVideo'])),
+    )
+
+  if getv(from_object, ['encoding']) is not None:
+    setv(to_object, ['mime_type'], getv(from_object, ['encoding']))
+
+  return to_object
+
+
+def _Video_from_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['gcsUri']) is not None:
+    setv(to_object, ['uri'], getv(from_object, ['gcsUri']))
+
+  if getv(from_object, ['bytesBase64Encoded']) is not None:
+    setv(
+        to_object,
+        ['video_bytes'],
+        t.t_bytes(api_client, getv(from_object, ['bytesBase64Encoded'])),
+    )
+
+  if getv(from_object, ['mimeType']) is not None:
+    setv(to_object, ['mime_type'], getv(from_object, ['mimeType']))
+
+  return to_object
+
+
+def _GeneratedVideo_from_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['_self']) is not None:
+    setv(
+        to_object,
+        ['video'],
+        _Video_from_mldev(api_client, getv(from_object, ['_self']), to_object),
+    )
+
+  return to_object
+
+
+def _GeneratedVideo_from_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['_self']) is not None:
+    setv(
+        to_object,
+        ['video'],
+        _Video_from_vertex(api_client, getv(from_object, ['_self']), to_object),
+    )
+
+  return to_object
+
+
+def _GenerateVideosResponse_from_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['videos']) is not None:
+    setv(
+        to_object,
+        ['generated_videos'],
+        [
+            _GeneratedVideo_from_mldev(api_client, item, to_object)
+            for item in getv(from_object, ['videos'])
+        ],
+    )
+
+  if getv(from_object, ['raiMediaFilteredCount']) is not None:
+    setv(
+        to_object,
+        ['rai_media_filtered_count'],
+        getv(from_object, ['raiMediaFilteredCount']),
+    )
+
+  if getv(from_object, ['raiMediaFilteredReasons']) is not None:
+    setv(
+        to_object,
+        ['rai_media_filtered_reasons'],
+        getv(from_object, ['raiMediaFilteredReasons']),
+    )
+
+  return to_object
+
+
+def _GenerateVideosResponse_from_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['videos']) is not None:
+    setv(
+        to_object,
+        ['generated_videos'],
+        [
+            _GeneratedVideo_from_vertex(api_client, item, to_object)
+            for item in getv(from_object, ['videos'])
+        ],
+    )
+
+  if getv(from_object, ['raiMediaFilteredCount']) is not None:
+    setv(
+        to_object,
+        ['rai_media_filtered_count'],
+        getv(from_object, ['raiMediaFilteredCount']),
+    )
+
+  if getv(from_object, ['raiMediaFilteredReasons']) is not None:
+    setv(
+        to_object,
+        ['rai_media_filtered_reasons'],
+        getv(from_object, ['raiMediaFilteredReasons']),
+    )
+
+  return to_object
+
+
+def _GenerateVideosOperation_from_mldev(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['name']) is not None:
+    setv(to_object, ['name'], getv(from_object, ['name']))
+
+  if getv(from_object, ['metadata']) is not None:
+    setv(to_object, ['metadata'], getv(from_object, ['metadata']))
+
+  if getv(from_object, ['done']) is not None:
+    setv(to_object, ['done'], getv(from_object, ['done']))
+
+  if getv(from_object, ['error']) is not None:
+    setv(to_object, ['error'], getv(from_object, ['error']))
+
+  if getv(from_object, ['response']) is not None:
+    setv(to_object, ['response'], getv(from_object, ['response']))
+
+  if getv(from_object, ['response', 'generateVideoResponse']) is not None:
+    setv(
+        to_object,
+        ['result'],
+        _GenerateVideosResponse_from_mldev(
+            api_client,
+            getv(from_object, ['response', 'generateVideoResponse']),
+            to_object,
+        ),
+    )
+
+  return to_object
+
+
+def _GenerateVideosOperation_from_vertex(
+    api_client: ApiClient,
+    from_object: Union[dict, object],
+    parent_object: dict = None,
+) -> dict:
+  to_object = {}
+  if getv(from_object, ['name']) is not None:
+    setv(to_object, ['name'], getv(from_object, ['name']))
+
+  if getv(from_object, ['metadata']) is not None:
+    setv(to_object, ['metadata'], getv(from_object, ['metadata']))
+
+  if getv(from_object, ['done']) is not None:
+    setv(to_object, ['done'], getv(from_object, ['done']))
+
+  if getv(from_object, ['error']) is not None:
+    setv(to_object, ['error'], getv(from_object, ['error']))
+
+  if getv(from_object, ['response']) is not None:
+    setv(to_object, ['response'], getv(from_object, ['response']))
+
+  if getv(from_object, ['response']) is not None:
+    setv(
+        to_object,
+        ['result'],
+        _GenerateVideosResponse_from_vertex(
+            api_client, getv(from_object, ['response']), to_object
+        ),
+    )
+
+  return to_object
+
+
 class Models(_api_module.BaseModule):
 
   def _generate_content(
@@ -4591,6 +4997,88 @@ class Models(_api_module.BaseModule):
       )
 
     return_value = types.ComputeTokensResponse._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
+    self._api_client._verify_response(return_value)
+    return return_value
+
+  @_common.experimental_warning(
+      'This method is experimental and may change in future versions.'
+  )
+  def generate_videos(
+      self,
+      *,
+      model: str,
+      prompt: Optional[str] = None,
+      config: Optional[types.GenerateVideosConfigOrDict] = None,
+  ) -> types.GenerateVideosOperation:
+    """Generates videos based on a text description and configuration.
+
+    Args:
+      model: The model to use.
+      instances: A list of prompts, images and videos to generate videos from.
+      config: Configuration for generation.
+
+    Usage:
+
+      ```
+      operation = client.models.generate_videos(
+          model="veo-2.0-generate-001",
+          prompt="A neon hologram of a cat driving at top speed",
+      )
+      while not operation.done:
+          time.sleep(10)
+          operation = client.operations.get(operation)
+
+      operation.result.generated_videos[0].video.uri
+      ```
+    """
+
+    parameter_model = types._GenerateVideosParameters(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+
+    if self._api_client.vertexai:
+      request_dict = _GenerateVideosParameters_to_vertex(
+          self._api_client, parameter_model
+      )
+      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+    else:
+      request_dict = _GenerateVideosParameters_to_mldev(
+          self._api_client, parameter_model
+      )
+      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+    query_params = request_dict.get('_query')
+    if query_params:
+      path = f'{path}?{urlencode(query_params)}'
+    # TODO: remove the hack that pops config.
+    request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
+    request_dict = _common.convert_to_dict(request_dict)
+    request_dict = _common.encode_unserializable_types(request_dict)
+
+    response_dict = self._api_client.request(
+        'post', path, request_dict, http_options
+    )
+
+    if self._api_client.vertexai:
+      response_dict = _GenerateVideosOperation_from_vertex(
+          self._api_client, response_dict
+      )
+    else:
+      response_dict = _GenerateVideosOperation_from_mldev(
+          self._api_client, response_dict
+      )
+
+    return_value = types.GenerateVideosOperation._from_response(
         response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
@@ -5775,6 +6263,88 @@ class AsyncModels(_api_module.BaseModule):
       )
 
     return_value = types.ComputeTokensResponse._from_response(
+        response=response_dict, kwargs=parameter_model
+    )
+    self._api_client._verify_response(return_value)
+    return return_value
+
+  @_common.experimental_warning(
+      'This method is experimental and may change in future versions.'
+  )
+  async def generate_videos(
+      self,
+      *,
+      model: str,
+      prompt: Optional[str] = None,
+      config: Optional[types.GenerateVideosConfigOrDict] = None,
+  ) -> types.GenerateVideosOperation:
+    """Generates videos based on a text description and configuration.
+
+    Args:
+      model: The model to use.
+      instances: A list of prompts, images and videos to generate videos from.
+      config: Configuration for generation.
+
+    Usage:
+
+      ```
+      operation = client.models.generate_videos(
+          model="veo-2.0-generate-001",
+          prompt="A neon hologram of a cat driving at top speed",
+      )
+      while not operation.done:
+          time.sleep(10)
+          operation = client.operations.get(operation)
+
+      operation.result.generated_videos[0].video.uri
+      ```
+    """
+
+    parameter_model = types._GenerateVideosParameters(
+        model=model,
+        prompt=prompt,
+        config=config,
+    )
+
+    if self._api_client.vertexai:
+      request_dict = _GenerateVideosParameters_to_vertex(
+          self._api_client, parameter_model
+      )
+      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+    else:
+      request_dict = _GenerateVideosParameters_to_mldev(
+          self._api_client, parameter_model
+      )
+      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+    query_params = request_dict.get('_query')
+    if query_params:
+      path = f'{path}?{urlencode(query_params)}'
+    # TODO: remove the hack that pops config.
+    request_dict.pop('config', None)
+
+    http_options = None
+    if isinstance(config, dict):
+      http_options = config.get('http_options', None)
+    elif hasattr(config, 'http_options'):
+      http_options = config.http_options
+
+    request_dict = _common.convert_to_dict(request_dict)
+    request_dict = _common.encode_unserializable_types(request_dict)
+
+    response_dict = await self._api_client.async_request(
+        'post', path, request_dict, http_options
+    )
+
+    if self._api_client.vertexai:
+      response_dict = _GenerateVideosOperation_from_vertex(
+          self._api_client, response_dict
+      )
+    else:
+      response_dict = _GenerateVideosOperation_from_mldev(
+          self._api_client, response_dict
+      )
+
+    return_value = types.GenerateVideosOperation._from_response(
         response=response_dict, kwargs=parameter_model
     )
     self._api_client._verify_response(return_value)
