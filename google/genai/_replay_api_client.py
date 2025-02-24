@@ -60,6 +60,10 @@ def _redact_request_headers(headers):
       redacted_headers[header_name] = _redact_language_label(
           _redact_version_numbers(header_value)
       )
+    elif header_name.lower() == 'x-goog-user-project':
+      continue
+    elif header_name.lower() == 'authorization':
+      continue
     else:
       redacted_headers[header_name] = header_value
   return redacted_headers
