@@ -122,6 +122,7 @@ class Chat(_BaseChat):
     input_content = t.t_content(self._modules._api_client, message)
     output_contents = []
     finish_reason = None
+    chunk = None
     for chunk in self._modules.generate_content_stream(
         model=self._model,
         contents=self._curated_history + [input_content],
@@ -133,7 +134,13 @@ class Chat(_BaseChat):
         finish_reason = chunk.candidates[0].finish_reason
       yield chunk
     if output_contents and finish_reason:
-      self._curated_history.append(input_content)
+      if chunk.automatic_function_calling_history:
+        # If the last chunk has AFC history, append it to the curated history.
+        self._curated_history.extend(
+            chunk.automatic_function_calling_history
+        )
+      else:
+        self._curated_history.append(input_content)
       self._curated_history.extend(output_contents)
 
 
@@ -238,6 +245,7 @@ class AsyncChat(_BaseChat):
     async def async_generator():
       output_contents = []
       finish_reason = None
+      chunk = None
       async for chunk in await self._modules.generate_content_stream(
           model=self._model,
           contents=self._curated_history + [input_content],
@@ -250,7 +258,13 @@ class AsyncChat(_BaseChat):
         yield chunk
 
       if output_contents and finish_reason:
-        self._curated_history.append(input_content)
+        if chunk.automatic_function_calling_history:
+          # If the last chunk has AFC history, append it to the curated history.
+          self._curated_history.extend(
+              chunk.automatic_function_calling_history
+          )
+        else:
+          self._curated_history.append(input_content)
         self._curated_history.extend(output_contents)
     return async_generator()
 
