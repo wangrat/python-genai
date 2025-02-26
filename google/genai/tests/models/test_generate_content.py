@@ -17,6 +17,7 @@ import enum
 
 from pydantic import BaseModel, ValidationError, Field
 from typing import Literal, List, Optional, Union
+from datetime import datetime
 import pytest
 import json
 import logging
@@ -424,6 +425,22 @@ def test_sdk_logger_logs_warnings(client, caplog):
   assert response.text
   assert 'WARNING' in caplog.text
   assert 'there are 2 candidates' in caplog.text
+
+
+def test_response_create_time_and_response_id(client):
+  if client.vertexai:
+    response = client.models.generate_content(
+        model='gemini-2.0-flash',
+        contents='What is your name?',
+        config={
+            'max_output_tokens': 3,
+            'top_k': 2,
+        },
+    )
+    # create_time and response_id are not supported in mldev
+    assert response.create_time
+    assert response.response_id
+    assert isinstance(response.create_time, datetime)
 
 
 def test_safety_settings(client):

@@ -2884,6 +2884,16 @@ class GenerateContentResponse(_common.BaseModel):
       description="""Response variations returned by the model.
       """,
   )
+  create_time: Optional[datetime.datetime] = Field(
+      default=None,
+      description="""Timestamp when the request is made to the server.
+      """,
+  )
+  response_id: Optional[str] = Field(
+      default=None,
+      description="""Identifier for each response.
+      """,
+  )
   model_version: Optional[str] = Field(
       default=None,
       description="""Output only. The model version used to generate the response.""",
@@ -3091,6 +3101,14 @@ class GenerateContentResponseDict(TypedDict, total=False):
 
   candidates: Optional[list[CandidateDict]]
   """Response variations returned by the model.
+      """
+
+  create_time: Optional[datetime.datetime]
+  """Timestamp when the request is made to the server.
+      """
+
+  response_id: Optional[str]
+  """Identifier for each response.
       """
 
   model_version: Optional[str]
