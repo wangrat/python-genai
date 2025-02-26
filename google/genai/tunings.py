@@ -33,7 +33,7 @@ logger = logging.getLogger('google_genai.tunings')
 def _GetTuningJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -48,7 +48,7 @@ def _GetTuningJobParameters_to_mldev(
 def _GetTuningJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -63,7 +63,7 @@ def _GetTuningJobParameters_to_vertex(
 def _ListTuningJobsConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -88,7 +88,7 @@ def _ListTuningJobsConfig_to_mldev(
 def _ListTuningJobsConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -113,7 +113,7 @@ def _ListTuningJobsConfig_to_vertex(
 def _ListTuningJobsParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -131,7 +131,7 @@ def _ListTuningJobsParameters_to_mldev(
 def _ListTuningJobsParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -149,7 +149,7 @@ def _ListTuningJobsParameters_to_vertex(
 def _TuningExample_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['text_input']) is not None:
@@ -164,7 +164,7 @@ def _TuningExample_to_mldev(
 def _TuningExample_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['text_input']) is not None:
@@ -179,7 +179,7 @@ def _TuningExample_to_vertex(
 def _TuningDataset_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -201,7 +201,7 @@ def _TuningDataset_to_mldev(
 def _TuningDataset_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -220,7 +220,7 @@ def _TuningDataset_to_vertex(
 def _TuningValidationDataset_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -232,7 +232,7 @@ def _TuningValidationDataset_to_mldev(
 def _TuningValidationDataset_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -244,7 +244,7 @@ def _TuningValidationDataset_to_vertex(
 def _CreateTuningJobConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -300,7 +300,7 @@ def _CreateTuningJobConfig_to_mldev(
 def _CreateTuningJobConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -356,7 +356,7 @@ def _CreateTuningJobConfig_to_vertex(
 def _CreateTuningJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['base_model']) is not None:
@@ -386,7 +386,7 @@ def _CreateTuningJobParameters_to_mldev(
 def _CreateTuningJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['base_model']) is not None:
@@ -416,7 +416,7 @@ def _CreateTuningJobParameters_to_vertex(
 def _TunedModel_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -431,7 +431,7 @@ def _TunedModel_from_mldev(
 def _TunedModel_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -446,7 +446,7 @@ def _TunedModel_from_vertex(
 def _TuningJob_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -523,7 +523,7 @@ def _TuningJob_from_mldev(
 def _TuningJob_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -617,7 +617,7 @@ def _TuningJob_from_vertex(
 def _ListTuningJobsResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -639,7 +639,7 @@ def _ListTuningJobsResponse_from_mldev(
 def _ListTuningJobsResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -661,7 +661,7 @@ def _ListTuningJobsResponse_from_vertex(
 def _Operation_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -685,7 +685,7 @@ def _Operation_from_mldev(
 def _Operation_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:

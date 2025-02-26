@@ -37,7 +37,7 @@ logger = logging.getLogger('google_genai.files')
 def _ListFilesConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -59,7 +59,7 @@ def _ListFilesConfig_to_mldev(
 def _ListFilesConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -81,7 +81,7 @@ def _ListFilesConfig_to_vertex(
 def _ListFilesParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -99,7 +99,7 @@ def _ListFilesParameters_to_mldev(
 def _ListFilesParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -111,7 +111,7 @@ def _ListFilesParameters_to_vertex(
 def _FileStatus_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['details']) is not None:
@@ -129,7 +129,7 @@ def _FileStatus_to_mldev(
 def _FileStatus_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['details']) is not None:
@@ -147,7 +147,7 @@ def _FileStatus_to_vertex(
 def _File_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -204,7 +204,7 @@ def _File_to_mldev(
 def _File_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -255,7 +255,7 @@ def _File_to_vertex(
 def _CreateFileParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['file']) is not None:
@@ -274,7 +274,7 @@ def _CreateFileParameters_to_mldev(
 def _CreateFileParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['file']) is not None:
@@ -289,7 +289,7 @@ def _CreateFileParameters_to_vertex(
 def _GetFileParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -308,7 +308,7 @@ def _GetFileParameters_to_mldev(
 def _GetFileParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -323,7 +323,7 @@ def _GetFileParameters_to_vertex(
 def _DeleteFileParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -342,7 +342,7 @@ def _DeleteFileParameters_to_mldev(
 def _DeleteFileParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -367,7 +367,7 @@ def _FileSource_to_vertex_enum_validate(enum_value: Any):
 def _FileStatus_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['details']) is not None:
@@ -385,7 +385,7 @@ def _FileStatus_from_mldev(
 def _FileStatus_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -395,7 +395,7 @@ def _FileStatus_from_vertex(
 def _File_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -452,7 +452,7 @@ def _File_from_mldev(
 def _File_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -462,7 +462,7 @@ def _File_from_vertex(
 def _ListFilesResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -484,7 +484,7 @@ def _ListFilesResponse_from_mldev(
 def _ListFilesResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -494,7 +494,7 @@ def _ListFilesResponse_from_vertex(
 def _CreateFileResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['httpHeaders']) is not None:
@@ -506,7 +506,7 @@ def _CreateFileResponse_from_mldev(
 def _CreateFileResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['httpHeaders']) is not None:
@@ -518,7 +518,7 @@ def _CreateFileResponse_from_vertex(
 def _DeleteFileResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -528,7 +528,7 @@ def _DeleteFileResponse_from_mldev(
 def _DeleteFileResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 

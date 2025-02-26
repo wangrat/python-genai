@@ -34,7 +34,7 @@ logger = logging.getLogger('google_genai.batches')
 def _BatchJobSource_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
@@ -52,7 +52,7 @@ def _BatchJobSource_to_mldev(
 def _BatchJobSource_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
@@ -74,7 +74,7 @@ def _BatchJobSource_to_vertex(
 def _BatchJobDestination_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
@@ -92,7 +92,7 @@ def _BatchJobDestination_to_mldev(
 def _BatchJobDestination_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['format']) is not None:
@@ -118,7 +118,7 @@ def _BatchJobDestination_to_vertex(
 def _CreateBatchJobConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -134,7 +134,7 @@ def _CreateBatchJobConfig_to_mldev(
 def _CreateBatchJobConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -158,7 +158,7 @@ def _CreateBatchJobConfig_to_vertex(
 def _CreateBatchJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -182,7 +182,7 @@ def _CreateBatchJobParameters_to_mldev(
 def _CreateBatchJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -218,7 +218,7 @@ def _CreateBatchJobParameters_to_vertex(
 def _GetBatchJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -233,7 +233,7 @@ def _GetBatchJobParameters_to_mldev(
 def _GetBatchJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -252,7 +252,7 @@ def _GetBatchJobParameters_to_vertex(
 def _CancelBatchJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -267,7 +267,7 @@ def _CancelBatchJobParameters_to_mldev(
 def _CancelBatchJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -286,7 +286,7 @@ def _CancelBatchJobParameters_to_vertex(
 def _ListBatchJobsConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -311,7 +311,7 @@ def _ListBatchJobsConfig_to_mldev(
 def _ListBatchJobsConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -336,7 +336,7 @@ def _ListBatchJobsConfig_to_vertex(
 def _ListBatchJobsParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -348,7 +348,7 @@ def _ListBatchJobsParameters_to_mldev(
 def _ListBatchJobsParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -366,7 +366,7 @@ def _ListBatchJobsParameters_to_vertex(
 def _DeleteBatchJobParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -381,7 +381,7 @@ def _DeleteBatchJobParameters_to_mldev(
 def _DeleteBatchJobParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -400,7 +400,7 @@ def _DeleteBatchJobParameters_to_vertex(
 def _JobError_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -410,7 +410,7 @@ def _JobError_from_mldev(
 def _JobError_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['details']) is not None:
@@ -428,7 +428,7 @@ def _JobError_from_vertex(
 def _BatchJobSource_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -438,7 +438,7 @@ def _BatchJobSource_from_mldev(
 def _BatchJobSource_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['instancesFormat']) is not None:
@@ -460,7 +460,7 @@ def _BatchJobSource_from_vertex(
 def _BatchJobDestination_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -470,7 +470,7 @@ def _BatchJobDestination_from_mldev(
 def _BatchJobDestination_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictionsFormat']) is not None:
@@ -496,7 +496,7 @@ def _BatchJobDestination_from_vertex(
 def _BatchJob_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -506,7 +506,7 @@ def _BatchJob_from_mldev(
 def _BatchJob_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -566,7 +566,7 @@ def _BatchJob_from_vertex(
 def _ListBatchJobsResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -578,7 +578,7 @@ def _ListBatchJobsResponse_from_mldev(
 def _ListBatchJobsResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -600,7 +600,7 @@ def _ListBatchJobsResponse_from_vertex(
 def _DeleteResourceJob_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -610,7 +610,7 @@ def _DeleteResourceJob_from_mldev(
 def _DeleteResourceJob_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:

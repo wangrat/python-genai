@@ -32,7 +32,7 @@ logger = logging.getLogger('google_genai.operations')
 def _GetOperationParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['operation_name']) is not None:
@@ -51,7 +51,7 @@ def _GetOperationParameters_to_mldev(
 def _GetOperationParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['operation_name']) is not None:
@@ -70,7 +70,7 @@ def _GetOperationParameters_to_vertex(
 def _FetchPredictOperationParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['operation_name']) is not None:
@@ -88,7 +88,7 @@ def _FetchPredictOperationParameters_to_mldev(
 def _FetchPredictOperationParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['operation_name']) is not None:
@@ -110,7 +110,7 @@ def _FetchPredictOperationParameters_to_vertex(
 def _Video_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['uri']) is not None:
@@ -132,7 +132,7 @@ def _Video_from_mldev(
 def _Video_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcsUri']) is not None:
@@ -154,7 +154,7 @@ def _Video_from_vertex(
 def _GeneratedVideo_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -170,7 +170,7 @@ def _GeneratedVideo_from_mldev(
 def _GeneratedVideo_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -186,7 +186,7 @@ def _GeneratedVideo_from_vertex(
 def _GenerateVideosResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['videos']) is not None:
@@ -219,7 +219,7 @@ def _GenerateVideosResponse_from_mldev(
 def _GenerateVideosResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['videos']) is not None:
@@ -252,7 +252,7 @@ def _GenerateVideosResponse_from_vertex(
 def _GenerateVideosOperation_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -287,7 +287,7 @@ def _GenerateVideosOperation_from_mldev(
 def _GenerateVideosOperation_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:

@@ -34,7 +34,7 @@ logger = logging.getLogger('google_genai.models')
 def _Part_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['video_metadata']) is not None:
@@ -78,7 +78,7 @@ def _Part_to_mldev(
 def _Part_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['video_metadata']) is not None:
@@ -122,7 +122,7 @@ def _Part_to_vertex(
 def _Content_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['parts']) is not None:
@@ -144,7 +144,7 @@ def _Content_to_mldev(
 def _Content_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['parts']) is not None:
@@ -166,7 +166,7 @@ def _Content_to_vertex(
 def _Schema_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['min_items']) is not None:
@@ -245,7 +245,7 @@ def _Schema_to_mldev(
 def _Schema_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['min_items']) is not None:
@@ -324,7 +324,7 @@ def _Schema_to_vertex(
 def _SafetySetting_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['method']) is not None:
@@ -342,7 +342,7 @@ def _SafetySetting_to_mldev(
 def _SafetySetting_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['method']) is not None:
@@ -360,7 +360,7 @@ def _SafetySetting_to_vertex(
 def _FunctionDeclaration_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['response']) is not None:
@@ -381,7 +381,7 @@ def _FunctionDeclaration_to_mldev(
 def _FunctionDeclaration_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['response']) is not None:
@@ -408,7 +408,7 @@ def _FunctionDeclaration_to_vertex(
 def _GoogleSearch_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -418,7 +418,7 @@ def _GoogleSearch_to_mldev(
 def _GoogleSearch_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -428,7 +428,7 @@ def _GoogleSearch_to_vertex(
 def _DynamicRetrievalConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mode']) is not None:
@@ -447,7 +447,7 @@ def _DynamicRetrievalConfig_to_mldev(
 def _DynamicRetrievalConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mode']) is not None:
@@ -466,7 +466,7 @@ def _DynamicRetrievalConfig_to_vertex(
 def _GoogleSearchRetrieval_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['dynamic_retrieval_config']) is not None:
@@ -486,7 +486,7 @@ def _GoogleSearchRetrieval_to_mldev(
 def _GoogleSearchRetrieval_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['dynamic_retrieval_config']) is not None:
@@ -506,7 +506,7 @@ def _GoogleSearchRetrieval_to_vertex(
 def _Tool_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['function_declarations']) is not None:
@@ -551,7 +551,7 @@ def _Tool_to_mldev(
 def _Tool_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['function_declarations']) is not None:
@@ -596,7 +596,7 @@ def _Tool_to_vertex(
 def _FunctionCallingConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mode']) is not None:
@@ -615,7 +615,7 @@ def _FunctionCallingConfig_to_mldev(
 def _FunctionCallingConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mode']) is not None:
@@ -634,7 +634,7 @@ def _FunctionCallingConfig_to_vertex(
 def _ToolConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['function_calling_config']) is not None:
@@ -654,7 +654,7 @@ def _ToolConfig_to_mldev(
 def _ToolConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['function_calling_config']) is not None:
@@ -674,7 +674,7 @@ def _ToolConfig_to_vertex(
 def _PrebuiltVoiceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['voice_name']) is not None:
@@ -686,7 +686,7 @@ def _PrebuiltVoiceConfig_to_mldev(
 def _PrebuiltVoiceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['voice_name']) is not None:
@@ -698,7 +698,7 @@ def _PrebuiltVoiceConfig_to_vertex(
 def _VoiceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['prebuilt_voice_config']) is not None:
@@ -716,7 +716,7 @@ def _VoiceConfig_to_mldev(
 def _VoiceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['prebuilt_voice_config']) is not None:
@@ -734,7 +734,7 @@ def _VoiceConfig_to_vertex(
 def _SpeechConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['voice_config']) is not None:
@@ -752,7 +752,7 @@ def _SpeechConfig_to_mldev(
 def _SpeechConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['voice_config']) is not None:
@@ -770,7 +770,7 @@ def _SpeechConfig_to_vertex(
 def _ThinkingConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['include_thoughts']) is not None:
@@ -784,7 +784,7 @@ def _ThinkingConfig_to_mldev(
 def _ThinkingConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['include_thoughts']) is not None:
@@ -798,7 +798,7 @@ def _ThinkingConfig_to_vertex(
 def _GenerateContentConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -963,7 +963,7 @@ def _GenerateContentConfig_to_mldev(
 def _GenerateContentConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -1126,7 +1126,7 @@ def _GenerateContentConfig_to_vertex(
 def _GenerateContentParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1163,7 +1163,7 @@ def _GenerateContentParameters_to_mldev(
 def _GenerateContentParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1200,7 +1200,7 @@ def _GenerateContentParameters_to_vertex(
 def _EmbedContentConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -1233,7 +1233,7 @@ def _EmbedContentConfig_to_mldev(
 def _EmbedContentConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -1274,7 +1274,7 @@ def _EmbedContentConfig_to_vertex(
 def _EmbedContentParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1311,7 +1311,7 @@ def _EmbedContentParameters_to_mldev(
 def _EmbedContentParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1343,7 +1343,7 @@ def _EmbedContentParameters_to_vertex(
 def _GenerateImagesConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -1448,7 +1448,7 @@ def _GenerateImagesConfig_to_mldev(
 def _GenerateImagesConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -1559,7 +1559,7 @@ def _GenerateImagesConfig_to_vertex(
 def _GenerateImagesParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1587,7 +1587,7 @@ def _GenerateImagesParameters_to_mldev(
 def _GenerateImagesParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -1615,7 +1615,7 @@ def _GenerateImagesParameters_to_vertex(
 def _Image_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -1637,7 +1637,7 @@ def _Image_to_mldev(
 def _Image_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcs_uri']) is not None:
@@ -1659,7 +1659,7 @@ def _Image_to_vertex(
 def _MaskReferenceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mask_mode']) is not None:
@@ -1679,7 +1679,7 @@ def _MaskReferenceConfig_to_mldev(
 def _MaskReferenceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['mask_mode']) is not None:
@@ -1699,7 +1699,7 @@ def _MaskReferenceConfig_to_vertex(
 def _ControlReferenceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['control_type']) is not None:
@@ -1717,7 +1717,7 @@ def _ControlReferenceConfig_to_mldev(
 def _ControlReferenceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['control_type']) is not None:
@@ -1736,7 +1736,7 @@ def _ControlReferenceConfig_to_vertex(
 def _StyleReferenceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['style_description']) is not None:
@@ -1750,7 +1750,7 @@ def _StyleReferenceConfig_to_mldev(
 def _StyleReferenceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['style_description']) is not None:
@@ -1766,7 +1766,7 @@ def _StyleReferenceConfig_to_vertex(
 def _SubjectReferenceConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['subject_type']) is not None:
@@ -1783,7 +1783,7 @@ def _SubjectReferenceConfig_to_mldev(
 def _SubjectReferenceConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['subject_type']) is not None:
@@ -1802,7 +1802,7 @@ def _SubjectReferenceConfig_to_vertex(
 def _ReferenceImageAPI_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['reference_image']) is not None:
@@ -1842,7 +1842,7 @@ def _ReferenceImageAPI_to_mldev(
 def _ReferenceImageAPI_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['reference_image']) is not None:
@@ -1902,7 +1902,7 @@ def _ReferenceImageAPI_to_vertex(
 def _EditImageConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2002,7 +2002,7 @@ def _EditImageConfig_to_mldev(
 def _EditImageConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2099,7 +2099,7 @@ def _EditImageConfig_to_vertex(
 def _EditImageParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2137,7 +2137,7 @@ def _EditImageParameters_to_mldev(
 def _EditImageParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2175,7 +2175,7 @@ def _EditImageParameters_to_vertex(
 def _UpscaleImageAPIConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2216,7 +2216,7 @@ def _UpscaleImageAPIConfig_to_mldev(
 def _UpscaleImageAPIConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2257,7 +2257,7 @@ def _UpscaleImageAPIConfig_to_vertex(
 def _UpscaleImageAPIParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2296,7 +2296,7 @@ def _UpscaleImageAPIParameters_to_mldev(
 def _UpscaleImageAPIParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2335,7 +2335,7 @@ def _UpscaleImageAPIParameters_to_vertex(
 def _GetModelParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2354,7 +2354,7 @@ def _GetModelParameters_to_mldev(
 def _GetModelParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2373,7 +2373,7 @@ def _GetModelParameters_to_vertex(
 def _ListModelsConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2405,7 +2405,7 @@ def _ListModelsConfig_to_mldev(
 def _ListModelsConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2437,7 +2437,7 @@ def _ListModelsConfig_to_vertex(
 def _ListModelsParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -2455,7 +2455,7 @@ def _ListModelsParameters_to_mldev(
 def _ListModelsParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['config']) is not None:
@@ -2473,7 +2473,7 @@ def _ListModelsParameters_to_vertex(
 def _UpdateModelConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2489,7 +2489,7 @@ def _UpdateModelConfig_to_mldev(
 def _UpdateModelConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2505,7 +2505,7 @@ def _UpdateModelConfig_to_vertex(
 def _UpdateModelParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2530,7 +2530,7 @@ def _UpdateModelParameters_to_mldev(
 def _UpdateModelParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2555,7 +2555,7 @@ def _UpdateModelParameters_to_vertex(
 def _DeleteModelParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2574,7 +2574,7 @@ def _DeleteModelParameters_to_mldev(
 def _DeleteModelParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2593,7 +2593,7 @@ def _DeleteModelParameters_to_vertex(
 def _CountTokensConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2629,7 +2629,7 @@ def _CountTokensConfig_to_mldev(
 def _CountTokensConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2667,7 +2667,7 @@ def _CountTokensConfig_to_vertex(
 def _CountTokensParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2704,7 +2704,7 @@ def _CountTokensParameters_to_mldev(
 def _CountTokensParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2741,7 +2741,7 @@ def _CountTokensParameters_to_vertex(
 def _ComputeTokensParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2763,7 +2763,7 @@ def _ComputeTokensParameters_to_mldev(
 def _ComputeTokensParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2794,7 +2794,7 @@ def _ComputeTokensParameters_to_vertex(
 def _GenerateVideosConfig_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2855,7 +2855,7 @@ def _GenerateVideosConfig_to_mldev(
 def _GenerateVideosConfig_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -2934,7 +2934,7 @@ def _GenerateVideosConfig_to_vertex(
 def _GenerateVideosParameters_to_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -2962,7 +2962,7 @@ def _GenerateVideosParameters_to_mldev(
 def _GenerateVideosParameters_to_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['model']) is not None:
@@ -3045,7 +3045,7 @@ def _EditMode_to_mldev_enum_validate(enum_value: Any):
 def _Part_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3087,7 +3087,7 @@ def _Part_from_mldev(
 def _Part_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['videoMetadata']) is not None:
@@ -3131,7 +3131,7 @@ def _Part_from_vertex(
 def _Content_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['parts']) is not None:
@@ -3153,7 +3153,7 @@ def _Content_from_mldev(
 def _Content_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['parts']) is not None:
@@ -3175,7 +3175,7 @@ def _Content_from_vertex(
 def _CitationMetadata_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['citationSources']) is not None:
@@ -3187,7 +3187,7 @@ def _CitationMetadata_from_mldev(
 def _CitationMetadata_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['citations']) is not None:
@@ -3199,7 +3199,7 @@ def _CitationMetadata_from_vertex(
 def _Candidate_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['content']) is not None:
@@ -3251,7 +3251,7 @@ def _Candidate_from_mldev(
 def _Candidate_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['content']) is not None:
@@ -3303,7 +3303,7 @@ def _Candidate_from_vertex(
 def _GenerateContentResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['candidates']) is not None:
@@ -3331,7 +3331,7 @@ def _GenerateContentResponse_from_mldev(
 def _GenerateContentResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['candidates']) is not None:
@@ -3365,7 +3365,7 @@ def _GenerateContentResponse_from_vertex(
 def _ContentEmbeddingStatistics_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3375,7 +3375,7 @@ def _ContentEmbeddingStatistics_from_mldev(
 def _ContentEmbeddingStatistics_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['truncated']) is not None:
@@ -3390,7 +3390,7 @@ def _ContentEmbeddingStatistics_from_vertex(
 def _ContentEmbedding_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['values']) is not None:
@@ -3402,7 +3402,7 @@ def _ContentEmbedding_from_mldev(
 def _ContentEmbedding_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['values']) is not None:
@@ -3423,7 +3423,7 @@ def _ContentEmbedding_from_vertex(
 def _EmbedContentMetadata_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3433,7 +3433,7 @@ def _EmbedContentMetadata_from_mldev(
 def _EmbedContentMetadata_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['billableCharacterCount']) is not None:
@@ -3449,7 +3449,7 @@ def _EmbedContentMetadata_from_vertex(
 def _EmbedContentResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['embeddings']) is not None:
@@ -3477,7 +3477,7 @@ def _EmbedContentResponse_from_mldev(
 def _EmbedContentResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions[]', 'embeddings']) is not None:
@@ -3505,7 +3505,7 @@ def _EmbedContentResponse_from_vertex(
 def _Image_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3525,7 +3525,7 @@ def _Image_from_mldev(
 def _Image_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcsUri']) is not None:
@@ -3547,7 +3547,7 @@ def _Image_from_vertex(
 def _GeneratedImage_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -3570,7 +3570,7 @@ def _GeneratedImage_from_mldev(
 def _GeneratedImage_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -3596,7 +3596,7 @@ def _GeneratedImage_from_vertex(
 def _GenerateImagesResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3615,7 +3615,7 @@ def _GenerateImagesResponse_from_mldev(
 def _GenerateImagesResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3634,7 +3634,7 @@ def _GenerateImagesResponse_from_vertex(
 def _EditImageResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3653,7 +3653,7 @@ def _EditImageResponse_from_mldev(
 def _EditImageResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3672,7 +3672,7 @@ def _EditImageResponse_from_vertex(
 def _UpscaleImageResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3691,7 +3691,7 @@ def _UpscaleImageResponse_from_mldev(
 def _UpscaleImageResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['predictions']) is not None:
@@ -3710,7 +3710,7 @@ def _UpscaleImageResponse_from_vertex(
 def _Endpoint_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3720,7 +3720,7 @@ def _Endpoint_from_mldev(
 def _Endpoint_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['endpoint']) is not None:
@@ -3737,7 +3737,7 @@ def _Endpoint_from_vertex(
 def _TunedModelInfo_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['baseModel']) is not None:
@@ -3755,7 +3755,7 @@ def _TunedModelInfo_from_mldev(
 def _TunedModelInfo_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if (
@@ -3780,7 +3780,7 @@ def _TunedModelInfo_from_vertex(
 def _Model_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -3829,7 +3829,7 @@ def _Model_from_mldev(
 def _Model_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -3872,7 +3872,7 @@ def _Model_from_vertex(
 def _ListModelsResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -3896,7 +3896,7 @@ def _ListModelsResponse_from_mldev(
 def _ListModelsResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['nextPageToken']) is not None:
@@ -3920,7 +3920,7 @@ def _ListModelsResponse_from_vertex(
 def _DeleteModelResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3930,7 +3930,7 @@ def _DeleteModelResponse_from_mldev(
 def _DeleteModelResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
 
@@ -3940,7 +3940,7 @@ def _DeleteModelResponse_from_vertex(
 def _CountTokensResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['totalTokens']) is not None:
@@ -3959,7 +3959,7 @@ def _CountTokensResponse_from_mldev(
 def _CountTokensResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['totalTokens']) is not None:
@@ -3971,7 +3971,7 @@ def _CountTokensResponse_from_vertex(
 def _ComputeTokensResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['tokensInfo']) is not None:
@@ -3983,7 +3983,7 @@ def _ComputeTokensResponse_from_mldev(
 def _ComputeTokensResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['tokensInfo']) is not None:
@@ -3995,7 +3995,7 @@ def _ComputeTokensResponse_from_vertex(
 def _Video_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['uri']) is not None:
@@ -4017,7 +4017,7 @@ def _Video_from_mldev(
 def _Video_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['gcsUri']) is not None:
@@ -4039,7 +4039,7 @@ def _Video_from_vertex(
 def _GeneratedVideo_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -4055,7 +4055,7 @@ def _GeneratedVideo_from_mldev(
 def _GeneratedVideo_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['_self']) is not None:
@@ -4071,7 +4071,7 @@ def _GeneratedVideo_from_vertex(
 def _GenerateVideosResponse_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['videos']) is not None:
@@ -4104,7 +4104,7 @@ def _GenerateVideosResponse_from_mldev(
 def _GenerateVideosResponse_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['videos']) is not None:
@@ -4137,7 +4137,7 @@ def _GenerateVideosResponse_from_vertex(
 def _GenerateVideosOperation_from_mldev(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
@@ -4172,7 +4172,7 @@ def _GenerateVideosOperation_from_mldev(
 def _GenerateVideosOperation_from_vertex(
     api_client: ApiClient,
     from_object: Union[dict, object],
-    parent_object: dict = None,
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object = {}
   if getv(from_object, ['name']) is not None:
