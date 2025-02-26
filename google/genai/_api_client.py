@@ -508,7 +508,7 @@ class ApiClient:
       httpx_request = httpx.Request(
           method=http_request.method,
           url=http_request.url,
-          data=json.dumps(http_request.data),
+          content=json.dumps(http_request.data),
           headers=http_request.headers,
       )
       aclient = httpx.AsyncClient()
@@ -526,7 +526,7 @@ class ApiClient:
             method=http_request.method,
             url=http_request.url,
             headers=http_request.headers,
-            data=json.dumps(http_request.data) if http_request.data else None,
+            content=json.dumps(http_request.data) if http_request.data else None,
             timeout=http_request.timeout,
         )
         errors.APIError.raise_for_response(response)
