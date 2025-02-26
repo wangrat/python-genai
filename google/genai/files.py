@@ -885,7 +885,8 @@ class Files(_api_module.BaseModule):
       )
 
     return types.File._from_response(
-        _File_from_mldev(self._api_client, return_file['file']), None
+        response=_File_from_mldev(self._api_client, return_file['file']),
+        kwargs=None,
     )
 
   def list(
@@ -1317,7 +1318,8 @@ class AsyncFiles(_api_module.BaseModule):
       )
 
     return types.File._from_response(
-        _File_from_mldev(self._api_client, return_file['file']), None
+        response=_File_from_mldev(self._api_client, return_file['file']),
+        kwargs=None,
     )
 
   async def list(

@@ -21,8 +21,9 @@ import inspect
 import json
 import logging
 import sys
+import types as builtin_types
 import typing
-from typing import Any, Callable, GenericAlias, Literal, Optional, Union
+from typing import Any, Callable, Literal, Optional, Union, _UnionGenericAlias
 import pydantic
 from pydantic import Field
 from typing_extensions import TypedDict
@@ -30,11 +31,11 @@ from . import _common
 
 if sys.version_info >= (3, 10):
   # Supports both Union[t1, t2] and t1 | t2
-  VersionedUnionType = Union[typing.types.UnionType, typing._UnionGenericAlias]
-  _UNION_TYPES = (typing.Union, typing.types.UnionType)
+  VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+  _UNION_TYPES = (typing.Union, builtin_types.UnionType)
 else:
   # Supports only Union[t1, t2]
-  VersionedUnionType = typing._UnionGenericAlias
+  VersionedUnionType = _UnionGenericAlias
   _UNION_TYPES = (typing.Union,)
 
 _is_pillow_image_imported = False
@@ -835,7 +836,7 @@ class Schema(_common.BaseModel):
   default: Optional[Any] = Field(
       default=None, description="""Optional. Default value of the data."""
   )
-  any_of: list['Schema'] = Field(
+  any_of: Optional[list['Schema']] = Field(
       default=None,
       description="""Optional. The value should be validated against any (one or more) of the subschemas in the list.""",
   )
@@ -884,11 +885,11 @@ class Schema(_common.BaseModel):
       default=None,
       description="""Optional. The format of the data. Supported formats: for NUMBER type: "float", "double" for INTEGER type: "int32", "int64" for STRING type: "email", "byte", etc""",
   )
-  items: 'Schema' = Field(
+  items: Optional['Schema'] = Field(
       default=None,
       description="""Optional. SCHEMA FIELDS FOR TYPE ARRAY Schema of the elements of Type.ARRAY.""",
   )
-  properties: dict[str, 'Schema'] = Field(
+  properties: Optional[dict[str, 'Schema']] = Field(
       default=None,
       description="""Optional. SCHEMA FIELDS FOR TYPE OBJECT Properties of Type.OBJECT.""",
   )
@@ -922,7 +923,7 @@ class SchemaDict(TypedDict, total=False):
   default: Optional[Any]
   """Optional. Default value of the data."""
 
-  any_of: list['SchemaDict']
+  any_of: Optional[list['SchemaDict']]
   """Optional. The value should be validated against any (one or more) of the subschemas in the list."""
 
   max_length: Optional[int]
@@ -961,10 +962,10 @@ class SchemaDict(TypedDict, total=False):
   format: Optional[str]
   """Optional. The format of the data. Supported formats: for NUMBER type: "float", "double" for INTEGER type: "int32", "int64" for STRING type: "email", "byte", etc"""
 
-  items: 'SchemaDict'
+  items: Optional['SchemaDict']
   """Optional. SCHEMA FIELDS FOR TYPE ARRAY Schema of the elements of Type.ARRAY."""
 
-  properties: dict[str, 'SchemaDict']
+  properties: Optional[dict[str, 'SchemaDict']]
   """Optional. SCHEMA FIELDS FOR TYPE OBJECT Properties of Type.OBJECT."""
 
   required: Optional[list[str]]
@@ -1749,7 +1750,9 @@ ContentUnion = Union[Content, list[PartUnion], PartUnion]
 ContentUnionDict = Union[ContentUnion, ContentDict]
 
 
-SchemaUnion = Union[dict, type, Schema, GenericAlias, VersionedUnionType]
+SchemaUnion = Union[
+    dict, type, Schema, builtin_types.GenericAlias, VersionedUnionType
+]
 
 
 SchemaUnionDict = Union[SchemaUnion, SchemaDict]
@@ -3008,8 +3011,8 @@ class GenerateContentResponse(_common.BaseModel):
   @classmethod
   def _from_response(
       cls, *, response: dict[str, object], kwargs: dict[str, object]
-  ):
-    result = super()._from_response(response, kwargs)
+  ) -> _common.BaseModel:
+    result = super()._from_response(response=response, kwargs=kwargs)
 
     # Handles response schema.
     response_schema = _common.get_value_by_path(
@@ -3018,7 +3021,7 @@ class GenerateContentResponse(_common.BaseModel):
     if (
         inspect.isclass(response_schema)
         and not (
-            isinstance(response_schema, GenericAlias)
+            isinstance(response_schema, builtin_types.GenericAlias)
         )  # Needed for Python 3.9 and 3.10
         and issubclass(response_schema, pydantic.BaseModel)
     ):
@@ -3042,7 +3045,7 @@ class GenerateContentResponse(_common.BaseModel):
           result.parsed = str(response_schema(enum_value).name)
       except ValueError:
         pass
-    elif isinstance(response_schema, GenericAlias) or isinstance(
+    elif isinstance(response_schema, builtin_types.GenericAlias) or isinstance(
         response_schema, type
     ):
 
@@ -3076,7 +3079,7 @@ class GenerateContentResponse(_common.BaseModel):
         if issubclass(union_type, pydantic.BaseModel):
           try:
 
-            class Placeholder(pydantic.BaseModel):
+            class Placeholder(pydantic.BaseModel):  # type: ignore[no-redef]
               placeholder: response_schema
 
             parsed = {'placeholder': json.loads(result.text)}
@@ -3644,7 +3647,7 @@ class Image(_common.BaseModel):
       IPython_display.display(self._pil_image)
 
   @property
-  def _pil_image(self) -> 'PIL_Image.Image':
+  def _pil_image(self) -> 'PIL_Image':
     try:
       from PIL import Image as PIL_Image
     except ImportError:
@@ -5099,8 +5102,6 @@ class Video(_common.BaseModel):
   def save(
       self,
       path: str,
-      # *,
-      # client: Optional[ApiClient] = None,
   ) -> None:
     """Saves the video to a file.
 
@@ -5109,15 +5110,10 @@ class Video(_common.BaseModel):
     """
     import pathlib  # pylint: disable=g-import-not-at-top
 
-    if not self.data:
+    if not self.video_bytes:
       raise NotImplementedError('Saving remote videos is not supported.')
-      if not self.uri:
-        raise ValueError('No data or uri provided.')
-      if not client:
-        raise ValueError('Client is required to save remote videos.')
-      self.data = client.files.download(self.uri)
 
-    pathlib.Path(path).write_bytes(self.data)
+    pathlib.Path(path).write_bytes(self.video_bytes)
 
   def show(self):
     """Shows the video.

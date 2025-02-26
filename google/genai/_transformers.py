@@ -28,6 +28,8 @@ import types as builtin_types
 import typing
 from typing import Any, GenericAlias, Optional, Union
 
+import types as builtin_types
+
 if typing.TYPE_CHECKING:
   import PIL.Image
 
@@ -39,8 +41,8 @@ from . import types
 logger = logging.getLogger('google_genai._transformers')
 
 if sys.version_info >= (3, 10):
-  VersionedUnionType = typing.types.UnionType
-  _UNION_TYPES = (typing.Union, typing.types.UnionType)
+  VersionedUnionType = builtin_types.UnionType
+  _UNION_TYPES = (typing.Union, builtin_types.UnionType)
 else:
   VersionedUnionType = typing._UnionGenericAlias
   _UNION_TYPES = (typing.Union,)
@@ -754,7 +756,7 @@ def t_resolve_operation(api_client: _api_client.ApiClient, struct: dict):
       if total_seconds > LRO_POLLING_TIMEOUT_SECONDS:
         raise RuntimeError(f'Operation {name} timed out.\n{operation}')
       # TODO(b/374433890): Replace with LRO module once it's available.
-      operation: dict[str, Any] = api_client.request(
+      operation = api_client.request(
           http_method='GET', path=name, request_dict={}
       )
       time.sleep(delay_seconds)

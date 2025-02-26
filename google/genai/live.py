@@ -53,7 +53,7 @@ try:
   from websockets.asyncio.client import connect
 except ModuleNotFoundError:
   from websockets.client import ClientConnection
-  from websockets.client import connect
+  from websockets.client import connect # type: ignore[no-redef]
 
 logger = logging.getLogger('google_genai.live')
 
@@ -217,7 +217,7 @@ class AsyncSession:
       response_dict = self._LiveServerMessage_from_mldev(response)
 
     return types.LiveServerMessage._from_response(
-        response_dict, parameter_model
+        response=response_dict, kwargs=parameter_model
     )
 
   async def _send_loop(

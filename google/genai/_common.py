@@ -205,7 +205,7 @@ class BaseModel(pydantic.BaseModel):
 
   @classmethod
   def _from_response(
-      cls, response: dict[str, object], kwargs: dict[str, object]
+      cls, *, response: dict[str, object], kwargs: dict[str, object]
   ) -> 'BaseModel':
     # To maintain forward compatibility, we need to remove extra fields from
     # the response.

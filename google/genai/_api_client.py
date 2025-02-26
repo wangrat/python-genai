@@ -708,7 +708,7 @@ class ApiClient:
     data: str | bytes | None = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
-        data = json.dumps(http_request.data, cls=RequestJsonEncoder)
+        data = json.dumps(http_request.data)
       else:
         data = http_request.data
 
@@ -793,5 +793,5 @@ class ApiClient:
   # This method does nothing in the real api client. It is used in the
   # replay_api_client to verify the response from the SDK method matches the
   # recorded response.
-  def _verify_response(self, response_model: BaseModel):
+  def _verify_response(self, response_model: _common.BaseModel):
     pass
