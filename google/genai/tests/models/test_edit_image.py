@@ -99,6 +99,7 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'edit_mode': 'EDIT_MODE_INPAINT_INSERTION',
                 'number_of_images': 1,
                 # Test comprehensive configs
+                # aspect_ratio is not supported for mask editing
                 'negative_prompt': 'human',
                 'guidance_scale': 15.0,
                 'safety_filter_level': 'BLOCK_MEDIUM_AND_ABOVE',
@@ -119,6 +120,7 @@ test_table: list[pytest_helper.TestTableItem] = [
             reference_images=[raw_ref_image, mask_ref_image_user_provided],
             config={
                 'edit_mode': 'EDIT_MODE_INPAINT_INSERTION',
+                # aspect_ratio is not supported for mask editing
                 'number_of_images': 1,
                 'include_rai_reason': True,
             },
@@ -133,6 +135,7 @@ test_table: list[pytest_helper.TestTableItem] = [
             reference_images=[raw_ref_image, control_ref_image],
             config={
                 'number_of_images': 1,
+                'aspect_ratio': '9:16',
                 'include_rai_reason': True,
             },
         ),
@@ -146,6 +149,7 @@ test_table: list[pytest_helper.TestTableItem] = [
             reference_images=[style_ref_image_customization],
             config={
                 'number_of_images': 1,
+                'aspect_ratio': '9:16',
                 'include_rai_reason': True,
             },
         ),
@@ -159,6 +163,7 @@ test_table: list[pytest_helper.TestTableItem] = [
             reference_images=[subject_ref_image_customization],
             config={
                 'number_of_images': 1,
+                'aspect_ratio': '9:16',
                 'include_rai_reason': True,
             },
         ),

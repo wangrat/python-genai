@@ -1364,6 +1364,13 @@ def _GenerateImagesConfig_to_mldev(
         getv(from_object, ['number_of_images']),
     )
 
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
+    )
+
   if getv(from_object, ['guidance_scale']) is not None:
     setv(
         parent_object,
@@ -1432,13 +1439,6 @@ def _GenerateImagesConfig_to_mldev(
   if getv(from_object, ['add_watermark']) is not None:
     raise ValueError('add_watermark parameter is not supported in Gemini API.')
 
-  if getv(from_object, ['aspect_ratio']) is not None:
-    setv(
-        parent_object,
-        ['parameters', 'aspectRatio'],
-        getv(from_object, ['aspect_ratio']),
-    )
-
   if getv(from_object, ['enhance_prompt']) is not None:
     raise ValueError('enhance_prompt parameter is not supported in Gemini API.')
 
@@ -1471,6 +1471,13 @@ def _GenerateImagesConfig_to_vertex(
         parent_object,
         ['parameters', 'sampleCount'],
         getv(from_object, ['number_of_images']),
+    )
+
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
     )
 
   if getv(from_object, ['guidance_scale']) is not None:
@@ -1537,13 +1544,6 @@ def _GenerateImagesConfig_to_vertex(
         parent_object,
         ['parameters', 'addWatermark'],
         getv(from_object, ['add_watermark']),
-    )
-
-  if getv(from_object, ['aspect_ratio']) is not None:
-    setv(
-        parent_object,
-        ['parameters', 'aspectRatio'],
-        getv(from_object, ['aspect_ratio']),
     )
 
   if getv(from_object, ['enhance_prompt']) is not None:
@@ -1923,6 +1923,13 @@ def _EditImageConfig_to_mldev(
         getv(from_object, ['number_of_images']),
     )
 
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
+    )
+
   if getv(from_object, ['guidance_scale']) is not None:
     setv(
         parent_object,
@@ -2025,6 +2032,13 @@ def _EditImageConfig_to_vertex(
         parent_object,
         ['parameters', 'sampleCount'],
         getv(from_object, ['number_of_images']),
+    )
+
+  if getv(from_object, ['aspect_ratio']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'aspectRatio'],
+        getv(from_object, ['aspect_ratio']),
     )
 
   if getv(from_object, ['guidance_scale']) is not None:
@@ -4519,7 +4533,7 @@ class Models(_api_module.BaseModule):
         ),
       )
       response = client.models.edit_image(
-        model='imagen-3.0-capability-preview-0930',
+        model='imagen-3.0-capability-001',
         prompt='man with dog',
         reference_images=[raw_ref_image, mask_ref_image],
         config=types.EditImageConfig(
@@ -5785,7 +5799,7 @@ class AsyncModels(_api_module.BaseModule):
         ),
       )
       response = await client.aio.models.edit_image(
-        model='imagen-3.0-capability-preview-0930',
+        model='imagen-3.0-capability-001',
         prompt='man with dog',
         reference_images=[raw_ref_image, mask_ref_image],
         config=types.EditImageConfig(

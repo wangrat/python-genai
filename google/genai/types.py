@@ -3391,6 +3391,11 @@ class GenerateImagesConfig(_common.BaseModel):
       description="""Number of images to generate.
       """,
   )
+  aspect_ratio: Optional[str] = Field(
+      default=None,
+      description="""Aspect ratio of the generated images.
+      """,
+  )
   guidance_scale: Optional[float] = Field(
       default=None,
       description="""Controls how much the model adheres to the text prompt. Large
@@ -3446,11 +3451,6 @@ class GenerateImagesConfig(_common.BaseModel):
       description="""Whether to add a watermark to the generated images.
       """,
   )
-  aspect_ratio: Optional[str] = Field(
-      default=None,
-      description="""Aspect ratio of the generated images.
-      """,
-  )
   enhance_prompt: Optional[bool] = Field(
       default=None,
       description="""Whether to use the prompt rewriting logic.
@@ -3474,6 +3474,10 @@ class GenerateImagesConfigDict(TypedDict, total=False):
 
   number_of_images: Optional[int]
   """Number of images to generate.
+      """
+
+  aspect_ratio: Optional[str]
+  """Aspect ratio of the generated images.
       """
 
   guidance_scale: Optional[float]
@@ -3519,10 +3523,6 @@ class GenerateImagesConfigDict(TypedDict, total=False):
 
   add_watermark: Optional[bool]
   """Whether to add a watermark to the generated images.
-      """
-
-  aspect_ratio: Optional[str]
-  """Aspect ratio of the generated images.
       """
 
   enhance_prompt: Optional[bool]
@@ -3986,6 +3986,11 @@ class EditImageConfig(_common.BaseModel):
       description="""Number of images to generate.
       """,
   )
+  aspect_ratio: Optional[str] = Field(
+      default=None,
+      description="""Aspect ratio of the generated images.
+      """,
+  )
   guidance_scale: Optional[float] = Field(
       default=None,
       description="""Controls how much the model adheres to the text prompt. Large
@@ -4058,6 +4063,10 @@ class EditImageConfigDict(TypedDict, total=False):
 
   number_of_images: Optional[int]
   """Number of images to generate.
+      """
+
+  aspect_ratio: Optional[str]
+  """Aspect ratio of the generated images.
       """
 
   guidance_scale: Optional[float]
