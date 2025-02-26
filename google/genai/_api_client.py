@@ -65,7 +65,7 @@ def _append_library_version_headers(headers: dict[str, str]) -> None:
 
 
 def _patch_http_options(
-    options: HttpOptionsDict, patch_options: HttpOptionsDict
+    options: HttpOptionsDict, patch_options: dict[str, Any]
 ) -> HttpOptionsDict:
   # use shallow copy so we don't override the original objects.
   copy_option = HttpOptionsDict()
@@ -131,7 +131,7 @@ class HttpRequest:
 # TODO(b/394358912): Update this class to use a SDKResponse class that can be
 # generated and used for all languages.
 class BaseResponse(_common.BaseModel):
-  http_headers: dict[str, str] = Field(
+  http_headers: Optional[dict[str, str]] = Field(
       default=None, description='The http headers of the response.'
   )
 
@@ -229,12 +229,12 @@ class ApiClient:
 
   def __init__(
       self,
-      vertexai: Union[bool, None] = None,
-      api_key: Union[str, None] = None,
-      credentials: google.auth.credentials.Credentials = None,
-      project: Union[str, None] = None,
-      location: Union[str, None] = None,
-      http_options: HttpOptionsOrDict = None,
+      vertexai: Optional[bool] = None,
+      api_key: Optional[str] = None,
+      credentials: Optional[google.auth.credentials.Credentials] = None,
+      project: Optional[str] = None,
+      location: Optional[str] = None,
+      http_options: Optional[HttpOptionsOrDict] = None,
   ):
     self.vertexai = vertexai
     if self.vertexai is None:
@@ -258,14 +258,15 @@ class ApiClient:
           ' initializer.'
       )
 
-    # Validate http_options if a dict is provided.
+    # Validate http_options if it is provided.
+    validated_http_options: dict[str, Any]
     if isinstance(http_options, dict):
       try:
-        HttpOptions.model_validate(http_options)
+        validated_http_options = HttpOptions.model_validate(http_options).model_dump()
       except ValidationError as e:
         raise ValueError(f'Invalid http_options: {e}')
     elif isinstance(http_options, HttpOptions):
-      http_options = http_options.model_dump()
+      validated_http_options = http_options.model_dump()
 
     # Retrieve implicitly set values from the environment.
     env_project = os.environ.get('GOOGLE_CLOUD_PROJECT', None)
@@ -347,7 +348,7 @@ class ApiClient:
       self._http_options['headers']['x-goog-api-key'] = self.api_key
     # Update the http options with the user provided http options.
     if http_options:
-      self._http_options = _patch_http_options(self._http_options, http_options)
+      self._http_options = _patch_http_options(self._http_options, validated_http_options)
     else:
       _append_library_version_headers(self._http_options['headers'])
 
@@ -386,7 +387,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsOrDict = None,
+      http_options: Optional[HttpOptionsOrDict] = None,
   ) -> HttpRequest:
     # Remove all special dict keys such as _url and _query.
     keys_to_delete = [key for key in request_dict.keys() if key.startswith('_')]
@@ -424,7 +425,7 @@ class ApiClient:
         patched_http_options['api_version'] + '/' + path,
     )
 
-    timeout_in_seconds = patched_http_options.get('timeout', None)
+    timeout_in_seconds: Optional[Union[float, int]] = patched_http_options.get('timeout', None)
     if timeout_in_seconds:
       timeout_in_seconds = timeout_in_seconds / 1000.0
     else:
@@ -471,7 +472,7 @@ class ApiClient:
       http_request: HttpRequest,
       stream: bool = False,
   ) -> HttpResponse:
-    data = None
+    data: Optional[Union[str, bytes]] = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
         data = json.dumps(http_request.data)
@@ -545,7 +546,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsOrDict = None,
+      http_options: Optional[HttpOptionsOrDict] = None,
   ):
     http_request = self._build_request(
         http_method, path, request_dict, http_options
@@ -563,7 +564,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsDict = None,
+      http_options: Optional[HttpOptionsDict] = None,
   ):
     http_request = self._build_request(
         http_method, path, request_dict, http_options
@@ -578,7 +579,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsDict = None,
+      http_options: Optional[HttpOptionsDict] = None,
   ) -> dict[str, object]:
     http_request = self._build_request(
         http_method, path, request_dict, http_options
@@ -595,7 +596,7 @@ class ApiClient:
       http_method: str,
       path: str,
       request_dict: dict[str, object],
-      http_options: HttpOptionsDict = None,
+      http_options: Optional[HttpOptionsDict] = None,
   ):
     http_request = self._build_request(
         http_method, path, request_dict, http_options
@@ -704,7 +705,7 @@ class ApiClient:
       self,
       http_request: HttpRequest,
   ) -> HttpResponse:
-    data = None
+    data: str | bytes | None = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
         data = json.dumps(http_request.data, cls=RequestJsonEncoder)

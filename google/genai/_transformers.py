@@ -24,6 +24,7 @@ import logging
 import re
 import sys
 import time
+import types as builtin_types
 import typing
 from typing import Any, GenericAlias, Optional, Union
 
@@ -213,6 +214,7 @@ def t_caches_model(api_client: _api_client.ApiClient, model: str):
 
 
 def pil_to_blob(img) -> types.Blob:
+  PngImagePlugin: Optional[builtin_types.ModuleType]
   try:
     import PIL.PngImagePlugin
 
@@ -772,7 +774,7 @@ def t_resolve_operation(api_client: _api_client.ApiClient, struct: dict):
 
 
 def t_file_name(
-    api_client: _api_client.ApiClient, name: Union[str, types.File]
+    api_client: _api_client.ApiClient, name: Optional[Union[str, types.File]]
 ):
   # Remove the files/ prefix since it's added to the url path.
   if isinstance(name, types.File):

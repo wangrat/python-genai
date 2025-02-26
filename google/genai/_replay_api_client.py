@@ -457,6 +457,7 @@ class ReplayApiClient(ApiClient):
           method='POST', url='', data={'file_path': file_path}, headers={}
       )
     if self._should_call_api():
+      result: Union[str, HttpResponse]
       try:
         result = super().upload_file(file_path, upload_url, upload_size)
       except HTTPError as e:
