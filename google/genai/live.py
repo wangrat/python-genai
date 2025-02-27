@@ -238,7 +238,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['modelTurn']) is not None:
       setv(
           to_object,
@@ -258,7 +258,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['functionCalls']) is not None:
       setv(
           to_object,
@@ -271,7 +271,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['functionCalls']) is not None:
       setv(
           to_object,
@@ -284,7 +284,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['serverContent']) is not None:
       setv(
           to_object,
@@ -311,7 +311,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['modelTurn']) is not None:
       setv(
           to_object,
@@ -331,7 +331,7 @@ class AsyncSession:
       self,
       from_object: Union[dict, object],
   ) -> Dict[str, Any]:
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['serverContent']) is not None:
       setv(
           to_object,
@@ -399,7 +399,7 @@ class AsyncSession:
             raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
       client_message = {'tool_response': {'function_responses': input}}
     elif isinstance(input, Sequence) and any(isinstance(c, str) for c in input):
-      to_object = {}
+      to_object: dict[str, Any] = {}
       if self._api_client.vertexai:
         contents = [
             _Content_to_vertex(self._api_client, item, to_object)
@@ -510,7 +510,7 @@ class AsyncLive(_api_module.BaseModule):
     else:
       from_object = config
 
-    to_object = {}
+    to_object: dict[str, Any] = {}
     if getv(from_object, ['generation_config']) is not None:
       setv(
           to_object,
@@ -584,7 +584,7 @@ class AsyncLive(_api_module.BaseModule):
     else:
       from_object = config
 
-    to_object = {}
+    to_object: dict[str, Any] = {}
 
     if getv(from_object, ['generation_config']) is not None:
       setv(

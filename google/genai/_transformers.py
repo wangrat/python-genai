@@ -563,9 +563,9 @@ def process_schema(
 
 
 def _process_enum(
-    enum: EnumMeta, client: Optional[_api_client.ApiClient] = None
+    enum: EnumMeta, client: Optional[_api_client.ApiClient] = None  # type: ignore
 ) -> types.Schema:
-  for member in enum:
+  for member in enum:  # type: ignore
     if not isinstance(member.value, str):
       raise TypeError(
           f'Enum member {member.name} value must be a string, got'

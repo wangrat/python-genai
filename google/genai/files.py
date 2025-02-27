@@ -39,7 +39,7 @@ def _ListFilesConfig_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   if getv(from_object, ['page_size']) is not None:
     setv(
@@ -61,7 +61,7 @@ def _ListFilesConfig_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   if getv(from_object, ['page_size']) is not None:
     setv(
@@ -83,7 +83,7 @@ def _ListFilesParameters_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['config']) is not None:
     setv(
         to_object,
@@ -101,7 +101,7 @@ def _ListFilesParameters_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['config']) is not None:
     raise ValueError('config parameter is not supported in Vertex AI.')
 
@@ -113,7 +113,7 @@ def _FileStatus_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['details']) is not None:
     setv(to_object, ['details'], getv(from_object, ['details']))
 
@@ -131,7 +131,7 @@ def _FileStatus_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['details']) is not None:
     raise ValueError('details parameter is not supported in Vertex AI.')
 
@@ -149,7 +149,7 @@ def _File_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     setv(to_object, ['name'], getv(from_object, ['name']))
 
@@ -206,7 +206,7 @@ def _File_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
@@ -257,7 +257,7 @@ def _CreateFileParameters_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['file']) is not None:
     setv(
         to_object,
@@ -276,7 +276,7 @@ def _CreateFileParameters_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['file']) is not None:
     raise ValueError('file parameter is not supported in Vertex AI.')
 
@@ -291,7 +291,7 @@ def _GetFileParameters_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     setv(
         to_object,
@@ -310,7 +310,7 @@ def _GetFileParameters_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
@@ -325,7 +325,7 @@ def _DeleteFileParameters_to_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     setv(
         to_object,
@@ -344,7 +344,7 @@ def _DeleteFileParameters_to_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     raise ValueError('name parameter is not supported in Vertex AI.')
 
@@ -369,7 +369,7 @@ def _FileStatus_from_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['details']) is not None:
     setv(to_object, ['details'], getv(from_object, ['details']))
 
@@ -387,7 +387,7 @@ def _FileStatus_from_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   return to_object
 
@@ -397,7 +397,7 @@ def _File_from_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['name']) is not None:
     setv(to_object, ['name'], getv(from_object, ['name']))
 
@@ -454,7 +454,7 @@ def _File_from_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   return to_object
 
@@ -464,7 +464,7 @@ def _ListFilesResponse_from_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['nextPageToken']) is not None:
     setv(to_object, ['next_page_token'], getv(from_object, ['nextPageToken']))
 
@@ -486,7 +486,7 @@ def _ListFilesResponse_from_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   return to_object
 
@@ -496,7 +496,7 @@ def _CreateFileResponse_from_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['httpHeaders']) is not None:
     setv(to_object, ['http_headers'], getv(from_object, ['httpHeaders']))
 
@@ -508,7 +508,7 @@ def _CreateFileResponse_from_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
   if getv(from_object, ['httpHeaders']) is not None:
     setv(to_object, ['http_headers'], getv(from_object, ['httpHeaders']))
 
@@ -520,7 +520,7 @@ def _DeleteFileResponse_from_mldev(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   return to_object
 
@@ -530,7 +530,7 @@ def _DeleteFileResponse_from_vertex(
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
-  to_object = {}
+  to_object: dict[str, Any] = {}
 
   return to_object
 

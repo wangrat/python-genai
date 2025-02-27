@@ -76,7 +76,7 @@ def get_function_map(
       if config and isinstance(config, dict)
       else config
   )
-  function_map = {}
+  function_map: dict[str, object] = {}
   if not config_model:
     return function_map
   if config_model.tools:
