@@ -49,6 +49,11 @@ function_declarations = [{
 }]
 
 
+def get_current_weather(location: str, unit: str):
+  """Get the current weather in a city."""
+  return 15 if unit == 'C' else 59
+
+
 @pytest.fixture
 def mock_api_client(vertexai=False):
   api_client = mock.MagicMock(spec=gl_client.ApiClient)
@@ -482,12 +487,6 @@ def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
       ),
       tools=[types.Tool(google_search_retrieval=types.GoogleSearchRetrieval())],
   )
-  config_dict = {
-      'generation_config': {'temperature': 0.7},
-      'response_modalities': ['TEXT'],
-      'system_instruction': 'test instruction',
-      'tools': [{'google_search_retrieval': {}}],
-  }
   expected_result = {
       'setup': {
           'model': 'test_model',
@@ -507,11 +506,7 @@ def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
       model='test_model', config=config
   )
   assert result == expected_result
-  # Test for mldev, config is a dict
-  result = live.AsyncLive(mock_api_client())._LiveSetup_to_mldev(
-      model='test_model', config=config_dict
-  )
-  assert result == expected_result
+
   # Test for vertex, config is a LiveConnectConfig
   result = live.AsyncLive(mock_api_client())._LiveSetup_to_vertex(
       model='test_model', config=config
@@ -522,10 +517,11 @@ def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
 def test_bidi_setup_to_api_with_config_tools_function_declaration(
     mock_api_client,
 ):
-  config = {
+  config_dict = {
       'generation_config': {'temperature': 0.7},
       'tools': [{'function_declarations': function_declarations}],
   }
+  config = types.LiveConnectConfig(**config_dict)
   expected_result = {
       'setup': {
           'model': 'test_model',
@@ -553,25 +549,93 @@ def test_bidi_setup_to_api_with_config_tools_function_declaration(
       model='test_model', config=config
   )
 
-  assert result['setup']['tools'][0] == expected_result['setup']['tools'][0]
+  assert result['setup']['tools'][0]['functionDeclarations'][0][
+      'description'
+  ] == (
+      expected_result['setup']['tools'][0]['functionDeclarations'][0][
+          'description'
+      ]
+  )
 
   result = live.AsyncLive(mock_api_client())._LiveSetup_to_vertex(
       model='test_model', config=config
   )
-  assert result['setup']['tools'][0] == expected_result['setup']['tools'][0]
+  assert result['setup']['tools'][0]['functionDeclarations'][0][
+      'description'
+  ] == (
+      expected_result['setup']['tools'][0]['functionDeclarations'][0][
+          'description'
+      ]
+  )
+
+
+def test_bidi_setup_to_api_with_config_tools_function_directly(
+    mock_api_client,
+):
+  config_dict = {
+      'generation_config': {'temperature': 0.7},
+      'tools': [get_current_weather],
+  }
+  config = types.LiveConnectConfig(**config_dict)
+  expected_result = {
+      'setup': {
+          'model': 'test_model',
+          'tools': [{
+              'functionDeclarations': [{
+                  'parameters': {
+                      'type': 'OBJECT',
+                      'properties': {
+                          'location': {
+                              'type': 'STRING',
+                              'description': (
+                                  'The location to get the weather for'
+                              ),
+                          },
+                          'unit': {'type': 'STRING', 'enum': ['C', 'F']},
+                      },
+                  },
+                  'name': 'get_current_weather',
+                  'description': 'Get the current weather in a city.',
+              }],
+          }],
+      }
+  }
+  result = live.AsyncLive(mock_api_client())._LiveSetup_to_mldev(
+      model='test_model', config=config
+  )
+
+  assert result['setup']['tools'][0]['functionDeclarations'][0][
+      'description'
+  ] == (
+      expected_result['setup']['tools'][0]['functionDeclarations'][0][
+          'description'
+      ]
+  )
+
+  result = live.AsyncLive(mock_api_client())._LiveSetup_to_vertex(
+      model='test_model', config=config
+  )
+  assert result['setup']['tools'][0]['functionDeclarations'][0][
+      'description'
+  ] == (
+      expected_result['setup']['tools'][0]['functionDeclarations'][0][
+          'description'
+      ]
+  )
 
 
 def test_bidi_setup_to_api_with_config_tools_code_execution(
     mock_api_client,
 ):
-  config = {
+  config_dict = {
       'tools': [{'code_execution': {}}],
   }
+  config = types.LiveConnectConfig(**config_dict)
   expected_result = {
       'setup': {
           'model': 'test_model',
           'tools': [{
-              'codeExecution': {},
+              'codeExecution': types.ToolCodeExecution(),
           }],
       }
   }

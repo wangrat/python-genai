@@ -8744,7 +8744,7 @@ The following fields are supported:
       Note: only text should be used in parts and content in each part will be
       in a separate paragraph.""",
   )
-  tools: Optional[list[Tool]] = Field(
+  tools: Optional[ToolListUnion] = Field(
       default=None,
       description=""" A list of `Tools` the model may use to generate the next response.
 
@@ -8781,7 +8781,7 @@ The following fields are supported:
       Note: only text should be used in parts and content in each part will be
       in a separate paragraph."""
 
-  tools: Optional[list[ToolDict]]
+  tools: Optional[ToolListUnionDict]
   """ A list of `Tools` the model may use to generate the next response.
 
       A `Tool` is a piece of code that enables the system to interact with
@@ -8993,7 +8993,7 @@ class LiveConnectConfig(_common.BaseModel):
       Note: only text should be used in parts and content in each part will be
       in a separate paragraph.""",
   )
-  tools: Optional[list[Tool]] = Field(
+  tools: Optional[ToolListUnion] = Field(
       default=None,
       description="""A list of `Tools` the model may use to generate the next response.
 
@@ -9023,7 +9023,7 @@ class LiveConnectConfigDict(TypedDict, total=False):
       Note: only text should be used in parts and content in each part will be
       in a separate paragraph."""
 
-  tools: Optional[list[ToolDict]]
+  tools: Optional[ToolListUnionDict]
   """A list of `Tools` the model may use to generate the next response.
 
       A `Tool` is a piece of code that enables the system to interact with

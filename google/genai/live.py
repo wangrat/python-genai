@@ -504,40 +504,35 @@ class AsyncLive(_api_module.BaseModule):
   """AsyncLive. The live module is experimental."""
 
   def _LiveSetup_to_mldev(
-      self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
+      self, model: str, config: Optional[types.LiveConnectConfig] = None
   ):
-    from_object: Optional[Union[dict[str, Any], types.LiveConnectConfigOrDict]]
-    if isinstance(config, types.LiveConnectConfig):
-      from_object = config.model_dump(exclude_none=True)
-    else:
-      from_object = config
 
     to_object: dict[str, Any] = {}
-    if getv(from_object, ['generation_config']) is not None:
+    if getv(config, ['generation_config']) is not None:
       setv(
           to_object,
           ['generationConfig'],
           _GenerateContentConfig_to_mldev(
               self._api_client,
-              getv(from_object, ['generation_config']),
+              getv(config, ['generation_config']),
               to_object,
           ),
       )
-    if getv(from_object, ['response_modalities']) is not None:
+    if getv(config, ['response_modalities']) is not None:
       if getv(to_object, ['generationConfig']) is not None:
-        to_object['generationConfig']['responseModalities'] = from_object[
-            'response_modalities'
-        ]
+        to_object['generationConfig']['responseModalities'] = getv(
+            config, ['response_modalities']
+        )
       else:
         to_object['generationConfig'] = {
-            'responseModalities': from_object['response_modalities']
+            'responseModalities': getv(config, ['response_modalities'])
         }
-    if getv(from_object, ['speech_config']) is not None:
+    if getv(config, ['speech_config']) is not None:
       if getv(to_object, ['generationConfig']) is not None:
         to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_mldev(
             self._api_client,
             t.t_speech_config(
-                self._api_client, getv(from_object, ['speech_config'])
+                self._api_client, getv(config, ['speech_config'])
             ),
             to_object,
         )
@@ -546,31 +541,33 @@ class AsyncLive(_api_module.BaseModule):
             'speechConfig': _SpeechConfig_to_mldev(
                 self._api_client,
                 t.t_speech_config(
-                    self._api_client, getv(from_object, ['speech_config'])
+                    self._api_client, getv(config, ['speech_config'])
                 ),
                 to_object,
             )
         }
 
-    if getv(from_object, ['system_instruction']) is not None:
+    if getv(config, ['system_instruction']) is not None:
       setv(
           to_object,
           ['systemInstruction'],
           _Content_to_mldev(
               self._api_client,
               t.t_content(
-                  self._api_client, getv(from_object, ['system_instruction'])
+                  self._api_client, getv(config, ['system_instruction'])
               ),
               to_object,
           ),
       )
-    if getv(from_object, ['tools']) is not None:
+    if getv(config, ['tools']) is not None:
       setv(
           to_object,
           ['tools'],
           [
-              _Tool_to_mldev(self._api_client, item, to_object)
-              for item in getv(from_object, ['tools'])
+              _Tool_to_mldev(
+                  self._api_client, t.t_tool(self._api_client, item), to_object
+              )
+              for item in t.t_tools(self._api_client, getv(config, ['tools']))
           ],
       )
 
@@ -579,34 +576,29 @@ class AsyncLive(_api_module.BaseModule):
     return return_value
 
   def _LiveSetup_to_vertex(
-      self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
+      self, model: str, config: Optional[types.LiveConnectConfig] = None
   ):
-    from_object: Optional[Union[dict[str, Any], types.LiveConnectConfigOrDict]]
-    if isinstance(config, types.LiveConnectConfig):
-      from_object = config.model_dump(exclude_none=True)
-    else:
-      from_object = config
 
     to_object: dict[str, Any] = {}
 
-    if getv(from_object, ['generation_config']) is not None:
+    if getv(config, ['generation_config']) is not None:
       setv(
           to_object,
           ['generationConfig'],
           _GenerateContentConfig_to_vertex(
               self._api_client,
-              getv(from_object, ['generation_config']),
+              getv(config, ['generation_config']),
               to_object,
           ),
       )
-    if getv(from_object, ['response_modalities']) is not None:
+    if getv(config, ['response_modalities']) is not None:
       if getv(to_object, ['generationConfig']) is not None:
-        to_object['generationConfig']['responseModalities'] = from_object[
-            'response_modalities'
-        ]
+        to_object['generationConfig']['responseModalities'] = getv(
+            config, ['response_modalities']
+        )
       else:
         to_object['generationConfig'] = {
-            'responseModalities': from_object['response_modalities']
+            'responseModalities': getv(config, ['response_modalities'])
         }
     else:
       # Set default to AUDIO to align with MLDev API.
@@ -616,12 +608,12 @@ class AsyncLive(_api_module.BaseModule):
         to_object.update(
             {'generationConfig': {'responseModalities': ['AUDIO']}}
         )
-    if getv(from_object, ['speech_config']) is not None:
+    if getv(config, ['speech_config']) is not None:
       if getv(to_object, ['generationConfig']) is not None:
         to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_vertex(
             self._api_client,
             t.t_speech_config(
-                self._api_client, getv(from_object, ['speech_config'])
+                self._api_client, getv(config, ['speech_config'])
             ),
             to_object,
         )
@@ -630,30 +622,32 @@ class AsyncLive(_api_module.BaseModule):
             'speechConfig': _SpeechConfig_to_vertex(
                 self._api_client,
                 t.t_speech_config(
-                    self._api_client, getv(from_object, ['speech_config'])
+                    self._api_client, getv(config, ['speech_config'])
                 ),
                 to_object,
             )
         }
-    if getv(from_object, ['system_instruction']) is not None:
+    if getv(config, ['system_instruction']) is not None:
       setv(
           to_object,
           ['systemInstruction'],
           _Content_to_vertex(
               self._api_client,
               t.t_content(
-                  self._api_client, getv(from_object, ['system_instruction'])
+                  self._api_client, getv(config, ['system_instruction'])
               ),
               to_object,
           ),
       )
-    if getv(from_object, ['tools']) is not None:
+    if getv(config, ['tools']) is not None:
       setv(
           to_object,
           ['tools'],
           [
-              _Tool_to_vertex(self._api_client, item, to_object)
-              for item in getv(from_object, ['tools'])
+              _Tool_to_vertex(
+                  self._api_client, t.t_tool(self._api_client, item), to_object
+              )
+              for item in t.t_tools(self._api_client, getv(config, ['tools']))
           ],
       )
 
@@ -687,16 +681,24 @@ class AsyncLive(_api_module.BaseModule):
           print(message)
     """
     base_url = self._api_client._websocket_base_url()
+    transformed_model = t.t_model(self._api_client, model)
+    # Ensure the config is a LiveConnectConfig.
+    parameter_model = types.LiveConnectConfig(**config) if isinstance(
+        config, dict
+    ) else config
+
     if self._api_client.api_key:
       api_key = self._api_client.api_key
       version = self._api_client._http_options['api_version']
       uri = f'{base_url}/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateContent?key={api_key}'
       headers = self._api_client._http_options['headers']
-
-      transformed_model = t.t_model(self._api_client, model)
-      request = json.dumps(
-          self._LiveSetup_to_mldev(model=transformed_model, config=config)
+      request_dict = _common.convert_to_dict(
+          self._LiveSetup_to_mldev(
+              model=transformed_model,
+              config=parameter_model,
+          )
       )
+      request = json.dumps(request_dict)
     else:
       # Get bearer token through Application Default Credentials.
       creds, _ = google.auth.default(
@@ -716,15 +718,17 @@ class AsyncLive(_api_module.BaseModule):
       uri = f'{base_url}/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent'
       location = self._api_client.location
       project = self._api_client.project
-      transformed_model = t.t_model(self._api_client, model)
       if transformed_model.startswith('publishers/'):
         transformed_model = (
             f'projects/{project}/locations/{location}/' + transformed_model
         )
-
-      request = json.dumps(
-          self._LiveSetup_to_vertex(model=transformed_model, config=config)
+      request_dict = _common.convert_to_dict(
+          self._LiveSetup_to_vertex(
+              model=transformed_model,
+              config=parameter_model,
+          )
       )
+      request = json.dumps(request_dict)
 
     async with connect(uri, additional_headers=headers) as ws:
       await ws.send(request)
