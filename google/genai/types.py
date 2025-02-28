@@ -2909,7 +2909,7 @@ class GenerateContentResponse(_common.BaseModel):
       default=None, description="""Usage metadata about the response(s)."""
   )
   automatic_function_calling_history: Optional[list[Content]] = None
-  parsed: Union[pydantic.BaseModel, dict, Enum] = Field(
+  parsed: Optional[Union[pydantic.BaseModel, dict, Enum]] = Field(
       default=None,
       description="""Parsed response if response_schema is provided. Not available for streaming.""",
   )
@@ -3648,6 +3648,7 @@ class Image(_common.BaseModel):
 
   @property
   def _pil_image(self) -> 'PIL_Image':
+    PIL_Image: Optional[builtin_types.ModuleType]
     try:
       from PIL import Image as PIL_Image
     except ImportError:

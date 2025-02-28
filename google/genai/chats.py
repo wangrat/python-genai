@@ -110,7 +110,7 @@ class _BaseChat:
       *,
       modules: Union[Models, AsyncModels],
       model: str,
-      config: GenerateContentConfigOrDict = None,
+      config: Optional[GenerateContentConfigOrDict] = None,
       history: list[Content],
   ):
     self._modules = modules
@@ -280,7 +280,7 @@ class Chats:
       self,
       *,
       model: str,
-      config: GenerateContentConfigOrDict = None,
+      config: Optional[GenerateContentConfigOrDict] = None,
       history: Optional[list[Content]] = None,
   ) -> Chat:
     """Creates a new chat session.
@@ -409,7 +409,7 @@ class AsyncChats:
       self,
       *,
       model: str,
-      config: GenerateContentConfigOrDict = None,
+      config: Optional[GenerateContentConfigOrDict] = None,
       history: Optional[list[Content]] = None,
   ) -> AsyncChat:
     """Creates a new chat session.

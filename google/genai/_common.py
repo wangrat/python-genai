@@ -266,7 +266,7 @@ def encode_unserializable_types(data: dict[str, object]) -> dict[str, object]:
     A dictionary with json.dumps() incompatible type (e.g. bytes datetime)
     to compatible type (e.g. base64 encoded string, isoformat date string).
   """
-  processed_data = {}
+  processed_data: dict[str, object] = {}
   if not isinstance(data, dict):
     return data
   for key, value in data.items():

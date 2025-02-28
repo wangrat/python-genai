@@ -1218,7 +1218,7 @@ class Caches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1278,7 +1278,7 @@ class Caches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1340,7 +1340,7 @@ class Caches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1407,7 +1407,7 @@ class Caches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1465,7 +1465,7 @@ class Caches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1554,7 +1554,7 @@ class AsyncCaches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1615,7 +1615,7 @@ class AsyncCaches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1678,7 +1678,7 @@ class AsyncCaches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1745,7 +1745,7 @@ class AsyncCaches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1803,7 +1803,7 @@ class AsyncCaches(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):

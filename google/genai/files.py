@@ -575,7 +575,7 @@ class Files(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -628,7 +628,7 @@ class Files(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -695,7 +695,7 @@ class Files(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -757,7 +757,7 @@ class Files(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -848,21 +848,22 @@ class Files(_api_module.BaseModule):
             ' file\n    please set the `mime_type` argument'
         )
 
+    http_options: types.HttpOptions
     if config_model and config_model.http_options:
       http_options = config_model.http_options
     else:
-      http_options = {
-          'api_version': '',  # api-version is set in the path.
-          'headers': {
+      http_options = types.HttpOptions(
+          api_version='',
+          headers={
               'Content-Type': 'application/json',
               'X-Goog-Upload-Protocol': 'resumable',
               'X-Goog-Upload-Command': 'start',
               'X-Goog-Upload-Header-Content-Length': f'{file_obj.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file_obj.mime_type}',
           },
-      }
+      )
     response = self._create(
-        file=file_obj, config={'http_options': http_options}
+        file=file_obj, config=types.CreateFileConfig(http_options=http_options)
     )
 
     if (
@@ -1008,7 +1009,7 @@ class AsyncFiles(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1061,7 +1062,7 @@ class AsyncFiles(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1128,7 +1129,7 @@ class AsyncFiles(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1190,7 +1191,7 @@ class AsyncFiles(_api_module.BaseModule):
     # TODO: remove the hack that pops config.
     request_dict.pop('config', None)
 
-    http_options = None
+    http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
     elif hasattr(config, 'http_options'):
@@ -1281,23 +1282,23 @@ class AsyncFiles(_api_module.BaseModule):
             ' file\n    please set the `mime_type` argument'
         )
 
+    http_options: types.HttpOptions
     if config_model and config_model.http_options:
       http_options = config_model.http_options
     else:
-      http_options = {
-          'api_version': '',  # api-version is set in the path.
-          'headers': {
+      http_options = types.HttpOptions(
+          api_version='',
+          headers={
               'Content-Type': 'application/json',
               'X-Goog-Upload-Protocol': 'resumable',
               'X-Goog-Upload-Command': 'start',
               'X-Goog-Upload-Header-Content-Length': f'{file_obj.size_bytes}',
               'X-Goog-Upload-Header-Content-Type': f'{file_obj.mime_type}',
           },
-      }
+      )
     response = await self._create(
-        file=file_obj, config={'http_options': http_options}
+        file=file_obj, config=types.CreateFileConfig(http_options=http_options)
     )
-
     if (
         response.http_headers is None
         or 'x-goog-upload-url' not in response.http_headers

@@ -49,11 +49,12 @@ from .models import _Tool_to_mldev
 from .models import _Tool_to_vertex
 
 try:
-  from websockets.asyncio.client import ClientConnection
-  from websockets.asyncio.client import connect
+  from websockets.asyncio.client import ClientConnection # type: ignore
+  from websockets.asyncio.client import connect # type: ignore
 except ModuleNotFoundError:
-  from websockets.client import ClientConnection
-  from websockets.client import connect # type: ignore[no-redef]
+  # This try/except is for TAP, mypy complains about it which is why we have the type: ignore
+  from websockets.client import ClientConnection # type: ignore
+  from websockets.client import connect # type: ignore
 
 logger = logging.getLogger('google_genai.live')
 
@@ -505,6 +506,7 @@ class AsyncLive(_api_module.BaseModule):
   def _LiveSetup_to_mldev(
       self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
   ):
+    from_object: Optional[Union[dict[str, Any], types.LiveConnectConfigOrDict]]
     if isinstance(config, types.LiveConnectConfig):
       from_object = config.model_dump(exclude_none=True)
     else:
@@ -579,6 +581,7 @@ class AsyncLive(_api_module.BaseModule):
   def _LiveSetup_to_vertex(
       self, model: str, config: Optional[types.LiveConnectConfigOrDict] = None
   ):
+    from_object: Optional[Union[dict[str, Any], types.LiveConnectConfigOrDict]]
     if isinstance(config, types.LiveConnectConfig):
       from_object = config.model_dump(exclude_none=True)
     else:
