@@ -646,13 +646,18 @@ class Batches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -710,13 +715,18 @@ class Batches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _GetBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -775,15 +785,18 @@ class Batches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CancelBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}:cancel'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}:cancel'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}:cancel'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -811,13 +824,18 @@ class Batches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ListBatchJobsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -881,13 +899,18 @@ class Batches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _DeleteBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -998,13 +1021,18 @@ class AsyncBatches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1062,13 +1090,18 @@ class AsyncBatches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _GetBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1127,15 +1160,18 @@ class AsyncBatches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CancelBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}:cancel'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}:cancel'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}:cancel'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1163,13 +1199,18 @@ class AsyncBatches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ListBatchJobsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1233,13 +1274,18 @@ class AsyncBatches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _DeleteBatchJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'batchPredictionJobs/{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'batchPredictionJobs/{name}'.format_map(request_url_dict)
+      else:
+        path = 'batchPredictionJobs/{name}'
 
     query_params = request_dict.get('_query')
     if query_params:

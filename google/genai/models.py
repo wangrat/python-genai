@@ -4218,16 +4218,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:generateContent'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:generateContent'.format_map(request_url_dict)
+      else:
+        path = '{model}:generateContent'
     else:
       request_dict = _GenerateContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:generateContent'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:generateContent'.format_map(request_url_dict)
+      else:
+        path = '{model}:generateContent'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4275,20 +4285,30 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:streamGenerateContent?alt=sse'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:streamGenerateContent?alt=sse'.format_map(
+            request_url_dict
+        )
+      else:
+        path = '{model}:streamGenerateContent?alt=sse'
     else:
       request_dict = _GenerateContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:streamGenerateContent?alt=sse'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:streamGenerateContent?alt=sse'.format_map(
+            request_url_dict
+        )
+      else:
+        path = '{model}:streamGenerateContent?alt=sse'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4359,16 +4379,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _EmbedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     else:
       request_dict = _EmbedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:batchEmbedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:batchEmbedContents'.format_map(request_url_dict)
+      else:
+        path = '{model}:batchEmbedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4439,16 +4469,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateImagesParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     else:
       request_dict = _GenerateImagesParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4540,13 +4580,18 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _EditImageParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -4606,13 +4651,18 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _UpscaleImageAPIParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -4656,16 +4706,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4703,16 +4763,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListModelsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{models_url}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{models_url}'.format_map(request_url_dict)
+      else:
+        path = '{models_url}'
     else:
       request_dict = _ListModelsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{models_url}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{models_url}'.format_map(request_url_dict)
+      else:
+        path = '{models_url}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4758,16 +4828,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _UpdateModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}'.format_map(request_url_dict)
+      else:
+        path = '{model}'
     else:
       request_dict = _UpdateModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4809,16 +4889,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _DeleteModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _DeleteModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4887,16 +4977,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _CountTokensParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:countTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:countTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:countTokens'
     else:
       request_dict = _CountTokensParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:countTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:countTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:countTokens'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -4967,13 +5067,18 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ComputeTokensParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:computeTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:computeTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:computeTokens'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -5047,16 +5152,26 @@ class Models(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateVideosParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predictLongRunning'.format_map(request_url_dict)
+      else:
+        path = '{model}:predictLongRunning'
     else:
       request_dict = _GenerateVideosParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predictLongRunning'.format_map(request_url_dict)
+      else:
+        path = '{model}:predictLongRunning'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5479,16 +5594,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:generateContent'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:generateContent'.format_map(request_url_dict)
+      else:
+        path = '{model}:generateContent'
     else:
       request_dict = _GenerateContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:generateContent'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:generateContent'.format_map(request_url_dict)
+      else:
+        path = '{model}:generateContent'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5536,20 +5661,30 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:streamGenerateContent?alt=sse'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:streamGenerateContent?alt=sse'.format_map(
+            request_url_dict
+        )
+      else:
+        path = '{model}:streamGenerateContent?alt=sse'
     else:
       request_dict = _GenerateContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:streamGenerateContent?alt=sse'.format_map(
-          request_dict.get('_url')
-      )
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:streamGenerateContent?alt=sse'.format_map(
+            request_url_dict
+        )
+      else:
+        path = '{model}:streamGenerateContent?alt=sse'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5625,16 +5760,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _EmbedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     else:
       request_dict = _EmbedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:batchEmbedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:batchEmbedContents'.format_map(request_url_dict)
+      else:
+        path = '{model}:batchEmbedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5705,16 +5850,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateImagesParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     else:
       request_dict = _GenerateImagesParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5806,13 +5961,18 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _EditImageParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -5872,13 +6032,18 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _UpscaleImageAPIParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predict'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predict'.format_map(request_url_dict)
+      else:
+        path = '{model}:predict'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -5922,16 +6087,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -5969,16 +6144,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListModelsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{models_url}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{models_url}'.format_map(request_url_dict)
+      else:
+        path = '{models_url}'
     else:
       request_dict = _ListModelsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{models_url}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{models_url}'.format_map(request_url_dict)
+      else:
+        path = '{models_url}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -6024,16 +6209,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _UpdateModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}'.format_map(request_url_dict)
+      else:
+        path = '{model}'
     else:
       request_dict = _UpdateModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -6075,16 +6270,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _DeleteModelParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _DeleteModelParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -6153,16 +6358,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _CountTokensParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:countTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:countTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:countTokens'
     else:
       request_dict = _CountTokensParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:countTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:countTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:countTokens'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -6233,13 +6448,18 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _ComputeTokensParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:computeTokens'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:computeTokens'.format_map(request_url_dict)
+      else:
+        path = '{model}:computeTokens'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -6313,16 +6533,26 @@ class AsyncModels(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GenerateVideosParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predictLongRunning'.format_map(request_url_dict)
+      else:
+        path = '{model}:predictLongRunning'
     else:
       request_dict = _GenerateVideosParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{model}:predictLongRunning'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{model}:predictLongRunning'.format_map(request_url_dict)
+      else:
+        path = '{model}:predictLongRunning'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'

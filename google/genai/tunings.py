@@ -728,16 +728,26 @@ class Tunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetTuningJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetTuningJobParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -784,16 +794,26 @@ class Tunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListTuningJobsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tuningJobs'.format_map(request_url_dict)
+      else:
+        path = 'tuningJobs'
     else:
       request_dict = _ListTuningJobsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tunedModels'.format_map(request_url_dict)
+      else:
+        path = 'tunedModels'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -852,13 +872,18 @@ class Tunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateTuningJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tuningJobs'.format_map(request_url_dict)
+      else:
+        path = 'tuningJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -914,13 +939,18 @@ class Tunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateTuningJobParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tunedModels'.format_map(request_url_dict)
+      else:
+        path = 'tunedModels'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1037,16 +1067,26 @@ class AsyncTunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetTuningJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetTuningJobParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1093,16 +1133,26 @@ class AsyncTunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListTuningJobsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tuningJobs'.format_map(request_url_dict)
+      else:
+        path = 'tuningJobs'
     else:
       request_dict = _ListTuningJobsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tunedModels'.format_map(request_url_dict)
+      else:
+        path = 'tunedModels'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1161,13 +1211,18 @@ class AsyncTunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if not self._api_client.vertexai:
       raise ValueError('This method is only supported in the Vertex AI client.')
     else:
       request_dict = _CreateTuningJobParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'tuningJobs'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tuningJobs'.format_map(request_url_dict)
+      else:
+        path = 'tuningJobs'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1223,13 +1278,18 @@ class AsyncTunings(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateTuningJobParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'tunedModels'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'tunedModels'.format_map(request_url_dict)
+      else:
+        path = 'tunedModels'
 
     query_params = request_dict.get('_query')
     if query_params:

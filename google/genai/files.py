@@ -561,13 +561,18 @@ class Files(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _ListFilesParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files'.format_map(request_url_dict)
+      else:
+        path = 'files'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -614,13 +619,18 @@ class Files(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'upload/v1beta/files'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'upload/v1beta/files'.format_map(request_url_dict)
+      else:
+        path = 'upload/v1beta/files'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -681,13 +691,18 @@ class Files(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _GetFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files/{file}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files/{file}'.format_map(request_url_dict)
+      else:
+        path = 'files/{file}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -743,13 +758,18 @@ class Files(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _DeleteFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files/{file}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files/{file}'.format_map(request_url_dict)
+      else:
+        path = 'files/{file}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -995,13 +1015,18 @@ class AsyncFiles(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _ListFilesParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files'.format_map(request_url_dict)
+      else:
+        path = 'files'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1048,13 +1073,18 @@ class AsyncFiles(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _CreateFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'upload/v1beta/files'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'upload/v1beta/files'.format_map(request_url_dict)
+      else:
+        path = 'upload/v1beta/files'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1115,13 +1145,18 @@ class AsyncFiles(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _GetFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files/{file}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files/{file}'.format_map(request_url_dict)
+      else:
+        path = 'files/{file}'
 
     query_params = request_dict.get('_query')
     if query_params:
@@ -1177,13 +1212,18 @@ class AsyncFiles(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
       raise ValueError('This method is only supported in the default client.')
     else:
       request_dict = _DeleteFileParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'files/{file}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'files/{file}'.format_map(request_url_dict)
+      else:
+        path = 'files/{file}'
 
     query_params = request_dict.get('_query')
     if query_params:

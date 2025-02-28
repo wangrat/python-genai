@@ -1202,16 +1202,26 @@ class Caches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _CreateCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     else:
       request_dict = _CreateCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1262,16 +1272,26 @@ class Caches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1324,16 +1344,26 @@ class Caches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _DeleteCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _DeleteCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1391,16 +1421,26 @@ class Caches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _UpdateCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _UpdateCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1449,16 +1489,26 @@ class Caches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListCachedContentsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     else:
       request_dict = _ListCachedContentsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1538,16 +1588,26 @@ class AsyncCaches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _CreateCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     else:
       request_dict = _CreateCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1599,16 +1659,26 @@ class AsyncCaches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _GetCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _GetCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1662,16 +1732,26 @@ class AsyncCaches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _DeleteCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _DeleteCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1729,16 +1809,26 @@ class AsyncCaches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _UpdateCachedContentParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     else:
       request_dict = _UpdateCachedContentParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = '{name}'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = '{name}'.format_map(request_url_dict)
+      else:
+        path = '{name}'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
@@ -1787,16 +1877,26 @@ class AsyncCaches(_api_module.BaseModule):
         config=config,
     )
 
+    request_url_dict: Optional[dict[str, str]]
+
     if self._api_client.vertexai:
       request_dict = _ListCachedContentsParameters_to_vertex(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     else:
       request_dict = _ListCachedContentsParameters_to_mldev(
           self._api_client, parameter_model
       )
-      path = 'cachedContents'.format_map(request_dict.get('_url'))
+      request_url_dict = request_dict.get('_url')
+      if request_url_dict:
+        path = 'cachedContents'.format_map(request_url_dict)
+      else:
+        path = 'cachedContents'
     query_params = request_dict.get('_query')
     if query_params:
       path = f'{path}?{urlencode(query_params)}'
