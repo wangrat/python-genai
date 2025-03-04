@@ -23,7 +23,7 @@ from . import _common
 from . import _extra_utils
 from . import _transformers as t
 from . import types
-from ._api_client import ApiClient
+from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
 from .pagers import AsyncPager, Pager
@@ -32,7 +32,7 @@ logger = logging.getLogger('google_genai.models')
 
 
 def _Part_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -76,7 +76,7 @@ def _Part_to_mldev(
 
 
 def _Part_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -120,7 +120,7 @@ def _Part_to_vertex(
 
 
 def _Content_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -142,7 +142,7 @@ def _Content_to_mldev(
 
 
 def _Content_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -164,7 +164,7 @@ def _Content_to_vertex(
 
 
 def _Schema_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -243,7 +243,7 @@ def _Schema_to_mldev(
 
 
 def _Schema_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -322,7 +322,7 @@ def _Schema_to_vertex(
 
 
 def _SafetySetting_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -340,7 +340,7 @@ def _SafetySetting_to_mldev(
 
 
 def _SafetySetting_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -358,7 +358,7 @@ def _SafetySetting_to_vertex(
 
 
 def _FunctionDeclaration_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -379,7 +379,7 @@ def _FunctionDeclaration_to_mldev(
 
 
 def _FunctionDeclaration_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -406,7 +406,7 @@ def _FunctionDeclaration_to_vertex(
 
 
 def _GoogleSearch_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -416,7 +416,7 @@ def _GoogleSearch_to_mldev(
 
 
 def _GoogleSearch_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -426,7 +426,7 @@ def _GoogleSearch_to_vertex(
 
 
 def _DynamicRetrievalConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -445,7 +445,7 @@ def _DynamicRetrievalConfig_to_mldev(
 
 
 def _DynamicRetrievalConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -464,7 +464,7 @@ def _DynamicRetrievalConfig_to_vertex(
 
 
 def _GoogleSearchRetrieval_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -484,7 +484,7 @@ def _GoogleSearchRetrieval_to_mldev(
 
 
 def _GoogleSearchRetrieval_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -504,7 +504,7 @@ def _GoogleSearchRetrieval_to_vertex(
 
 
 def _Tool_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -549,7 +549,7 @@ def _Tool_to_mldev(
 
 
 def _Tool_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -594,7 +594,7 @@ def _Tool_to_vertex(
 
 
 def _FunctionCallingConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -613,7 +613,7 @@ def _FunctionCallingConfig_to_mldev(
 
 
 def _FunctionCallingConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -632,7 +632,7 @@ def _FunctionCallingConfig_to_vertex(
 
 
 def _ToolConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -652,7 +652,7 @@ def _ToolConfig_to_mldev(
 
 
 def _ToolConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -672,7 +672,7 @@ def _ToolConfig_to_vertex(
 
 
 def _PrebuiltVoiceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -684,7 +684,7 @@ def _PrebuiltVoiceConfig_to_mldev(
 
 
 def _PrebuiltVoiceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -696,7 +696,7 @@ def _PrebuiltVoiceConfig_to_vertex(
 
 
 def _VoiceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -714,7 +714,7 @@ def _VoiceConfig_to_mldev(
 
 
 def _VoiceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -732,7 +732,7 @@ def _VoiceConfig_to_vertex(
 
 
 def _SpeechConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -750,7 +750,7 @@ def _SpeechConfig_to_mldev(
 
 
 def _SpeechConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -768,7 +768,7 @@ def _SpeechConfig_to_vertex(
 
 
 def _ThinkingConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -782,7 +782,7 @@ def _ThinkingConfig_to_mldev(
 
 
 def _ThinkingConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -796,7 +796,7 @@ def _ThinkingConfig_to_vertex(
 
 
 def _GenerateContentConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -961,7 +961,7 @@ def _GenerateContentConfig_to_mldev(
 
 
 def _GenerateContentConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1124,7 +1124,7 @@ def _GenerateContentConfig_to_vertex(
 
 
 def _GenerateContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1161,7 +1161,7 @@ def _GenerateContentParameters_to_mldev(
 
 
 def _GenerateContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1198,7 +1198,7 @@ def _GenerateContentParameters_to_vertex(
 
 
 def _EmbedContentConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1231,7 +1231,7 @@ def _EmbedContentConfig_to_mldev(
 
 
 def _EmbedContentConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1272,7 +1272,7 @@ def _EmbedContentConfig_to_vertex(
 
 
 def _EmbedContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1309,7 +1309,7 @@ def _EmbedContentParameters_to_mldev(
 
 
 def _EmbedContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1341,7 +1341,7 @@ def _EmbedContentParameters_to_vertex(
 
 
 def _GenerateImagesConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1446,7 +1446,7 @@ def _GenerateImagesConfig_to_mldev(
 
 
 def _GenerateImagesConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1557,7 +1557,7 @@ def _GenerateImagesConfig_to_vertex(
 
 
 def _GenerateImagesParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1585,7 +1585,7 @@ def _GenerateImagesParameters_to_mldev(
 
 
 def _GenerateImagesParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1613,7 +1613,7 @@ def _GenerateImagesParameters_to_vertex(
 
 
 def _Image_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1635,7 +1635,7 @@ def _Image_to_mldev(
 
 
 def _Image_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1657,7 +1657,7 @@ def _Image_to_vertex(
 
 
 def _MaskReferenceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1677,7 +1677,7 @@ def _MaskReferenceConfig_to_mldev(
 
 
 def _MaskReferenceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1697,7 +1697,7 @@ def _MaskReferenceConfig_to_vertex(
 
 
 def _ControlReferenceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1715,7 +1715,7 @@ def _ControlReferenceConfig_to_mldev(
 
 
 def _ControlReferenceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1734,7 +1734,7 @@ def _ControlReferenceConfig_to_vertex(
 
 
 def _StyleReferenceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1748,7 +1748,7 @@ def _StyleReferenceConfig_to_mldev(
 
 
 def _StyleReferenceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1764,7 +1764,7 @@ def _StyleReferenceConfig_to_vertex(
 
 
 def _SubjectReferenceConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1781,7 +1781,7 @@ def _SubjectReferenceConfig_to_mldev(
 
 
 def _SubjectReferenceConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1800,7 +1800,7 @@ def _SubjectReferenceConfig_to_vertex(
 
 
 def _ReferenceImageAPI_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1840,7 +1840,7 @@ def _ReferenceImageAPI_to_mldev(
 
 
 def _ReferenceImageAPI_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1900,7 +1900,7 @@ def _ReferenceImageAPI_to_vertex(
 
 
 def _EditImageConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2007,7 +2007,7 @@ def _EditImageConfig_to_mldev(
 
 
 def _EditImageConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2111,7 +2111,7 @@ def _EditImageConfig_to_vertex(
 
 
 def _EditImageParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2149,7 +2149,7 @@ def _EditImageParameters_to_mldev(
 
 
 def _EditImageParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2187,7 +2187,7 @@ def _EditImageParameters_to_vertex(
 
 
 def _UpscaleImageAPIConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2228,7 +2228,7 @@ def _UpscaleImageAPIConfig_to_mldev(
 
 
 def _UpscaleImageAPIConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2269,7 +2269,7 @@ def _UpscaleImageAPIConfig_to_vertex(
 
 
 def _UpscaleImageAPIParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2308,7 +2308,7 @@ def _UpscaleImageAPIParameters_to_mldev(
 
 
 def _UpscaleImageAPIParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2347,7 +2347,7 @@ def _UpscaleImageAPIParameters_to_vertex(
 
 
 def _GetModelParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2366,7 +2366,7 @@ def _GetModelParameters_to_mldev(
 
 
 def _GetModelParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2385,7 +2385,7 @@ def _GetModelParameters_to_vertex(
 
 
 def _ListModelsConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2417,7 +2417,7 @@ def _ListModelsConfig_to_mldev(
 
 
 def _ListModelsConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2449,7 +2449,7 @@ def _ListModelsConfig_to_vertex(
 
 
 def _ListModelsParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2467,7 +2467,7 @@ def _ListModelsParameters_to_mldev(
 
 
 def _ListModelsParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2485,7 +2485,7 @@ def _ListModelsParameters_to_vertex(
 
 
 def _UpdateModelConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2501,7 +2501,7 @@ def _UpdateModelConfig_to_mldev(
 
 
 def _UpdateModelConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2517,7 +2517,7 @@ def _UpdateModelConfig_to_vertex(
 
 
 def _UpdateModelParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2542,7 +2542,7 @@ def _UpdateModelParameters_to_mldev(
 
 
 def _UpdateModelParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2567,7 +2567,7 @@ def _UpdateModelParameters_to_vertex(
 
 
 def _DeleteModelParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2586,7 +2586,7 @@ def _DeleteModelParameters_to_mldev(
 
 
 def _DeleteModelParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2605,7 +2605,7 @@ def _DeleteModelParameters_to_vertex(
 
 
 def _CountTokensConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2628,7 +2628,7 @@ def _CountTokensConfig_to_mldev(
 
 
 def _CountTokensConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2666,7 +2666,7 @@ def _CountTokensConfig_to_vertex(
 
 
 def _CountTokensParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2703,7 +2703,7 @@ def _CountTokensParameters_to_mldev(
 
 
 def _CountTokensParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2740,7 +2740,7 @@ def _CountTokensParameters_to_vertex(
 
 
 def _ComputeTokensParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2762,7 +2762,7 @@ def _ComputeTokensParameters_to_mldev(
 
 
 def _ComputeTokensParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2793,7 +2793,7 @@ def _ComputeTokensParameters_to_vertex(
 
 
 def _GenerateVideosConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2854,7 +2854,7 @@ def _GenerateVideosConfig_to_mldev(
 
 
 def _GenerateVideosConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2933,7 +2933,7 @@ def _GenerateVideosConfig_to_vertex(
 
 
 def _GenerateVideosParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -2961,7 +2961,7 @@ def _GenerateVideosParameters_to_mldev(
 
 
 def _GenerateVideosParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3044,7 +3044,7 @@ def _EditMode_to_mldev_enum_validate(enum_value: Any):
 
 
 def _Part_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3086,7 +3086,7 @@ def _Part_from_mldev(
 
 
 def _Part_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3130,7 +3130,7 @@ def _Part_from_vertex(
 
 
 def _Content_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3152,7 +3152,7 @@ def _Content_from_mldev(
 
 
 def _Content_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3174,7 +3174,7 @@ def _Content_from_vertex(
 
 
 def _CitationMetadata_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3186,7 +3186,7 @@ def _CitationMetadata_from_mldev(
 
 
 def _CitationMetadata_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3198,7 +3198,7 @@ def _CitationMetadata_from_vertex(
 
 
 def _Candidate_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3250,7 +3250,7 @@ def _Candidate_from_mldev(
 
 
 def _Candidate_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3302,7 +3302,7 @@ def _Candidate_from_vertex(
 
 
 def _GenerateContentResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3330,7 +3330,7 @@ def _GenerateContentResponse_from_mldev(
 
 
 def _GenerateContentResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3364,7 +3364,7 @@ def _GenerateContentResponse_from_vertex(
 
 
 def _ContentEmbeddingStatistics_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3374,7 +3374,7 @@ def _ContentEmbeddingStatistics_from_mldev(
 
 
 def _ContentEmbeddingStatistics_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3389,7 +3389,7 @@ def _ContentEmbeddingStatistics_from_vertex(
 
 
 def _ContentEmbedding_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3401,7 +3401,7 @@ def _ContentEmbedding_from_mldev(
 
 
 def _ContentEmbedding_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3422,7 +3422,7 @@ def _ContentEmbedding_from_vertex(
 
 
 def _EmbedContentMetadata_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3432,7 +3432,7 @@ def _EmbedContentMetadata_from_mldev(
 
 
 def _EmbedContentMetadata_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3448,7 +3448,7 @@ def _EmbedContentMetadata_from_vertex(
 
 
 def _EmbedContentResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3476,7 +3476,7 @@ def _EmbedContentResponse_from_mldev(
 
 
 def _EmbedContentResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3504,7 +3504,7 @@ def _EmbedContentResponse_from_vertex(
 
 
 def _Image_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3524,7 +3524,7 @@ def _Image_from_mldev(
 
 
 def _Image_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3546,7 +3546,7 @@ def _Image_from_vertex(
 
 
 def _GeneratedImage_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3569,7 +3569,7 @@ def _GeneratedImage_from_mldev(
 
 
 def _GeneratedImage_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3595,7 +3595,7 @@ def _GeneratedImage_from_vertex(
 
 
 def _GenerateImagesResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3614,7 +3614,7 @@ def _GenerateImagesResponse_from_mldev(
 
 
 def _GenerateImagesResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3633,7 +3633,7 @@ def _GenerateImagesResponse_from_vertex(
 
 
 def _EditImageResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3652,7 +3652,7 @@ def _EditImageResponse_from_mldev(
 
 
 def _EditImageResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3671,7 +3671,7 @@ def _EditImageResponse_from_vertex(
 
 
 def _UpscaleImageResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3690,7 +3690,7 @@ def _UpscaleImageResponse_from_mldev(
 
 
 def _UpscaleImageResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3709,7 +3709,7 @@ def _UpscaleImageResponse_from_vertex(
 
 
 def _Endpoint_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3719,7 +3719,7 @@ def _Endpoint_from_mldev(
 
 
 def _Endpoint_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3736,7 +3736,7 @@ def _Endpoint_from_vertex(
 
 
 def _TunedModelInfo_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3754,7 +3754,7 @@ def _TunedModelInfo_from_mldev(
 
 
 def _TunedModelInfo_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3779,7 +3779,7 @@ def _TunedModelInfo_from_vertex(
 
 
 def _Model_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3828,7 +3828,7 @@ def _Model_from_mldev(
 
 
 def _Model_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3871,7 +3871,7 @@ def _Model_from_vertex(
 
 
 def _ListModelsResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3895,7 +3895,7 @@ def _ListModelsResponse_from_mldev(
 
 
 def _ListModelsResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3919,7 +3919,7 @@ def _ListModelsResponse_from_vertex(
 
 
 def _DeleteModelResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3929,7 +3929,7 @@ def _DeleteModelResponse_from_mldev(
 
 
 def _DeleteModelResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3939,7 +3939,7 @@ def _DeleteModelResponse_from_vertex(
 
 
 def _CountTokensResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3958,7 +3958,7 @@ def _CountTokensResponse_from_mldev(
 
 
 def _CountTokensResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3970,7 +3970,7 @@ def _CountTokensResponse_from_vertex(
 
 
 def _ComputeTokensResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3982,7 +3982,7 @@ def _ComputeTokensResponse_from_mldev(
 
 
 def _ComputeTokensResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -3994,7 +3994,7 @@ def _ComputeTokensResponse_from_vertex(
 
 
 def _Video_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4016,7 +4016,7 @@ def _Video_from_mldev(
 
 
 def _Video_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4038,7 +4038,7 @@ def _Video_from_vertex(
 
 
 def _GeneratedVideo_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4054,7 +4054,7 @@ def _GeneratedVideo_from_mldev(
 
 
 def _GeneratedVideo_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4070,7 +4070,7 @@ def _GeneratedVideo_from_vertex(
 
 
 def _GenerateVideosResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4103,7 +4103,7 @@ def _GenerateVideosResponse_from_mldev(
 
 
 def _GenerateVideosResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4136,7 +4136,7 @@ def _GenerateVideosResponse_from_vertex(
 
 
 def _GenerateVideosOperation_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -4171,7 +4171,7 @@ def _GenerateVideosOperation_from_mldev(
 
 
 def _GenerateVideosOperation_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:

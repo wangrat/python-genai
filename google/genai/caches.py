@@ -22,7 +22,7 @@ from . import _api_module
 from . import _common
 from . import _transformers as t
 from . import types
-from ._api_client import ApiClient
+from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
 from .pagers import AsyncPager, Pager
@@ -31,7 +31,7 @@ logger = logging.getLogger('google_genai.caches')
 
 
 def _Part_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -75,7 +75,7 @@ def _Part_to_mldev(
 
 
 def _Part_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -119,7 +119,7 @@ def _Part_to_vertex(
 
 
 def _Content_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -141,7 +141,7 @@ def _Content_to_mldev(
 
 
 def _Content_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -163,7 +163,7 @@ def _Content_to_vertex(
 
 
 def _Schema_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -242,7 +242,7 @@ def _Schema_to_mldev(
 
 
 def _Schema_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -321,7 +321,7 @@ def _Schema_to_vertex(
 
 
 def _FunctionDeclaration_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -342,7 +342,7 @@ def _FunctionDeclaration_to_mldev(
 
 
 def _FunctionDeclaration_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -369,7 +369,7 @@ def _FunctionDeclaration_to_vertex(
 
 
 def _GoogleSearch_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -379,7 +379,7 @@ def _GoogleSearch_to_mldev(
 
 
 def _GoogleSearch_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -389,7 +389,7 @@ def _GoogleSearch_to_vertex(
 
 
 def _DynamicRetrievalConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -408,7 +408,7 @@ def _DynamicRetrievalConfig_to_mldev(
 
 
 def _DynamicRetrievalConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -427,7 +427,7 @@ def _DynamicRetrievalConfig_to_vertex(
 
 
 def _GoogleSearchRetrieval_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -447,7 +447,7 @@ def _GoogleSearchRetrieval_to_mldev(
 
 
 def _GoogleSearchRetrieval_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -467,7 +467,7 @@ def _GoogleSearchRetrieval_to_vertex(
 
 
 def _Tool_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -512,7 +512,7 @@ def _Tool_to_mldev(
 
 
 def _Tool_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -557,7 +557,7 @@ def _Tool_to_vertex(
 
 
 def _FunctionCallingConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -576,7 +576,7 @@ def _FunctionCallingConfig_to_mldev(
 
 
 def _FunctionCallingConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -595,7 +595,7 @@ def _FunctionCallingConfig_to_vertex(
 
 
 def _ToolConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -615,7 +615,7 @@ def _ToolConfig_to_mldev(
 
 
 def _ToolConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -635,7 +635,7 @@ def _ToolConfig_to_vertex(
 
 
 def _CreateCachedContentConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -696,7 +696,7 @@ def _CreateCachedContentConfig_to_mldev(
 
 
 def _CreateCachedContentConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -757,7 +757,7 @@ def _CreateCachedContentConfig_to_vertex(
 
 
 def _CreateCachedContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -782,7 +782,7 @@ def _CreateCachedContentParameters_to_mldev(
 
 
 def _CreateCachedContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -807,7 +807,7 @@ def _CreateCachedContentParameters_to_vertex(
 
 
 def _GetCachedContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -826,7 +826,7 @@ def _GetCachedContentParameters_to_mldev(
 
 
 def _GetCachedContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -845,7 +845,7 @@ def _GetCachedContentParameters_to_vertex(
 
 
 def _DeleteCachedContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -864,7 +864,7 @@ def _DeleteCachedContentParameters_to_mldev(
 
 
 def _DeleteCachedContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -883,7 +883,7 @@ def _DeleteCachedContentParameters_to_vertex(
 
 
 def _UpdateCachedContentConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -899,7 +899,7 @@ def _UpdateCachedContentConfig_to_mldev(
 
 
 def _UpdateCachedContentConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -915,7 +915,7 @@ def _UpdateCachedContentConfig_to_vertex(
 
 
 def _UpdateCachedContentParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -940,7 +940,7 @@ def _UpdateCachedContentParameters_to_mldev(
 
 
 def _UpdateCachedContentParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -965,7 +965,7 @@ def _UpdateCachedContentParameters_to_vertex(
 
 
 def _ListCachedContentsConfig_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -987,7 +987,7 @@ def _ListCachedContentsConfig_to_mldev(
 
 
 def _ListCachedContentsConfig_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1009,7 +1009,7 @@ def _ListCachedContentsConfig_to_vertex(
 
 
 def _ListCachedContentsParameters_to_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1027,7 +1027,7 @@ def _ListCachedContentsParameters_to_mldev(
 
 
 def _ListCachedContentsParameters_to_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1045,7 +1045,7 @@ def _ListCachedContentsParameters_to_vertex(
 
 
 def _CachedContent_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1075,7 +1075,7 @@ def _CachedContent_from_mldev(
 
 
 def _CachedContent_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1105,7 +1105,7 @@ def _CachedContent_from_vertex(
 
 
 def _DeleteCachedContentResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1115,7 +1115,7 @@ def _DeleteCachedContentResponse_from_mldev(
 
 
 def _DeleteCachedContentResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1125,7 +1125,7 @@ def _DeleteCachedContentResponse_from_vertex(
 
 
 def _ListCachedContentsResponse_from_mldev(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:
@@ -1147,7 +1147,7 @@ def _ListCachedContentsResponse_from_mldev(
 
 
 def _ListCachedContentsResponse_from_vertex(
-    api_client: ApiClient,
+    api_client: BaseApiClient,
     from_object: Union[dict, object],
     parent_object: Optional[dict] = None,
 ) -> dict:

@@ -29,7 +29,7 @@ import google.auth
 from requests.exceptions import HTTPError
 
 from . import errors
-from ._api_client import ApiClient
+from ._api_client import BaseApiClient
 from ._api_client import HttpOptions
 from ._api_client import HttpRequest
 from ._api_client import HttpResponse
@@ -179,7 +179,7 @@ class ReplayFile(BaseModel):
   interactions: list[ReplayInteraction]
 
 
-class ReplayApiClient(ApiClient):
+class ReplayApiClient(BaseApiClient):
   """For integration testing, send recorded response or records a response."""
 
   def __init__(

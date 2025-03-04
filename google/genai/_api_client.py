@@ -14,7 +14,10 @@
 #
 
 
-"""Base client for calling HTTP APIs sending and receiving JSON."""
+"""Base client for calling HTTP APIs sending and receiving JSON.
+
+The BaseApiClient is intended to be a private module and is subject to change.
+"""
 
 import asyncio
 import copy
@@ -224,7 +227,7 @@ class HttpResponse:
       response_payload[attribute] = copy.deepcopy(getattr(self, attribute))
 
 
-class ApiClient:
+class BaseApiClient:
   """Client for calling HTTP APIs sending and receiving JSON."""
 
   def __init__(
