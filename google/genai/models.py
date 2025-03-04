@@ -1570,7 +1570,7 @@ def _GenerateImagesParameters_to_mldev(
     )
 
   if getv(from_object, ['prompt']) is not None:
-    setv(to_object, ['instances', 'prompt'], getv(from_object, ['prompt']))
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
 
   if getv(from_object, ['config']) is not None:
     setv(
@@ -1598,7 +1598,7 @@ def _GenerateImagesParameters_to_vertex(
     )
 
   if getv(from_object, ['prompt']) is not None:
-    setv(to_object, ['instances', 'prompt'], getv(from_object, ['prompt']))
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
 
   if getv(from_object, ['config']) is not None:
     setv(
@@ -2124,12 +2124,12 @@ def _EditImageParameters_to_mldev(
     )
 
   if getv(from_object, ['prompt']) is not None:
-    setv(to_object, ['instances', 'prompt'], getv(from_object, ['prompt']))
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
 
   if getv(from_object, ['reference_images']) is not None:
     setv(
         to_object,
-        ['instances', 'referenceImages'],
+        ['instances[0]', 'referenceImages'],
         [
             _ReferenceImageAPI_to_mldev(api_client, item, to_object)
             for item in getv(from_object, ['reference_images'])
@@ -2162,12 +2162,12 @@ def _EditImageParameters_to_vertex(
     )
 
   if getv(from_object, ['prompt']) is not None:
-    setv(to_object, ['instances', 'prompt'], getv(from_object, ['prompt']))
+    setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
 
   if getv(from_object, ['reference_images']) is not None:
     setv(
         to_object,
-        ['instances', 'referenceImages'],
+        ['instances[0]', 'referenceImages'],
         [
             _ReferenceImageAPI_to_vertex(api_client, item, to_object)
             for item in getv(from_object, ['reference_images'])
@@ -2284,7 +2284,7 @@ def _UpscaleImageAPIParameters_to_mldev(
   if getv(from_object, ['image']) is not None:
     setv(
         to_object,
-        ['instances', 'image'],
+        ['instances[0]', 'image'],
         _Image_to_mldev(api_client, getv(from_object, ['image']), to_object),
     )
 
@@ -2323,7 +2323,7 @@ def _UpscaleImageAPIParameters_to_vertex(
   if getv(from_object, ['image']) is not None:
     setv(
         to_object,
-        ['instances', 'image'],
+        ['instances[0]', 'image'],
         _Image_to_vertex(api_client, getv(from_object, ['image']), to_object),
     )
 
