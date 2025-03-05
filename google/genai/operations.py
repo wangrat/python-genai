@@ -113,14 +113,14 @@ def _Video_from_mldev(
     parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['uri']) is not None:
-    setv(to_object, ['uri'], getv(from_object, ['uri']))
+  if getv(from_object, ['video', 'uri']) is not None:
+    setv(to_object, ['uri'], getv(from_object, ['video', 'uri']))
 
-  if getv(from_object, ['encodedVideo']) is not None:
+  if getv(from_object, ['video', 'encodedVideo']) is not None:
     setv(
         to_object,
         ['video_bytes'],
-        t.t_bytes(api_client, getv(from_object, ['encodedVideo'])),
+        t.t_bytes(api_client, getv(from_object, ['video', 'encodedVideo'])),
     )
 
   if getv(from_object, ['encoding']) is not None:
@@ -189,13 +189,13 @@ def _GenerateVideosResponse_from_mldev(
     parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['videos']) is not None:
+  if getv(from_object, ['generatedSamples']) is not None:
     setv(
         to_object,
         ['generated_videos'],
         [
             _GeneratedVideo_from_mldev(api_client, item, to_object)
-            for item in getv(from_object, ['videos'])
+            for item in getv(from_object, ['generatedSamples'])
         ],
     )
 

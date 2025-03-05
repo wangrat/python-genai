@@ -2813,8 +2813,10 @@ def _GenerateVideosConfig_to_mldev(
     raise ValueError('fps parameter is not supported in Gemini API.')
 
   if getv(from_object, ['duration_seconds']) is not None:
-    raise ValueError(
-        'duration_seconds parameter is not supported in Gemini API.'
+    setv(
+        parent_object,
+        ['parameters', 'durationSeconds'],
+        getv(from_object, ['duration_seconds']),
     )
 
   if getv(from_object, ['seed']) is not None:
@@ -3999,14 +4001,14 @@ def _Video_from_mldev(
     parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['uri']) is not None:
-    setv(to_object, ['uri'], getv(from_object, ['uri']))
+  if getv(from_object, ['video', 'uri']) is not None:
+    setv(to_object, ['uri'], getv(from_object, ['video', 'uri']))
 
-  if getv(from_object, ['encodedVideo']) is not None:
+  if getv(from_object, ['video', 'encodedVideo']) is not None:
     setv(
         to_object,
         ['video_bytes'],
-        t.t_bytes(api_client, getv(from_object, ['encodedVideo'])),
+        t.t_bytes(api_client, getv(from_object, ['video', 'encodedVideo'])),
     )
 
   if getv(from_object, ['encoding']) is not None:
@@ -4075,13 +4077,13 @@ def _GenerateVideosResponse_from_mldev(
     parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['videos']) is not None:
+  if getv(from_object, ['generatedSamples']) is not None:
     setv(
         to_object,
         ['generated_videos'],
         [
             _GeneratedVideo_from_mldev(api_client, item, to_object)
-            for item in getv(from_object, ['videos'])
+            for item in getv(from_object, ['generatedSamples'])
         ],
     )
 
