@@ -507,7 +507,7 @@ def handle_null_fields(schema: dict[str, Any]):
 
 def process_schema(
     schema: dict[str, Any],
-    client: Optional[_api_client.BaseApiClient] = None,
+    client: _api_client.BaseApiClient,
     defs: Optional[dict[str, Any]] = None,
     *,
     order_properties: bool = True,
@@ -570,7 +570,7 @@ def process_schema(
         'type': 'array'
     }
   """
-  if client and not client.vertexai:
+  if not client.vertexai:
     schema.pop('title', None)
 
     if schema.get('default') is not None:
@@ -596,15 +596,16 @@ def process_schema(
   # After removing null fields, Optional fields with only one possible type
   # will have a $ref key that needs to be flattened
   # For example: {'default': None, 'description': 'Name of the person', 'nullable': True, '$ref': '#/$defs/TestPerson'}
-  if schema.get('$ref', None):
-    ref = defs[schema.get('$ref').split('defs/')[-1]]
+  schema_ref = schema.get('$ref', None)
+  if schema_ref is not None:
+    ref = defs[schema_ref.split('defs/')[-1]]
     for schema_key in list(ref.keys()):
       schema[schema_key] = ref[schema_key]
     del schema['$ref']
 
   any_of = schema.get('anyOf', None)
   if any_of is not None:
-    if not client.vertexai:
+    if client and not client.vertexai:
       raise ValueError(
           'AnyOf is not supported in the response schema for the Gemini API.'
       )
@@ -750,7 +751,10 @@ def t_speech_config(
   if (
       isinstance(origin, dict)
       and 'voice_config' in origin
+      and origin['voice_config'] is not None
       and 'prebuilt_voice_config' in origin['voice_config']
+      and origin['voice_config']['prebuilt_voice_config'] is not None
+      and 'voice_name' in origin['voice_config']['prebuilt_voice_config']
   ):
     return types.SpeechConfig(
         voice_config=types.VoiceConfig(

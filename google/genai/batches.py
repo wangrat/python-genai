@@ -668,7 +668,7 @@ class Batches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -737,7 +737,7 @@ class Batches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -807,7 +807,7 @@ class Batches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -846,7 +846,7 @@ class Batches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -921,7 +921,7 @@ class Batches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -1043,7 +1043,7 @@ class AsyncBatches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -1112,7 +1112,7 @@ class AsyncBatches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -1182,7 +1182,7 @@ class AsyncBatches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -1221,7 +1221,7 @@ class AsyncBatches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -1296,7 +1296,7 @@ class AsyncBatches(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)

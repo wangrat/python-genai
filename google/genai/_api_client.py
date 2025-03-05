@@ -200,14 +200,19 @@ class HttpResponse:
         yield c
     else:
       # Iterator of objects retrieved from the API.
-      async for chunk in self.response_stream.aiter_lines():
-        # This is httpx.Response.
-        if chunk:
-          # In async streaming mode, the chunk of JSON is prefixed with "data:"
-          # which we must strip before parsing.
-          if chunk.startswith('data: '):
-            chunk = chunk[len('data: ') :]
-          yield json.loads(chunk)
+      if hasattr(self.response_stream, 'aiter_lines'):
+        async for chunk in self.response_stream.aiter_lines():
+          # This is httpx.Response.
+          if chunk:
+            # In async streaming mode, the chunk of JSON is prefixed with "data:"
+            # which we must strip before parsing.
+            if chunk.startswith('data: '):
+              chunk = chunk[len('data: ') :]
+            yield json.loads(chunk)
+      else:
+        raise ValueError(
+            'Error parsing streaming response.'
+        )
 
   def byte_segments(self):
     if isinstance(self.byte_stream, list):
@@ -373,14 +378,14 @@ class BaseApiClient:
           if not self.project:
             self.project = project
 
-    if self._credentials.expired or not self._credentials.token:
+    if self._credentials and (self._credentials.expired or not self._credentials.token):
       # Only refresh when it needs to. Default expiration is 3600 seconds.
       async with self._auth_lock:
         if self._credentials.expired or not self._credentials.token:
           # Double check that the credentials expired before refreshing.
           await asyncio.to_thread(_refresh_auth, self._credentials)
 
-    if not self._credentials.token:
+    if not self._credentials or not self._credentials.token:
       raise RuntimeError('Could not resolve API token from the environment')
 
     return self._credentials.token
@@ -503,7 +508,7 @@ class BaseApiClient:
       http_request.headers['Authorization'] = (
           f'Bearer {await self._async_access_token()}'
       )
-      if self._credentials.quota_project_id:
+      if self._credentials and self._credentials.quota_project_id:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
         )

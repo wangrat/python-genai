@@ -4247,7 +4247,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4318,7 +4318,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4408,7 +4408,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4498,7 +4498,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4602,7 +4602,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4673,7 +4673,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4735,7 +4735,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4792,7 +4792,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4857,7 +4857,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -4918,7 +4918,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5006,7 +5006,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5089,7 +5089,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5181,7 +5181,7 @@ class Models(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5315,11 +5315,12 @@ class Models(_api_module.BaseModule):
       contents = t.t_contents(self._api_client, contents)
       if not automatic_function_calling_history:
         automatic_function_calling_history.extend(contents)
-      contents.append(func_call_content)
-      contents.append(func_response_content)
+      if isinstance(contents, list):
+        contents.append(func_call_content)
+        contents.append(func_response_content)
       automatic_function_calling_history.append(func_call_content)
       automatic_function_calling_history.append(func_response_content)
-    if _extra_utils.should_append_afc_history(config):
+    if _extra_utils.should_append_afc_history(config) and response is not None:
       response.automatic_function_calling_history = (
           automatic_function_calling_history
       )
@@ -5467,8 +5468,9 @@ class Models(_api_module.BaseModule):
       contents = t.t_contents(self._api_client, contents)
       if not automatic_function_calling_history:
         automatic_function_calling_history.extend(contents)
-      contents.append(func_call_content)
-      contents.append(func_response_content)
+      if isinstance(contents, list):
+        contents.append(func_call_content)
+        contents.append(func_response_content)
       automatic_function_calling_history.append(func_call_content)
       automatic_function_calling_history.append(func_response_content)
 
@@ -5623,7 +5625,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5694,7 +5696,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5789,7 +5791,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5879,7 +5881,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -5983,7 +5985,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6054,7 +6056,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6116,7 +6118,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6173,7 +6175,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6238,7 +6240,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6299,7 +6301,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6387,7 +6389,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6470,7 +6472,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6562,7 +6564,7 @@ class AsyncModels(_api_module.BaseModule):
     http_options: Optional[types.HttpOptionsOrDict] = None
     if isinstance(config, dict):
       http_options = config.get('http_options', None)
-    elif hasattr(config, 'http_options'):
+    elif hasattr(config, 'http_options') and config is not None:
       http_options = config.http_options
 
     request_dict = _common.convert_to_dict(request_dict)
@@ -6665,12 +6667,13 @@ class AsyncModels(_api_module.BaseModule):
       contents = t.t_contents(self._api_client, contents)
       if not automatic_function_calling_history:
         automatic_function_calling_history.extend(contents)
-      contents.append(func_call_content)
-      contents.append(func_response_content)
+      if isinstance(contents, list):
+        contents.append(func_call_content)
+        contents.append(func_response_content)
       automatic_function_calling_history.append(func_call_content)
       automatic_function_calling_history.append(func_response_content)
 
-    if _extra_utils.should_append_afc_history(config):
+    if _extra_utils.should_append_afc_history(config) and response is not None:
       response.automatic_function_calling_history = (
           automatic_function_calling_history
       )
@@ -6827,8 +6830,9 @@ class AsyncModels(_api_module.BaseModule):
         contents = t.t_contents(self._api_client, contents)
         if not automatic_function_calling_history:
           automatic_function_calling_history.extend(contents)
-        contents.append(func_call_content)
-        contents.append(func_response_content)
+        if isinstance(contents, list):
+          contents.append(func_call_content)
+          contents.append(func_response_content)
         automatic_function_calling_history.append(func_call_content)
         automatic_function_calling_history.append(func_response_content)
 

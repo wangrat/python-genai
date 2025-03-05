@@ -302,12 +302,23 @@ class ReplayApiClient(BaseApiClient):
           status_code=http_response.status_code,
           sdk_response_segments=[],
       )
-    else:
+    elif isinstance(http_response, errors.APIError):
       response = ReplayResponse(
           headers=dict(http_response.response.headers),
           body_segments=[http_response._to_replay_record()],
           status_code=http_response.code,
           sdk_response_segments=[],
+      )
+    elif isinstance(http_response, bytes):
+      response = ReplayResponse(
+          headers={},
+          body_segments=[],
+          byte_segments=[http_response],
+          sdk_response_segments=[],
+      )
+    else:
+      raise ValueError(
+          'Unsupported http_response type: ' + str(type(http_response))
       )
     self.replay_session.interactions.append(
         ReplayInteraction(request=request, response=response)
