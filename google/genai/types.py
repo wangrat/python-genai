@@ -3602,18 +3602,23 @@ class Image(_common.BaseModel):
   """Image."""
 
   @classmethod
-  def from_file(cls, *, location: str) -> 'Image':
+  def from_file(
+      cls, *, location: str, mime_type: Optional[str] = None
+  ) -> 'Image':
     """Lazy-loads an image from a local file or Google Cloud Storage.
 
     Args:
         location: The local path or Google Cloud Storage URI from which to load
           the image.
+        mime_type: The MIME type of the image. If not provided, the MIME type
+          will be automatically determined.
 
     Returns:
         A loaded image as an `Image` object.
     """
     import urllib
     import pathlib
+    import mimetypes
 
     parsed_url = urllib.parse.urlparse(location)
     if (
@@ -3632,7 +3637,10 @@ class Image(_common.BaseModel):
 
     # Load image from local path
     image_bytes = pathlib.Path(location).read_bytes()
-    image = cls(image_bytes=image_bytes)
+
+    if not mime_type:
+      mime_type, _ = mimetypes.guess_type(location)
+    image = cls(image_bytes=image_bytes, mime_type=mime_type)
     return image
 
   def show(self):
