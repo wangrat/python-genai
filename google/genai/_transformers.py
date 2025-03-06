@@ -887,14 +887,24 @@ def t_resolve_operation(api_client: _api_client.BaseApiClient, struct: dict):
 
 
 def t_file_name(
-    api_client: _api_client.BaseApiClient, name: Optional[Union[str, types.File]]
+    api_client: _api_client.BaseApiClient,
+    name: Optional[Union[str, types.File, types.Video, types.GeneratedVideo]],
 ):
   # Remove the files/ prefix since it's added to the url path.
   if isinstance(name, types.File):
     name = name.name
+  elif isinstance(name, types.Video):
+    name = name.uri
+  elif isinstance(name, types.GeneratedVideo):
+    name = name.video.uri
 
   if name is None:
     raise ValueError('File name is required.')
+
+  if not isinstance(name, str):
+    raise ValueError(
+        f'Could not convert object of type `{type(name)}` to a file name.'
+    )
 
   if name.startswith('https://'):
     suffix = name.split('files/')[1]

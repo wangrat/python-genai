@@ -719,7 +719,7 @@ class BaseApiClient:
       self,
       http_request: HttpRequest,
   ) -> HttpResponse:
-    data: Optional[Union[str, bytes]]
+    data: Optional[Union[str, bytes]] = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
         data = json.dumps(http_request.data)

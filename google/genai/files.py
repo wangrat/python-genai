@@ -923,13 +923,17 @@ class Files(_api_module.BaseModule):
   def download(
       self,
       *,
-      file: Union[str, types.File],
+      file: Union[str, types.File, types.Video, types.GeneratedVideo],
       config: Optional[types.DownloadFileConfigOrDict] = None,
   ) -> bytes:
     """Downloads a file's data from storage.
 
     Files created by `upload` can't be downloaded. You can tell which files are
     downloadable by checking the `source` or `download_uri` property.
+
+    Note: This method returns the data as bytes. For `Video` and
+    `GeneratedVideo` objects there is an additional side effect, that it also
+    sets the `video_bytes` property on the `Video` object.
 
     Args:
       file (str): A file name, uri, or file object. Identifying which file to
@@ -952,6 +956,10 @@ class Files(_api_module.BaseModule):
       data = client.files.download(file=file)
       # data = client.files.download(file=file.name)
       # data = client.files.download(file=file.download_uri)
+
+      video = types.Video(uri=file.uri)
+      video_bytes = client.files.download(file=video)
+      video.video_bytes
     """
     if self._api_client.vertexai:
       raise ValueError(
@@ -985,6 +993,11 @@ class Files(_api_module.BaseModule):
         path,
         http_options,
     )
+
+    if isinstance(file, types.Video):
+      file.video_bytes = data
+    elif isinstance(file, types.GeneratedVideo):
+      file.video.video_bytes = data
 
     return data
 
