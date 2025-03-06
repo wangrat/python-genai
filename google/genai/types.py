@@ -23,7 +23,7 @@ import logging
 import sys
 import types as builtin_types
 import typing
-from typing import Any, Callable, Literal, Optional, Union, _UnionGenericAlias
+from typing import Any, Callable, Literal, Optional, Union, _UnionGenericAlias  # type: ignore
 import pydantic
 from pydantic import Field
 from typing_extensions import TypedDict
@@ -720,7 +720,7 @@ class UserContent(Content):
   def __init__(self, parts: Union['PartUnionDict', list['PartUnionDict']]):
     from . import _transformers as t
 
-    super().__init__(parts=t.t_parts(None, parts=parts))
+    super().__init__(parts=t.t_parts(parts=parts))
 
 
 class ModelContent(Content):
@@ -748,7 +748,7 @@ class ModelContent(Content):
   def __init__(self, parts: Union['PartUnionDict', list['PartUnionDict']]):
     from . import _transformers as t
 
-    super().__init__(parts=t.t_parts(None, parts=parts))
+    super().__init__(parts=t.t_parts(parts=parts))
 
 
 class ContentDict(TypedDict, total=False):
@@ -1736,7 +1736,7 @@ FileOrDict = Union[File, FileDict]
 if _is_pillow_image_imported:
   PartUnion = Union[File, Part, PIL_Image, str]
 else:
-  PartUnion = Union[File, Part, str]
+  PartUnion = Union[File, Part, str]  # type: ignore[misc]
 
 
 PartUnionDict = Union[PartUnion, PartDict]
@@ -3052,7 +3052,7 @@ class GenerateContentResponse(_common.BaseModel):
     ):
 
       class Placeholder(pydantic.BaseModel):
-        placeholder: response_schema
+        placeholder: response_schema  # type: ignore[valid-type]
 
       try:
         parsed = {'placeholder': json.loads(result.text)}
@@ -3082,7 +3082,7 @@ class GenerateContentResponse(_common.BaseModel):
           try:
 
             class Placeholder(pydantic.BaseModel):  # type: ignore[no-redef]
-              placeholder: response_schema
+              placeholder: response_schema  # type: ignore[valid-type]
 
             parsed = {'placeholder': json.loads(result.text)}
             placeholder = Placeholder.model_validate(parsed)

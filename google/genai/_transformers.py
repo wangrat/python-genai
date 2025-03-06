@@ -241,7 +241,7 @@ def pil_to_blob(img) -> types.Blob:
 
 
 def t_part(
-    client: _api_client.BaseApiClient, part: Optional[types.PartUnionDict]
+    part: Optional[types.PartUnionDict]
 ) -> types.Part:
   try:
     import PIL.Image
@@ -268,16 +268,15 @@ def t_part(
 
 
 def t_parts(
-    client: _api_client.BaseApiClient,
     parts: Optional[Union[list[types.PartUnionDict], types.PartUnionDict]],
 ) -> list[types.Part]:
   #
   if parts is None or (isinstance(parts, list) and not parts):
     raise ValueError('content parts are required.')
   if isinstance(parts, list):
-    return [t_part(client, part) for part in parts]
+    return [t_part(part) for part in parts]
   else:
-    return [t_part(client, parts)]
+    return [t_part(parts)]
 
 
 def t_image_predictions(
@@ -408,7 +407,7 @@ def t_contents(
       accumulated_parts: list[types.Part],
       current_part: types.PartUnionDict,
   ):
-    current_part = t_part(client, current_part)
+    current_part = t_part(current_part)
     if _is_user_part(current_part) == _are_user_parts(accumulated_parts):
       accumulated_parts.append(current_part)
     else:

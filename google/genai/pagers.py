@@ -30,7 +30,7 @@ PagedItem = Literal[
 class _BasePager(Generic[T]):
   """Base pager class for iterating through paginated results."""
 
-  def __init__(
+  def _init_page(
       self,
       name: PagedItem,
       request: Callable[..., Any],
@@ -54,6 +54,15 @@ class _BasePager(Generic[T]):
 
     self._page_size = request_config.get('page_size', len(self._page))
 
+  def __init__(
+      self,
+      name: PagedItem,
+      request: Callable[..., Any],
+      response: Any,
+      config: Any,
+  ):
+    self._init_page(name, request, response, config)
+
   @property
   def page(self) -> list[T]:
     """Returns the current page, which is a list of items.
@@ -72,7 +81,7 @@ class _BasePager(Generic[T]):
     return self._page
 
   @property
-  def name(self) -> str:
+  def name(self) -> PagedItem:
     """Returns the type of paged item (for example, ``batch_jobs``).
 
     Usage:
@@ -139,7 +148,7 @@ class _BasePager(Generic[T]):
     Args:
       response: The response object from the API request.
     """
-    self.__init__(self.name, self._request, response, self.config)
+    self._init_page(self.name, self._request, response, self.config)
 
 
 class Pager(_BasePager[T]):
