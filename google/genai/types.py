@@ -3034,13 +3034,14 @@ class GenerateContentResponse(_common.BaseModel):
     ):
       # Pydantic schema.
       try:
-        result.parsed = response_schema.model_validate_json(result.text)
+        if result.text is not None:
+          result.parsed = response_schema.model_validate_json(result.text)
       # may not be a valid json per stream response
       except pydantic.ValidationError:
         pass
       except json.decoder.JSONDecodeError:
         pass
-    elif isinstance(response_schema, EnumMeta):
+    elif isinstance(response_schema, EnumMeta) and result.text is not None:
       # Enum with "application/json" returns response in double quotes.
       enum_value = result.text.replace('"', '')
       try:
@@ -3049,7 +3050,7 @@ class GenerateContentResponse(_common.BaseModel):
             hasattr(response_schema, '__name__')
             and response_schema.__name__ == 'PlaceholderLiteralEnum'
         ):
-          result.parsed = str(response_schema(enum_value).name)
+          result.parsed = str(response_schema(enum_value).name)  # type: ignore
       except ValueError:
         pass
     elif isinstance(response_schema, builtin_types.GenericAlias) or isinstance(
@@ -3060,9 +3061,10 @@ class GenerateContentResponse(_common.BaseModel):
         placeholder: response_schema  # type: ignore[valid-type]
 
       try:
-        parsed = {'placeholder': json.loads(result.text)}
-        placeholder = Placeholder.model_validate(parsed)
-        result.parsed = placeholder.placeholder
+        if result.text is not None:
+          parsed = {'placeholder': json.loads(result.text)}
+          placeholder = Placeholder.model_validate(parsed)
+          result.parsed = placeholder.placeholder
       except json.decoder.JSONDecodeError:
         pass
       except pydantic.ValidationError:
@@ -3075,7 +3077,8 @@ class GenerateContentResponse(_common.BaseModel):
       # want the result converted to. So just return json.
       # JSON schema.
       try:
-        result.parsed = json.loads(result.text)
+        if result.text is not None:
+          result.parsed = json.loads(result.text)
       # may not be a valid json per stream response
       except json.decoder.JSONDecodeError:
         pass
@@ -3085,20 +3088,22 @@ class GenerateContentResponse(_common.BaseModel):
       for union_type in union_types:
         if issubclass(union_type, pydantic.BaseModel):
           try:
+            if result.text is not None:
 
-            class Placeholder(pydantic.BaseModel):  # type: ignore[no-redef]
-              placeholder: response_schema  # type: ignore[valid-type]
+              class Placeholder(pydantic.BaseModel):  # type: ignore[no-redef]
+                placeholder: response_schema  # type: ignore[valid-type]
 
-            parsed = {'placeholder': json.loads(result.text)}
-            placeholder = Placeholder.model_validate(parsed)
-            result.parsed = placeholder.placeholder
+              parsed = {'placeholder': json.loads(result.text)}
+              placeholder = Placeholder.model_validate(parsed)
+              result.parsed = placeholder.placeholder
           except json.decoder.JSONDecodeError:
             pass
           except pydantic.ValidationError:
             pass
         else:
           try:
-            result.parsed = json.loads(result.text)
+            if result.text is not None:
+              result.parsed = json.loads(result.text)
           # may not be a valid json per stream response
           except json.decoder.JSONDecodeError:
             pass
@@ -3676,6 +3681,8 @@ class Image(_common.BaseModel):
             'The PIL module is not available. Please install the Pillow'
             ' package. `pip install pillow`'
         )
+      if self.image_bytes is None:
+        raise ValueError('The image bytes are not set.')
       self._loaded_image = PIL_Image.open(io.BytesIO(self.image_bytes))
     return self._loaded_image
 
@@ -3687,6 +3694,8 @@ class Image(_common.BaseModel):
     """
     import pathlib
 
+    if self.image_bytes is None:
+      raise ValueError('The image bytes are not set.')
     pathlib.Path(location).write_bytes(self.image_bytes)
 
 
