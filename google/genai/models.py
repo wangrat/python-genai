@@ -2950,6 +2950,13 @@ def _GenerateVideosParameters_to_mldev(
   if getv(from_object, ['prompt']) is not None:
     setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
 
+  if getv(from_object, ['image']) is not None:
+    setv(
+        to_object,
+        ['instances[0]', 'image'],
+        _Image_to_mldev(api_client, getv(from_object, ['image']), to_object),
+    )
+
   if getv(from_object, ['config']) is not None:
     setv(
         to_object,
@@ -2977,6 +2984,13 @@ def _GenerateVideosParameters_to_vertex(
 
   if getv(from_object, ['prompt']) is not None:
     setv(to_object, ['instances[0]', 'prompt'], getv(from_object, ['prompt']))
+
+  if getv(from_object, ['image']) is not None:
+    setv(
+        to_object,
+        ['instances[0]', 'image'],
+        _Image_to_vertex(api_client, getv(from_object, ['image']), to_object),
+    )
 
   if getv(from_object, ['config']) is not None:
     setv(
@@ -5124,6 +5138,7 @@ class Models(_api_module.BaseModule):
       *,
       model: str,
       prompt: Optional[str] = None,
+      image: Optional[types.ImageOrDict] = None,
       config: Optional[types.GenerateVideosConfigOrDict] = None,
   ) -> types.GenerateVideosOperation:
     """Generates videos based on a text description and configuration.
@@ -5151,6 +5166,7 @@ class Models(_api_module.BaseModule):
     parameter_model = types._GenerateVideosParameters(
         model=model,
         prompt=prompt,
+        image=image,
         config=config,
     )
 
@@ -6507,6 +6523,7 @@ class AsyncModels(_api_module.BaseModule):
       *,
       model: str,
       prompt: Optional[str] = None,
+      image: Optional[types.ImageOrDict] = None,
       config: Optional[types.GenerateVideosConfigOrDict] = None,
   ) -> types.GenerateVideosOperation:
     """Generates videos based on a text description and configuration.
@@ -6534,6 +6551,7 @@ class AsyncModels(_api_module.BaseModule):
     parameter_model = types._GenerateVideosParameters(
         model=model,
         prompt=prompt,
+        image=image,
         config=config,
     )
 

@@ -5087,6 +5087,11 @@ class _GenerateVideosParameters(_common.BaseModel):
       default=None,
       description="""The text prompt for generating the videos. Optional for image to video use cases.""",
   )
+  image: Optional[Image] = Field(
+      default=None,
+      description="""The input image for generating the videos.
+      Optional if prompt is provided.""",
+  )
   config: Optional[GenerateVideosConfig] = Field(
       default=None, description="""Configuration for generating videos."""
   )
@@ -5101,6 +5106,10 @@ class _GenerateVideosParametersDict(TypedDict, total=False):
 
   prompt: Optional[str]
   """The text prompt for generating the videos. Optional for image to video use cases."""
+
+  image: Optional[ImageDict]
+  """The input image for generating the videos.
+      Optional if prompt is provided."""
 
   config: Optional[GenerateVideosConfigDict]
   """Configuration for generating videos."""
