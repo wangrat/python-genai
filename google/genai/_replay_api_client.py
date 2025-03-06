@@ -109,7 +109,8 @@ def _redact_project_location_path(path: str) -> str:
     return path
 
 
-def _redact_request_body(body: dict[str, object]) -> dict[str, object]:
+def _redact_request_body(body: dict[str, object]):
+  """Redacts fields in the request body in place."""
   for key, value in body.items():
     if isinstance(value, str):
       body[key] = _redact_project_location_path(value)

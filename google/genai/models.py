@@ -5281,7 +5281,7 @@ class Models(_api_module.BaseModule):
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
     automatic_function_calling_history: list[types.Content] = []
-    response = None
+    response = types.GenerateContentResponse()
     i = 0
     while remaining_remote_calls_afc > 0:
       i += 1
@@ -6636,7 +6636,7 @@ class AsyncModels(_api_module.BaseModule):
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
     automatic_function_calling_history: list[types.Content] = []
-    response = None
+    response = types.GenerateContentResponse()
     while remaining_remote_calls_afc > 0:
       response = await self._generate_content(
           model=model, contents=contents, config=config

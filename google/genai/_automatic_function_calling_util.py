@@ -17,7 +17,7 @@ import inspect
 import sys
 import types as builtin_types
 import typing
-from typing import _GenericAlias, Any, Callable, get_args, get_origin, Literal, Union
+from typing import _GenericAlias, Any, Callable, get_args, get_origin, Literal, Optional, Union
 
 import pydantic
 
@@ -304,9 +304,9 @@ def _parse_schema_from_parameter(
   )
 
 
-def _get_required_fields(schema: types.Schema) -> list[str]:
+def _get_required_fields(schema: types.Schema) -> Optional[list[str]]:
   if not schema.properties:
-    return
+    return None
   return [
       field_name
       for field_name, field_schema in schema.properties.items()

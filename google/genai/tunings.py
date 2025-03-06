@@ -1404,7 +1404,7 @@ class _IpythonUtils:
     return bool(_IpythonUtils._get_ipython_shell_name())
 
   @staticmethod
-  def _get_styles() -> None:
+  def _get_styles() -> str:
     """Returns the HTML style markup to support custom buttons."""
     return """
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">

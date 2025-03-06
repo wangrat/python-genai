@@ -56,6 +56,8 @@ else:
 
 logger = logging.getLogger('google_genai.types')
 
+T = typing.TypeVar('T', bound='GenerateContentResponse')
+
 
 class Outcome(_common.CaseInSensitiveEnum):
   """Required. Outcome of the code execution."""
@@ -3012,8 +3014,11 @@ class GenerateContentResponse(_common.BaseModel):
 
   @classmethod
   def _from_response(
-      cls, *, response: dict[str, object], kwargs: dict[str, object]
-  ) -> _common.BaseModel:
+      cls: typing.Type[T],
+      *,
+      response: dict[str, object],
+      kwargs: dict[str, object],
+  ) -> T:
     result = super()._from_response(response=response, kwargs=kwargs)
 
     # Handles response schema.

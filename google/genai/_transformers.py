@@ -179,8 +179,8 @@ def t_models_url(api_client: _api_client.BaseApiClient, base_models: bool) -> st
 
 
 def t_extract_models(
-    api_client: _api_client.BaseApiClient, response: dict
-) -> list[types.Model]:
+    api_client: _api_client.BaseApiClient, response: dict[str, list[types.ModelDict]]
+) -> Optional[list[types.ModelDict]]:
   if not response:
     return []
   elif response.get('models') is not None:
@@ -282,7 +282,7 @@ def t_parts(
 def t_image_predictions(
     client: _api_client.BaseApiClient,
     predictions: Optional[Iterable[Mapping[str, Any]]],
-) -> list[types.GeneratedImage]:
+) -> Optional[list[types.GeneratedImage]]:
   if not predictions:
     return None
   images = []
@@ -767,7 +767,7 @@ def t_speech_config(
   raise ValueError(f'Unsupported speechConfig type: {type(origin)}')
 
 
-def t_tool(client: _api_client.BaseApiClient, origin) -> types.Tool:
+def t_tool(client: _api_client.BaseApiClient, origin) -> Optional[types.Tool]:
   if not origin:
     return None
   if inspect.isfunction(origin) or inspect.ismethod(origin):
@@ -793,12 +793,13 @@ def t_tools(
   for tool in origin:
     transformed_tool = t_tool(client, tool)
     # All functions should be merged into one tool.
-    if transformed_tool.function_declarations:
-      function_tool.function_declarations += (
-          transformed_tool.function_declarations
-      )
-    else:
-      tools.append(transformed_tool)
+    if transformed_tool is not None:
+      if transformed_tool.function_declarations:
+        function_tool.function_declarations += (
+            transformed_tool.function_declarations
+        )
+      else:
+        tools.append(transformed_tool)
   if function_tool.function_declarations:
     tools.append(function_tool)
   return tools
@@ -909,16 +910,19 @@ def t_file_name(
 
 def t_tuning_job_status(
     api_client: _api_client.BaseApiClient, status: str
-) -> types.JobState:
+) -> Union[types.JobState, str]:
   if status == 'STATE_UNSPECIFIED':
-    return 'JOB_STATE_UNSPECIFIED'
+    return types.JobState.JOB_STATE_UNSPECIFIED
   elif status == 'CREATING':
-    return 'JOB_STATE_RUNNING'
+    return types.JobState.JOB_STATE_RUNNING
   elif status == 'ACTIVE':
-    return 'JOB_STATE_SUCCEEDED'
+    return types.JobState.JOB_STATE_SUCCEEDED
   elif status == 'FAILED':
-    return 'JOB_STATE_FAILED'
+    return types.JobState.JOB_STATE_FAILED
   else:
+    for state in types.JobState:
+      if str(state.value) == status:
+        return state
     return status
 
 

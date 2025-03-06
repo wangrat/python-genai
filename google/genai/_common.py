@@ -188,6 +188,8 @@ def _remove_extra_fields(
         if isinstance(item, dict):
           _remove_extra_fields(typing.get_args(annotation)[0], item)
 
+T = typing.TypeVar('T', bound='BaseModel')
+
 
 class BaseModel(pydantic.BaseModel):
 
@@ -201,12 +203,13 @@ class BaseModel(pydantic.BaseModel):
       arbitrary_types_allowed=True,
       ser_json_bytes='base64',
       val_json_bytes='base64',
+      ignored_types=(typing.TypeVar,)
   )
 
   @classmethod
   def _from_response(
-      cls, *, response: dict[str, object], kwargs: dict[str, object]
-  ) -> 'BaseModel':
+      cls: typing.Type[T], *, response: dict[str, object], kwargs: dict[str, object]
+  ) -> T:
     # To maintain forward compatibility, we need to remove extra fields from
     # the response.
     # We will provide another mechanism to allow users to access these fields.
