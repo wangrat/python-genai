@@ -5161,14 +5161,16 @@ class Video(_common.BaseModel):
   def show(self):
     """Shows the video.
 
+    If the video has no mime_type, it is assumed to be video/mp4.
+
     This method only works in a notebook environment.
     """
-    if self.uri:
+    if self.uri and not self.video_bytes:
       return ValueError('Showing remote videos is not supported.')
     if not self.video_bytes:
       return ValueError('Video has no bytes.')
-    if not self.mime_type:
-      return ValueError('Mime type must be provided to display video.')
+
+    mime_type = self.mime_type or 'video/mp4'
 
     try:
       from IPython import display as IPython_display
@@ -5177,7 +5179,7 @@ class Video(_common.BaseModel):
 
     if IPython_display:
       return IPython_display.Video(
-          data=self.video_bytes, mimetype=self.mime_type, embed=True
+          data=self.video_bytes, mimetype=mime_type, embed=True
       )
 
   def __repr__(self):
