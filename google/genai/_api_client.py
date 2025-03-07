@@ -444,6 +444,12 @@ class BaseApiClient:
     timeout_in_seconds: Optional[Union[float, int]] = patched_http_options.get(
         'timeout', None
     )
+    if timeout_in_seconds:
+      # HttpOptions.timeout is in milliseconds. But httpx.Client.request()
+      # expects seconds.
+      timeout_in_seconds = timeout_in_seconds / 1000.0
+    else:
+      timeout_in_seconds = None
 
     return HttpRequest(
         method=http_method,
