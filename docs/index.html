@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Submodules" href="genai.html" />
 
-    <!-- Generated with Sphinx 8.2.1 and Furo 2024.08.06 -->
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
         <title>Google Gen AI SDK documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
@@ -378,31 +378,182 @@ getters.</p>
 </pre></div>
 </div>
 </section>
-<section id="how-to-structure-contents">
-<h3>How to structure <cite>contents</cite><a class="headerlink" href="#how-to-structure-contents" title="Link to this heading">¶</a></h3>
-<p>There are several ways to structure the <cite>contents</cite> in your request.</p>
-<p>Provide a single string as shown in the text example above:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span><span class="o">=</span><span class="s1">&#39;Can you recommend some things to do in Boston and New York in the winter?&#39;</span>
+<section id="how-to-structure-contents-argument-for-generate-content">
+<h3>How to structure <cite>contents</cite> argument for <cite>generate_content</cite><a class="headerlink" href="#how-to-structure-contents-argument-for-generate-content" title="Link to this heading">¶</a></h3>
+<p>The SDK always converts the inputs to the <cite>contents</cite> argument into
+<cite>list[types.Content]</cite>.
+The following shows some common ways to provide your inputs.</p>
+<section id="provide-a-list-types-content">
+<h4>Provide a <cite>list[types.Content]</cite><a class="headerlink" href="#provide-a-list-types-content" title="Link to this heading">¶</a></h4>
+<p>This is the canonical way to provide contents, SDK will not do any conversion.</p>
+</section>
+<section id="provide-a-types-content-instance">
+<h4>Provide a <cite>types.Content</cite> instance<a class="headerlink" href="#provide-a-types-content-instance" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span>
+<span class="n">role</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">,</span>
+<span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Why is the sky blue?&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>Provide a single <cite>Content</cite> instance with multiple <cite>Part</cite> instances:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="p">[</span>
-    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Can you recommend some things to do in Boston in the winter?&#39;</span><span class="p">),</span>
-    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Can you recommend some things to do in New York in the winter?&#39;</span><span class="p">)</span>
-<span class="p">],</span> <span class="n">role</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">)</span>
+<p>SDK converts this to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">Content</span><span class="p">(</span>
+    <span class="n">role</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">,</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span><span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Why is the sky blue?&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
+<span class="p">]</span>
 </pre></div>
 </div>
-<p>When sending more than one input type, provide a list with multiple <cite>Content</cite>
-instances:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span><span class="o">=</span><span class="p">[</span>
-    <span class="s1">&#39;What is this a picture of?&#39;</span><span class="p">,</span>
-    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span>
-        <span class="n">file_uri</span><span class="o">=</span><span class="s1">&#39;gs://generativeai-downloads/images/scones.jpg&#39;</span><span class="p">,</span>
-        <span class="n">mime_type</span><span class="o">=</span><span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span>
+</section>
+<section id="provide-a-string">
+<h4>Provide a string<a class="headerlink" href="#provide-a-string" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span><span class="o">=</span><span class="s1">&#39;Why is the sky blue?&#39;</span>
+</pre></div>
+</div>
+<p>The SDK will assume this is a text part, and it converts this into the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">UserContent</span><span class="p">(</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Why is the sky blue?&#39;</span><span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Where a <cite>types.UserContent</cite> is a subclass of <cite>types.Content</cite>, it sets the
+<cite>role</cite> field to be <cite>user</cite>.</p>
+</section>
+<section id="provide-a-list-of-string">
+<h4>Provide a list of string<a class="headerlink" href="#provide-a-list-of-string" title="Link to this heading">¶</a></h4>
+<p>The SDK assumes these are 2 text parts, it converts this into a single content,
+like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">UserContent</span><span class="p">(</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Why is the sky blue?&#39;</span><span class="p">),</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="s1">&#39;Why is the cloud white?&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Where a <cite>types.UserContent</cite> is a subclass of <cite>types.Content</cite>, the
+<cite>role</cite> field in <cite>types.UserContent</cite> is fixed to be <cite>user</cite>.</p>
+</section>
+<section id="provide-a-function-call-part">
+<h4>Provide a function call part<a class="headerlink" href="#provide-a-function-call-part" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+<span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+<span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;Boston&#39;</span><span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The SDK converts a function call part to a content with a <cite>model</cite> role:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">ModelContent</span><span class="p">(</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;Boston&#39;</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Where a <cite>types.ModelContent</cite> is a subclass of <cite>types.Content</cite>, the
+<cite>role</cite> field in <cite>types.ModelContent</cite> is fixed to be <cite>model</cite>.</p>
+</section>
+<section id="provide-a-list-of-function-call-parts">
+<h4>Provide a list of function call parts<a class="headerlink" href="#provide-a-list-of-function-call-parts" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;Boston&#39;</span><span class="p">}</span>
+<span class="p">),</span>
+<span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;New York&#39;</span><span class="p">}</span>
+<span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The SDK converts a list of function call parts to the a content with a <cite>model</cite> role:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">ModelContent</span><span class="p">(</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;Boston&#39;</span><span class="p">}</span>
     <span class="p">),</span>
-<span class="p">],</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_function_call</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;get_weather_by_location&#39;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;location&#39;</span><span class="p">:</span> <span class="s1">&#39;New York&#39;</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="p">]</span>
 </pre></div>
 </div>
+<p>Where a <cite>types.ModelContent</cite> is a subclass of <cite>types.Content</cite>, the
+<cite>role</cite> field in <cite>types.ModelContent</cite> is fixed to be <cite>model</cite>.</p>
+</section>
+<section id="provide-a-non-function-call-part">
+<h4>Provide a non function call part<a class="headerlink" href="#provide-a-non-function-call-part" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span>
+<span class="n">file_uri</span><span class="p">:</span> <span class="s1">&#39;gs://generativeai-downloads/images/scones.jpg&#39;</span><span class="p">,</span>
+<span class="n">mime_type</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The SDK converts all non function call parts into a content with a <cite>user</cite> role.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">UserContent</span><span class="p">(</span><span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span>
+    <span class="n">file_uri</span><span class="p">:</span> <span class="s1">&#39;gs://generativeai-downloads/images/scones.jpg&#39;</span><span class="p">,</span>
+    <span class="n">mime_type</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="provide-a-list-of-non-function-call-parts">
+<h4>Provide a list of non function call parts<a class="headerlink" href="#provide-a-list-of-non-function-call-parts" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contents</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="s1">&#39;What is this image about?&#39;</span><span class="p">),</span>
+<span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span>
+    <span class="n">file_uri</span><span class="p">:</span> <span class="s1">&#39;gs://generativeai-downloads/images/scones.jpg&#39;</span><span class="p">,</span>
+    <span class="n">mime_type</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The SDK will convert the list of parts into a content with a <cite>user</cite> role</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="n">types</span><span class="o">.</span><span class="n">UserContent</span><span class="p">(</span>
+    <span class="n">parts</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_text</span><span class="p">(</span><span class="s1">&#39;What is this image about?&#39;</span><span class="p">),</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">from_uri</span><span class="p">(</span>
+        <span class="n">file_uri</span><span class="p">:</span> <span class="s1">&#39;gs://generativeai-downloads/images/scones.jpg&#39;</span><span class="p">,</span>
+        <span class="n">mime_type</span><span class="p">:</span> <span class="s1">&#39;image/jpeg&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="mix-types-in-contents">
+<h4>Mix types in contents<a class="headerlink" href="#mix-types-in-contents" title="Link to this heading">¶</a></h4>
+<p>You can also provide a list of <cite>types.ContentUnion</cite>. The SDK leaves items of
+<cite>types.Content</cite> as is, it groups consecutive non function call parts into a
+single <cite>types.UserContent</cite>, and it groups consecutive function call parts into
+a single <cite>types.ModelContent</cite>.</p>
+<p>If you put a list within a list, the inner list can only contain
+<cite>types.PartUnion</cite> items. The SDK will convert the inner list into a single
+<cite>types.UserContent</cite>.</p>
+</section>
 </section>
 </section>
 <section id="system-instructions-and-other-configs">
@@ -4052,7 +4203,18 @@ tuning through <code class="docutils literal notranslate"><span class="pre">tune
 <li><a class="reference internal" href="#generate-content">Generate Content</a><ul>
 <li><a class="reference internal" href="#with-text-content">with text content</a></li>
 <li><a class="reference internal" href="#with-uploaded-file-gemini-api-only">with uploaded file (Gemini API only)</a></li>
-<li><a class="reference internal" href="#how-to-structure-contents">How to structure <cite>contents</cite></a></li>
+<li><a class="reference internal" href="#how-to-structure-contents-argument-for-generate-content">How to structure <cite>contents</cite> argument for <cite>generate_content</cite></a><ul>
+<li><a class="reference internal" href="#provide-a-list-types-content">Provide a <cite>list[types.Content]</cite></a></li>
+<li><a class="reference internal" href="#provide-a-types-content-instance">Provide a <cite>types.Content</cite> instance</a></li>
+<li><a class="reference internal" href="#provide-a-string">Provide a string</a></li>
+<li><a class="reference internal" href="#provide-a-list-of-string">Provide a list of string</a></li>
+<li><a class="reference internal" href="#provide-a-function-call-part">Provide a function call part</a></li>
+<li><a class="reference internal" href="#provide-a-list-of-function-call-parts">Provide a list of function call parts</a></li>
+<li><a class="reference internal" href="#provide-a-non-function-call-part">Provide a non function call part</a></li>
+<li><a class="reference internal" href="#provide-a-list-of-non-function-call-parts">Provide a list of non function call parts</a></li>
+<li><a class="reference internal" href="#mix-types-in-contents">Mix types in contents</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#system-instructions-and-other-configs">System Instructions and Other Configs</a></li>
