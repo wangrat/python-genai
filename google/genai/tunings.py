@@ -781,13 +781,13 @@ class Tunings(_api_module.BaseModule):
   def _list(
       self, *, config: Optional[types.ListTuningJobsConfigOrDict] = None
   ) -> types.ListTuningJobsResponse:
-    """Lists tuning jobs.
+    """Lists `TuningJob` objects.
 
     Args:
       config: The configuration for the list request.
 
     Returns:
-      A list of tuning jobs.
+      A list of `TuningJob` objects.
     """
 
     parameter_model = types._ListTuningJobsParameters(
@@ -855,7 +855,7 @@ class Tunings(_api_module.BaseModule):
       training_dataset: types.TuningDatasetOrDict,
       config: Optional[types.CreateTuningJobConfigOrDict] = None,
   ) -> types.TuningJob:
-    """Creates a supervised fine-tuning job.
+    """Creates a supervised fine-tuning job and returns the TuningJob object.
 
     Args:
       base_model: The name of the model to tune.
@@ -922,7 +922,7 @@ class Tunings(_api_module.BaseModule):
       training_dataset: types.TuningDatasetOrDict,
       config: Optional[types.CreateTuningJobConfigOrDict] = None,
   ) -> types.Operation:
-    """Creates a supervised fine-tuning job.
+    """Creates a supervised fine-tuning job and returns the TuningJob object.
 
     Args:
       base_model: The name of the model to tune.
@@ -1120,13 +1120,13 @@ class AsyncTunings(_api_module.BaseModule):
   async def _list(
       self, *, config: Optional[types.ListTuningJobsConfigOrDict] = None
   ) -> types.ListTuningJobsResponse:
-    """Lists tuning jobs.
+    """Lists `TuningJob` objects.
 
     Args:
       config: The configuration for the list request.
 
     Returns:
-      A list of tuning jobs.
+      A list of `TuningJob` objects.
     """
 
     parameter_model = types._ListTuningJobsParameters(
@@ -1194,7 +1194,7 @@ class AsyncTunings(_api_module.BaseModule):
       training_dataset: types.TuningDatasetOrDict,
       config: Optional[types.CreateTuningJobConfigOrDict] = None,
   ) -> types.TuningJob:
-    """Creates a supervised fine-tuning job.
+    """Creates a supervised fine-tuning job and returns the TuningJob object.
 
     Args:
       base_model: The name of the model to tune.
@@ -1261,7 +1261,7 @@ class AsyncTunings(_api_module.BaseModule):
       training_dataset: types.TuningDatasetOrDict,
       config: Optional[types.CreateTuningJobConfigOrDict] = None,
   ) -> types.Operation:
-    """Creates a supervised fine-tuning job.
+    """Creates a supervised fine-tuning job and returns the TuningJob object.
 
     Args:
       base_model: The name of the model to tune.

@@ -1176,10 +1176,7 @@ class Caches(_api_module.BaseModule):
       model: str,
       config: Optional[types.CreateCachedContentConfigOrDict] = None,
   ) -> types.CachedContent:
-    """Creates cached content, this call will initialize the cached
-
-    content in the data storage, and users need to pay for the cache data
-    storage.
+    """Creates a cached contents resource.
 
     Usage:
 
@@ -1562,10 +1559,7 @@ class AsyncCaches(_api_module.BaseModule):
       model: str,
       config: Optional[types.CreateCachedContentConfigOrDict] = None,
   ) -> types.CachedContent:
-    """Creates cached content, this call will initialize the cached
-
-    content in the data storage, and users need to pay for the cache data
-    storage.
+    """Creates a cached contents resource.
 
     Usage:
 

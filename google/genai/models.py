@@ -4980,7 +4980,7 @@ class Models(_api_module.BaseModule):
     .. code-block:: python
 
       response = client.models.count_tokens(
-          model='gemini-1.5-flash',
+          model='gemini-2.0-flash',
           contents='What is your name?',
       )
       print(response)
@@ -5054,9 +5054,9 @@ class Models(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.ComputeTokensConfigOrDict] = None,
   ) -> types.ComputeTokensResponse:
-    """Return a list of tokens based on the input contents.
+    """Given a list of contents, returns a corresponding TokensInfo containing the
 
-    Only text is supported.
+    list of tokens and list of token ids.
 
     This method is not supported by the Gemini Developer API.
 
@@ -5069,7 +5069,7 @@ class Models(_api_module.BaseModule):
     .. code-block:: python
 
       response = client.models.compute_tokens(
-          model='gemini-1.5-flash',
+          model='gemini-2.0-flash',
           contents='What is your name?',
       )
       print(response)
@@ -5234,21 +5234,21 @@ class Models(_api_module.BaseModule):
     """Makes an API request to generate content using a model.
 
     For the `model` parameter, supported formats for Vertex AI API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The full resource name starts with 'projects/', for example:
-      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
+      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-2.0-flash'
     - The partial resource name with 'publishers/', for example:
-      'publishers/google/models/gemini-1.5-flash-002' or
+      'publishers/google/models/gemini-2.0-flash' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
-      'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
+      'google/gemini-2.0-flash' or 'meta/llama-3.1-405b-instruct-maas'
 
     For the `model` parameter, supported formats for Gemini API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The model name starts with 'models/', for example:
-      'models/gemini-1.5-flash-002'
-    - if you would like to use a tuned model, the model name starts with
-      'tunedModels/', for example:
+      'models/gemini-2.0-flash'
+    - For tuned models, the model name starts with 'tunedModels/',
+      for example:
       'tunedModels/1234567890123456789'
 
     Some models support multimodal input and output.
@@ -5265,7 +5265,7 @@ class Models(_api_module.BaseModule):
       )
 
       response = client.models.generate_content(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents='''What is a good name for a flower shop that specializes in
           selling bouquets of dried flowers?'''
       )
@@ -5276,7 +5276,7 @@ class Models(_api_module.BaseModule):
       # * Timeless Petals
 
       response = client.models.generate_content(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents=[
           types.Part.from_text('What is shown in this image?'),
           types.Part.from_uri('gs://generativeai-downloads/images/scones.jpg',
@@ -5354,21 +5354,21 @@ class Models(_api_module.BaseModule):
     """Makes an API request to generate content using a model and yields the model's response in chunks.
 
     For the `model` parameter, supported formats for Vertex AI API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The full resource name starts with 'projects/', for example:
-      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
+      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-2.0-flash'
     - The partial resource name with 'publishers/', for example:
-      'publishers/google/models/gemini-1.5-flash-002' or
+      'publishers/google/models/gemini-2.0-flash' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
-      'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
+      'google/gemini-2.0-flash' or 'meta/llama-3.1-405b-instruct-maas'
 
     For the `model` parameter, supported formats for Gemini API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The model name starts with 'models/', for example:
-      'models/gemini-1.5-flash-002'
-    - If you would like to use a tuned model, the model name starts with
-      'tunedModels/', for example:
+      'models/gemini-2.0-flash'
+    - For tuned models, the model name starts with 'tunedModels/',
+      for example:
       'tunedModels/1234567890123456789'
 
     Some models support multimodal input and output.
@@ -5385,7 +5385,7 @@ class Models(_api_module.BaseModule):
       )
 
       for chunk in client.models.generate_content_stream(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents='''What is a good name for a flower shop that specializes in
           selling bouquets of dried flowers?'''
       ):
@@ -5396,7 +5396,7 @@ class Models(_api_module.BaseModule):
       # * Timeless Petals
 
       for chunk in client.models.generate_content_stream(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents=[
           types.Part.from_text('What is shown in this image?'),
           types.Part.from_uri('gs://generativeai-downloads/images/scones.jpg',
@@ -6365,7 +6365,7 @@ class AsyncModels(_api_module.BaseModule):
     .. code-block:: python
 
       response = await client.aio.models.count_tokens(
-          model='gemini-1.5-flash',
+          model='gemini-2.0-flash',
           contents='What is your name?',
       )
       print(response)
@@ -6439,11 +6439,10 @@ class AsyncModels(_api_module.BaseModule):
       contents: Union[types.ContentListUnion, types.ContentListUnionDict],
       config: Optional[types.ComputeTokensConfigOrDict] = None,
   ) -> types.ComputeTokensResponse:
-    """Return a list of tokens based on the input contents.
+    """Given a list of contents, returns a corresponding TokensInfo containing the
 
-    Only text is supported.
+    list of tokens and list of token ids.
 
-    This method is not supported by the Gemini Developer API.
 
     Args:
       model (str): The model to use.
@@ -6454,7 +6453,7 @@ class AsyncModels(_api_module.BaseModule):
     .. code-block:: python
 
       response = await client.aio.models.compute_tokens(
-          model='gemini-1.5-flash',
+          model='gemini-2.0-flash',
           contents='What is your name?',
       )
       print(response)
@@ -6632,7 +6631,7 @@ class AsyncModels(_api_module.BaseModule):
       )
 
       response = await client.aio.models.generate_content(
-          model='gemini-1.5-flash-002',
+          model='gemini-2.0-flash',
           contents='User input: I like bagels. Answer:',
           config=types.GenerateContentConfig(
               system_instruction=
@@ -6709,21 +6708,21 @@ class AsyncModels(_api_module.BaseModule):
     """Makes an API request to generate content using a model and yields the model's response in chunks.
 
     For the `model` parameter, supported formats for Vertex AI API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The full resource name starts with 'projects/', for example:
-      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-1.5-flash-002'
+      'projects/my-project-id/locations/us-central1/publishers/google/models/gemini-2.0-flash'
     - The partial resource name with 'publishers/', for example:
-      'publishers/google/models/gemini-1.5-flash-002' or
+      'publishers/google/models/gemini-2.0-flash' or
       'publishers/meta/models/llama-3.1-405b-instruct-maas'
     - `/` separated publisher and model name, for example:
-      'google/gemini-1.5-flash-002' or 'meta/llama-3.1-405b-instruct-maas'
+      'google/gemini-2.0-flash' or 'meta/llama-3.1-405b-instruct-maas'
 
     For the `model` parameter, supported formats for Gemini API include:
-    - The Gemini model ID, for example: 'gemini-1.5-flash-002'
+    - The Gemini model ID, for example: 'gemini-2.0-flash'
     - The model name starts with 'models/', for example:
-      'models/gemini-1.5-flash-002'
-    - If you would like to use a tuned model, the model name starts with
-      'tunedModels/', for example:
+      'models/gemini-2.0-flash'
+    - For tuned models, the model name starts with 'tunedModels/',
+      for example:
       'tunedModels/1234567890123456789'
 
     Some models support multimodal input and output.
@@ -6740,7 +6739,7 @@ class AsyncModels(_api_module.BaseModule):
       )
 
       async for chunk in await client.aio.models.generate_content_stream(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents='''What is a good name for a flower shop that specializes in
           selling bouquets of dried flowers?'''
       ):
@@ -6751,7 +6750,7 @@ class AsyncModels(_api_module.BaseModule):
       # * Timeless Petals
 
       async for chunk in awiat client.aio.models.generate_content_stream(
-        model='gemini-1.5-flash-002',
+        model='gemini-2.0-flash',
         contents=[
           types.Part.from_text('What is shown in this image?'),
           types.Part.from_uri('gs://generativeai-downloads/images/scones.jpg',
