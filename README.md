@@ -130,36 +130,201 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
-#### How to structure `contents`
-There are several ways to structure the `contents` in your request.
+#### How to structure `contents` argument for `generate_content`
+The SDK always converts the inputs to the `contents` argument into
+`list[types.Content]`.
+The following shows some common ways to provide your inputs.
 
-Provide a single string as shown in the text example above:
+##### Provide a `list[types.Content]`
+This is the canonical way to provide contents, SDK will not do any conversion.
+
+##### Provide a `types.Content` instance
 
 ```python
-contents='Can you recommend some things to do in Boston and New York in the winter?'
+contents = types.Content(
+  role='user',
+  parts=[types.Part.from_text(text='Why is the sky blue?')]
+)
 ```
 
-Provide a single `Content` instance with multiple `Part` instances:
+SDK converts this to
 
 ```python
-contents=types.Content(parts=[
-    types.Part.from_text(text='Can you recommend some things to do in Boston in the winter?'),
-    types.Part.from_text(text='Can you recommend some things to do in New York in the winter?')
-], role='user')
+[
+  types.Content(
+    role='user',
+    parts=[types.Part.from_text(text='Why is the sky blue?')]
+  )
+]
 ```
 
-When sending more than one input type, provide a list with multiple `Content`
-instances:
+##### Provide a string
 
 ```python
-contents=[
-    'What is this a picture of?',
+contents='Why is the sky blue?'
+```
+
+The SDK will assume this is a text part, and it converts this into the following:
+
+```python
+[
+  types.UserContent(
+    parts=[
+      types.Part.from_text(text='Why is the sky blue?')
+    ]
+  )
+]
+```
+
+Where a `types.UserContent` is a subclass of `types.Content`, it sets the
+`role` field to be `user`.
+
+##### Provide a list of string
+
+```python
+contents=['Why is the sky blue?', 'Why is the cloud white?']
+```
+
+The SDK assumes these are 2 text parts, it converts this into a single content,
+like the following:
+
+```python
+[
+  types.UserContent(
+    parts=[
+      types.Part.from_text(text='Why is the sky blue?'),
+      types.Part.from_text(text='Why is the cloud white?'),
+    ]
+  )
+]
+```
+
+Where a `types.UserContent` is a subclass of `types.Content`, the
+`role` field in `types.UserContent` is fixed to be `user`.
+
+##### Provide a function call part
+
+```python
+contents = types.Part.from_function_call(
+  name='get_weather_by_location',
+  args={'location': 'Boston'}
+)
+```
+
+The SDK converts a function call part to a content with a `model` role:
+
+```python
+[
+  types.ModelContent(
+    parts=[
+      types.Part.from_function_call(
+        name='get_weather_by_location',
+        args={'location': 'Boston'}
+      )
+    ]
+  )
+]
+```
+
+Where a `types.ModelContent` is a subclass of `types.Content`, the
+`role` field in `types.ModelContent` is fixed to be `model`.
+
+##### Provide a list of function call parts
+
+```python
+contents = [
+  types.Part.from_function_call(
+    name='get_weather_by_location',
+    args={'location': 'Boston'}
+  ),
+  types.Part.from_function_call(
+    name='get_weather_by_location',
+    args={'location': 'New York'}
+  ),
+]
+```
+
+The SDK converts a list of function call parts to the a content with a `model` role:
+
+```python
+[
+  types.ModelContent(
+    parts=[
+      types.Part.from_function_call(
+        name='get_weather_by_location',
+        args={'location': 'Boston'}
+      ),
+      types.Part.from_function_call(
+        name='get_weather_by_location',
+        args={'location': 'New York'}
+      )
+    ]
+  )
+]
+```
+
+Where a `types.ModelContent` is a subclass of `types.Content`, the
+`role` field in `types.ModelContent` is fixed to be `model`.
+
+##### Provide a non function call part
+
+```python
+contents = types.Part.from_uri(
+  file_uri: 'gs://generativeai-downloads/images/scones.jpg',
+  mime_type: 'image/jpeg',
+)
+```
+
+The SDK converts all non function call parts into a content with a `user` role.
+
+```python
+[
+  types.UserContent(parts=[
     types.Part.from_uri(
-        file_uri='gs://generativeai-downloads/images/scones.jpg',
-        mime_type='image/jpeg',
-    ),
-],
+     file_uri: 'gs://generativeai-downloads/images/scones.jpg',
+      mime_type: 'image/jpeg',
+    )
+  ])
+]
 ```
+
+##### Provide a list of non function call parts
+
+```python
+contents = [
+  types.Part.from_text('What is this image about?'),
+  types.Part.from_uri(
+    file_uri: 'gs://generativeai-downloads/images/scones.jpg',
+    mime_type: 'image/jpeg',
+  )
+]
+```
+
+The SDK will convert the list of parts into a content with a `user` role
+
+```python
+[
+  types.UserContent(
+    parts=[
+      types.Part.from_text('What is this image about?'),
+      types.Part.from_uri(
+        file_uri: 'gs://generativeai-downloads/images/scones.jpg',
+        mime_type: 'image/jpeg',
+      )
+    ]
+  )
+]
+```
+
+##### Mix types in contents
+You can also provide a list of `types.ContentUnion`. The SDK leaves items of
+`types.Content` as is, it groups consecutive non function call parts into a
+single `types.UserContent`, and it groups consecutive function call parts into
+a single `types.ModelContent`.
+
+If you put a list within a list, the inner list can only contain
+`types.PartUnion` items. The SDK will convert the inner list into a single
+`types.UserContent`.
 
 ### System Instructions and Other Configs
 
