@@ -17,7 +17,7 @@ import inspect
 import sys
 import types as builtin_types
 import typing
-from typing import _GenericAlias, Any, Callable, get_args, get_origin, Literal, Optional, Union
+from typing import _GenericAlias, Any, Callable, get_args, get_origin, Literal, Optional, Union  # type: ignore[attr-defined]
 
 import pydantic
 
@@ -41,7 +41,7 @@ _py_builtin_type_to_schema_type = {
 
 
 def _is_builtin_primitive_or_compound(
-    annotation: inspect.Parameter.annotation,
+    annotation: inspect.Parameter.annotation,  # type: ignore[valid-type]
 ) -> bool:
   return annotation in _py_builtin_type_to_schema_type.keys()
 
@@ -69,7 +69,7 @@ def _raise_if_schema_unsupported(api_option: Literal['VERTEX_AI', 'GEMINI_API'],
 
 
 def _is_default_value_compatible(
-    default_value: Any, annotation: inspect.Parameter.annotation
+    default_value: Any, annotation: inspect.Parameter.annotation  # type: ignore[valid-type]
 ) -> bool:
   # None type is expected to be handled external to this function
   if _is_builtin_primitive_or_compound(annotation):
