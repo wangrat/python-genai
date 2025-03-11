@@ -332,7 +332,7 @@ def _CreateTuningJobConfig_to_vertex(
 
   if getv(from_object, ['learning_rate_multiplier']) is not None:
     setv(
-        to_object,
+        parent_object,
         ['supervisedTuningSpec', 'hyperParameters', 'learningRateMultiplier'],
         getv(from_object, ['learning_rate_multiplier']),
     )
