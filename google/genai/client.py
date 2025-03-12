@@ -130,8 +130,9 @@ class Client:
       from environment variables. Applies to the Vertex AI API only.
     debug_config: Config settings that control network behavior of the client.
       This is typically used when running test code.
-    http_options: Http options to use for the client. Response_payload can't be
-      set when passing to the client constructor.
+    http_options: Http options to use for the client. These options will be
+      applied to all requests made by the client. Example usage:
+      `client = genai.Client(http_options=types.HttpOptions(api_version='v1'))`.
 
   Usage for the Gemini Developer API:
 
