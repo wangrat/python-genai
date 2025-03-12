@@ -825,16 +825,8 @@ class Schema(_common.BaseModel):
       default=None,
       description="""Optional. Pattern of the Type.STRING to restrict a string to a regular expression.""",
   )
-  minimum: Optional[float] = Field(
-      default=None,
-      description="""Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER""",
-  )
   default: Optional[Any] = Field(
       default=None, description="""Optional. Default value of the data."""
-  )
-  any_of: Optional[list['Schema']] = Field(
-      default=None,
-      description="""Optional. The value should be validated against any (one or more) of the subschemas in the list.""",
   )
   max_length: Optional[int] = Field(
       default=None,
@@ -851,13 +843,13 @@ class Schema(_common.BaseModel):
       default=None,
       description="""Optional. Minimum number of the properties for Type.OBJECT.""",
   )
-  maximum: Optional[float] = Field(
-      default=None,
-      description="""Optional. Maximum value of the Type.INTEGER and Type.NUMBER""",
-  )
   max_properties: Optional[int] = Field(
       default=None,
       description="""Optional. Maximum number of the properties for Type.OBJECT.""",
+  )
+  any_of: Optional[list['Schema']] = Field(
+      default=None,
+      description="""Optional. The value should be validated against any (one or more) of the subschemas in the list.""",
   )
   description: Optional[str] = Field(
       default=None, description="""Optional. The description of the data."""
@@ -878,9 +870,17 @@ class Schema(_common.BaseModel):
       default=None,
       description="""Optional. Maximum number of the elements for Type.ARRAY.""",
   )
+  maximum: Optional[float] = Field(
+      default=None,
+      description="""Optional. Maximum value of the Type.INTEGER and Type.NUMBER""",
+  )
   min_items: Optional[int] = Field(
       default=None,
       description="""Optional. Minimum number of the elements for Type.ARRAY.""",
+  )
+  minimum: Optional[float] = Field(
+      default=None,
+      description="""Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER""",
   )
   nullable: Optional[bool] = Field(
       default=None,
@@ -915,14 +915,8 @@ class SchemaDict(TypedDict, total=False):
   pattern: Optional[str]
   """Optional. Pattern of the Type.STRING to restrict a string to a regular expression."""
 
-  minimum: Optional[float]
-  """Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER"""
-
   default: Optional[Any]
   """Optional. Default value of the data."""
-
-  any_of: Optional[list['SchemaDict']]
-  """Optional. The value should be validated against any (one or more) of the subschemas in the list."""
 
   max_length: Optional[int]
   """Optional. Maximum length of the Type.STRING"""
@@ -936,11 +930,11 @@ class SchemaDict(TypedDict, total=False):
   min_properties: Optional[int]
   """Optional. Minimum number of the properties for Type.OBJECT."""
 
-  maximum: Optional[float]
-  """Optional. Maximum value of the Type.INTEGER and Type.NUMBER"""
-
   max_properties: Optional[int]
   """Optional. Maximum number of the properties for Type.OBJECT."""
+
+  any_of: Optional[list['SchemaDict']]
+  """Optional. The value should be validated against any (one or more) of the subschemas in the list."""
 
   description: Optional[str]
   """Optional. The description of the data."""
@@ -957,8 +951,14 @@ class SchemaDict(TypedDict, total=False):
   max_items: Optional[int]
   """Optional. Maximum number of the elements for Type.ARRAY."""
 
+  maximum: Optional[float]
+  """Optional. Maximum value of the Type.INTEGER and Type.NUMBER"""
+
   min_items: Optional[int]
   """Optional. Minimum number of the elements for Type.ARRAY."""
+
+  minimum: Optional[float]
+  """Optional. SCHEMA FIELDS FOR TYPE INTEGER and NUMBER Minimum value of the Type.INTEGER and Type.NUMBER"""
 
   nullable: Optional[bool]
   """Optional. Indicates if the value may be null."""
@@ -1078,12 +1078,11 @@ class FunctionDeclaration(_common.BaseModel):
           type='OBJECT',
           properties=parameters_properties,
       )
-      if api_option == 'VERTEX_AI':
-        declaration.parameters.required = (
-            _automatic_function_calling_util._get_required_fields(
-                declaration.parameters
-            )
-        )
+      declaration.parameters.required = (
+          _automatic_function_calling_util._get_required_fields(
+              declaration.parameters
+          )
+      )
     if api_option == 'GEMINI_API':
       return declaration
 

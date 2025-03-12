@@ -212,36 +212,50 @@ def test_schema_with_default_value_raises_for_mldev(client):
     assert transformed_schema_vertex == expected_schema_vertex
 
 
-def test_schema_with_any_of_raises_for_mldev(client):
-  if not client.vertexai:
-    with pytest.raises(ValueError) as e:
-      _transformers.t_schema(client, CountryInfoWithAnyOf)
-    assert 'AnyOf is not supported' in str(e)
-  else:
-    transformed_schema_vertex = _transformers.t_schema(
-        client, CountryInfoWithAnyOf
-    )
-    expected_schema_vertex = types.Schema(
-        properties={
-            'name': types.Schema(
-                type='STRING',
-                title='Name',
-            ),
-            'restaurants_per_capita': types.Schema(
-                any_of=[
-                    types.Schema(type='INTEGER'),
-                    types.Schema(type='NUMBER'),
-                ],
-                title='Restaurants Per Capita',
-            ),
-        },
-        type='OBJECT',
-        required=['name', 'restaurants_per_capita'],
-        title='CountryInfoWithAnyOf',
-        property_ordering=['name', 'restaurants_per_capita'],
-    )
+def test_schema_with_any_of(client):
+  transformed_schema = _transformers.t_schema(
+      client, CountryInfoWithAnyOf
+  )
+  expected_schema_mldev = types.Schema(
+      properties={
+          'name': types.Schema(
+              type='STRING',
+          ),
+          'restaurants_per_capita': types.Schema(
+              any_of=[
+                  types.Schema(type='INTEGER'),
+                  types.Schema(type='NUMBER'),
+              ],
+          ),
+      },
+      type='OBJECT',
+      required=['name', 'restaurants_per_capita'],
+      property_ordering=['name', 'restaurants_per_capita'],
+  )
+  expected_schema_vertex = types.Schema(
+      properties={
+          'name': types.Schema(
+              type='STRING',
+              title='Name',
+          ),
+          'restaurants_per_capita': types.Schema(
+              any_of=[
+                  types.Schema(type='INTEGER'),
+                  types.Schema(type='NUMBER'),
+              ],
+              title='Restaurants Per Capita',
+          ),
+      },
+      type='OBJECT',
+      required=['name', 'restaurants_per_capita'],
+      title='CountryInfoWithAnyOf',
+      property_ordering=['name', 'restaurants_per_capita'],
+  )
 
-    assert transformed_schema_vertex == expected_schema_vertex
+  if client.vertexai:
+    assert transformed_schema == expected_schema_vertex
+  else:
+    assert transformed_schema == expected_schema_mldev
 
 
 @pytest.mark.parametrize('use_vertex', [True, False])

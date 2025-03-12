@@ -617,10 +617,6 @@ def process_schema(
 
   any_of = schema.get('anyOf', None)
   if any_of is not None:
-    if client and not client.vertexai:
-      raise ValueError(
-          'AnyOf is not supported in the response schema for the Gemini API.'
-      )
     for sub_schema in any_of:
       # $ref is present in any_of if the schema is a union of Pydantic classes
       ref_key = sub_schema.get('$ref', None)

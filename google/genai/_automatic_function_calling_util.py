@@ -46,14 +46,6 @@ def _is_builtin_primitive_or_compound(
   return annotation in _py_builtin_type_to_schema_type.keys()
 
 
-def _raise_for_any_of_if_mldev(schema: types.Schema):
-  if schema.any_of:
-    raise ValueError(
-        'AnyOf is not supported in function declaration schema for'
-        ' the Gemini API.'
-    )
-
-
 def _raise_for_default_if_mldev(schema: types.Schema):
   if schema.default is not None:
     raise ValueError(
@@ -64,7 +56,6 @@ def _raise_for_default_if_mldev(schema: types.Schema):
 
 def _raise_if_schema_unsupported(api_option: Literal['VERTEX_AI', 'GEMINI_API'], schema: types.Schema):
   if api_option == 'GEMINI_API':
-    _raise_for_any_of_if_mldev(schema)
     _raise_for_default_if_mldev(schema)
 
 
@@ -292,8 +283,7 @@ def _parse_schema_from_parameter(
           ),
           func_name,
       )
-    if api_option == 'VERTEX_AI':
-      schema.required = _get_required_fields(schema)
+    schema.required = _get_required_fields(schema)
     _raise_if_schema_unsupported(api_option, schema)
     return schema
   raise ValueError(

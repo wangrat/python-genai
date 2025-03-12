@@ -655,7 +655,7 @@ def test_automatic_function_calling_with_pydantic_model_in_union_type(client):
     else:
       return 'The animal is not supported'
 
-  with pytest_helper.exception_if_mldev(client, ValueError):
+  with pytest_helper.exception_if_mldev(client, errors.ClientError):
     response = client.models.generate_content(
         model='gemini-1.5-flash',
         contents=(
