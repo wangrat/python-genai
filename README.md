@@ -616,6 +616,10 @@ response = client.models.generate_content(
 ```
 ### JSON Response Schema
 
+However you define your schema, don't duplicate it in your input prompt,
+including by giving examples of expected JSON output. If you do, the generated
+output might be lower in quality.
+
 #### Pydantic Model Schema support
 
 Schemas can be provided as Pydantic Models.
