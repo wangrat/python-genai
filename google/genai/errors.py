@@ -18,7 +18,6 @@
 from typing import Any, Optional, TYPE_CHECKING, Union
 import httpx
 import json
-import requests
 
 
 if TYPE_CHECKING:
@@ -28,7 +27,7 @@ if TYPE_CHECKING:
 class APIError(Exception):
   """General errors raised by the GenAI API."""
   code: int
-  response: Union[requests.Response, 'ReplayResponse', httpx.Response]
+  response: Union['ReplayResponse', httpx.Response]
 
   status: Optional[str] = None
   message: Optional[str] = None
@@ -36,28 +35,21 @@ class APIError(Exception):
   def __init__(
       self,
       code: int,
-      response: Union[requests.Response, 'ReplayResponse', httpx.Response],
+      response: Union['ReplayResponse', httpx.Response],
   ):
     self.response = response
-
-    if isinstance(response, requests.Response):
+    message = None
+    if isinstance(response, httpx.Response):
       try:
-        # do not do any extra muanipulation on the response.
-        # return the raw response json as is.
         response_json = response.json()
-      except requests.exceptions.JSONDecodeError:
+      except (json.decoder.JSONDecodeError):
+        message = response.text
         response_json = {
-            'message': response.text,
-            'status': response.reason,
+            'message': message,
+            'status': response.reason_phrase,
         }
-    elif isinstance(response, httpx.Response):
-      try:
-        response_json = response.json()
-      except (json.decoder.JSONDecodeError, httpx.ResponseNotRead):
-        try:
-          message = response.text
-        except httpx.ResponseNotRead:
-          message = None
+      except httpx.ResponseNotRead:
+        message = 'Response not read'
         response_json = {
             'message': message,
             'status': response.reason_phrase,
@@ -103,7 +95,7 @@ class APIError(Exception):
 
   @classmethod
   def raise_for_response(
-      cls, response: Union[requests.Response, 'ReplayResponse', httpx.Response]
+      cls, response: Union['ReplayResponse', httpx.Response]
   ):
     """Raises an error with detailed error message if the response has an error status."""
     if response.status_code == 200:

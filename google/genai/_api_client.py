@@ -29,16 +29,14 @@ import json
 import logging
 import os
 import sys
-from typing import Any, AsyncIterator, Optional, Tuple, TypedDict, Union
+from typing import Any, AsyncIterator, Optional, Tuple, Union
 from urllib.parse import urlparse, urlunparse
 import google.auth
 import google.auth.credentials
 from google.auth.credentials import Credentials
-from google.auth.transport.requests import AuthorizedSession
 from google.auth.transport.requests import Request
 import httpx
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-import requests
+from pydantic import BaseModel, Field, ValidationError
 from . import _common
 from . import errors
 from . import version
@@ -88,7 +86,8 @@ def _patch_http_options(
       copy_option[patch_key].update(patch_value)
     elif patch_value is not None:  # Accept empty values.
       copy_option[patch_key] = patch_value
-  _append_library_version_headers(copy_option['headers'])
+  if copy_option['headers']:
+    _append_library_version_headers(copy_option['headers'])
   return copy_option
 
 
@@ -103,7 +102,7 @@ def _join_url_path(base_url: str, path: str) -> str:
   return urlunparse(parsed_base._replace(path=base_path + '/' + path))
 
 
-def _load_auth(*, project: Union[str, None]) -> tuple[Credentials, str]:
+def _load_auth(*, project: Union[str, None]) -> Tuple[Credentials, str]:
   """Loads google auth credentials and project id."""
   credentials, loaded_project_id = google.auth.default(
       scopes=['https://www.googleapis.com/auth/cloud-platform'],
@@ -273,7 +272,9 @@ class BaseApiClient:
     validated_http_options: dict[str, Any]
     if isinstance(http_options, dict):
       try:
-        validated_http_options = HttpOptions.model_validate(http_options).model_dump()
+        validated_http_options = HttpOptions.model_validate(
+            http_options
+        ).model_dump()
       except ValidationError as e:
         raise ValueError(f'Invalid http_options: {e}')
     elif isinstance(http_options, HttpOptions):
@@ -359,7 +360,9 @@ class BaseApiClient:
       self._http_options['headers']['x-goog-api-key'] = self.api_key
     # Update the http options with the user provided http options.
     if http_options:
-      self._http_options = _patch_http_options(self._http_options, validated_http_options)
+      self._http_options = _patch_http_options(
+          self._http_options, validated_http_options
+      )
     else:
       _append_library_version_headers(self._http_options['headers'])
 
@@ -367,8 +370,27 @@ class BaseApiClient:
     url_parts = urlparse(self._http_options['base_url'])
     return url_parts._replace(scheme='wss').geturl()
 
-  async def _async_access_token(self) -> str:
+  def _access_token(self) -> str:
     """Retrieves the access token for the credentials."""
+    if not self._credentials:
+      self._credentials, project = _load_auth(project=self.project)
+      if not self.project:
+        self.project = project
+
+    if self._credentials:
+      if (
+          self._credentials.expired or not self._credentials.token
+      ):
+        # Only refresh when it needs to. Default expiration is 3600 seconds.
+        _refresh_auth(self._credentials)
+      if not self._credentials.token:
+        raise RuntimeError('Could not resolve API token from the environment')
+      return self._credentials.token
+    else:
+      raise RuntimeError('Could not resolve API token from the environment')
+
+  async def _async_access_token(self) -> str:
+    """Retrieves the access token for the credentials asynchronously."""
     if not self._credentials:
       async with self._auth_lock:
         # This ensures that only one coroutine can execute the auth logic at a
@@ -437,8 +459,8 @@ class BaseApiClient:
     ):
       path = f'projects/{self.project}/locations/{self.location}/' + path
     url = _join_url_path(
-        patched_http_options['base_url'],
-        patched_http_options['api_version'] + '/' + path,
+        patched_http_options.get('base_url', ''),
+        patched_http_options.get('api_version', '') + '/' + path,
     )
 
     timeout_in_seconds: Optional[Union[float, int]] = patched_http_options.get(
@@ -464,59 +486,56 @@ class BaseApiClient:
       http_request: HttpRequest,
       stream: bool = False,
   ) -> HttpResponse:
+    data: Optional[Union[str, bytes]] = None
     if self.vertexai and not self.api_key:
-      if not self._credentials:
-        self._credentials, _ = _load_auth(project=self.project)
-      if self._credentials.quota_project_id:
+      http_request.headers['Authorization'] = (
+          f'Bearer {self._access_token()}'
+      )
+      if self._credentials and self._credentials.quota_project_id:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
         )
-      authed_session = AuthorizedSession(self._credentials)
-      authed_session.stream = stream
-      response = authed_session.request(
-          http_request.method.upper(),
-          http_request.url,
+      data = json.dumps(http_request.data)
+    else:
+      if http_request.data:
+        if not isinstance(http_request.data, bytes):
+          data = json.dumps(http_request.data)
+        else:
+          data = http_request.data
+
+    if stream:
+      client = httpx.Client()
+      httpx_request = client.build_request(
+          method=http_request.method,
+          url=http_request.url,
+          content=data,
           headers=http_request.headers,
-          data=json.dumps(http_request.data) if http_request.data else None,
           timeout=http_request.timeout,
       )
+      response = client.send(httpx_request, stream=stream)
       errors.APIError.raise_for_response(response)
       return HttpResponse(
           response.headers, response if stream else [response.text]
       )
     else:
-      return self._request_unauthorized(http_request, stream)
-
-  def _request_unauthorized(
-      self,
-      http_request: HttpRequest,
-      stream: bool = False,
-  ) -> HttpResponse:
-    data: Optional[Union[str, bytes]] = None
-    if http_request.data:
-      if not isinstance(http_request.data, bytes):
-        data = json.dumps(http_request.data)
-      else:
-        data = http_request.data
-
-    http_session = requests.Session()
-    response = http_session.request(
-        method=http_request.method,
-        url=http_request.url,
-        headers=http_request.headers,
-        data=data,
-        timeout=http_request.timeout,
-        stream=stream,
-    )
-    errors.APIError.raise_for_response(response)
-    return HttpResponse(
-        response.headers, response if stream else [response.text]
-    )
+      with httpx.Client() as client:
+        response = client.request(
+            method=http_request.method,
+            url=http_request.url,
+            headers=http_request.headers,
+            content=data,
+            timeout=http_request.timeout,
+        )
+        errors.APIError.raise_for_response(response)
+        return HttpResponse(
+            response.headers, response if stream else [response.text]
+        )
 
   async def _async_request(
       self, http_request: HttpRequest, stream: bool = False
   ):
-    if self.vertexai:
+    data: Optional[Union[str, bytes]] = None
+    if self.vertexai and not self.api_key:
       http_request.headers['Authorization'] = (
           f'Bearer {await self._async_access_token()}'
       )
@@ -524,12 +543,20 @@ class BaseApiClient:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
         )
+      data = json.dumps(http_request.data)
+    else:
+      if http_request.data:
+        if not isinstance(http_request.data, bytes):
+          data = json.dumps(http_request.data)
+        else:
+          data = http_request.data
+
     if stream:
       aclient = httpx.AsyncClient()
       httpx_request = aclient.build_request(
           method=http_request.method,
           url=http_request.url,
-          content=json.dumps(http_request.data),
+          content=data,
           headers=http_request.headers,
           timeout=http_request.timeout,
       )
@@ -547,7 +574,7 @@ class BaseApiClient:
             method=http_request.method,
             url=http_request.url,
             headers=http_request.headers,
-            content=json.dumps(http_request.data) if http_request.data else None,
+            content=data,
             timeout=http_request.timeout,
         )
         errors.APIError.raise_for_response(response)
@@ -689,7 +716,7 @@ class BaseApiClient:
           data=file_chunk,
       )
 
-      response = self._request_unauthorized(request, stream=False)
+      response = self._request(request, stream=False)
       offset += chunk_size
       if response.headers['X-Goog-Upload-Status'] != 'active':
         break  # upload is complete or it has been interrupted.
@@ -732,18 +759,17 @@ class BaseApiClient:
       else:
         data = http_request.data
 
-    http_session = requests.Session()
-    response = http_session.request(
-        method=http_request.method,
-        url=http_request.url,
-        headers=http_request.headers,
-        data=data,
-        timeout=http_request.timeout,
-        stream=False,
-    )
+    with httpx.Client(follow_redirects=True) as client:
+      response = client.request(
+          method=http_request.method,
+          url=http_request.url,
+          headers=http_request.headers,
+          content=data,
+          timeout=http_request.timeout,
+      )
 
-    errors.APIError.raise_for_response(response)
-    return HttpResponse(response.headers, byte_stream=[response.content])
+      errors.APIError.raise_for_response(response)
+      return HttpResponse(response.headers, byte_stream=[response.read()])
 
   async def async_upload_file(
       self,
@@ -842,7 +868,7 @@ class BaseApiClient:
         'get', path=path, request_dict={}, http_options=http_options
     )
 
-    data: Optional[Union[str, bytes]]
+    data: Optional[Union[str, bytes]] = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
         data = json.dumps(http_request.data)
