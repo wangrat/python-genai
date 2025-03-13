@@ -664,6 +664,9 @@ def test_parse_client_message_str(mock_api_client, mock_websocket, vertexai):
           'turns': [{'role': 'user', 'parts': [{'text': 'test'}]}],
       }
   }
+  # _parse_client_message returns a TypedDict, so we should be able to
+  # construct a LiveClientMessage from it
+  assert types.LiveClientMessage(**result)
 
 
 @pytest.mark.parametrize('vertexai', [True, False])
@@ -871,6 +874,66 @@ def test_parse_client_message_tool_response(
           )
       ]
   )
+  result = session._parse_client_message(input)
+  assert 'tool_response' in result
+  assert result == {
+      'tool_response': {
+          'function_responses': [
+              {
+                  'id': 'test_id',
+                  'name': 'test_name',
+                  'response': {
+                      'result': 'test_response',
+                  },
+              },
+          ],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_function_response(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = types.FunctionResponse(
+    id='test_id',
+    name='test_name',
+    response={'result': 'test_response'},
+  )
+  result = session._parse_client_message(input)
+  assert 'tool_response' in result
+  assert result == {
+      'tool_response': {
+          'function_responses': [
+              {
+                  'id': 'test_id',
+                  'name': 'test_name',
+                  'response': {
+                      'result': 'test_response',
+                  },
+              },
+          ],
+      }
+  }
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+def test_parse_client_message_tool_response_dict_with_only_response(
+    mock_api_client, mock_websocket, vertexai
+):
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  input = {
+    'id': 'test_id',
+    'name': 'test_name',
+    'response': {
+        'result': 'test_response',
+    }
+  }
   result = session._parse_client_message(input)
   assert 'tool_response' in result
   assert result == {
