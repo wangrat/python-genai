@@ -3557,6 +3557,48 @@ def _Image_from_vertex(
   return to_object
 
 
+def _SafetyAttributes_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['safetyAttributes', 'categories']) is not None:
+    setv(
+        to_object,
+        ['categories'],
+        getv(from_object, ['safetyAttributes', 'categories']),
+    )
+
+  if getv(from_object, ['safetyAttributes', 'scores']) is not None:
+    setv(
+        to_object, ['scores'], getv(from_object, ['safetyAttributes', 'scores'])
+    )
+
+  return to_object
+
+
+def _SafetyAttributes_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['safetyAttributes', 'categories']) is not None:
+    setv(
+        to_object,
+        ['categories'],
+        getv(from_object, ['safetyAttributes', 'categories']),
+    )
+
+  if getv(from_object, ['safetyAttributes', 'scores']) is not None:
+    setv(
+        to_object, ['scores'], getv(from_object, ['safetyAttributes', 'scores'])
+    )
+
+  return to_object
+
+
 def _GeneratedImage_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -3575,6 +3617,15 @@ def _GeneratedImage_from_mldev(
         to_object,
         ['rai_filtered_reason'],
         getv(from_object, ['raiFilteredReason']),
+    )
+
+  if getv(from_object, ['_self']) is not None:
+    setv(
+        to_object,
+        ['safety_attributes'],
+        _SafetyAttributes_from_mldev(
+            api_client, getv(from_object, ['_self']), to_object
+        ),
     )
 
   return to_object
@@ -3598,6 +3649,15 @@ def _GeneratedImage_from_vertex(
         to_object,
         ['rai_filtered_reason'],
         getv(from_object, ['raiFilteredReason']),
+    )
+
+  if getv(from_object, ['_self']) is not None:
+    setv(
+        to_object,
+        ['safety_attributes'],
+        _SafetyAttributes_from_vertex(
+            api_client, getv(from_object, ['_self']), to_object
+        ),
     )
 
   if getv(from_object, ['prompt']) is not None:

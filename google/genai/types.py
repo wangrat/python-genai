@@ -3748,6 +3748,36 @@ class ImageDict(TypedDict, total=False):
 ImageOrDict = Union[Image, ImageDict]
 
 
+class SafetyAttributes(_common.BaseModel):
+  """Safety attributes of a GeneratedImage or the user-provided prompt."""
+
+  categories: Optional[list[str]] = Field(
+      default=None,
+      description="""List of RAI categories.
+      """,
+  )
+  scores: Optional[list[float]] = Field(
+      default=None,
+      description="""List of scores of each categories.
+      """,
+  )
+
+
+class SafetyAttributesDict(TypedDict, total=False):
+  """Safety attributes of a GeneratedImage or the user-provided prompt."""
+
+  categories: Optional[list[str]]
+  """List of RAI categories.
+      """
+
+  scores: Optional[list[float]]
+  """List of scores of each categories.
+      """
+
+
+SafetyAttributesOrDict = Union[SafetyAttributes, SafetyAttributesDict]
+
+
 class GeneratedImage(_common.BaseModel):
   """An output image."""
 
@@ -3760,6 +3790,12 @@ class GeneratedImage(_common.BaseModel):
       default=None,
       description="""Responsible AI filter reason if the image is filtered out of the
       response.
+      """,
+  )
+  safety_attributes: Optional[SafetyAttributes] = Field(
+      default=None,
+      description="""Safety attributes of the image. Lists of RAI categories and their
+      scores of each content.
       """,
   )
   enhanced_prompt: Optional[str] = Field(
@@ -3780,6 +3816,11 @@ class GeneratedImageDict(TypedDict, total=False):
   rai_filtered_reason: Optional[str]
   """Responsible AI filter reason if the image is filtered out of the
       response.
+      """
+
+  safety_attributes: Optional[SafetyAttributesDict]
+  """Safety attributes of the image. Lists of RAI categories and their
+      scores of each content.
       """
 
   enhanced_prompt: Optional[str]
