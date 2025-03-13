@@ -999,7 +999,11 @@ class Tunings(_api_module.BaseModule):
       config: Optional[types.GetTuningJobConfigOrDict] = None,
   ) -> types.TuningJob:
     job = self._get(name=name, config=config)
-    if job.experiment and self._api_client.vertexai:
+    if (
+        job.experiment
+        and self._api_client.vertexai
+        and self._api_client.project is not None
+    ):
       _IpythonUtils.display_experiment_button(
           experiment=job.experiment,
           project=self._api_client.project,
@@ -1029,11 +1033,12 @@ class Tunings(_api_module.BaseModule):
           training_dataset=training_dataset,
           config=config,
       )
-      operation_dict = operation.to_json_dict()
-      try:
-        tuned_model_name = operation_dict['metadata']['tunedModel']
-      except KeyError:
-        tuned_model_name = operation_dict['name'].partition('/operations/')[0]
+      if operation.metadata is not None and 'tunedModel' in operation.metadata:
+        tuned_model_name = operation.metadata['tunedModel']
+      else:
+        if operation.name is None:
+          raise ValueError('Operation name is required.')
+        tuned_model_name = operation.name.partition('/operations/')[0]
       tuning_job = types.TuningJob(
           name=tuned_model_name,
           state=types.JobState.JOB_STATE_QUEUED,
@@ -1338,7 +1343,11 @@ class AsyncTunings(_api_module.BaseModule):
       config: Optional[types.GetTuningJobConfigOrDict] = None,
   ) -> types.TuningJob:
     job = await self._get(name=name, config=config)
-    if job.experiment and self._api_client.vertexai:
+    if (
+        job.experiment
+        and self._api_client.vertexai
+        and self._api_client.project is not None
+    ):
       _IpythonUtils.display_experiment_button(
           experiment=job.experiment,
           project=self._api_client.project,
@@ -1368,11 +1377,12 @@ class AsyncTunings(_api_module.BaseModule):
           training_dataset=training_dataset,
           config=config,
       )
-      operation_dict = operation.to_json_dict()
-      try:
-        tuned_model_name = operation_dict['metadata']['tunedModel']
-      except KeyError:
-        tuned_model_name = operation_dict['name'].partition('/operations/')[0]
+      if operation.metadata is not None and 'tunedModel' in operation.metadata:
+        tuned_model_name = operation.metadata['tunedModel']
+      else:
+        if operation.name is None:
+          raise ValueError('Operation name is required.')
+        tuned_model_name = operation.name.partition('/operations/')[0]
       tuning_job = types.TuningJob(
           name=tuned_model_name,
           state=types.JobState.JOB_STATE_QUEUED,

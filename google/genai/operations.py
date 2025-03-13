@@ -465,10 +465,24 @@ class Operations(_api_module.BaseModule):
     # TODO(b/398233524): Cast operation types
     if self._api_client.vertexai:
       resource_name = operation_name.rpartition('/operations/')[0]
+      http_options = types.HttpOptions()
+      if isinstance(config, dict):
+        dict_options = config.get('http_options', None)
+        if dict_options is not None:
+          http_options = types.HttpOptions(**dict(dict_options))
+      elif isinstance(config, types.GetOperationConfig) and config is not None:
+        http_options = (
+            config.http_options
+            if config.http_options is not None
+            else types.HttpOptions()
+        )
+      fetch_operation_config = types.FetchPredictOperationConfig(
+          http_options=http_options
+      )
       return self._fetch_predict_operation(
           operation_name=operation_name,
           resource_name=resource_name,
-          config=config,
+          config=fetch_operation_config,
       )
     else:
       return self._get_operation(
@@ -623,10 +637,24 @@ class AsyncOperations(_api_module.BaseModule):
 
     if self._api_client.vertexai:
       resource_name = operation_name.rpartition('/operations/')[0]
+      http_options = types.HttpOptions()
+      if isinstance(config, dict):
+        dict_options = config.get('http_options', None)
+        if dict_options is not None:
+          http_options = types.HttpOptions(**dict(dict_options))
+      elif isinstance(config, types.GetOperationConfig) and config is not None:
+        http_options = (
+            config.http_options
+            if config.http_options is not None
+            else types.HttpOptions()
+        )
+      fetch_operation_config = types.FetchPredictOperationConfig(
+          http_options=http_options
+      )
       return await self._fetch_predict_operation(
           operation_name=operation_name,
           resource_name=resource_name,
-          config=config,
+          config=fetch_operation_config,
       )
     else:
       return await self._get_operation(
