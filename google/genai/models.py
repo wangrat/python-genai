@@ -1999,6 +1999,9 @@ def _EditImageConfig_to_mldev(
         getv(from_object, ['edit_mode']),
     )
 
+  if getv(from_object, ['base_steps']) is not None:
+    raise ValueError('base_steps parameter is not supported in Gemini API.')
+
   return to_object
 
 
@@ -2101,6 +2104,13 @@ def _EditImageConfig_to_vertex(
         parent_object,
         ['parameters', 'editMode'],
         getv(from_object, ['edit_mode']),
+    )
+
+  if getv(from_object, ['base_steps']) is not None:
+    setv(
+        parent_object,
+        ['parameters', 'editConfig', 'baseSteps'],
+        getv(from_object, ['base_steps']),
     )
 
   return to_object

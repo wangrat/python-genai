@@ -108,6 +108,7 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'include_rai_reason': True,
                 'output_mime_type': 'image/jpeg',
                 'output_compression_quality': 80,
+                'base_steps': 32,
             },
         ),
     ),

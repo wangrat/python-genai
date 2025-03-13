@@ -4114,6 +4114,11 @@ class EditImageConfig(_common.BaseModel):
       default=None,
       description="""Describes the editing mode for the request.""",
   )
+  base_steps: Optional[int] = Field(
+      default=None,
+      description="""The number of sampling steps. A higher value has better image
+      quality, while a lower value has better latency.""",
+  )
 
 
 class EditImageConfigDict(TypedDict, total=False):
@@ -4181,6 +4186,10 @@ class EditImageConfigDict(TypedDict, total=False):
 
   edit_mode: Optional[EditMode]
   """Describes the editing mode for the request."""
+
+  base_steps: Optional[int]
+  """The number of sampling steps. A higher value has better image
+      quality, while a lower value has better latency."""
 
 
 EditImageConfigOrDict = Union[EditImageConfig, EditImageConfigDict]
