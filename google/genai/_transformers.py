@@ -26,7 +26,7 @@ import sys
 import time
 import types as builtin_types
 import typing
-from typing import Any, GenericAlias, Optional, TypeGuard, Union  # type: ignore[attr-defined]
+from typing import Any, GenericAlias, Optional, Union  # type: ignore[attr-defined]
 
 if typing.TYPE_CHECKING:
   import PIL.Image
@@ -41,10 +41,11 @@ logger = logging.getLogger('google_genai._transformers')
 if sys.version_info >= (3, 10):
   VersionedUnionType = builtin_types.UnionType
   _UNION_TYPES = (typing.Union, builtin_types.UnionType)
+  from typing import TypeGuard
 else:
   VersionedUnionType = typing._UnionGenericAlias
   _UNION_TYPES = (typing.Union,)
-
+  from typing_extensions import TypeGuard
 
 def _resource_name(
     client: _api_client.BaseApiClient,
