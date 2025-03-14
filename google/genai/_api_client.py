@@ -188,9 +188,11 @@ class HttpResponse:
         if chunk:
           # In streaming mode, the chunk of JSON is prefixed with "data:" which
           # we must strip before parsing.
-          if chunk.startswith(b'data: '):
-            chunk = chunk[len(b'data: ') :]
-          yield json.loads(str(chunk, 'utf-8'))
+          if not isinstance(chunk, str):
+            chunk = chunk.decode('utf-8')
+          if chunk.startswith('data: '):
+            chunk = chunk[len('data: ') :]
+          yield json.loads(chunk)
 
   async def async_segments(self) -> AsyncIterator[Any]:
     if isinstance(self.response_stream, list):
@@ -206,8 +208,10 @@ class HttpResponse:
         async for chunk in self.response_stream.aiter_lines():
           # This is httpx.Response.
           if chunk:
-            # In async streaming mode, the chunk of JSON is prefixed with "data:"
-            # which we must strip before parsing.
+            # In async streaming mode, the chunk of JSON is prefixed with
+            # "data:" which we must strip before parsing.
+            if not isinstance(chunk, str):
+              chunk = chunk.decode('utf-8')
             if chunk.startswith('data: '):
               chunk = chunk[len('data: ') :]
             yield json.loads(chunk)
