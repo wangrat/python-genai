@@ -13,12 +13,20 @@
 # limitations under the License.
 #
 
-from typing import AsyncIterator, Awaitable, Optional
-from typing import Union
+import inspect
+import sys
+from typing import AsyncIterator, Awaitable, Optional, Union, get_args
 
 from . import _transformers as t
+from . import types
 from .models import AsyncModels, Models
 from .types import Content, ContentDict, GenerateContentConfigOrDict, GenerateContentResponse, Part, PartUnionDict
+
+
+if sys.version_info >= (3, 10):
+  from typing import TypeGuard
+else:
+  from typing_extensions import TypeGuard
 
 
 def _validate_content(content: Content) -> bool:
@@ -81,8 +89,7 @@ def _extract_curated_history(
   while i < length:
     if comprehensive_history[i].role not in ["user", "model"]:
       raise ValueError(
-          "Role must be user or model, but got"
-          f" {comprehensive_history[i].role}"
+          f"Role must be user or model, but got {comprehensive_history[i].role}"
       )
 
     if comprehensive_history[i].role == "user":
@@ -108,12 +115,10 @@ class _BaseChat:
   def __init__(
       self,
       *,
-      modules: Union[Models, AsyncModels],
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
       history: list[Content],
   ):
-    self._modules = modules
     self._model = model
     self._config = config
     self._comprehensive_history = history
@@ -123,22 +128,24 @@ class _BaseChat:
     """Curated history is the set of valid turns that will be used in the subsequent send requests.
     """
 
-
-  def record_history(self, user_input: Content,
-                     model_output: list[Content],
-                     automatic_function_calling_history: list[Content],
-                     is_valid: bool):
+  def record_history(
+      self,
+      user_input: Content,
+      model_output: list[Content],
+      automatic_function_calling_history: list[Content],
+      is_valid: bool,
+  ):
     """Records the chat history.
 
     Maintaining both comprehensive and curated histories.
 
     Args:
       user_input: The user's input content.
-      model_output: A list of `Content` from the model's response.
-        This can be an empty list if the model produced no output.
-      automatic_function_calling_history: A list of `Content` representing
-        the history of automatic function calls, including the user input as
-        the first entry.
+      model_output: A list of `Content` from the model's response. This can be
+        an empty list if the model produced no output.
+      automatic_function_calling_history: A list of `Content` representing the
+        history of automatic function calls, including the user input as the
+        first entry.
       is_valid: A boolean flag indicating whether the current model output is
         considered valid.
     """
@@ -158,14 +165,13 @@ class _BaseChat:
       self._curated_history.extend(input_contents)
       self._curated_history.extend(output_contents)
 
-
   def get_history(self, curated: bool = False) -> list[Content]:
     """Returns the chat history.
 
     Args:
-        curated: A boolean flag indicating whether to return the curated
-            (valid) history or the comprehensive (all turns) history.
-            Defaults to False (returns the comprehensive history).
+        curated: A boolean flag indicating whether to return the curated (valid)
+          history or the comprehensive (all turns) history. Defaults to False
+          (returns the comprehensive history).
 
     Returns:
         A list of `Content` objects representing the chat history.
@@ -176,8 +182,40 @@ class _BaseChat:
       return self._comprehensive_history
 
 
+def _is_part_type(
+    contents: Union[list[PartUnionDict], PartUnionDict],
+) -> TypeGuard[t.ContentType]:
+  if isinstance(contents, list):
+    return all(_is_part_type(part) for part in contents)
+  else:
+    allowed_part_types = get_args(types.PartUnion)
+    if type(contents) in allowed_part_types:
+      return True
+    else:
+      # Some images don't pass isinstance(item, PIL.Image.Image)
+      # For example <class 'PIL.JpegImagePlugin.JpegImageFile'>
+      if types.PIL_Image is not None and isinstance(contents, types.PIL_Image):
+        return True
+    return False
+
+
 class Chat(_BaseChat):
   """Chat session."""
+
+  def __init__(
+      self,
+      *,
+      module: Models,
+      model: str,
+      config: Optional[GenerateContentConfigOrDict] = None,
+      history: list[Content],
+  ):
+    self._module = module
+    super().__init__(
+        model=model,
+        config=config,
+        history=history,
+    )
 
   def send_message(
       self,
@@ -202,10 +240,15 @@ class Chat(_BaseChat):
       response = chat.send_message('tell me a story')
     """
 
-    input_content = t.t_content(self._modules._api_client, message)
-    response = self._modules.generate_content(
+    if not _is_part_type(message):
+      raise ValueError(
+          f"Message must be a valid part type: {types.PartUnion} or"
+          f" {types.PartUnionDict}, got {type(message)}"
+      )
+    input_content = t.t_content(self._module._api_client, message)
+    response = self._module.generate_content(
         model=self._model,
-        contents=self._curated_history + [input_content],
+        contents=self._curated_history + [input_content],  # type: ignore[arg-type]
         config=config if config else self._config,
     )
     model_output = (
@@ -213,10 +256,15 @@ class Chat(_BaseChat):
         if response.candidates and response.candidates[0].content
         else []
     )
+    automatic_function_calling_history = (
+        response.automatic_function_calling_history
+        if response.automatic_function_calling_history
+        else []
+    )
     self.record_history(
         user_input=input_content,
         model_output=model_output,
-        automatic_function_calling_history=response.automatic_function_calling_history,
+        automatic_function_calling_history=automatic_function_calling_history,
         is_valid=_validate_response(response),
     )
     return response
@@ -245,36 +293,49 @@ class Chat(_BaseChat):
         print(chunk.text)
     """
 
-    input_content = t.t_content(self._modules._api_client, message)
+    if not _is_part_type(message):
+      raise ValueError(
+          f"Message must be a valid part type: {types.PartUnion} or"
+          f" {types.PartUnionDict}, got {type(message)}"
+      )
+    input_content = t.t_content(self._module._api_client, message)
     output_contents = []
     finish_reason = None
     is_valid = True
     chunk = None
-    for chunk in self._modules.generate_content_stream(
-        model=self._model,
-        contents=self._curated_history + [input_content],
-        config=config if config else self._config,
-    ):
-      if not _validate_response(chunk):
-        is_valid = False
-      if chunk.candidates and chunk.candidates[0].content:
-        output_contents.append(chunk.candidates[0].content)
-      if chunk.candidates and chunk.candidates[0].finish_reason:
-        finish_reason = chunk.candidates[0].finish_reason
-      yield chunk
-    self.record_history(
-        user_input=input_content,
-        model_output=output_contents,
-        automatic_function_calling_history=chunk.automatic_function_calling_history,
-        is_valid=is_valid and output_contents and finish_reason,
-    )
+    if isinstance(self._module, Models):
+      for chunk in self._module.generate_content_stream(
+          model=self._model,
+          contents=self._curated_history + [input_content],  # type: ignore[arg-type]
+          config=config if config else self._config,
+      ):
+        if not _validate_response(chunk):
+          is_valid = False
+        if chunk.candidates and chunk.candidates[0].content:
+          output_contents.append(chunk.candidates[0].content)
+        if chunk.candidates and chunk.candidates[0].finish_reason:
+          finish_reason = chunk.candidates[0].finish_reason
+        yield chunk
+      automatic_function_calling_history = (
+          chunk.automatic_function_calling_history
+          if chunk.automatic_function_calling_history
+          else []
+      )
+      self.record_history(
+          user_input=input_content,
+          model_output=output_contents,
+          automatic_function_calling_history=automatic_function_calling_history,
+          is_valid=is_valid
+          and output_contents is not None
+          and finish_reason is not None,
+      )
 
 
 class Chats:
   """A util class to create chat sessions."""
 
-  def __init__(self, modules: Models):
-    self._modules = modules
+  def __init__(self, module: Models):
+    self._module = module
 
   def create(
       self,
@@ -294,7 +355,7 @@ class Chats:
       A new chat session.
     """
     return Chat(
-        modules=self._modules,
+        module=self._module,
         model=model,
         config=config,
         history=history if history else [],
@@ -303,6 +364,21 @@ class Chats:
 
 class AsyncChat(_BaseChat):
   """Async chat session."""
+
+  def __init__(
+      self,
+      *,
+      module: AsyncModels,
+      model: str,
+      config: Optional[GenerateContentConfigOrDict] = None,
+      history: list[Content],
+  ):
+    self._module = module
+    super().__init__(
+        model=model,
+        config=config,
+        history=history,
+    )
 
   async def send_message(
       self,
@@ -326,11 +402,15 @@ class AsyncChat(_BaseChat):
       chat = client.aio.chats.create(model='gemini-1.5-flash')
       response = await chat.send_message('tell me a story')
     """
-
-    input_content = t.t_content(self._modules._api_client, message)
-    response = await self._modules.generate_content(
+    if not _is_part_type(message):
+      raise ValueError(
+          f"Message must be a valid part type: {types.PartUnion} or"
+          f" {types.PartUnionDict}, got {type(message)}"
+      )
+    input_content = t.t_content(self._module._api_client, message)
+    response = await self._module.generate_content(
         model=self._model,
-        contents=self._curated_history + [input_content],
+        contents=self._curated_history + [input_content],  # type: ignore[arg-type]
         config=config if config else self._config,
     )
     model_output = (
@@ -338,10 +418,15 @@ class AsyncChat(_BaseChat):
         if response.candidates and response.candidates[0].content
         else []
     )
+    automatic_function_calling_history = (
+        response.automatic_function_calling_history
+        if response.automatic_function_calling_history
+        else []
+    )
     self.record_history(
         user_input=input_content,
         model_output=model_output,
-        automatic_function_calling_history=response.automatic_function_calling_history,
+        automatic_function_calling_history=automatic_function_calling_history,
         is_valid=_validate_response(response),
     )
     return response
@@ -369,14 +454,19 @@ class AsyncChat(_BaseChat):
         print(chunk.text)
     """
 
-    input_content = t.t_content(self._modules._api_client, message)
+    if not _is_part_type(message):
+      raise ValueError(
+          f"Message must be a valid part type: {types.PartUnion} or"
+          f" {types.PartUnionDict}, got {type(message)}"
+      )
+    input_content = t.t_content(self._module._api_client, message)
 
     async def async_generator():
       output_contents = []
       finish_reason = None
       is_valid = True
       chunk = None
-      async for chunk in await self._modules.generate_content_stream(
+      async for chunk in await self._module.generate_content_stream(
           model=self._model,
           contents=self._curated_history + [input_content],
           config=config if config else self._config,
@@ -394,7 +484,6 @@ class AsyncChat(_BaseChat):
           model_output=output_contents,
           automatic_function_calling_history=chunk.automatic_function_calling_history,
           is_valid=is_valid and output_contents and finish_reason,
-
       )
     return async_generator()
 
@@ -402,8 +491,8 @@ class AsyncChat(_BaseChat):
 class AsyncChats:
   """A util class to create async chat sessions."""
 
-  def __init__(self, modules: AsyncModels):
-    self._modules = modules
+  def __init__(self, module: AsyncModels):
+    self._module = module
 
   def create(
       self,
@@ -423,7 +512,7 @@ class AsyncChats:
       A new chat session.
     """
     return AsyncChat(
-        modules=self._modules,
+        module=self._module,
         model=model,
         config=config,
         history=history if history else [],

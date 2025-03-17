@@ -148,7 +148,7 @@ def test_history_start_with_model_content():
   ]
 
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   with pytest.raises(ValueError) as e:
     chat = chats_module.create(model='gemini-1.5-flash', history=history)
 
@@ -168,7 +168,7 @@ def test_unrecognized_role_in_history():
   ]
 
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   with pytest.raises(ValueError) as e:
     chat = chats_module.create(model='gemini-1.5-flash', history=history)
 
@@ -193,7 +193,7 @@ def test_sync_chat_create():
   ]
 
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash', history=history)
 
   assert chat.get_history() == history
@@ -222,7 +222,7 @@ def test_async_chat_create():
   ]
 
   models_module = models.AsyncModels(mock_api_client)
-  chats_module = chats.AsyncChats(modules=models_module)
+  chats_module = chats.AsyncChats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash', history=history)
 
   assert chat.get_history() == history
@@ -263,7 +263,7 @@ def test_history_with_invalid_turns():
   curated_history.extend(valid_output)
 
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash', history=comprehensive_history)
 
   assert chat.get_history() == comprehensive_history
@@ -272,7 +272,7 @@ def test_history_with_invalid_turns():
 
 def test_chat_with_invalid_content(mock_generate_content_invalid_content):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module) 
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chat.send_message('Hello')
@@ -290,7 +290,7 @@ def test_chat_with_invalid_content(mock_generate_content_invalid_content):
 
 def test_chat_with_empty_content(mock_generate_content_empty_content):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module) 
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chat.send_message('Hello')
@@ -308,7 +308,7 @@ def test_chat_with_empty_content(mock_generate_content_empty_content):
 
 def test_chat_stream_with_invalid_content(mock_generate_content_stream_invalid_content):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module) 
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chunks = chat.send_message_stream('Hello')
@@ -328,7 +328,7 @@ def test_chat_stream_with_invalid_content(mock_generate_content_stream_invalid_c
 
 def test_chat_stream_with_empty_content(mock_generate_content_stream_empty_content):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module) 
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chunks =chat.send_message_stream('Hello')
@@ -348,7 +348,7 @@ def test_chat_stream_with_empty_content(mock_generate_content_stream_empty_conte
 
 def test_chat_with_afc_history(mock_generate_content_afc_history):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chat.send_message('Hello')
@@ -365,7 +365,7 @@ def test_chat_with_afc_history(mock_generate_content_afc_history):
 
 def test_chat_stream_with_afc_history(mock_generate_content_stream_afc_history):
   models_module = models.Models(mock_api_client)
-  chats_module = chats.Chats(modules=models_module)
+  chats_module = chats.Chats(module=models_module)
   chat = chats_module.create(model='gemini-1.5-flash')
 
   chunks = chat.send_message_stream('Hello')
