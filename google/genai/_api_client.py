@@ -238,6 +238,41 @@ class HttpResponse:
       response_payload[attribute] = copy.deepcopy(getattr(self, attribute))
 
 
+class SyncHttpxClient(httpx.Client):
+  """Sync httpx client."""
+
+  def __init__(self, **kwargs: Any) -> None:
+    """Initializes the httpx client."""
+    kwargs.setdefault('follow_redirects', True)
+    super().__init__(**kwargs)
+
+  def __del__(self) -> None:
+    """Closes the httpx client."""
+    if self.is_closed:
+      return
+    try:
+      self.close()
+    except Exception:
+      pass
+
+
+class AsyncHttpxClient(httpx.AsyncClient):
+  """Async httpx client."""
+
+  def __init__(self, **kwargs: Any) -> None:
+    """Initializes the httpx client."""
+    kwargs.setdefault('follow_redirects', True)
+    super().__init__(**kwargs)
+
+  def __del__(self) -> None:
+    if self.is_closed:
+      return
+    try:
+      asyncio.get_running_loop().create_task(self.aclose())
+    except Exception:
+      pass
+
+
 class BaseApiClient:
   """Client for calling HTTP APIs sending and receiving JSON."""
 
@@ -369,6 +404,9 @@ class BaseApiClient:
       )
     else:
       _append_library_version_headers(self._http_options['headers'])
+    # Initialize the httpx client.
+    self._httpx_client = SyncHttpxClient()
+    self._async_httpx_client = AsyncHttpxClient()
 
   def _websocket_base_url(self):
     url_parts = urlparse(self._http_options['base_url'])
@@ -499,41 +537,39 @@ class BaseApiClient:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
         )
-      data = json.dumps(http_request.data)
+      data = json.dumps(http_request.data) if http_request.data else None
     else:
       if http_request.data:
         if not isinstance(http_request.data, bytes):
-          data = json.dumps(http_request.data)
+          data = json.dumps(http_request.data) if http_request.data else None
         else:
           data = http_request.data
 
     if stream:
-      client = httpx.Client()
-      httpx_request = client.build_request(
+      httpx_request = self._httpx_client.build_request(
           method=http_request.method,
           url=http_request.url,
           content=data,
           headers=http_request.headers,
           timeout=http_request.timeout,
       )
-      response = client.send(httpx_request, stream=stream)
+      response = self._httpx_client.send(httpx_request, stream=stream)
       errors.APIError.raise_for_response(response)
       return HttpResponse(
           response.headers, response if stream else [response.text]
       )
     else:
-      with httpx.Client() as client:
-        response = client.request(
-            method=http_request.method,
-            url=http_request.url,
-            headers=http_request.headers,
-            content=data,
-            timeout=http_request.timeout,
-        )
-        errors.APIError.raise_for_response(response)
-        return HttpResponse(
-            response.headers, response if stream else [response.text]
-        )
+      response = self._httpx_client.request(
+          method=http_request.method,
+          url=http_request.url,
+          headers=http_request.headers,
+          content=data,
+          timeout=http_request.timeout,
+      )
+      errors.APIError.raise_for_response(response)
+      return HttpResponse(
+          response.headers, response if stream else [response.text]
+      )
 
   async def _async_request(
       self, http_request: HttpRequest, stream: bool = False
@@ -547,24 +583,23 @@ class BaseApiClient:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
         )
-      data = json.dumps(http_request.data)
+      data = json.dumps(http_request.data) if http_request.data else None
     else:
       if http_request.data:
         if not isinstance(http_request.data, bytes):
-          data = json.dumps(http_request.data)
+          data = json.dumps(http_request.data) if http_request.data else None
         else:
           data = http_request.data
 
     if stream:
-      aclient = httpx.AsyncClient()
-      httpx_request = aclient.build_request(
+      httpx_request = self._async_httpx_client.build_request(
           method=http_request.method,
           url=http_request.url,
           content=data,
           headers=http_request.headers,
           timeout=http_request.timeout,
       )
-      response = await aclient.send(
+      response = await self._async_httpx_client.send(
           httpx_request,
           stream=stream,
       )
@@ -573,18 +608,17 @@ class BaseApiClient:
           response.headers, response if stream else [response.text]
       )
     else:
-      async with httpx.AsyncClient() as aclient:
-        response = await aclient.request(
-            method=http_request.method,
-            url=http_request.url,
-            headers=http_request.headers,
-            content=data,
-            timeout=http_request.timeout,
-        )
-        errors.APIError.raise_for_response(response)
-        return HttpResponse(
-            response.headers, response if stream else [response.text]
-        )
+      response = await self._async_httpx_client.request(
+          method=http_request.method,
+          url=http_request.url,
+          headers=http_request.headers,
+          content=data,
+          timeout=http_request.timeout,
+      )
+      errors.APIError.raise_for_response(response)
+      return HttpResponse(
+          response.headers, response if stream else [response.text]
+      )
 
   def get_read_only_http_options(self) -> HttpOptionsDict:
     copied = HttpOptionsDict()
@@ -709,7 +743,7 @@ class BaseApiClient:
       # If last chunk, finalize the upload.
       if chunk_size + offset >= upload_size:
         upload_command += ', finalize'
-      request = HttpRequest(
+      response = self._httpx_client.request(
           method='POST',
           url=upload_url,
           headers={
@@ -717,25 +751,22 @@ class BaseApiClient:
               'X-Goog-Upload-Offset': str(offset),
               'Content-Length': str(chunk_size),
           },
-          data=file_chunk,
+          content=file_chunk,
       )
-
-      response = self._request(request, stream=False)
       offset += chunk_size
-      if response.headers['X-Goog-Upload-Status'] != 'active':
+      if response.headers['x-goog-upload-status'] != 'active':
         break  # upload is complete or it has been interrupted.
-
       if upload_size <= offset:  # Status is not finalized.
         raise ValueError(
             'All content has been uploaded, but the upload status is not'
             f' finalized.'
         )
 
-    if response.headers['X-Goog-Upload-Status'] != 'final':
+    if response.headers['x-goog-upload-status'] != 'final':
       raise ValueError(
           'Failed to upload file: Upload status is not finalized.'
       )
-    return response.json
+    return response.json()
 
   def download_file(self, path: str, http_options):
     """Downloads the file data.
@@ -750,12 +781,7 @@ class BaseApiClient:
     http_request = self._build_request(
         'get', path=path, request_dict={}, http_options=http_options
     )
-    return self._download_file_request(http_request).byte_stream[0]
 
-  def _download_file_request(
-      self,
-      http_request: HttpRequest,
-  ) -> HttpResponse:
     data: Optional[Union[str, bytes]] = None
     if http_request.data:
       if not isinstance(http_request.data, bytes):
@@ -763,17 +789,18 @@ class BaseApiClient:
       else:
         data = http_request.data
 
-    with httpx.Client(follow_redirects=True) as client:
-      response = client.request(
-          method=http_request.method,
-          url=http_request.url,
-          headers=http_request.headers,
-          content=data,
-          timeout=http_request.timeout,
-      )
+    response = self._httpx_client.request(
+        method=http_request.method,
+        url=http_request.url,
+        headers=http_request.headers,
+        content=data,
+        timeout=http_request.timeout,
+    )
 
-      errors.APIError.raise_for_response(response)
-      return HttpResponse(response.headers, byte_stream=[response.read()])
+    errors.APIError.raise_for_response(response)
+    return HttpResponse(
+        response.headers, byte_stream=[response.read()]
+    ).byte_stream[0]
 
   async def async_upload_file(
       self,
@@ -818,45 +845,44 @@ class BaseApiClient:
     returns:
           The response json object from the finalize request.
     """
-    async with httpx.AsyncClient() as aclient:
-      offset = 0
-      # Upload the file in chunks
-      while True:
-        if isinstance(file, io.IOBase):
-          file_chunk = file.read(CHUNK_SIZE)
-        else:
-          file_chunk = await file.read(CHUNK_SIZE)
-        chunk_size = 0
-        if file_chunk:
-          chunk_size = len(file_chunk)
-        upload_command = 'upload'
-        # If last chunk, finalize the upload.
-        if chunk_size + offset >= upload_size:
-          upload_command += ', finalize'
-        response = await aclient.request(
-            method='POST',
-            url=upload_url,
-            content=file_chunk,
-            headers={
-                'X-Goog-Upload-Command': upload_command,
-                'X-Goog-Upload-Offset': str(offset),
-                'Content-Length': str(chunk_size),
-            },
-        )
-        offset += chunk_size
-        if response.headers.get('x-goog-upload-status') != 'active':
-          break  # upload is complete or it has been interrupted.
+    offset = 0
+    # Upload the file in chunks
+    while True:
+      if isinstance(file, io.IOBase):
+        file_chunk = file.read(CHUNK_SIZE)
+      else:
+        file_chunk = await file.read(CHUNK_SIZE)
+      chunk_size = 0
+      if file_chunk:
+        chunk_size = len(file_chunk)
+      upload_command = 'upload'
+      # If last chunk, finalize the upload.
+      if chunk_size + offset >= upload_size:
+        upload_command += ', finalize'
+      response = await self._async_httpx_client.request(
+          method='POST',
+          url=upload_url,
+          content=file_chunk,
+          headers={
+              'X-Goog-Upload-Command': upload_command,
+              'X-Goog-Upload-Offset': str(offset),
+              'Content-Length': str(chunk_size),
+          },
+      )
+      offset += chunk_size
+      if response.headers.get('x-goog-upload-status') != 'active':
+        break  # upload is complete or it has been interrupted.
 
-        if upload_size <= offset:  # Status is not finalized.
-          raise ValueError(
-              'All content has been uploaded, but the upload status is not'
-              f' finalized.'
-          )
-      if response.headers.get('x-goog-upload-status') != 'final':
+      if upload_size <= offset:  # Status is not finalized.
         raise ValueError(
-            'Failed to upload file: Upload status is not finalized.'
+            'All content has been uploaded, but the upload status is not'
+            f' finalized.'
         )
-      return response.json()
+    if response.headers.get('x-goog-upload-status') != 'final':
+      raise ValueError(
+          'Failed to upload file: Upload status is not finalized.'
+      )
+    return response.json()
 
   async def async_download_file(self, path: str, http_options):
     """Downloads the file data.
@@ -879,19 +905,18 @@ class BaseApiClient:
       else:
         data = http_request.data
 
-    async with httpx.AsyncClient(follow_redirects=True) as aclient:
-      response = await aclient.request(
-          method=http_request.method,
-          url=http_request.url,
-          headers=http_request.headers,
-          content=data,
-          timeout=http_request.timeout,
-      )
-      errors.APIError.raise_for_response(response)
+    response = await self._async_httpx_client.request(
+        method=http_request.method,
+        url=http_request.url,
+        headers=http_request.headers,
+        content=data,
+        timeout=http_request.timeout,
+    )
+    errors.APIError.raise_for_response(response)
 
-      return HttpResponse(
-          response.headers, byte_stream=[response.read()]
-      ).byte_stream[0]
+    return HttpResponse(
+        response.headers, byte_stream=[response.read()]
+    ).byte_stream[0]
 
   # This method does nothing in the real api client. It is used in the
   # replay_api_client to verify the response from the SDK method matches the
