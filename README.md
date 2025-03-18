@@ -11,7 +11,7 @@ Google Gen AI Python SDK provides an interface for developers to integrate Googl
 
 ## Installation
 
-```cmd
+```sh
 pip install google-genai
 ```
 
@@ -42,16 +42,16 @@ client = genai.Client(
 **(Optional) Using environment variables:**
 
 You can create a client by configuring the necessary environment variables.
-Configuration setup instructions depends on whether you're using the Gemini API
-on Vertex AI or the ML Dev Gemini API.
+Configuration setup instructions depends on whether you're using the Gemini
+Developer API or the Gemini API in Vertex AI.
 
-**ML Dev Gemini API:** Set `GOOGLE_API_KEY` as shown below:
+**Gemini Developer API:** Set `GOOGLE_API_KEY` as shown below:
 
 ```bash
 export GOOGLE_API_KEY='your-api-key'
 ```
 
-**Vertex AI API:** Set `GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`
+**Gemini API on Vertex AI:** Set `GOOGLE_GENAI_USE_VERTEXAI`, `GOOGLE_CLOUD_PROJECT`
 and `GOOGLE_CLOUD_LOCATION`, as shown below:
 
 ```bash
@@ -112,7 +112,7 @@ response = client.models.generate_content(
 print(response.text)
 ```
 
-#### with uploaded file (Gemini API only)
+#### with uploaded file (Gemini Developer API only)
 download the file in console.
 
 ```sh
@@ -317,6 +317,7 @@ The SDK will convert the list of parts into a content with a `user` role
 ```
 
 ##### Mix types in contents
+
 You can also provide a list of `types.ContentUnion`. The SDK leaves items of
 `types.Content` as is, it groups consecutive non function call parts into a
 single `types.UserContent`, and it groups consecutive function call parts into
