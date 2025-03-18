@@ -205,12 +205,12 @@ class Chat(_BaseChat):
   def __init__(
       self,
       *,
-      module: Models,
+      modules: Models,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
       history: list[Content],
   ):
-    self._module = module
+    self._modules = modules
     super().__init__(
         model=model,
         config=config,
@@ -245,8 +245,8 @@ class Chat(_BaseChat):
           f"Message must be a valid part type: {types.PartUnion} or"
           f" {types.PartUnionDict}, got {type(message)}"
       )
-    input_content = t.t_content(self._module._api_client, message)
-    response = self._module.generate_content(
+    input_content = t.t_content(self._modules._api_client, message)
+    response = self._modules.generate_content(
         model=self._model,
         contents=self._curated_history + [input_content],  # type: ignore[arg-type]
         config=config if config else self._config,
@@ -298,13 +298,13 @@ class Chat(_BaseChat):
           f"Message must be a valid part type: {types.PartUnion} or"
           f" {types.PartUnionDict}, got {type(message)}"
       )
-    input_content = t.t_content(self._module._api_client, message)
+    input_content = t.t_content(self._modules._api_client, message)
     output_contents = []
     finish_reason = None
     is_valid = True
     chunk = None
-    if isinstance(self._module, Models):
-      for chunk in self._module.generate_content_stream(
+    if isinstance(self._modules, Models):
+      for chunk in self._modules.generate_content_stream(
           model=self._model,
           contents=self._curated_history + [input_content],  # type: ignore[arg-type]
           config=config if config else self._config,
@@ -334,8 +334,8 @@ class Chat(_BaseChat):
 class Chats:
   """A util class to create chat sessions."""
 
-  def __init__(self, module: Models):
-    self._module = module
+  def __init__(self, modules: Models):
+    self._modules = modules
 
   def create(
       self,
@@ -355,7 +355,7 @@ class Chats:
       A new chat session.
     """
     return Chat(
-        module=self._module,
+        modules=self._modules,
         model=model,
         config=config,
         history=history if history else [],
@@ -368,12 +368,12 @@ class AsyncChat(_BaseChat):
   def __init__(
       self,
       *,
-      module: AsyncModels,
+      modules: AsyncModels,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
       history: list[Content],
   ):
-    self._module = module
+    self._modules = modules
     super().__init__(
         model=model,
         config=config,
@@ -407,8 +407,8 @@ class AsyncChat(_BaseChat):
           f"Message must be a valid part type: {types.PartUnion} or"
           f" {types.PartUnionDict}, got {type(message)}"
       )
-    input_content = t.t_content(self._module._api_client, message)
-    response = await self._module.generate_content(
+    input_content = t.t_content(self._modules._api_client, message)
+    response = await self._modules.generate_content(
         model=self._model,
         contents=self._curated_history + [input_content],  # type: ignore[arg-type]
         config=config if config else self._config,
@@ -459,14 +459,14 @@ class AsyncChat(_BaseChat):
           f"Message must be a valid part type: {types.PartUnion} or"
           f" {types.PartUnionDict}, got {type(message)}"
       )
-    input_content = t.t_content(self._module._api_client, message)
+    input_content = t.t_content(self._modules._api_client, message)
 
     async def async_generator():
       output_contents = []
       finish_reason = None
       is_valid = True
       chunk = None
-      async for chunk in await self._module.generate_content_stream(
+      async for chunk in await self._modules.generate_content_stream(
           model=self._model,
           contents=self._curated_history + [input_content],
           config=config if config else self._config,
@@ -491,8 +491,8 @@ class AsyncChat(_BaseChat):
 class AsyncChats:
   """A util class to create async chat sessions."""
 
-  def __init__(self, module: AsyncModels):
-    self._module = module
+  def __init__(self, modules: AsyncModels):
+    self._modules = modules
 
   def create(
       self,
@@ -512,7 +512,7 @@ class AsyncChats:
       A new chat session.
     """
     return AsyncChat(
-        module=self._module,
+        modules=self._modules,
         model=model,
         config=config,
         history=history if history else [],

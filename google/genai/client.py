@@ -63,7 +63,7 @@ class AsyncClient:
 
   @property
   def chats(self) -> AsyncChats:
-    return AsyncChats(module=self.models)
+    return AsyncChats(modules=self.models)
 
   @property
   def files(self) -> AsyncFiles:
@@ -251,7 +251,7 @@ class Client:
 
   @property
   def chats(self) -> Chats:
-    return Chats(module=self.models)
+    return Chats(modules=self.models)
 
   @property
   def aio(self) -> AsyncClient:
