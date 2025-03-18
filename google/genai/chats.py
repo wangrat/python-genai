@@ -13,14 +13,13 @@
 # limitations under the License.
 #
 
-import inspect
 import sys
 from typing import AsyncIterator, Awaitable, Optional, Union, get_args
 
 from . import _transformers as t
 from . import types
 from .models import AsyncModels, Models
-from .types import Content, ContentDict, GenerateContentConfigOrDict, GenerateContentResponse, Part, PartUnionDict
+from .types import Content, GenerateContentConfigOrDict, GenerateContentResponse, Part, PartUnionDict
 
 
 if sys.version_info >= (3, 10):
@@ -150,7 +149,10 @@ class _BaseChat:
         considered valid.
     """
     input_contents = (
-        automatic_function_calling_history
+        # Because the AFC input contains the entire curated chat history in
+        # addition to the new user input, we need to truncate the AFC history
+        # to deduplicate the existing chat history.
+        automatic_function_calling_history[len(self._curated_history):]
         if automatic_function_calling_history
         else [user_input]
     )

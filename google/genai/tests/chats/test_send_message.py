@@ -209,6 +209,23 @@ def test_with_afc_history(client):
   assert '51' in chat_history[3].parts[0].text
 
 
+def test_existing_chat_history_extends_afc_history(client):
+  chat = client.chats.create(
+      model='gemini-2.0-flash-exp',
+      config={'tools': [divide_intergers_with_customized_math_rule]},
+  )
+  _ = chat.send_message('hello')
+  _ = chat.send_message('could you help me with a math problem?')
+  _ = chat.send_message('what is the result of 100/2?')
+  chat_history = chat.get_history()
+  content_strings = []
+  for content in chat_history:
+    content_strings.append(content.model_dump_json())
+
+  # checks that the history is not duplicated
+  assert len(content_strings) == len(set(content_strings))
+
+
 @pytest.mark.skipif(
     sys.version_info >= (3, 13),
     reason=(
