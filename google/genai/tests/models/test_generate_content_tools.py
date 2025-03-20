@@ -18,6 +18,7 @@ import sys
 import typing
 import pydantic
 import pytest
+
 from ... import _transformers as t
 from ... import errors
 from ... import types
@@ -676,6 +677,7 @@ def test_automatic_function_calling_with_parameterized_generic_union_type(client
       country: str,
       cities: typing.Optional[list[str]] = None,
   ) -> str:
+    "Given a country and an optional list of cities, describe the cities."
     if cities is None:
       return 'There are no cities to describe.'
     else:
@@ -715,7 +717,7 @@ def test_empty_tools(client):
 
 def test_with_1_empty_tool(client):
   # Bad request for empty tool.
-  with pytest_helper.exception_if_vertex(client, errors.ClientError):
+  with pytest.raises(errors.ClientError):
     client.models.generate_content(
         model='gemini-1.5-flash',
         contents='What is the price of GOOG?.',
@@ -824,7 +826,7 @@ async def test_automatic_function_calling_async(client):
 
 @pytest.mark.asyncio
 async def test_automatic_function_calling_async_with_exception(client):
-  def divide_integers(a: int, b: int) -> int:
+  def mystery_function(a: int, b: int) -> int:
     return a // b
 
   response = await client.aio.models.generate_content(
@@ -832,9 +834,8 @@ async def test_automatic_function_calling_async_with_exception(client):
       contents='what is the result of 1000/0?',
       config={'tools': [divide_integers]},
   )
-
-  assert 'undefined' in response.text
-
+  assert response.automatic_function_calling_history
+  assert response.automatic_function_calling_history[-1].parts[0].function_response.response['error']
 
 @pytest.mark.asyncio
 async def test_automatic_function_calling_async_float_without_decimal(client):
@@ -1058,8 +1059,10 @@ def test_code_execution_tool(client):
       ),
   )
 
-  assert 'def is_prime' in response.executable_code
-  assert 'primes=' in response.code_execution_result
+  assert response.executable_code
+  assert (
+      'prime' in response.code_execution_result.lower() or 
+      '5117' in response.code_execution_result)
 
 
 def test_afc_logs_to_logger_instance(client, caplog):

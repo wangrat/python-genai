@@ -615,7 +615,8 @@ async def test_async_stream_config_override(client):
   ):
     request_config_text += chunk.text
   default_config_text = ''
-  async for chunk in await chat.send_message_stream('tell me a story in 100 words'):
+
+  async for chunk in await chat.send_message_stream('tell me family friendly story in 100 words'):
     default_config_text += chunk.text
 
   assert json.loads(request_config_text)

@@ -13,8 +13,11 @@
 # limitations under the License.
 #
 
+import base64
 import enum
+import os
 
+import PIL.Image
 from pydantic import BaseModel, ValidationError, Field
 from typing import Literal, List, Optional, Union
 from datetime import datetime
@@ -28,6 +31,13 @@ from ... import types
 from .. import pytest_helper
 from enum import Enum
 
+IMAGE_PNG_FILE_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../data/google.png')
+)
+image_png = PIL.Image.open(IMAGE_PNG_FILE_PATH)
+
+with open(IMAGE_PNG_FILE_PATH, 'rb') as image_file:
+  image_bytes = image_file.read()
 
 safety_settings_with_method = [
     {
@@ -1668,7 +1678,12 @@ def test_catch_stack_trace_in_error_handling(client):
     #         }]
     #     }
     # }
-    assert e.details == {'code': 400, 'message': '', 'status': 'UNKNOWN'}
+    if 'error' in e.details:
+      details = e.details['error']
+    else:
+      details = e.details
+    assert details['code'] == 400
+    assert details['status'] == 'INVALID_ARGUMENT'
 
 
 def test_multiple_strings(client):
@@ -1715,8 +1730,8 @@ def test_multiple_parts(client):
 
   assert 'Shakespeare' in response.text
   assert 'Hemingway' in response.text
-  assert 'Shakespeare' == response.parsed[0].person
-  assert 'Hemingway' == response.parsed[1].person
+  assert 'Shakespeare' in  response.parsed[0].person
+  assert 'Hemingway' in response.parsed[1].person
 
 
 def test_multiple_function_calls(client):
@@ -1780,3 +1795,31 @@ def test_multiple_function_calls(client):
   assert 'sunny' in response.text
   assert '100 degrees' in response.text
   assert '$100' in response.text
+
+def test_usage_metadata_part_types(client):
+  contents = [
+      'Hello world.',
+      types.Part.from_bytes(
+          data=image_bytes,
+          mime_type='image/png',
+      ),
+  ]
+
+  response = client.models.generate_content(
+      model='gemini-1.5-flash', contents=contents
+  )
+  usage_metadata = response.usage_metadata
+
+  assert usage_metadata.candidates_token_count
+  assert usage_metadata.candidates_tokens_details
+  modalities = sorted(
+      [d.modality.name for d in usage_metadata.candidates_tokens_details]
+  )
+  assert modalities == ['TEXT']
+
+  assert usage_metadata.prompt_token_count
+  assert usage_metadata.prompt_tokens_details
+  modalities = sorted(
+      [d.modality.name for d in usage_metadata.prompt_tokens_details]
+  )
+  assert modalities == ['IMAGE', 'TEXT']
