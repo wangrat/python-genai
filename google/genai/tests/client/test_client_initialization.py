@@ -457,7 +457,7 @@ def test_vertexai_apikey_from_constructor(monkeypatch):
   assert not client.models._api_client.project
   assert not client.models._api_client.location
   assert client.models._api_client.api_key == api_key
-  assert "aiplatform" in client._api_client._http_options["base_url"]
+  assert "aiplatform" in client._api_client._http_options.base_url
   assert isinstance(client.models._api_client, api_client.BaseApiClient)
 
 
@@ -477,7 +477,7 @@ def test_vertexai_apikey_from_env(monkeypatch):
   assert client.models._api_client.api_key == api_key
   assert not client.models._api_client.project
   assert not client.models._api_client.location
-  assert "aiplatform" in client._api_client._http_options["base_url"]
+  assert "aiplatform" in client._api_client._http_options.base_url
   assert isinstance(client.models._api_client, api_client.BaseApiClient)
 
 
@@ -512,7 +512,7 @@ def test_vertexai_apikey_combo1(monkeypatch):
   assert client.models._api_client.api_key == api_key
   assert not client.models._api_client.project
   assert not client.models._api_client.location
-  assert "aiplatform" in client._api_client._http_options["base_url"]
+  assert "aiplatform" in client._api_client._http_options.base_url
   assert isinstance(client.models._api_client, api_client.BaseApiClient)
 
 
@@ -532,7 +532,7 @@ def test_vertexai_apikey_combo2(monkeypatch):
   assert not client.models._api_client.api_key
   assert client.models._api_client.project == project_id
   assert client.models._api_client.location == location
-  assert "aiplatform" in client._api_client._http_options["base_url"]
+  assert "aiplatform" in client._api_client._http_options.base_url
   assert isinstance(client.models._api_client, api_client.BaseApiClient)
 
 
@@ -552,7 +552,7 @@ def test_vertexai_apikey_combo3(monkeypatch):
   assert not client.models._api_client.api_key
   assert client.models._api_client.project == project_id
   assert client.models._api_client.location == location
-  assert "aiplatform" in client._api_client._http_options["base_url"]
+  assert "aiplatform" in client._api_client._http_options.base_url
   assert isinstance(client.models._api_client, api_client.BaseApiClient)
 
 
@@ -568,7 +568,7 @@ def test_vertexai_global_endpoint(monkeypatch):
   assert client.models._api_client.vertexai
   assert client.models._api_client.project == project_id
   assert client.models._api_client.location == location
-  assert client.models._api_client._http_options["base_url"] == (
+  assert client.models._api_client._http_options.base_url == (
       "https://aiplatform.googleapis.com/"
   )
   assert isinstance(client.models._api_client, api_client.BaseApiClient)

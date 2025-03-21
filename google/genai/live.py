@@ -873,9 +873,9 @@ class AsyncLive(_api_module.BaseModule):
 
     if self._api_client.api_key:
       api_key = self._api_client.api_key
-      version = self._api_client._http_options['api_version']
+      version = self._api_client._http_options.api_version
       uri = f'{base_url}/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateContent?key={api_key}'
-      headers = self._api_client._http_options['headers']
+      headers = self._api_client._http_options.headers
       request_dict = _common.convert_to_dict(
           self._LiveSetup_to_mldev(
               model=transformed_model,
@@ -894,12 +894,12 @@ class AsyncLive(_api_module.BaseModule):
       auth_req = google.auth.transport.requests.Request()
       creds.refresh(auth_req)
       bearer_token = creds.token
-      headers = self._api_client._http_options['headers']
+      headers = self._api_client._http_options.headers
       if headers is not None:
         headers.update({
             'Authorization': 'Bearer {}'.format(bearer_token),
         })
-      version = self._api_client._http_options['api_version']
+      version = self._api_client._http_options.api_version
       uri = f'{base_url}/ws/google.cloud.aiplatform.{version}.LlmBidiService/BidiGenerateContent'
       location = self._api_client.location
       project = self._api_client.project

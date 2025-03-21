@@ -68,26 +68,30 @@ def _append_library_version_headers(headers: dict[str, str]) -> None:
 
 
 def _patch_http_options(
-    options: HttpOptionsDict, patch_options: dict[str, Any]
-) -> HttpOptionsDict:
-  # use shallow copy so we don't override the original objects.
-  copy_option = HttpOptionsDict()
-  copy_option.update(options)
-  for patch_key, patch_value in patch_options.items():
-    # if both are dicts, update the copy.
-    # This is to handle cases like merging headers.
-    if isinstance(patch_value, dict) and isinstance(
-        copy_option.get(patch_key, None), dict
-    ):
-      copy_option[patch_key] = {}
-      copy_option[patch_key].update(
-          options[patch_key]
-      )  # shallow copy from original options.
-      copy_option[patch_key].update(patch_value)
-    elif patch_value is not None:  # Accept empty values.
-      copy_option[patch_key] = patch_value
-  if copy_option['headers']:
-    _append_library_version_headers(copy_option['headers'])
+    options: HttpOptions, patch_options: HttpOptions
+) -> HttpOptions:
+  copy_option = options.model_copy()
+
+  options_headers = copy_option.headers or {}
+  patch_options_headers = patch_options.headers or {}
+  copy_option.headers = {
+      **options_headers,
+      **patch_options_headers,
+  }
+
+  http_options_keys = HttpOptions.model_fields.keys()
+
+  for key in http_options_keys:
+    if key == 'headers':
+      continue
+    patch_value = getattr(patch_options, key, None)
+    if patch_value is not None:
+      setattr(copy_option, key, patch_value)
+    else:
+      setattr(copy_option, key, getattr(options, key))
+
+  if copy_option.headers is not None:
+    _append_library_version_headers(copy_option.headers)
   return copy_option
 
 
@@ -200,7 +204,7 @@ class HttpResponse:
       for chunk in self.response_stream:
         yield json.loads(chunk) if chunk else {}
     elif self.response_stream is None:
-      async for c in []:
+      async for c in []:  # type: ignore[attr-defined]
         yield c
     else:
       # Iterator of objects retrieved from the API.
@@ -306,16 +310,14 @@ class BaseApiClient:
       )
 
     # Validate http_options if it is provided.
-    validated_http_options: dict[str, Any]
+    validated_http_options = HttpOptions()
     if isinstance(http_options, dict):
       try:
-        validated_http_options = HttpOptions.model_validate(
-            http_options
-        ).model_dump()
+        validated_http_options = HttpOptions.model_validate(http_options)
       except ValidationError as e:
         raise ValueError(f'Invalid http_options: {e}')
     elif isinstance(http_options, HttpOptions):
-      validated_http_options = http_options.model_dump()
+      validated_http_options = http_options
 
     # Retrieve implicitly set values from the environment.
     env_project = os.environ.get('GOOGLE_CLOUD_PROJECT', None)
@@ -326,7 +328,7 @@ class BaseApiClient:
     self.api_key = api_key or env_api_key
 
     self._credentials = credentials
-    self._http_options = HttpOptionsDict()
+    self._http_options = HttpOptions()
     # Initialize the lock. This lock will be used to protect access to the
     # credentials. This is crucial for thread safety when multiple coroutines
     # might be accessing the credentials at the same time.
@@ -374,12 +376,12 @@ class BaseApiClient:
             'AI API.'
         )
       if self.api_key or self.location == 'global':
-        self._http_options['base_url'] = f'https://aiplatform.googleapis.com/'
+        self._http_options.base_url = f'https://aiplatform.googleapis.com/'
       else:
-        self._http_options['base_url'] = (
+        self._http_options.base_url = (
             f'https://{self.location}-aiplatform.googleapis.com/'
         )
-      self._http_options['api_version'] = 'v1beta1'
+      self._http_options.api_version = 'v1beta1'
     else:  # Implicit initialization or missing arguments.
       if not self.api_key:
         raise ValueError(
@@ -387,27 +389,27 @@ class BaseApiClient:
             'provide (`api_key`) arguments. To use the Google Cloud API,'
             ' provide (`vertexai`, `project` & `location`) arguments.'
         )
-      self._http_options['base_url'] = (
-          'https://generativelanguage.googleapis.com/'
-      )
-      self._http_options['api_version'] = 'v1beta'
+      self._http_options.base_url = 'https://generativelanguage.googleapis.com/'
+      self._http_options.api_version = 'v1beta'
     # Default options for both clients.
-    self._http_options['headers'] = {'Content-Type': 'application/json'}
+    self._http_options.headers = {'Content-Type': 'application/json'}
     if self.api_key:
-      self._http_options['headers']['x-goog-api-key'] = self.api_key
+      if self._http_options.headers is not None:
+        self._http_options.headers['x-goog-api-key'] = self.api_key
     # Update the http options with the user provided http options.
     if http_options:
       self._http_options = _patch_http_options(
           self._http_options, validated_http_options
       )
     else:
-      _append_library_version_headers(self._http_options['headers'])
+      if self._http_options.headers is not None:
+        _append_library_version_headers(self._http_options.headers)
     # Initialize the httpx client.
     self._httpx_client = SyncHttpxClient()
     self._async_httpx_client = AsyncHttpxClient()
 
   def _websocket_base_url(self):
-    url_parts = urlparse(self._http_options['base_url'])
+    url_parts = urlparse(self._http_options.base_url)
     return url_parts._replace(scheme='wss').geturl()
 
   def _access_token(self) -> str:
@@ -418,9 +420,7 @@ class BaseApiClient:
         self.project = project
 
     if self._credentials:
-      if (
-          self._credentials.expired or not self._credentials.token
-      ):
+      if self._credentials.expired or not self._credentials.token:
         # Only refresh when it needs to. Default expiration is 3600 seconds.
         _refresh_auth(self._credentials)
       if not self._credentials.token:
@@ -473,11 +473,12 @@ class BaseApiClient:
     if http_options:
       if isinstance(http_options, HttpOptions):
         patched_http_options = _patch_http_options(
-            self._http_options, http_options.model_dump()
+            self._http_options,
+            http_options,
         )
       else:
         patched_http_options = _patch_http_options(
-            self._http_options, http_options
+            self._http_options, HttpOptions.model_validate(http_options)
         )
     else:
       patched_http_options = self._http_options
@@ -496,13 +497,27 @@ class BaseApiClient:
         and not self.api_key
     ):
       path = f'projects/{self.project}/locations/{self.location}/' + path
+
+    if patched_http_options.api_version is None:
+      versioned_path = f'/{path}'
+    else:
+      versioned_path = f'{patched_http_options.api_version}/{path}'
+
+    if (
+        patched_http_options.base_url is None
+        or not patched_http_options.base_url
+    ):
+      raise ValueError('Base URL must be set.')
+    else:
+      base_url = patched_http_options.base_url
+
     url = _join_url_path(
-        patched_http_options.get('base_url', ''),
-        patched_http_options.get('api_version', '') + '/' + path,
+        base_url,
+        versioned_path,
     )
 
-    timeout_in_seconds: Optional[Union[float, int]] = patched_http_options.get(
-        'timeout', None
+    timeout_in_seconds: Optional[Union[float, int]] = (
+        patched_http_options.timeout
     )
     if timeout_in_seconds:
       # HttpOptions.timeout is in milliseconds. But httpx.Client.request()
@@ -511,10 +526,12 @@ class BaseApiClient:
     else:
       timeout_in_seconds = None
 
+    if patched_http_options.headers is None:
+      raise ValueError('Request headers must be set.')
     return HttpRequest(
         method=http_method,
         url=url,
-        headers=patched_http_options['headers'],
+        headers=patched_http_options.headers,
         data=request_dict,
         timeout=timeout_in_seconds,
     )
@@ -526,9 +543,7 @@ class BaseApiClient:
   ) -> HttpResponse:
     data: Optional[Union[str, bytes]] = None
     if self.vertexai and not self.api_key:
-      http_request.headers['Authorization'] = (
-          f'Bearer {self._access_token()}'
-      )
+      http_request.headers['Authorization'] = f'Bearer {self._access_token()}'
       if self._credentials and self._credentials.quota_project_id:
         http_request.headers['x-goog-user-project'] = (
             self._credentials.quota_project_id
@@ -616,11 +631,11 @@ class BaseApiClient:
           response.headers, response if stream else [response.text]
       )
 
-  def get_read_only_http_options(self) -> HttpOptionsDict:
-    copied = HttpOptionsDict()
+  def get_read_only_http_options(self) -> dict[str, Any]:
     if isinstance(self._http_options, BaseModel):
-      self._http_options = self._http_options.model_dump()
-    copied.update(self._http_options)
+      copied = self._http_options.model_dump()
+    else:
+      copied = self._http_options
     return copied
 
   def request(
