@@ -19,7 +19,7 @@ from typing import AsyncIterator, Awaitable, Optional, Union, get_args
 from . import _transformers as t
 from . import types
 from .models import AsyncModels, Models
-from .types import Content, GenerateContentConfigOrDict, GenerateContentResponse, Part, PartUnionDict
+from .types import Content, ContentOrDict, GenerateContentConfigOrDict, GenerateContentResponse, Part, PartUnionDict
 
 
 if sys.version_info >= (3, 10):
@@ -116,14 +116,21 @@ class _BaseChat:
       *,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
-      history: list[Content],
+      history: list[ContentOrDict],
   ):
     self._model = model
     self._config = config
-    self._comprehensive_history = history
+    content_models = []
+    for content in history:
+      if not isinstance(content, Content):
+        content_model = Content.model_validate(content)
+      else:
+        content_model = content
+      content_models.append(content_model)
+    self._comprehensive_history = content_models
     """Comprehensive history is the full history of the chat, including turns of the invalid contents from the model and their associated inputs.
     """
-    self._curated_history = _extract_curated_history(history)
+    self._curated_history = _extract_curated_history(content_models)
     """Curated history is the set of valid turns that will be used in the subsequent send requests.
     """
 
@@ -210,7 +217,7 @@ class Chat(_BaseChat):
       modules: Models,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
-      history: list[Content],
+      history: list[ContentOrDict],
   ):
     self._modules = modules
     super().__init__(
@@ -344,7 +351,7 @@ class Chats:
       *,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
-      history: Optional[list[Content]] = None,
+      history: Optional[list[ContentOrDict]] = None,
   ) -> Chat:
     """Creates a new chat session.
 
@@ -373,7 +380,7 @@ class AsyncChat(_BaseChat):
       modules: AsyncModels,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
-      history: list[Content],
+      history: list[ContentOrDict],
   ):
     self._modules = modules
     super().__init__(
@@ -501,7 +508,7 @@ class AsyncChats:
       *,
       model: str,
       config: Optional[GenerateContentConfigOrDict] = None,
-      history: Optional[list[Content]] = None,
+      history: Optional[list[ContentOrDict]] = None,
   ) -> AsyncChat:
     """Creates a new chat session.
 
