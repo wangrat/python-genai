@@ -319,7 +319,7 @@ def _GenerateVideosOperation_from_vertex(
 
 class Operations(_api_module.BaseModule):
 
-  def _get_operation(
+  def _get_videos_operation(
       self,
       *,
       operation_name: str,
@@ -385,7 +385,7 @@ class Operations(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  def _fetch_predict_operation(
+  def _fetch_predict_videos_operation(
       self,
       *,
       operation_name: str,
@@ -481,13 +481,13 @@ class Operations(_api_module.BaseModule):
       fetch_operation_config = types.FetchPredictOperationConfig(
           http_options=http_options
       )
-      return self._fetch_predict_operation(
+      return self._fetch_predict_videos_operation(
           operation_name=operation_name,
           resource_name=resource_name,
           config=fetch_operation_config,
       )
     else:
-      return self._get_operation(
+      return self._get_videos_operation(
           operation_name=operation_name,
           config=config,
       )
@@ -495,7 +495,7 @@ class Operations(_api_module.BaseModule):
 
 class AsyncOperations(_api_module.BaseModule):
 
-  async def _get_operation(
+  async def _get_videos_operation(
       self,
       *,
       operation_name: str,
@@ -561,7 +561,7 @@ class AsyncOperations(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  async def _fetch_predict_operation(
+  async def _fetch_predict_videos_operation(
       self,
       *,
       operation_name: str,
@@ -655,13 +655,13 @@ class AsyncOperations(_api_module.BaseModule):
       fetch_operation_config = types.FetchPredictOperationConfig(
           http_options=http_options
       )
-      return await self._fetch_predict_operation(
+      return await self._fetch_predict_videos_operation(
           operation_name=operation_name,
           resource_name=resource_name,
           config=fetch_operation_config,
       )
     else:
-      return await self._get_operation(
+      return await self._get_videos_operation(
           operation_name=operation_name,
           config=config,
       )

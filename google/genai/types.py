@@ -5433,14 +5433,7 @@ GenerateVideosResponseOrDict = Union[
 
 
 class GenerateVideosOperation(_common.BaseModel):
-  """A video generation operation.
-
-  Use the following code to refresh the operation:
-
-  ```
-  operation = client.operations.get(operation)
-  ```
-  """
+  """A video generation operation."""
 
   name: Optional[str] = Field(
       default=None,
@@ -5468,14 +5461,7 @@ class GenerateVideosOperation(_common.BaseModel):
 
 
 class GenerateVideosOperationDict(TypedDict, total=False):
-  """A video generation operation.
-
-  Use the following code to refresh the operation:
-
-  ```
-  operation = client.operations.get(operation)
-  ```
-  """
+  """A video generation operation."""
 
   name: Optional[str]
   """The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`."""
