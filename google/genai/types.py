@@ -6718,11 +6718,11 @@ class CreateCachedContentConfig(_common.BaseModel):
   )
   ttl: Optional[str] = Field(
       default=None,
-      description="""The TTL for this resource. The expiration time is computed: now + TTL.""",
+      description="""The TTL for this resource. The expiration time is computed: now + TTL. It is a duration string, with up to nine fractional digits, terminated by 's'. Example: "3.5s".""",
   )
   expire_time: Optional[datetime.datetime] = Field(
       default=None,
-      description="""Timestamp of when this resource is considered expired.""",
+      description="""Timestamp of when this resource is considered expired. Uses RFC 3339 format, Example: 2014-10-02T15:01:23Z.""",
   )
   display_name: Optional[str] = Field(
       default=None,
@@ -6758,10 +6758,10 @@ class CreateCachedContentConfigDict(TypedDict, total=False):
   """Used to override HTTP request options."""
 
   ttl: Optional[str]
-  """The TTL for this resource. The expiration time is computed: now + TTL."""
+  """The TTL for this resource. The expiration time is computed: now + TTL. It is a duration string, with up to nine fractional digits, terminated by 's'. Example: "3.5s"."""
 
   expire_time: Optional[datetime.datetime]
-  """Timestamp of when this resource is considered expired."""
+  """Timestamp of when this resource is considered expired. Uses RFC 3339 format, Example: 2014-10-02T15:01:23Z."""
 
   display_name: Optional[str]
   """The user-generated meaningful display name of the cached content.
@@ -7052,11 +7052,11 @@ class UpdateCachedContentConfig(_common.BaseModel):
   )
   ttl: Optional[str] = Field(
       default=None,
-      description="""The TTL for this resource. The expiration time is computed: now + TTL.""",
+      description="""The TTL for this resource. The expiration time is computed: now + TTL. It is a duration string, with up to nine fractional digits, terminated by 's'. Example: "3.5s".""",
   )
   expire_time: Optional[datetime.datetime] = Field(
       default=None,
-      description="""Timestamp of when this resource is considered expired.""",
+      description="""Timestamp of when this resource is considered expired. Uses RFC 3339 format, Example: 2014-10-02T15:01:23Z.""",
   )
 
 
@@ -7067,10 +7067,10 @@ class UpdateCachedContentConfigDict(TypedDict, total=False):
   """Used to override HTTP request options."""
 
   ttl: Optional[str]
-  """The TTL for this resource. The expiration time is computed: now + TTL."""
+  """The TTL for this resource. The expiration time is computed: now + TTL. It is a duration string, with up to nine fractional digits, terminated by 's'. Example: "3.5s"."""
 
   expire_time: Optional[datetime.datetime]
-  """Timestamp of when this resource is considered expired."""
+  """Timestamp of when this resource is considered expired. Uses RFC 3339 format, Example: 2014-10-02T15:01:23Z."""
 
 
 UpdateCachedContentConfigOrDict = Union[
