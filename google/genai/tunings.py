@@ -920,7 +920,9 @@ class Tunings(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _CreateTuningJobParameters_to_mldev(
           self._api_client, parameter_model
@@ -1266,7 +1268,9 @@ class AsyncTunings(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _CreateTuningJobParameters_to_mldev(
           self._api_client, parameter_model

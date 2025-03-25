@@ -353,7 +353,9 @@ class Files(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _ListFilesParameters_to_mldev(
           self._api_client, parameter_model
@@ -408,7 +410,9 @@ class Files(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _CreateFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -477,7 +481,9 @@ class Files(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _GetFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -543,7 +549,9 @@ class Files(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _DeleteFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -603,8 +611,7 @@ class Files(_api_module.BaseModule):
     """
     if self._api_client.vertexai:
       raise ValueError(
-          'Vertex AI does not support creating files. You can upload files to'
-          ' GCS files instead.'
+          'This method is only supported in the Gemini Developer client.'
       )
     config_model = types.UploadFileConfig()
     if config:
@@ -743,7 +750,7 @@ class Files(_api_module.BaseModule):
     """
     if self._api_client.vertexai:
       raise ValueError(
-          'Vertex AI does not support the Files API. Use GCS files instead.'
+          'This method is only supported in the Gemini Developer client.'
       )
 
     config_model = None
@@ -810,7 +817,9 @@ class AsyncFiles(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _ListFilesParameters_to_mldev(
           self._api_client, parameter_model
@@ -865,7 +874,9 @@ class AsyncFiles(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _CreateFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -934,7 +945,9 @@ class AsyncFiles(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _GetFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -1000,7 +1013,9 @@ class AsyncFiles(_api_module.BaseModule):
 
     request_url_dict: Optional[dict[str, str]]
     if self._api_client.vertexai:
-      raise ValueError('This method is only supported in the default client.')
+      raise ValueError(
+          'This method is only supported in the Gemini Developer client.'
+      )
     else:
       request_dict = _DeleteFileParameters_to_mldev(
           self._api_client, parameter_model
@@ -1060,8 +1075,7 @@ class AsyncFiles(_api_module.BaseModule):
     """
     if self._api_client.vertexai:
       raise ValueError(
-          'Vertex AI does not support creating files. You can upload files to'
-          ' GCS files instead.'
+          'This method is only supported in the Gemini Developer client.'
       )
     config_model = types.UploadFileConfig()
     if config:
@@ -1193,7 +1207,7 @@ class AsyncFiles(_api_module.BaseModule):
     """
     if self._api_client.vertexai:
       raise ValueError(
-          'Vertex AI does not support the Files API. Use GCS files instead.'
+          'This method is only supported in the Gemini Developer client.'
       )
 
     config_model = None
