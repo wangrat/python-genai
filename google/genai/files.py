@@ -520,7 +520,7 @@ class Files(_api_module.BaseModule):
   def delete(
       self, *, name: str, config: Optional[types.DeleteFileConfigOrDict] = None
   ) -> types.DeleteFileResponse:
-    """Deletes an existing file from the service.
+    """Deletes a remotely stored file.
 
     Args:
       name (str): The name identifier for the file to delete.
@@ -977,7 +977,7 @@ class AsyncFiles(_api_module.BaseModule):
   async def delete(
       self, *, name: str, config: Optional[types.DeleteFileConfigOrDict] = None
   ) -> types.DeleteFileResponse:
-    """Deletes an existing file from the service.
+    """Deletes a remotely stored file.
 
     Args:
       name (str): The name identifier for the file to delete.
