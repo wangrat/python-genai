@@ -614,7 +614,7 @@ class BaseApiClient:
           httpx_request,
           stream=stream,
       )
-      errors.APIError.raise_for_response(response)
+      await errors.APIError.raise_for_async_response(response)
       return HttpResponse(
           response.headers, response if stream else [response.text]
       )
@@ -626,7 +626,7 @@ class BaseApiClient:
           content=data,
           timeout=http_request.timeout,
       )
-      errors.APIError.raise_for_response(response)
+      await errors.APIError.raise_for_async_response(response)
       return HttpResponse(
           response.headers, response if stream else [response.text]
       )
@@ -923,7 +923,7 @@ class BaseApiClient:
         content=data,
         timeout=http_request.timeout,
     )
-    errors.APIError.raise_for_response(response)
+    await errors.APIError.raise_for_async_response(response)
 
     return HttpResponse(
         response.headers, byte_stream=[response.read()]
