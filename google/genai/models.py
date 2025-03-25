@@ -115,9 +115,6 @@ def _Schema_to_mldev(
   if getv(from_object, ['max_length']) is not None:
     raise ValueError('max_length parameter is not supported in Gemini API.')
 
-  if getv(from_object, ['title']) is not None:
-    raise ValueError('title parameter is not supported in Gemini API.')
-
   if getv(from_object, ['min_length']) is not None:
     raise ValueError('min_length parameter is not supported in Gemini API.')
 
@@ -169,6 +166,9 @@ def _Schema_to_mldev(
 
   if getv(from_object, ['required']) is not None:
     setv(to_object, ['required'], getv(from_object, ['required']))
+
+  if getv(from_object, ['title']) is not None:
+    setv(to_object, ['title'], getv(from_object, ['title']))
 
   if getv(from_object, ['type']) is not None:
     setv(to_object, ['type'], getv(from_object, ['type']))
@@ -1206,9 +1206,6 @@ def _Schema_to_vertex(
   if getv(from_object, ['max_length']) is not None:
     setv(to_object, ['maxLength'], getv(from_object, ['max_length']))
 
-  if getv(from_object, ['title']) is not None:
-    setv(to_object, ['title'], getv(from_object, ['title']))
-
   if getv(from_object, ['min_length']) is not None:
     setv(to_object, ['minLength'], getv(from_object, ['min_length']))
 
@@ -1260,6 +1257,9 @@ def _Schema_to_vertex(
 
   if getv(from_object, ['required']) is not None:
     setv(to_object, ['required'], getv(from_object, ['required']))
+
+  if getv(from_object, ['title']) is not None:
+    setv(to_object, ['title'], getv(from_object, ['title']))
 
   if getv(from_object, ['type']) is not None:
     setv(to_object, ['type'], getv(from_object, ['type']))
