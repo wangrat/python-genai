@@ -1215,25 +1215,34 @@ GoogleSearchRetrievalOrDict = Union[
 
 
 class VertexAISearch(_common.BaseModel):
-  """Retrieve from Vertex AI Search datastore for grounding.
+  """Retrieve from Vertex AI Search datastore or engine for grounding.
 
-  See https://cloud.google.com/products/agent-builder
+  datastore and engine are mutually exclusive. See
+  https://cloud.google.com/products/agent-builder
   """
 
   datastore: Optional[str] = Field(
       default=None,
-      description="""Required. Fully-qualified Vertex AI Search data store resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`""",
+      description="""Optional. Fully-qualified Vertex AI Search data store resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`""",
+  )
+  engine: Optional[str] = Field(
+      default=None,
+      description="""Optional. Fully-qualified Vertex AI Search engine resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`""",
   )
 
 
 class VertexAISearchDict(TypedDict, total=False):
-  """Retrieve from Vertex AI Search datastore for grounding.
+  """Retrieve from Vertex AI Search datastore or engine for grounding.
 
-  See https://cloud.google.com/products/agent-builder
+  datastore and engine are mutually exclusive. See
+  https://cloud.google.com/products/agent-builder
   """
 
   datastore: Optional[str]
-  """Required. Fully-qualified Vertex AI Search data store resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`"""
+  """Optional. Fully-qualified Vertex AI Search data store resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/dataStores/{dataStore}`"""
+
+  engine: Optional[str]
+  """Optional. Fully-qualified Vertex AI Search engine resource ID. Format: `projects/{project}/locations/{location}/collections/{collection}/engines/{engine}`"""
 
 
 VertexAISearchOrDict = Union[VertexAISearch, VertexAISearchDict]
