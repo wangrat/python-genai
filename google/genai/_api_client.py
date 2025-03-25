@@ -333,10 +333,10 @@ class BaseApiClient:
     # credentials. This is crucial for thread safety when multiple coroutines
     # might be accessing the credentials at the same time.
     try:
-      asyncio.get_event_loop()
+      self._auth_lock = asyncio.Lock()
     except RuntimeError:
       asyncio.set_event_loop(asyncio.new_event_loop())
-    self._auth_lock = asyncio.Lock()
+      self._auth_lock = asyncio.Lock()
 
     # Handle when to use Vertex AI in express mode (api key).
     # Explicit initializer arguments are already validated above.
