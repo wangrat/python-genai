@@ -1837,6 +1837,8 @@ def test_usage_metadata_part_types(client):
       [d.modality.name for d in usage_metadata.candidates_tokens_details]
   )
   assert modalities == ['TEXT']
+  assert isinstance(
+      usage_metadata.candidates_tokens_details[0].modality, types.MediaModality)
 
   assert usage_metadata.prompt_token_count
   assert usage_metadata.prompt_tokens_details

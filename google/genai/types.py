@@ -343,6 +343,17 @@ class FileSource(_common.CaseInSensitiveEnum):
   GENERATED = 'GENERATED'
 
 
+class MediaModality(_common.CaseInSensitiveEnum):
+  """Server content modalities."""
+
+  MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
+  TEXT = 'TEXT'
+  IMAGE = 'IMAGE'
+  VIDEO = 'VIDEO'
+  AUDIO = 'AUDIO'
+  DOCUMENT = 'DOCUMENT'
+
+
 class VideoMetadata(_common.BaseModel):
   """Metadata describes the input video content."""
 
@@ -2861,7 +2872,7 @@ GenerateContentResponsePromptFeedbackOrDict = Union[
 class ModalityTokenCount(_common.BaseModel):
   """Represents token counting info for a single modality."""
 
-  modality: Optional[Modality] = Field(
+  modality: Optional[MediaModality] = Field(
       default=None,
       description="""The modality associated with this token count.""",
   )
@@ -2873,7 +2884,7 @@ class ModalityTokenCount(_common.BaseModel):
 class ModalityTokenCountDict(TypedDict, total=False):
   """Represents token counting info for a single modality."""
 
-  modality: Optional[Modality]
+  modality: Optional[MediaModality]
   """The modality associated with this token count."""
 
   token_count: Optional[int]
