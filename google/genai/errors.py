@@ -36,7 +36,7 @@ class APIError(Exception):
       self,
       code: int,
       response_json: Any,
-      response: Union['ReplayResponse', httpx.Response],
+      response: Optional[Union['ReplayResponse', httpx.Response]] = None,
   ):
     self.response = response
     self.details = response_json
