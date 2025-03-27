@@ -207,7 +207,10 @@ class AsyncSession:
 
   async def _receive(self) -> types.LiveServerMessage:
     parameter_model = types.LiveServerMessage()
-    raw_response = await self._ws.recv(decode=False)
+    try:
+      raw_response = await self._ws.recv(decode=False)
+    except TypeError:
+      raw_response = await self._ws.recv()
     if raw_response:
       try:
         response = json.loads(raw_response)
@@ -915,8 +918,16 @@ class AsyncLive(_api_module.BaseModule):
       )
       request = json.dumps(request_dict)
 
-    async with connect(uri, additional_headers=headers) as ws:
-      await ws.send(request)
-      logger.info(await ws.recv(decode=False))
+    try:
+      async with connect(uri, additional_headers=headers) as ws:
+        await ws.send(request)
+        logger.info(await ws.recv(decode=False))
 
-      yield AsyncSession(api_client=self._api_client, websocket=ws)
+        yield AsyncSession(api_client=self._api_client, websocket=ws)
+    except TypeError:
+      # Try with the older websockets API
+      async with connect(uri, extra_headers=headers) as ws:
+        await ws.send(request)
+        logger.info(await ws.recv())
+
+        yield AsyncSession(api_client=self._api_client, websocket=ws)
