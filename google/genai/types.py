@@ -708,7 +708,7 @@ class Content(_common.BaseModel):
       default=None,
       description="""Optional. The producer of the content. Must be either 'user' or
       'model'. Useful to set for multi-turn conversations, otherwise can be
-      left blank or unset. If role is not specified, SDK will determine the role.""",
+      empty. If role is not specified, SDK will determine the role.""",
   )
 
 
@@ -783,7 +783,7 @@ class ContentDict(TypedDict, total=False):
   role: Optional[str]
   """Optional. The producer of the content. Must be either 'user' or
       'model'. Useful to set for multi-turn conversations, otherwise can be
-      left blank or unset. If role is not specified, SDK will determine the role."""
+      empty. If role is not specified, SDK will determine the role."""
 
 
 ContentOrDict = Union[Content, ContentDict]
@@ -9070,11 +9070,11 @@ LiveClientContentOrDict = Union[LiveClientContent, LiveClientContentDict]
 class LiveClientRealtimeInput(_common.BaseModel):
   """User input that is sent in real time.
 
-  This is different from `ClientContentUpdate` in a few ways:
+  This is different from `LiveClientContent` in a few ways:
 
     - Can be sent continuously without interruption to model generation.
     - If there is a need to mix data interleaved across the
-      `ClientContentUpdate` and the `RealtimeUpdate`, server attempts to
+      `LiveClientContent` and the `LiveClientRealtimeInput`, server attempts to
       optimize for best response, but there are no guarantees.
     - End of turn is not explicitly specified, but is rather derived from user
       activity (for example, end of speech).
@@ -9092,11 +9092,11 @@ class LiveClientRealtimeInput(_common.BaseModel):
 class LiveClientRealtimeInputDict(TypedDict, total=False):
   """User input that is sent in real time.
 
-  This is different from `ClientContentUpdate` in a few ways:
+  This is different from `LiveClientContent` in a few ways:
 
     - Can be sent continuously without interruption to model generation.
     - If there is a need to mix data interleaved across the
-      `ClientContentUpdate` and the `RealtimeUpdate`, server attempts to
+      `LiveClientContent` and the `LiveClientRealtimeInput`, server attempts to
       optimize for best response, but there are no guarantees.
     - End of turn is not explicitly specified, but is rather derived from user
       activity (for example, end of speech).
