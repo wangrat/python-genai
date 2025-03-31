@@ -8950,15 +8950,7 @@ class LiveClientSetup(_common.BaseModel):
   generation_config: Optional[GenerationConfig] = Field(
       default=None,
       description="""The generation configuration for the session.
-
-The following fields are supported:
-- `response_logprobs`
-- `response_mime_type`
-- `logprobs`
-- `response_schema`
-- `stop_sequence`
-- `routing_config`
-- `audio_timestamp`
+      Note: only a subset of fields are supported.
       """,
   )
   system_instruction: Optional[Content] = Field(
@@ -8988,15 +8980,7 @@ class LiveClientSetupDict(TypedDict, total=False):
 
   generation_config: Optional[GenerationConfigDict]
   """The generation configuration for the session.
-
-The following fields are supported:
-- `response_logprobs`
-- `response_mime_type`
-- `logprobs`
-- `response_schema`
-- `stop_sequence`
-- `routing_config`
-- `audio_timestamp`
+      Note: only a subset of fields are supported.
       """
 
   system_instruction: Optional[ContentDict]
@@ -9205,6 +9189,42 @@ class LiveConnectConfig(_common.BaseModel):
       modalities that the model can return. Defaults to AUDIO if not specified.
       """,
   )
+  temperature: Optional[float] = Field(
+      default=None,
+      description="""Value that controls the degree of randomness in token selection.
+      Lower temperatures are good for prompts that require a less open-ended or
+      creative response, while higher temperatures can lead to more diverse or
+      creative results.
+      """,
+  )
+  top_p: Optional[float] = Field(
+      default=None,
+      description="""Tokens are selected from the most to least probable until the sum
+      of their probabilities equals this value. Use a lower value for less
+      random responses and a higher value for more random responses.
+      """,
+  )
+  top_k: Optional[float] = Field(
+      default=None,
+      description="""For each token selection step, the ``top_k`` tokens with the
+      highest probabilities are sampled. Then tokens are further filtered based
+      on ``top_p`` with the final token selected using temperature sampling. Use
+      a lower number for less random responses and a higher number for more
+      random responses.
+      """,
+  )
+  max_output_tokens: Optional[int] = Field(
+      default=None,
+      description="""Maximum number of tokens that can be generated in the response.
+      """,
+  )
+  seed: Optional[int] = Field(
+      default=None,
+      description="""When ``seed`` is fixed to a specific number, the model makes a best
+      effort to provide the same response for repeated requests. By default, a
+      random number is used.
+      """,
+  )
   speech_config: Optional[SpeechConfig] = Field(
       default=None,
       description="""The speech generation configuration.
@@ -9235,6 +9255,37 @@ class LiveConnectConfigDict(TypedDict, total=False):
   response_modalities: Optional[list[Modality]]
   """The requested modalities of the response. Represents the set of
       modalities that the model can return. Defaults to AUDIO if not specified.
+      """
+
+  temperature: Optional[float]
+  """Value that controls the degree of randomness in token selection.
+      Lower temperatures are good for prompts that require a less open-ended or
+      creative response, while higher temperatures can lead to more diverse or
+      creative results.
+      """
+
+  top_p: Optional[float]
+  """Tokens are selected from the most to least probable until the sum
+      of their probabilities equals this value. Use a lower value for less
+      random responses and a higher value for more random responses.
+      """
+
+  top_k: Optional[float]
+  """For each token selection step, the ``top_k`` tokens with the
+      highest probabilities are sampled. Then tokens are further filtered based
+      on ``top_p`` with the final token selected using temperature sampling. Use
+      a lower number for less random responses and a higher number for more
+      random responses.
+      """
+
+  max_output_tokens: Optional[int]
+  """Maximum number of tokens that can be generated in the response.
+      """
+
+  seed: Optional[int]
+  """When ``seed`` is fixed to a specific number, the model makes a best
+      effort to provide the same response for repeated requests. By default, a
+      random number is used.
       """
 
   speech_config: Optional[SpeechConfigDict]

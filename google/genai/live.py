@@ -225,18 +225,18 @@ class AsyncSession:
           print(msg.text)
     ```
     """
-    client_content = self._t_client_content(turns, turn_complete)
+    client_content = _t_client_content(turns, turn_complete)
 
     if self._api_client.vertexai:
-      client_content = _ClientContent_to_vertex(
+      client_content_dict = _ClientContent_to_vertex(
           api_client=self._api_client, from_object=client_content
       )
     else:
-      client_content = _ClientContent_to_mldev(
+      client_content_dict = _ClientContent_to_mldev(
           api_client=self._api_client, from_object=client_content
       )
 
-    await self._ws.send(json.dumps({'client_content': client_content}))
+    await self._ws.send(json.dumps({'client_content': client_content_dict}))
 
   async def send_realtime_input(self, *, media: t.BlobUnion):
     """Send realtime media chunks to the model.
@@ -281,9 +281,11 @@ class AsyncSession:
           print(f'{msg.text}')
     ```
     """
-    realtime_input = self._t_realtime_input(media)
-    realtime_input = realtime_input.model_dump(exclude_none=True, mode='json')
-    await self._ws.send(json.dumps({'realtime_input': realtime_input}))
+    realtime_input = _t_realtime_input(media)
+    realtime_input_dict = realtime_input.model_dump(
+        exclude_none=True, mode='json'
+    )
+    await self._ws.send(json.dumps({'realtime_input': realtime_input_dict}))
 
   async def send_tool_response(
       self,
@@ -346,16 +348,16 @@ class AsyncSession:
 
             print('_'*80)
     """
-    tool_response = self._t_tool_response(function_responses)
+    tool_response = _t_tool_response(function_responses)
     if self._api_client.vertexai:
-      tool_response = _ToolResponse_to_vertex(
+      tool_response_dict = _ToolResponse_to_vertex(
           api_client=self._api_client, from_object=tool_response
       )
     else:
-      tool_response = _ToolResponse_to_mldev(
+      tool_response_dict = _ToolResponse_to_mldev(
           api_client=self._api_client, from_object=tool_response
       )
-    await self._ws.send(json.dumps({'tool_response': tool_response}))
+    await self._ws.send(json.dumps({'tool_response': tool_response_dict}))
 
   async def receive(self) -> AsyncIterator[types.LiveServerMessage]:
     """Receive model responses from the server.
@@ -927,12 +929,15 @@ def _t_content_strict(content: types.ContentOrDict):
         f'Could not convert input (type "{type(content)}") to '
         '`types.Content`'
     )
+
+
 def _t_contents_strict(
     contents: Union[Sequence[types.ContentOrDict], types.ContentOrDict]):
   if isinstance(contents, Sequence):
     return [_t_content_strict(content) for content in contents]
   else:
     return [_t_content_strict(contents)]
+
 
 def _t_client_content(
     turns: Optional[
@@ -954,6 +959,7 @@ def _t_client_content(
         '`types.LiveClientContent`'
     ) from e
 
+
 def _t_realtime_input(
     media: t.BlobUnion,
 ) -> types.LiveClientRealtimeInput:
@@ -964,6 +970,7 @@ def _t_realtime_input(
         f'Could not convert input (type "{type(input)}") to '
         '`types.LiveClientRealtimeInput`'
     ) from e
+
 
 def _t_tool_response(
     input: Union[
@@ -1031,7 +1038,39 @@ class AsyncLive(_api_module.BaseModule):
                 to_object,
             )
         }
-
+    if getv(config, ['temperature']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['temperature'] = getv(
+            config, ['temperature']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'temperature': getv(config, ['temperature'])
+        }
+    if getv(config, ['top_p']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['topP'] = getv(config, ['top_p'])
+      else:
+        to_object['generationConfig'] = {'topP': getv(config, ['top_p'])}
+    if getv(config, ['top_k']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['topK'] = getv(config, ['top_k'])
+      else:
+        to_object['generationConfig'] = {'topK': getv(config, ['top_k'])}
+    if getv(config, ['max_output_tokens']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['maxOutputTokens'] = getv(
+            config, ['max_output_tokens']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'maxOutputTokens': getv(config, ['max_output_tokens'])
+        }
+    if getv(config, ['seed']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['seed'] = getv(config, ['seed'])
+      else:
+        to_object['generationConfig'] = {'seed': getv(config, ['seed'])}
     if getv(config, ['system_instruction']) is not None:
       setv(
           to_object,
@@ -1112,6 +1151,39 @@ class AsyncLive(_api_module.BaseModule):
                 to_object,
             )
         }
+    if getv(config, ['temperature']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['temperature'] = getv(
+            config, ['temperature']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'temperature': getv(config, ['temperature'])
+        }
+    if getv(config, ['top_p']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['topP'] = getv(config, ['top_p'])
+      else:
+        to_object['generationConfig'] = {'topP': getv(config, ['top_p'])}
+    if getv(config, ['top_k']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['topK'] = getv(config, ['top_k'])
+      else:
+        to_object['generationConfig'] = {'topK': getv(config, ['top_k'])}
+    if getv(config, ['max_output_tokens']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['maxOutputTokens'] = getv(
+            config, ['max_output_tokens']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'maxOutputTokens': getv(config, ['max_output_tokens'])
+        }
+    if getv(config, ['seed']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['seed'] = getv(config, ['seed'])
+      else:
+        to_object['generationConfig'] = {'seed': getv(config, ['seed'])}
     if getv(config, ['system_instruction']) is not None:
       setv(
           to_object,
@@ -1181,6 +1253,11 @@ class AsyncLive(_api_module.BaseModule):
           generation_config=config.get('generation_config'),
           response_modalities=config.get('response_modalities'),
           speech_config=config.get('speech_config'),
+          temperature=config.get('temperature'),
+          top_p=config.get('top_p'),
+          top_k=config.get('top_k'),
+          max_output_tokens=config.get('max_output_tokens'),
+          seed=config.get('seed'),
           system_instruction=system_instruction,
           tools=config.get('tools'),
       )
