@@ -110,6 +110,14 @@ def _ToolResponse_to_vertex(
   return tool_response
 
 
+def _AudioTranscriptionConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: types.AudioTranscriptionConfig,
+) -> dict:
+  audio_transcription: dict[str, Any] = {}
+  return audio_transcription
+
+
 class AsyncSession:
   """AsyncSession. The live module is experimental."""
 
@@ -508,6 +516,12 @@ class AsyncSession:
       setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
     if getv(from_object, ['interrupted']) is not None:
       setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
+    if getv(from_object, ['generationComplete']) is not None:
+      setv(
+          to_object,
+          ['generation_complete'],
+          getv(from_object, ['generationComplete']),
+      )
     return to_object
 
   def _LiveToolCall_from_mldev(
@@ -579,6 +593,25 @@ class AsyncSession:
       )
     if getv(from_object, ['turnComplete']) is not None:
       setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
+    if getv(from_object, ['generationComplete']) is not None:
+      setv(
+          to_object,
+          ['generation_complete'],
+          getv(from_object, ['generationComplete']),
+      )
+    # Vertex supports transcription.
+    if getv(from_object, ['inputTranscription']) is not None:
+      setv(
+          to_object,
+          ['input_transcription'],
+          getv(from_object, ['inputTranscription']),
+      )
+    if getv(from_object, ['outputTranscription']) is not None:
+      setv(
+          to_object,
+          ['output_transcription'],
+          getv(from_object, ['outputTranscription']),
+      )
     if getv(from_object, ['interrupted']) is not None:
       setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     return to_object
@@ -1207,6 +1240,24 @@ class AsyncLive(_api_module.BaseModule):
               for item in t.t_tools(self._api_client, getv(config, ['tools']))
           ],
       )
+    if getv(config, ['input_audio_transcription']) is not None:
+      setv(
+          to_object,
+          ['inputAudioTranscription'],
+          _AudioTranscriptionConfig_to_vertex(
+              self._api_client,
+              getv(config, ['input_audio_transcription']),
+          ),
+      )
+    if getv(config, ['output_audio_transcription']) is not None:
+      setv(
+          to_object,
+          ['outputAudioTranscription'],
+          _AudioTranscriptionConfig_to_vertex(
+              self._api_client,
+              getv(config, ['output_audio_transcription']),
+          ),
+      )
 
     return_value = {'setup': {'model': model}}
     return_value['setup'].update(to_object)
@@ -1260,6 +1311,8 @@ class AsyncLive(_api_module.BaseModule):
           seed=config.get('seed'),
           system_instruction=system_instruction,
           tools=config.get('tools'),
+          input_audio_transcription=config.get('input_audio_transcription'),
+          output_audio_transcription=config.get('output_audio_transcription'),
       )
     else:
       parameter_model = config

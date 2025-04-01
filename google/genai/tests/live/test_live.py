@@ -698,6 +698,35 @@ def test_bidi_setup_to_api_with_config_tools_code_execution(
   assert result['setup']['tools'][0] == expected_result['setup']['tools'][0]
 
 
+def test_bidi_setup_to_api_with_config_transcription(
+    mock_api_client,
+):
+  config_dict = {
+      'input_audio_transcription': {},
+      'output_audio_transcription': {},
+  }
+  config = types.LiveConnectConfig(**config_dict)
+  expected_result = {
+      'setup': {
+          'model': 'test_model',
+          'inputAudioTranscription': {},
+          'outputAudioTranscription': {},
+      }
+  }
+
+  result = live.AsyncLive(mock_api_client())._LiveSetup_to_vertex(
+      model='test_model', config=config
+  )
+  assert (
+      result['setup']['inputAudioTranscription']
+      == expected_result['setup']['inputAudioTranscription']
+  )
+  assert (
+      result['setup']['outputAudioTranscription']
+      == expected_result['setup']['outputAudioTranscription']
+  )
+
+
 @pytest.mark.parametrize('vertexai', [True, False])
 def test_parse_client_message_str(mock_api_client, mock_websocket, vertexai):
   session = live.AsyncSession(
