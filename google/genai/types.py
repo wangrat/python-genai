@@ -1434,6 +1434,11 @@ ToolOrDict = Union[Tool, ToolDict]
 ToolListUnion = list[Union[Tool, Callable]]
 ToolListUnionDict = list[Union[ToolDict, Callable]]
 
+SchemaUnion = Union[
+    dict, type, Schema, builtin_types.GenericAlias, VersionedUnionType  # type: ignore[valid-type]
+]
+SchemaUnionDict = Union[SchemaUnion, SchemaDict]
+
 
 class FunctionCallingConfig(_common.BaseModel):
   """Function calling config."""
@@ -1777,14 +1782,6 @@ ContentUnion = Union[Content, list[PartUnion], PartUnion]
 
 
 ContentUnionDict = Union[ContentUnion, ContentDict]
-
-
-SchemaUnion = Union[
-    dict, type, Schema, builtin_types.GenericAlias, VersionedUnionType
-]
-
-
-SchemaUnionDict = Union[SchemaUnion, SchemaDict]
 
 
 class GenerationConfigRoutingConfigAutoRoutingMode(_common.BaseModel):
