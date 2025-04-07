@@ -2395,6 +2395,9 @@ GroundingChunkRetrievedContextOrDict = Union[
 class GroundingChunkWeb(_common.BaseModel):
   """Chunk from the web."""
 
+  domain: Optional[str] = Field(
+      default=None, description="""Domain of the (original) URI."""
+  )
   title: Optional[str] = Field(
       default=None, description="""Title of the chunk."""
   )
@@ -2405,6 +2408,9 @@ class GroundingChunkWeb(_common.BaseModel):
 
 class GroundingChunkWebDict(TypedDict, total=False):
   """Chunk from the web."""
+
+  domain: Optional[str]
+  """Domain of the (original) URI."""
 
   title: Optional[str]
   """Title of the chunk."""
