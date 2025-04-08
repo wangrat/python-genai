@@ -4786,9 +4786,6 @@ class Models(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  @_common.experimental_warning(
-      'This method is experimental and may change in future versions.'
-  )
   def generate_videos(
       self,
       *,
@@ -6289,9 +6286,6 @@ class AsyncModels(_api_module.BaseModule):
     self._api_client._verify_response(return_value)
     return return_value
 
-  @_common.experimental_warning(
-      'This method is experimental and may change in future versions.'
-  )
   async def generate_videos(
       self,
       *,
