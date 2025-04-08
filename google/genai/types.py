@@ -659,18 +659,6 @@ class Part(_common.BaseModel):
     return cls(function_response=function_response)
 
   @classmethod
-  def from_video_metadata(cls, *, start_offset: str, end_offset: str) -> 'Part':
-    logger.warning("""Part.from_video_metadata will be deprecated soon.
-           Because a Part instance needs to include at least one of the fields:
-           text, file_data, inline_data, function_call, function_response, executable_code or code_execution_result.
-           A Part instance contains only video_metadata is not a valid Part.
-        """)
-    video_metadata = VideoMetadata(
-        end_offset=end_offset, start_offset=start_offset
-    )
-    return cls(video_metadata=video_metadata)
-
-  @classmethod
   def from_executable_code(cls, *, code: str, language: Language) -> 'Part':
     executable_code = ExecutableCode(code=code, language=language)
     return cls(executable_code=executable_code)
