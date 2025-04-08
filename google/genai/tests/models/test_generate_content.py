@@ -1941,6 +1941,21 @@ def test_error_handling_unary(client):
         ' models/gemini-2.0-flash-exp-image-generation'
     )
 
+
+def test_provisioned_output_dedicated(client):
+  response = client.models.generate_content(
+      model='gemini-2.0-flash',
+      contents='What is 1 + 1?',
+      config=types.GenerateContentConfig(
+          http_options={'headers': {'X-Vertex-AI-LLM-Request-Type': 'dedicated'}}
+      ),
+  )
+  if client.vertexai:
+    assert response.usage_metadata.traffic_type == types.TrafficType.PROVISIONED_THROUGHPUT
+  else:
+    assert not response.usage_metadata.traffic_type
+
+
 @pytest.mark.asyncio
 async def test_error_handling_unary_async(client):
   if client.vertexai:

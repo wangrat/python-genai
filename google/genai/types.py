@@ -185,6 +185,18 @@ class BlockedReason(_common.CaseInSensitiveEnum):
   PROHIBITED_CONTENT = 'PROHIBITED_CONTENT'
 
 
+class TrafficType(_common.CaseInSensitiveEnum):
+  """Output only.
+
+  Traffic type. This shows whether a request consumes Pay-As-You-Go or
+  Provisioned Throughput quota.
+  """
+
+  TRAFFIC_TYPE_UNSPECIFIED = 'TRAFFIC_TYPE_UNSPECIFIED'
+  ON_DEMAND = 'ON_DEMAND'
+  PROVISIONED_THROUGHPUT = 'PROVISIONED_THROUGHPUT'
+
+
 class Modality(_common.CaseInSensitiveEnum):
   """Server content modalities."""
 
@@ -2949,6 +2961,10 @@ class GenerateContentResponseUsageMetadata(_common.BaseModel):
       default=None,
       description="""Total token count for prompt, response candidates, and tool-use prompts (if present).""",
   )
+  traffic_type: Optional[TrafficType] = Field(
+      default=None,
+      description="""Output only. Traffic type. This shows whether a request consumes Pay-As-You-Go or Provisioned Throughput quota.""",
+  )
 
 
 class GenerateContentResponseUsageMetadataDict(TypedDict, total=False):
@@ -2983,6 +2999,9 @@ class GenerateContentResponseUsageMetadataDict(TypedDict, total=False):
 
   total_token_count: Optional[int]
   """Total token count for prompt, response candidates, and tool-use prompts (if present)."""
+
+  traffic_type: Optional[TrafficType]
+  """Output only. Traffic type. This shows whether a request consumes Pay-As-You-Go or Provisioned Throughput quota."""
 
 
 GenerateContentResponseUsageMetadataOrDict = Union[
