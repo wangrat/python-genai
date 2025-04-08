@@ -337,6 +337,38 @@ class FileSource(_common.CaseInSensitiveEnum):
   GENERATED = 'GENERATED'
 
 
+class StartSensitivity(_common.CaseInSensitiveEnum):
+  """Start of speech sensitivity."""
+
+  START_SENSITIVITY_UNSPECIFIED = 'START_SENSITIVITY_UNSPECIFIED'
+  START_SENSITIVITY_HIGH = 'START_SENSITIVITY_HIGH'
+  START_SENSITIVITY_LOW = 'START_SENSITIVITY_LOW'
+
+
+class EndSensitivity(_common.CaseInSensitiveEnum):
+  """End of speech sensitivity."""
+
+  END_SENSITIVITY_UNSPECIFIED = 'END_SENSITIVITY_UNSPECIFIED'
+  END_SENSITIVITY_HIGH = 'END_SENSITIVITY_HIGH'
+  END_SENSITIVITY_LOW = 'END_SENSITIVITY_LOW'
+
+
+class ActivityHandling(_common.CaseInSensitiveEnum):
+  """The different ways of handling user activity."""
+
+  ACTIVITY_HANDLING_UNSPECIFIED = 'ACTIVITY_HANDLING_UNSPECIFIED'
+  START_OF_ACTIVITY_INTERRUPTS = 'START_OF_ACTIVITY_INTERRUPTS'
+  NO_INTERRUPTION = 'NO_INTERRUPTION'
+
+
+class TurnCoverage(_common.CaseInSensitiveEnum):
+  """Options about which input is included in the user's turn."""
+
+  TURN_COVERAGE_UNSPECIFIED = 'TURN_COVERAGE_UNSPECIFIED'
+  TURN_INCLUDES_ONLY_ACTIVITY = 'TURN_INCLUDES_ONLY_ACTIVITY'
+  TURN_INCLUDES_ALL_INPUT = 'TURN_INCLUDES_ALL_INPUT'
+
+
 class MediaModality(_common.CaseInSensitiveEnum):
   """Server content modalities."""
 
@@ -9100,6 +9132,95 @@ class LiveServerMessageDict(TypedDict, total=False):
 LiveServerMessageOrDict = Union[LiveServerMessage, LiveServerMessageDict]
 
 
+class AutomaticActivityDetection(_common.BaseModel):
+  """Configures automatic detection of activity."""
+
+  disabled: Optional[bool] = Field(
+      default=None,
+      description="""If enabled, detected voice and text input count as activity. If disabled, the client must send activity signals.""",
+  )
+  start_of_speech_sensitivity: Optional[StartSensitivity] = Field(
+      default=None,
+      description="""Determines how likely speech is to be detected.""",
+  )
+  end_of_speech_sensitivity: Optional[EndSensitivity] = Field(
+      default=None,
+      description="""Determines how likely detected speech is ended.""",
+  )
+  prefix_padding_ms: Optional[int] = Field(
+      default=None,
+      description="""The required duration of detected speech before start-of-speech is committed. The lower this value the more sensitive the start-of-speech detection is and the shorter speech can be recognized. However, this also increases the probability of false positives.""",
+  )
+  silence_duration_ms: Optional[int] = Field(
+      default=None,
+      description="""The required duration of detected non-speech (e.g. silence) before end-of-speech is committed. The larger this value, the longer speech gaps can be without interrupting the user's activity but this will increase the model's latency.""",
+  )
+
+
+class AutomaticActivityDetectionDict(TypedDict, total=False):
+  """Configures automatic detection of activity."""
+
+  disabled: Optional[bool]
+  """If enabled, detected voice and text input count as activity. If disabled, the client must send activity signals."""
+
+  start_of_speech_sensitivity: Optional[StartSensitivity]
+  """Determines how likely speech is to be detected."""
+
+  end_of_speech_sensitivity: Optional[EndSensitivity]
+  """Determines how likely detected speech is ended."""
+
+  prefix_padding_ms: Optional[int]
+  """The required duration of detected speech before start-of-speech is committed. The lower this value the more sensitive the start-of-speech detection is and the shorter speech can be recognized. However, this also increases the probability of false positives."""
+
+  silence_duration_ms: Optional[int]
+  """The required duration of detected non-speech (e.g. silence) before end-of-speech is committed. The larger this value, the longer speech gaps can be without interrupting the user's activity but this will increase the model's latency."""
+
+
+AutomaticActivityDetectionOrDict = Union[
+    AutomaticActivityDetection, AutomaticActivityDetectionDict
+]
+
+
+class RealtimeInputConfig(_common.BaseModel):
+  """Marks the end of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  automatic_activity_detection: Optional[AutomaticActivityDetection] = Field(
+      default=None,
+      description="""If not set, automatic activity detection is enabled by default. If automatic voice detection is disabled, the client must send activity signals.""",
+  )
+  activity_handling: Optional[ActivityHandling] = Field(
+      default=None, description="""Defines what effect activity has."""
+  )
+  turn_coverage: Optional[TurnCoverage] = Field(
+      default=None,
+      description="""Defines which input is included in the user's turn.""",
+  )
+
+
+class RealtimeInputConfigDict(TypedDict, total=False):
+  """Marks the end of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  automatic_activity_detection: Optional[AutomaticActivityDetectionDict]
+  """If not set, automatic activity detection is enabled by default. If automatic voice detection is disabled, the client must send activity signals."""
+
+  activity_handling: Optional[ActivityHandling]
+  """Defines what effect activity has."""
+
+  turn_coverage: Optional[TurnCoverage]
+  """Defines which input is included in the user's turn."""
+
+
+RealtimeInputConfigOrDict = Union[RealtimeInputConfig, RealtimeInputConfigDict]
+
+
 class SessionResumptionConfig(_common.BaseModel):
   """Configuration of session resumption mechanism.
 
@@ -9263,6 +9384,52 @@ class LiveClientContentDict(TypedDict, total=False):
 
 
 LiveClientContentOrDict = Union[LiveClientContent, LiveClientContentDict]
+
+
+class ActivityStart(_common.BaseModel):
+  """Marks the start of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  pass
+
+
+class ActivityStartDict(TypedDict, total=False):
+  """Marks the start of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  pass
+
+
+ActivityStartOrDict = Union[ActivityStart, ActivityStartDict]
+
+
+class ActivityEnd(_common.BaseModel):
+  """Marks the end of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  pass
+
+
+class ActivityEndDict(TypedDict, total=False):
+  """Marks the end of user activity.
+
+  This can only be sent if automatic (i.e. server-side) activity detection is
+  disabled.
+  """
+
+  pass
+
+
+ActivityEndOrDict = Union[ActivityEnd, ActivityEndDict]
 
 
 class LiveClientRealtimeInput(_common.BaseModel):
