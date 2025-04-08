@@ -434,6 +434,66 @@ async def test_async_session_receive_tool_call(
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
+async def test_async_go_away(
+    mock_websocket, vertexai
+):
+  mock_websocket.recv = AsyncMock(
+      side_effect=[
+          '{"goAway": {"timeLeft": "10s"}}',
+          '{"serverContent": {"turnComplete": true}}',
+      ]
+  )
+  expected_result = types.LiveServerMessage(
+      go_away=types.LiveServerGoAway(time_left='10s'),
+  )
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  messages = session.receive()
+  messages = await _async_iterator_to_list(messages)
+  message = messages[0]
+
+  assert isinstance(message, types.LiveServerMessage)
+  assert message == expected_result
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_async_session_resumption_update(
+    mock_websocket, vertexai
+):
+  mock_websocket.recv = AsyncMock(
+      side_effect=[
+          """{
+                "sessionResumptionUpdate": {
+                    "newHandle": "test_handle",
+                    "resumable": "true",
+                    "lastConsumedClientMessageIndex": "123456789"
+                }
+          }""",
+          '{"serverContent": {"turnComplete": true}}',
+      ]
+  )
+
+  expected_result = types.LiveServerMessage(
+      session_resumption_update=types.LiveServerSessionResumptionUpdate(
+          new_handle='test_handle',
+          resumable=True,
+          last_consumed_client_message_index=123456789
+      ),
+  )
+
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  messages = session.receive()
+  messages = await _async_iterator_to_list(messages)
+  message = messages[0]
+
+  assert isinstance(message, types.LiveServerMessage)
+  assert message == expected_result
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
 async def test_async_session_start_stream(
      mock_websocket, vertexai
 ):
@@ -813,6 +873,73 @@ async def test_bidi_setup_publishers(
   result = await get_connect_message(
       mock_api_client(vertexai=vertexai),
       model='publishers/google/models/test_model')
+
+  assert result == expected_result
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_session_resumption(vertexai):
+  config_dict = {
+      'session_resumption': {'handle': 'test_handle'},
+  }
+  config = types.LiveConnectConfig(**config_dict)
+
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai),
+      model='test_model',
+      config=config
+  )
+  expected_result = {
+      'setup': {
+          'sessionResumption': {
+              'handle': 'test_handle',
+          },
+      }
+  }
+  if vertexai:
+    expected_result['setup']['generationConfig'] = {
+        'responseModalities': [
+            'AUDIO',
+        ],
+    }
+    expected_result['setup']['model'] = 'projects/test_project/locations/us-central1/publishers/google/models/test_model'
+  else:
+    expected_result['setup']['model'] = 'models/test_model'
+  assert result == expected_result
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_transparent_session_resumption(vertexai):
+  config_dict = {
+      'session_resumption': {'handle': 'test_handle', 'transparent': True},
+  }
+  config = types.LiveConnectConfig(**config_dict)
+
+  with exception_if_mldev(vertexai, ValueError):
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai),
+        model='test_model',
+        config=config
+    )
+
+  expected_result = {
+      'setup': {
+          'sessionResumption': {
+              'handle': 'test_handle',
+              'transparent': True,
+          },
+      }
+  }
+  if vertexai:
+    expected_result['setup']['generationConfig'] = {
+        'responseModalities': [
+            'AUDIO',
+        ],
+    }
+    expected_result['setup']['model'] = 'projects/test_project/locations/us-central1/publishers/google/models/test_model'
+  else:
+    return
 
   assert result == expected_result
 

@@ -8943,6 +8943,74 @@ LiveServerToolCallCancellationOrDict = Union[
 ]
 
 
+class LiveServerGoAway(_common.BaseModel):
+  """Server will not be able to service client soon."""
+
+  time_left: Optional[str] = Field(
+      default=None,
+      description="""The remaining time before the connection will be terminated as ABORTED. The minimal time returned here is specified differently together with the rate limits for a given model.""",
+  )
+
+
+class LiveServerGoAwayDict(TypedDict, total=False):
+  """Server will not be able to service client soon."""
+
+  time_left: Optional[str]
+  """The remaining time before the connection will be terminated as ABORTED. The minimal time returned here is specified differently together with the rate limits for a given model."""
+
+
+LiveServerGoAwayOrDict = Union[LiveServerGoAway, LiveServerGoAwayDict]
+
+
+class LiveServerSessionResumptionUpdate(_common.BaseModel):
+  """Update of the session resumption state.
+
+  Only sent if `session_resumption` was set in the connection config.
+  """
+
+  new_handle: Optional[str] = Field(
+      default=None,
+      description="""New handle that represents state that can be resumed. Empty if `resumable`=false.""",
+  )
+  resumable: Optional[bool] = Field(
+      default=None,
+      description="""True if session can be resumed at this point. It might be not possible to resume session at some points. In that case we send update empty new_handle and resumable=false. Example of such case could be model executing function calls or just generating. Resuming session (using previous session token) in such state will result in some data loss.""",
+  )
+  last_consumed_client_message_index: Optional[int] = Field(
+      default=None,
+      description="""Index of last message sent by client that is included in state represented by this SessionResumptionToken. Only sent when `SessionResumptionConfig.transparent` is set.
+
+Presence of this index allows users to transparently reconnect and avoid issue of losing some part of realtime audio input/video. If client wishes to temporarily disconnect (for example as result of receiving GoAway) they can do it without losing state by buffering messages sent since last `SessionResmumptionTokenUpdate`. This field will enable them to limit buffering (avoid keeping all requests in RAM).
+
+Note: This should not be used for when resuming a session at some time later -- in those cases partial audio and video frames arelikely not needed.""",
+  )
+
+
+class LiveServerSessionResumptionUpdateDict(TypedDict, total=False):
+  """Update of the session resumption state.
+
+  Only sent if `session_resumption` was set in the connection config.
+  """
+
+  new_handle: Optional[str]
+  """New handle that represents state that can be resumed. Empty if `resumable`=false."""
+
+  resumable: Optional[bool]
+  """True if session can be resumed at this point. It might be not possible to resume session at some points. In that case we send update empty new_handle and resumable=false. Example of such case could be model executing function calls or just generating. Resuming session (using previous session token) in such state will result in some data loss."""
+
+  last_consumed_client_message_index: Optional[int]
+  """Index of last message sent by client that is included in state represented by this SessionResumptionToken. Only sent when `SessionResumptionConfig.transparent` is set.
+
+Presence of this index allows users to transparently reconnect and avoid issue of losing some part of realtime audio input/video. If client wishes to temporarily disconnect (for example as result of receiving GoAway) they can do it without losing state by buffering messages sent since last `SessionResmumptionTokenUpdate`. This field will enable them to limit buffering (avoid keeping all requests in RAM).
+
+Note: This should not be used for when resuming a session at some time later -- in those cases partial audio and video frames arelikely not needed."""
+
+
+LiveServerSessionResumptionUpdateOrDict = Union[
+    LiveServerSessionResumptionUpdate, LiveServerSessionResumptionUpdateDict
+]
+
+
 class LiveServerMessage(_common.BaseModel):
   """Response message for API call."""
 
@@ -8961,6 +9029,15 @@ class LiveServerMessage(_common.BaseModel):
   tool_call_cancellation: Optional[LiveServerToolCallCancellation] = Field(
       default=None,
       description="""Notification for the client that a previously issued `ToolCallMessage` with the specified `id`s should have been not executed and should be cancelled.""",
+  )
+  go_away: Optional[LiveServerGoAway] = Field(
+      default=None, description="""Server will disconnect soon."""
+  )
+  session_resumption_update: Optional[LiveServerSessionResumptionUpdate] = (
+      Field(
+          default=None,
+          description="""Update of the session resumption state.""",
+      )
   )
 
   @property
@@ -9013,8 +9090,54 @@ class LiveServerMessageDict(TypedDict, total=False):
   tool_call_cancellation: Optional[LiveServerToolCallCancellationDict]
   """Notification for the client that a previously issued `ToolCallMessage` with the specified `id`s should have been not executed and should be cancelled."""
 
+  go_away: Optional[LiveServerGoAwayDict]
+  """Server will disconnect soon."""
+
+  session_resumption_update: Optional[LiveServerSessionResumptionUpdateDict]
+  """Update of the session resumption state."""
+
 
 LiveServerMessageOrDict = Union[LiveServerMessage, LiveServerMessageDict]
+
+
+class SessionResumptionConfig(_common.BaseModel):
+  """Configuration of session resumption mechanism.
+
+  Included in `LiveConnectConfig.session_resumption`. If included server
+  will send `LiveServerSessionResumptionUpdate` messages.
+  """
+
+  handle: Optional[str] = Field(
+      default=None,
+      description="""Session resumption handle of previous session (session to restore).
+
+If not present new session will be started.""",
+  )
+  transparent: Optional[bool] = Field(
+      default=None,
+      description="""If set the server will send `last_consumed_client_message_index` in the `session_resumption_update` messages to allow for transparent reconnections.""",
+  )
+
+
+class SessionResumptionConfigDict(TypedDict, total=False):
+  """Configuration of session resumption mechanism.
+
+  Included in `LiveConnectConfig.session_resumption`. If included server
+  will send `LiveServerSessionResumptionUpdate` messages.
+  """
+
+  handle: Optional[str]
+  """Session resumption handle of previous session (session to restore).
+
+If not present new session will be started."""
+
+  transparent: Optional[bool]
+  """If set the server will send `last_consumed_client_message_index` in the `session_resumption_update` messages to allow for transparent reconnections."""
+
+
+SessionResumptionConfigOrDict = Union[
+    SessionResumptionConfig, SessionResumptionConfigDict
+]
 
 
 class LiveClientSetup(_common.BaseModel):
@@ -9047,6 +9170,12 @@ class LiveClientSetup(_common.BaseModel):
       external systems to perform an action, or set of actions, outside of
       knowledge and scope of the model.""",
   )
+  session_resumption: Optional[SessionResumptionConfig] = Field(
+      default=None,
+      description="""Configures session resumption mechanism.
+
+          If included server will send SessionResumptionUpdate messages.""",
+  )
 
 
 class LiveClientSetupDict(TypedDict, total=False):
@@ -9074,6 +9203,11 @@ class LiveClientSetupDict(TypedDict, total=False):
       A `Tool` is a piece of code that enables the system to interact with
       external systems to perform an action, or set of actions, outside of
       knowledge and scope of the model."""
+
+  session_resumption: Optional[SessionResumptionConfigDict]
+  """Configures session resumption mechanism.
+
+          If included server will send SessionResumptionUpdate messages."""
 
 
 LiveClientSetupOrDict = Union[LiveClientSetup, LiveClientSetupDict]
@@ -9341,6 +9475,12 @@ class LiveConnectConfig(_common.BaseModel):
       external systems to perform an action, or set of actions, outside of
       knowledge and scope of the model.""",
   )
+  session_resumption: Optional[SessionResumptionConfig] = Field(
+      default=None,
+      description="""Configures session resumption mechanism.
+
+If included the server will send SessionResumptionUpdate messages.""",
+  )
   input_audio_transcription: Optional[AudioTranscriptionConfig] = Field(
       default=None,
       description="""The transcription of the input aligns with the input audio language.
@@ -9411,6 +9551,11 @@ class LiveConnectConfigDict(TypedDict, total=False):
       A `Tool` is a piece of code that enables the system to interact with
       external systems to perform an action, or set of actions, outside of
       knowledge and scope of the model."""
+
+  session_resumption: Optional[SessionResumptionConfigDict]
+  """Configures session resumption mechanism.
+
+If included the server will send SessionResumptionUpdate messages."""
 
   input_audio_transcription: Optional[AudioTranscriptionConfigDict]
   """The transcription of the input aligns with the input audio language.

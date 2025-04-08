@@ -473,6 +473,7 @@ class AsyncSession:
         raise ValueError(f'Failed to parse response: {raw_response!r}')
     else:
       response = {}
+
     if self._api_client.vertexai:
       response_dict = self._LiveServerMessage_from_vertex(response)
     else:
@@ -550,6 +551,38 @@ class AsyncSession:
       )
     return to_object
 
+  def _LiveServerGoAway_from_mldev(
+      self,
+      from_object: Union[dict, object],
+      parent_object: Optional[dict] = None,
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['timeLeft']) is not None:
+      setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
+
+    return to_object
+
+  def _LiveServerSessionResumptionUpdate_from_mldev(
+      self,
+      from_object: Union[dict, object],
+      parent_object: Optional[dict] = None,
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['newHandle']) is not None:
+      setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
+
+    if getv(from_object, ['resumable']) is not None:
+      setv(to_object, ['resumable'], getv(from_object, ['resumable']))
+
+    if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
+      setv(
+          to_object,
+          ['last_consumed_client_message_index'],
+          getv(from_object, ['lastConsumedClientMessageIndex']),
+      )
+
+    return to_object
+
   def _LiveServerMessage_from_mldev(
       self,
       from_object: Union[dict, object],
@@ -575,6 +608,28 @@ class AsyncSession:
           ['tool_call_cancellation'],
           getv(from_object, ['toolCallCancellation']),
       )
+
+    if getv(from_object, ['goAway']) is not None:
+      setv(
+          to_object,
+          ['go_away'],
+          self._LiveServerGoAway_from_mldev(
+              getv(from_object, ['goAway']), to_object
+          ),
+      )
+
+    if getv(from_object, ['sessionResumptionUpdate']) is not None:
+      setv(
+          to_object,
+          ['session_resumption_update'],
+          self._LiveServerSessionResumptionUpdate_from_mldev(
+              getv(from_object, ['sessionResumptionUpdate']),
+              to_object,
+          ),
+      )
+
+      return to_object
+
     return to_object
 
   def _LiveServerContent_from_vertex(
@@ -616,6 +671,37 @@ class AsyncSession:
       setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     return to_object
 
+  def _LiveServerGoAway_from_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['timeLeft']) is not None:
+      setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
+
+    return to_object
+
+  def _LiveServerSessionResumptionUpdate_from_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['newHandle']) is not None:
+      setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
+
+    if getv(from_object, ['resumable']) is not None:
+      setv(to_object, ['resumable'], getv(from_object, ['resumable']))
+
+    if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
+      setv(
+          to_object,
+          ['last_consumed_client_message_index'],
+          getv(from_object, ['lastConsumedClientMessageIndex']),
+      )
+
+    return to_object
+
+
   def _LiveServerMessage_from_vertex(
       self,
       from_object: Union[dict, object],
@@ -642,6 +728,25 @@ class AsyncSession:
           ['tool_call_cancellation'],
           getv(from_object, ['toolCallCancellation']),
       )
+
+    if getv(from_object, ['goAway']) is not None:
+      setv(
+          to_object,
+          ['go_away'],
+          self._LiveServerGoAway_from_vertex(
+              getv(from_object, ['goAway'])
+          ),
+      )
+
+    if getv(from_object, ['sessionResumptionUpdate']) is not None:
+      setv(
+          to_object,
+          ['session_resumption_update'],
+          self._LiveServerSessionResumptionUpdate_from_vertex(
+              getv(from_object, ['sessionResumptionUpdate']),
+          ),
+      )
+
     return to_object
 
   def _parse_client_message(
@@ -1128,9 +1233,31 @@ class AsyncLive(_api_module.BaseModule):
           ],
       )
 
+    if getv(config, ['session_resumption']) is not None:
+      setv(
+          to_object,
+          ['sessionResumption'],
+          self._LiveClientSessionResumptionConfig_to_mldev(
+              getv(config, ['session_resumption'])
+          ),
+      )
+
     return_value = {'setup': {'model': model}}
     return_value['setup'].update(to_object)
     return return_value
+
+  def _LiveClientSessionResumptionConfig_to_mldev(
+      self,
+      from_object: Union[dict, object]
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['handle']) is not None:
+      setv(to_object, ['handle'], getv(from_object, ['handle']))
+
+    if getv(from_object, ['transparent']) is not None:
+      raise ValueError('The `transparent` field is not supported in MLDev API')
+
+    return to_object
 
   def _LiveSetup_to_vertex(
       self, model: str, config: Optional[types.LiveConnectConfig] = None
@@ -1259,9 +1386,32 @@ class AsyncLive(_api_module.BaseModule):
           ),
       )
 
+    if getv(config, ['session_resumption']) is not None:
+      setv(
+          to_object,
+          ['sessionResumption'],
+          self._LiveClientSessionResumptionConfig_to_vertex(
+              getv(config, ['session_resumption'])
+          ),
+      )
+
     return_value = {'setup': {'model': model}}
     return_value['setup'].update(to_object)
     return return_value
+
+  def _LiveClientSessionResumptionConfig_to_vertex(
+      self,
+      from_object: Union[dict, object]
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['handle']) is not None:
+      setv(to_object, ['handle'], getv(from_object, ['handle']))
+
+    if getv(from_object, ['transparent']) is not None:
+      setv(to_object, ['transparent'], getv(from_object, ['transparent']))
+
+    return to_object
+
 
   @experimental_warning(
       'The live API is experimental and may change in future versions.',
