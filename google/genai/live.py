@@ -109,6 +109,13 @@ def _ToolResponse_to_vertex(
   tool_response = from_object.model_dump(exclude_none=True, mode='json')
   return tool_response
 
+def _AudioTranscriptionConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: types.AudioTranscriptionConfig,
+) -> dict:
+  audio_transcription: dict[str, Any] = {}
+  return audio_transcription
+
 
 def _AudioTranscriptionConfig_to_vertex(
     api_client: BaseApiClient,
@@ -515,14 +522,26 @@ class AsyncSession:
       )
     if getv(from_object, ['turnComplete']) is not None:
       setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
-    if getv(from_object, ['interrupted']) is not None:
-      setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     if getv(from_object, ['generationComplete']) is not None:
       setv(
           to_object,
           ['generation_complete'],
           getv(from_object, ['generationComplete']),
       )
+    if getv(from_object, ['inputTranscription']) is not None:
+      setv(
+          to_object,
+          ['input_transcription'],
+          getv(from_object, ['inputTranscription']),
+      )
+    if getv(from_object, ['outputTranscription']) is not None:
+      setv(
+          to_object,
+          ['output_transcription'],
+          getv(from_object, ['outputTranscription']),
+      )
+    if getv(from_object, ['interrupted']) is not None:
+      setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
     return to_object
 
   def _LiveToolCall_from_mldev(
@@ -654,7 +673,6 @@ class AsyncSession:
           ['generation_complete'],
           getv(from_object, ['generationComplete']),
       )
-    # Vertex supports transcription.
     if getv(from_object, ['inputTranscription']) is not None:
       setv(
           to_object,
@@ -1232,6 +1250,19 @@ class AsyncLive(_api_module.BaseModule):
               for item in t.t_tools(self._api_client, getv(config, ['tools']))
           ],
       )
+    if getv(config, ['input_audio_transcription']) is not None:
+      raise ValueError('input_audio_transcription is not supported in MLDev '
+                       'API.')
+    if getv(config, ['output_audio_transcription']) is not None:
+      setv(
+          to_object,
+          ['outputAudioTranscription'],
+          _AudioTranscriptionConfig_to_mldev(
+              self._api_client,
+              getv(config, ['output_audio_transcription']),
+          ),
+      )
+
 
     if getv(config, ['session_resumption']) is not None:
       setv(

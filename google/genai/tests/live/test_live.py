@@ -431,6 +431,31 @@ async def test_async_session_receive_tool_call(
   with pytest.raises(RuntimeError):
     await _async_iterator_to_list(session.receive())
 
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_async_session_receive_transcription(
+     mock_websocket, vertexai
+):
+  mock_websocket.recv = AsyncMock(
+      side_effect=[
+          '{"serverContent": {"inputTranscription": {"text": "test_input", "finished": true}}}',
+          '{"serverContent": {"outputTranscription": {"text": "test_output", "finished": false}}}',
+          '{"serverContent": {"turnComplete": true}}',
+      ]
+  )
+  session = live.AsyncSession(
+      api_client=mock_api_client(vertexai=vertexai), websocket=mock_websocket
+  )
+  messages = session.receive()
+  messages = await _async_iterator_to_list(messages)
+  assert isinstance(messages[0], types.LiveServerMessage)
+  assert messages[0].server_content.input_transcription.text == 'test_input'
+  assert messages[0].server_content.input_transcription.finished == True
+
+  assert isinstance(messages[1], types.LiveServerMessage)
+  assert messages[1].server_content.output_transcription.text == 'test_output'
+  assert messages[1].server_content.output_transcription.finished == False
+
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
@@ -825,16 +850,42 @@ async def test_bidi_setup_to_api_with_config_tools_code_execution(
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
-async def test_bidi_setup_to_api_with_config_transcription(vertexai):
+async def test_bidi_setup_to_api_with_input_transcription(vertexai):
   config_dict = {
       'input_audio_transcription': {},
-      'output_audio_transcription': {},
   }
   config = types.LiveConnectConfig(**config_dict)
   expected_result = {
       'setup': {
           'model': 'test_model',
           'inputAudioTranscription': {},
+      }
+  }
+
+  with exception_if_mldev(vertexai, ValueError):
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai),
+        model='test_model', config=config
+    )
+  if not vertexai:
+    return
+
+  assert (
+      result['setup']['inputAudioTranscription']
+      == expected_result['setup']['inputAudioTranscription']
+  )
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_output_transcription(vertexai):
+  config_dict = {
+      'output_audio_transcription': {},
+  }
+  config = types.LiveConnectConfig(**config_dict)
+  expected_result = {
+      'setup': {
+          'model': 'test_model',
           'outputAudioTranscription': {},
       }
   }
@@ -844,15 +895,10 @@ async def test_bidi_setup_to_api_with_config_transcription(vertexai):
       model='test_model', config=config
   )
 
-  with exception_if_mldev(vertexai, KeyError):
-    assert (
-        result['setup']['inputAudioTranscription']
-        == expected_result['setup']['inputAudioTranscription']
-    )
-    assert (
-        result['setup']['outputAudioTranscription']
-        == expected_result['setup']['outputAudioTranscription']
-    )
+  assert (
+      result['setup']['outputAudioTranscription']
+      == expected_result['setup']['outputAudioTranscription']
+  )
 
 
 @pytest.mark.parametrize('vertexai', [True])
@@ -1278,3 +1324,5 @@ def test_parse_client_message_realtime_tool_response(
           ],
       }
   }
+
+
