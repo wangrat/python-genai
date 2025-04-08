@@ -128,14 +128,6 @@ class Mode(_common.CaseInSensitiveEnum):
   MODE_DYNAMIC = 'MODE_DYNAMIC'
 
 
-class State(_common.CaseInSensitiveEnum):
-  """Output only. RagFile state."""
-
-  STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
-  ACTIVE = 'ACTIVE'
-  ERROR = 'ERROR'
-
-
 class FinishReason(_common.CaseInSensitiveEnum):
   """Output only. The reason why the model stopped generating tokens.
 
@@ -204,17 +196,6 @@ class Modality(_common.CaseInSensitiveEnum):
   TEXT = 'TEXT'
   IMAGE = 'IMAGE'
   AUDIO = 'AUDIO'
-
-
-class DeploymentResourcesType(_common.CaseInSensitiveEnum):
-  """"""
-
-  DEPLOYMENT_RESOURCES_TYPE_UNSPECIFIED = (
-      'DEPLOYMENT_RESOURCES_TYPE_UNSPECIFIED'
-  )
-  DEDICATED_RESOURCES = 'DEDICATED_RESOURCES'
-  AUTOMATIC_RESOURCES = 'AUTOMATIC_RESOURCES'
-  SHARED_RESOURCES = 'SHARED_RESOURCES'
 
 
 class JobState(_common.CaseInSensitiveEnum):
