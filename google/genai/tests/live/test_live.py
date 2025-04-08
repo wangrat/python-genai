@@ -22,6 +22,7 @@ from unittest import mock
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
 from unittest.mock import patch
+import warnings
 
 import pytest
 from websockets import client
@@ -550,10 +551,13 @@ async def test_async_session_close( mock_websocket, vertexai):
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
 async def test_bidi_setup_to_api_no_config(vertexai):
-  result = await get_connect_message(
-      mock_api_client(vertexai=vertexai),
-      model='test_model'
-  )
+  with warnings.catch_warnings():
+    # Make sure there are no warnings cause by default values.
+    warnings.simplefilter('error')
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai),
+        model='test_model'
+    )
   expected_result = {'setup': {}}
   if vertexai:
     expected_result['setup']['model'] = 'projects/test_project/locations/us-central1/publishers/google/models/test_model'
@@ -922,6 +926,22 @@ async def test_bidi_setup_publishers(
 
   assert result == expected_result
 
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_generation_config_warning(
+     vertexai
+):
+  with pytest.warns(
+      DeprecationWarning,
+      match='Setting `LiveConnectConfig.generation_config` is deprecated'
+  ):
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai),
+        model='models/test_model',
+        config={'generation_config': {'temperature': 0.7}})
+
+  assert result['setup']['generationConfig']['temperature'] == 0.7
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio

@@ -13,14 +13,14 @@
 # limitations under the License.
 #
 
-"""Live client. The live module is experimental."""
+"""[Preview] Live API client."""
 
 import asyncio
 import base64
 import contextlib
 import json
 import logging
-from typing import Any, AsyncIterator, Dict, Optional, Sequence, Union, get_args
+from typing import Any, AsyncIterator, Dict, Optional, Sequence, Union, cast, get_args
 import warnings
 
 import google.auth
@@ -126,7 +126,7 @@ def _AudioTranscriptionConfig_to_vertex(
 
 
 class AsyncSession:
-  """AsyncSession. The live module is experimental."""
+  """[Preview] AsyncSession."""
 
   def __init__(
       self, api_client: client.BaseApiClient, websocket: ClientConnection
@@ -150,7 +150,12 @@ class AsyncSession:
       ] = None,
       end_of_turn: Optional[bool] = False,
   ):
-    """Send input to the model.
+    """[Deprecated] Send input to the model.
+
+    > **Warning**: This method is deprecated and will be removed in a future
+    version (not before Q3 2025). Please use one of the more specific methods:
+    `send_client_content`, `send_realtime_input`, or `send_tool_response`
+    instead.
 
     The method will send the input request to the server.
 
@@ -169,6 +174,14 @@ class AsyncSession:
         async for message in session.receive():
           print(message)
     """
+    warnings.warn(
+        'The `session.send` method is deprecated and will be removed in a '
+        'future version (not before Q3 2025).\n'
+        'Please use one of the more specific methods: `send_client_content`, '
+        '`send_realtime_input`, or `send_tool_response` instead.',
+        DeprecationWarning,
+        stacklevel=2,
+    )
     client_message = self._parse_client_message(input, end_of_turn)
     await self._ws.send(json.dumps(client_message))
 
@@ -382,8 +395,6 @@ class AsyncSession:
     is function call, user must call `send` with the function response to
     continue the turn.
 
-    The live module is experimental.
-
     Yields:
       The model responses from the server.
 
@@ -408,14 +419,17 @@ class AsyncSession:
   async def start_stream(
       self, *, stream: AsyncIterator[bytes], mime_type: str
   ) -> AsyncIterator[types.LiveServerMessage]:
-    """start a live session from a data stream.
+    """[Deprecated] Start a live session from a data stream.
+
+    > **Warning**: This method is deprecated and will be removed in a future
+    version (not before Q2 2025). Please use one of the more specific methods:
+    `send_client_content`, `send_realtime_input`, or `send_tool_response`
+    instead.
 
     The interaction terminates when the input stream is complete.
     This method will start two async tasks. One task will be used to send the
     input stream to the model and the other task will be used to receive the
     responses from the model.
-
-    The live module is experimental.
 
     Args:
       stream: An iterator that yields the model response.
@@ -439,6 +453,13 @@ class AsyncSession:
         mime_type = 'audio/pcm'):
           play_audio_chunk(audio.data)
     """
+    warnings.warn(
+        'Setting `AsyncSession.start_stream` is deprecated, '
+        'and will be removed in a future release (not before Q3 2025). '
+        'Please use the `receive`, and `send_realtime_input`, methods instead.',
+        DeprecationWarning,
+        stacklevel=4,
+    )
     stop_event = asyncio.Event()
     # Start the send loop. When stream is complete stop_event is set.
     asyncio.create_task(self._send_loop(stream, mime_type, stop_event))
@@ -1149,7 +1170,7 @@ def _t_tool_response(
 
 
 class AsyncLive(_api_module.BaseModule):
-  """AsyncLive. The live module is experimental."""
+  """[Preview] AsyncLive."""
 
   def _LiveSetup_to_mldev(
       self, model: str, config: Optional[types.LiveConnectConfig] = None
@@ -1262,7 +1283,6 @@ class AsyncLive(_api_module.BaseModule):
               getv(config, ['output_audio_transcription']),
           ),
       )
-
 
     if getv(config, ['session_resumption']) is not None:
       setv(
@@ -1443,10 +1463,6 @@ class AsyncLive(_api_module.BaseModule):
 
     return to_object
 
-
-  @experimental_warning(
-      'The live API is experimental and may change in future versions.',
-  )
   @contextlib.asynccontextmanager
   async def connect(
       self,
@@ -1454,9 +1470,9 @@ class AsyncLive(_api_module.BaseModule):
       model: str,
       config: Optional[types.LiveConnectConfigOrDict] = None,
   ) -> AsyncIterator[AsyncSession]:
-    """Connect to the live server.
+    """[Preview] Connect to the live server.
 
-    The live module is experimental.
+    Note: the live API is currently in preview.
 
     Usage:
 
@@ -1471,32 +1487,8 @@ class AsyncLive(_api_module.BaseModule):
     """
     base_url = self._api_client._websocket_base_url()
     transformed_model = t.t_model(self._api_client, model)
-    # Ensure the config is a LiveConnectConfig.
-    if config is None:
-      parameter_model = types.LiveConnectConfig()
-    elif isinstance(config, dict):
-      if config.get('system_instruction') is None:
-        system_instruction = None
-      else:
-        system_instruction = t.t_content(
-            self._api_client, config.get('system_instruction')
-        )
-      parameter_model = types.LiveConnectConfig(
-          generation_config=config.get('generation_config'),
-          response_modalities=config.get('response_modalities'),
-          speech_config=config.get('speech_config'),
-          temperature=config.get('temperature'),
-          top_p=config.get('top_p'),
-          top_k=config.get('top_k'),
-          max_output_tokens=config.get('max_output_tokens'),
-          seed=config.get('seed'),
-          system_instruction=system_instruction,
-          tools=config.get('tools'),
-          input_audio_transcription=config.get('input_audio_transcription'),
-          output_audio_transcription=config.get('output_audio_transcription'),
-      )
-    else:
-      parameter_model = config
+
+    parameter_model = _t_live_connect_config(self._api_client, config)
 
     if self._api_client.api_key:
       api_key = self._api_client.api_key
@@ -1555,3 +1547,37 @@ class AsyncLive(_api_module.BaseModule):
         logger.info(await ws.recv())
 
         yield AsyncSession(api_client=self._api_client, websocket=ws)
+
+
+def _t_live_connect_config(
+    api_client: BaseApiClient,
+    config: Optional[types.LiveConnectConfigOrDict],
+) -> types.LiveConnectConfig:
+  # Ensure the config is a LiveConnectConfig.
+  if config is None:
+    parameter_model = types.LiveConnectConfig()
+  elif isinstance(config, dict):
+    system_instruction = config.pop('system_instruction', None)
+    if system_instruction is not None:
+      converted_system_instruction = t.t_content(
+          api_client, content=system_instruction
+      )
+    else:
+      converted_system_instruction = None
+    parameter_model = types.LiveConnectConfig(
+        system_instruction=converted_system_instruction,
+        **config
+    )  # type: ignore
+  else:
+    parameter_model = config
+
+  if parameter_model.generation_config is not None:
+    warnings.warn(
+        'Setting `LiveConnectConfig.generation_config` is deprecated, '
+        'please set the fields on `LiveConnectConfig` directly. This will '
+        'become an error in a future version (not before Q3 2025)',
+        DeprecationWarning,
+        stacklevel=4,
+    )
+
+  return parameter_model
