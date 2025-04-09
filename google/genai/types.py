@@ -9249,6 +9249,64 @@ SessionResumptionConfigOrDict = Union[
 ]
 
 
+class SlidingWindow(_common.BaseModel):
+  """Context window will be truncated by keeping only suffix of it.
+
+  Context window will always be cut at start of USER role turn. System
+  instructions and `BidiGenerateContentSetup.prefix_turns` will not be
+  subject to the sliding window mechanism, they will always stay at the
+  beginning of context window.
+  """
+
+  target_tokens: Optional[int] = Field(
+      default=None,
+      description="""Session reduction target -- how many tokens we should keep. Window shortening operation has some latency costs, so we should avoid running it on every turn. Should be < trigger_tokens. If not set, trigger_tokens/2 is assumed.""",
+  )
+
+
+class SlidingWindowDict(TypedDict, total=False):
+  """Context window will be truncated by keeping only suffix of it.
+
+  Context window will always be cut at start of USER role turn. System
+  instructions and `BidiGenerateContentSetup.prefix_turns` will not be
+  subject to the sliding window mechanism, they will always stay at the
+  beginning of context window.
+  """
+
+  target_tokens: Optional[int]
+  """Session reduction target -- how many tokens we should keep. Window shortening operation has some latency costs, so we should avoid running it on every turn. Should be < trigger_tokens. If not set, trigger_tokens/2 is assumed."""
+
+
+SlidingWindowOrDict = Union[SlidingWindow, SlidingWindowDict]
+
+
+class ContextWindowCompressionConfig(_common.BaseModel):
+  """Enables context window compression -- mechanism managing model context window so it does not exceed given length."""
+
+  trigger_tokens: Optional[int] = Field(
+      default=None,
+      description="""Number of tokens (before running turn) that triggers context window compression mechanism.""",
+  )
+  sliding_window: Optional[SlidingWindow] = Field(
+      default=None, description="""Sliding window compression mechanism."""
+  )
+
+
+class ContextWindowCompressionConfigDict(TypedDict, total=False):
+  """Enables context window compression -- mechanism managing model context window so it does not exceed given length."""
+
+  trigger_tokens: Optional[int]
+  """Number of tokens (before running turn) that triggers context window compression mechanism."""
+
+  sliding_window: Optional[SlidingWindowDict]
+  """Sliding window compression mechanism."""
+
+
+ContextWindowCompressionConfigOrDict = Union[
+    ContextWindowCompressionConfig, ContextWindowCompressionConfigDict
+]
+
+
 class LiveClientSetup(_common.BaseModel):
   """Message contains configuration that will apply for the duration of the streaming session."""
 
