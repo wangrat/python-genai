@@ -198,6 +198,15 @@ class Modality(_common.CaseInSensitiveEnum):
   AUDIO = 'AUDIO'
 
 
+class MediaResolution(_common.CaseInSensitiveEnum):
+  """The media resolution to use."""
+
+  MEDIA_RESOLUTION_UNSPECIFIED = 'MEDIA_RESOLUTION_UNSPECIFIED'
+  MEDIA_RESOLUTION_LOW = 'MEDIA_RESOLUTION_LOW'
+  MEDIA_RESOLUTION_MEDIUM = 'MEDIA_RESOLUTION_MEDIUM'
+  MEDIA_RESOLUTION_HIGH = 'MEDIA_RESOLUTION_HIGH'
+
+
 class JobState(_common.CaseInSensitiveEnum):
   """Job state."""
 
@@ -241,15 +250,6 @@ class FunctionCallingConfigMode(_common.CaseInSensitiveEnum):
   AUTO = 'AUTO'
   ANY = 'ANY'
   NONE = 'NONE'
-
-
-class MediaResolution(_common.CaseInSensitiveEnum):
-  """The media resolution to use."""
-
-  MEDIA_RESOLUTION_UNSPECIFIED = 'MEDIA_RESOLUTION_UNSPECIFIED'
-  MEDIA_RESOLUTION_LOW = 'MEDIA_RESOLUTION_LOW'
-  MEDIA_RESOLUTION_MEDIUM = 'MEDIA_RESOLUTION_MEDIUM'
-  MEDIA_RESOLUTION_HIGH = 'MEDIA_RESOLUTION_HIGH'
 
 
 class SafetyFilterLevel(_common.CaseInSensitiveEnum):
@@ -4911,6 +4911,10 @@ class GenerationConfig(_common.BaseModel):
       default=None,
       description="""Optional. The maximum number of output tokens to generate per message.""",
   )
+  media_resolution: Optional[MediaResolution] = Field(
+      default=None,
+      description="""Optional. If specified, the media resolution specified will be used.""",
+  )
   presence_penalty: Optional[float] = Field(
       default=None, description="""Optional. Positive penalties."""
   )
@@ -4964,6 +4968,9 @@ class GenerationConfigDict(TypedDict, total=False):
 
   max_output_tokens: Optional[int]
   """Optional. The maximum number of output tokens to generate per message."""
+
+  media_resolution: Optional[MediaResolution]
+  """Optional. If specified, the media resolution specified will be used."""
 
   presence_penalty: Optional[float]
   """Optional. Positive penalties."""
@@ -9770,6 +9777,11 @@ class LiveConnectConfig(_common.BaseModel):
       description="""Maximum number of tokens that can be generated in the response.
       """,
   )
+  media_resolution: Optional[MediaResolution] = Field(
+      default=None,
+      description="""If specified, the media resolution specified will be used.
+      """,
+  )
   seed: Optional[int] = Field(
       default=None,
       description="""When ``seed`` is fixed to a specific number, the model makes a best
@@ -9855,6 +9867,10 @@ class LiveConnectConfigDict(TypedDict, total=False):
 
   max_output_tokens: Optional[int]
   """Maximum number of tokens that can be generated in the response.
+      """
+
+  media_resolution: Optional[MediaResolution]
+  """If specified, the media resolution specified will be used.
       """
 
   seed: Optional[int]

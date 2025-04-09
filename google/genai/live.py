@@ -1440,6 +1440,15 @@ class AsyncLive(_api_module.BaseModule):
         to_object['generationConfig'] = {
             'maxOutputTokens': getv(config, ['max_output_tokens'])
         }
+    if getv(config, ['media_resolution']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['mediaResolution'] = getv(
+            config, ['media_resolution']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'mediaResolution': getv(config, ['media_resolution'])
+        }
     if getv(config, ['seed']) is not None:
       if getv(to_object, ['generationConfig']) is not None:
         to_object['generationConfig']['seed'] = getv(config, ['seed'])
@@ -1625,6 +1634,15 @@ class AsyncLive(_api_module.BaseModule):
       else:
         to_object['generationConfig'] = {
             'maxOutputTokens': getv(config, ['max_output_tokens'])
+        }
+    if getv(config, ['media_resolution']) is not None:
+      if getv(to_object, ['generationConfig']) is not None:
+        to_object['generationConfig']['mediaResolution'] = getv(
+            config, ['media_resolution']
+        )
+      else:
+        to_object['generationConfig'] = {
+            'mediaResolution': getv(config, ['media_resolution'])
         }
     if getv(config, ['seed']) is not None:
       if getv(to_object, ['generationConfig']) is not None:

@@ -585,6 +585,7 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
               'topP': 0.8,
               'topK': 9.0,
               'maxOutputTokens': 10,
+              'mediaResolution': 'MEDIA_RESOLUTION_MEDIUM',
               'seed': 13,
           },
           'systemInstruction': {
@@ -616,6 +617,7 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
       'max_output_tokens': 10,
       'seed': 13,
       'system_instruction': 'test instruction',
+      'media_resolution': 'MEDIA_RESOLUTION_MEDIUM'
   }
   result = await get_connect_message(
       mock_api_client(vertexai=vertexai), model='test_model', config=config_dict
@@ -637,6 +639,7 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
       top_p=0.8,
       top_k=9,
       max_output_tokens=10,
+      media_resolution=types.MediaResolution.MEDIA_RESOLUTION_MEDIUM,
       seed=13,
       system_instruction=types.Content(
           parts=[
@@ -696,6 +699,7 @@ async def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
       mock_api_client(vertexai=vertexai),
       model='test_model', config=config
   )
+
   assert result == expected_result
 
   # Test for vertex, config is a LiveConnectConfig
@@ -703,6 +707,7 @@ async def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
       mock_api_client(vertexai=vertexai),
       model='test_model', config=config
   )
+
   assert result == expected_result
 
 @pytest.mark.parametrize('vertexai', [True, False])
@@ -786,6 +791,7 @@ async def test_bidi_setup_to_api_with_config_tools_function_declaration(
       model='test_model', config=config
   )
 
+
   assert result['setup']['tools'][0]['functionDeclarations'][0][
       'description'
   ] == (
@@ -798,6 +804,7 @@ async def test_bidi_setup_to_api_with_config_tools_function_declaration(
       mock_api_client(vertexai=vertexai),
       model='test_model', config=config
   )
+
   assert result['setup']['tools'][0]['functionDeclarations'][0][
       'description'
   ] == (
@@ -844,6 +851,7 @@ async def test_bidi_setup_to_api_with_config_tools_function_directly(
       model='test_model', config=config
   )
 
+
   assert result['setup']['tools'][0]['functionDeclarations'][0][
       'description'
   ] == (
@@ -856,6 +864,7 @@ async def test_bidi_setup_to_api_with_config_tools_function_directly(
       mock_api_client(vertexai=vertexai),
       model='test_model', config=config
   )
+
   assert result['setup']['tools'][0]['functionDeclarations'][0][
       'description'
   ] == (
@@ -893,6 +902,7 @@ async def test_bidi_setup_to_api_with_config_tools_code_execution(
       mock_api_client(vertexai=vertexai),
       model='test_model', config=config
   )
+
   assert result['setup']['tools'][0] == expected_result['setup']['tools'][0]
 
 @pytest.mark.parametrize('vertexai', [True, False])
@@ -945,6 +955,30 @@ async def test_bidi_setup_to_api_with_output_transcription(vertexai):
   assert (
       result['setup']['outputAudioTranscription']
       == expected_result['setup']['outputAudioTranscription']
+  )
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_media_resolution(vertexai):
+  config_dict = {
+      'media_resolution': 'MEDIA_RESOLUTION_LOW',
+  }
+  config = types.LiveConnectConfig(**config_dict)
+  expected_result = {
+      'setup': {
+          'model': 'test_model',
+          'generationConfig': {'mediaResolution':'MEDIA_RESOLUTION_LOW'},
+      }
+  }
+
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai),
+      model='test_model', config=config
+  )
+
+  assert (
+      result['setup']['generationConfig']['mediaResolution']
+      == expected_result['setup']['generationConfig']['mediaResolution']
   )
 
 
