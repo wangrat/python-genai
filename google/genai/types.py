@@ -337,6 +337,17 @@ class FileSource(_common.CaseInSensitiveEnum):
   GENERATED = 'GENERATED'
 
 
+class MediaModality(_common.CaseInSensitiveEnum):
+  """Server content modalities."""
+
+  MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
+  TEXT = 'TEXT'
+  IMAGE = 'IMAGE'
+  VIDEO = 'VIDEO'
+  AUDIO = 'AUDIO'
+  DOCUMENT = 'DOCUMENT'
+
+
 class StartSensitivity(_common.CaseInSensitiveEnum):
   """Start of speech sensitivity."""
 
@@ -367,17 +378,6 @@ class TurnCoverage(_common.CaseInSensitiveEnum):
   TURN_COVERAGE_UNSPECIFIED = 'TURN_COVERAGE_UNSPECIFIED'
   TURN_INCLUDES_ONLY_ACTIVITY = 'TURN_INCLUDES_ONLY_ACTIVITY'
   TURN_INCLUDES_ALL_INPUT = 'TURN_INCLUDES_ALL_INPUT'
-
-
-class MediaModality(_common.CaseInSensitiveEnum):
-  """Server content modalities."""
-
-  MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
-  TEXT = 'TEXT'
-  IMAGE = 'IMAGE'
-  VIDEO = 'VIDEO'
-  AUDIO = 'AUDIO'
-  DOCUMENT = 'DOCUMENT'
 
 
 class VideoMetadata(_common.BaseModel):
@@ -8963,6 +8963,97 @@ LiveServerToolCallCancellationOrDict = Union[
 ]
 
 
+class UsageMetadata(_common.BaseModel):
+  """Usage metadata about response(s)."""
+
+  prompt_token_count: Optional[int] = Field(
+      default=None,
+      description="""Number of tokens in the prompt. When `cached_content` is set, this is still the total effective prompt size meaning this includes the number of tokens in the cached content.""",
+  )
+  cached_content_token_count: Optional[int] = Field(
+      default=None,
+      description="""Number of tokens in the cached part of the prompt (the cached content).""",
+  )
+  response_token_count: Optional[int] = Field(
+      default=None,
+      description="""Total number of tokens across all the generated response candidates.""",
+  )
+  tool_use_prompt_token_count: Optional[int] = Field(
+      default=None,
+      description="""Number of tokens present in tool-use prompt(s).""",
+  )
+  thoughts_token_count: Optional[int] = Field(
+      default=None,
+      description="""Number of tokens of thoughts for thinking models.""",
+  )
+  total_token_count: Optional[int] = Field(
+      default=None,
+      description="""Total token count for prompt, response candidates, and tool-use prompts(if present).""",
+  )
+  prompt_tokens_details: Optional[list[ModalityTokenCount]] = Field(
+      default=None,
+      description="""List of modalities that were processed in the request input.""",
+  )
+  cache_tokens_details: Optional[list[ModalityTokenCount]] = Field(
+      default=None,
+      description="""List of modalities that were processed in the cache input.""",
+  )
+  response_tokens_details: Optional[list[ModalityTokenCount]] = Field(
+      default=None,
+      description="""List of modalities that were returned in the response.""",
+  )
+  tool_use_prompt_tokens_details: Optional[list[ModalityTokenCount]] = Field(
+      default=None,
+      description="""List of modalities that were processed in the tool-use prompt.""",
+  )
+  traffic_type: Optional[TrafficType] = Field(
+      default=None,
+      description="""Traffic type. This shows whether a request consumes Pay-As-You-Go
+ or Provisioned Throughput quota.""",
+  )
+
+
+class UsageMetadataDict(TypedDict, total=False):
+  """Usage metadata about response(s)."""
+
+  prompt_token_count: Optional[int]
+  """Number of tokens in the prompt. When `cached_content` is set, this is still the total effective prompt size meaning this includes the number of tokens in the cached content."""
+
+  cached_content_token_count: Optional[int]
+  """Number of tokens in the cached part of the prompt (the cached content)."""
+
+  response_token_count: Optional[int]
+  """Total number of tokens across all the generated response candidates."""
+
+  tool_use_prompt_token_count: Optional[int]
+  """Number of tokens present in tool-use prompt(s)."""
+
+  thoughts_token_count: Optional[int]
+  """Number of tokens of thoughts for thinking models."""
+
+  total_token_count: Optional[int]
+  """Total token count for prompt, response candidates, and tool-use prompts(if present)."""
+
+  prompt_tokens_details: Optional[list[ModalityTokenCountDict]]
+  """List of modalities that were processed in the request input."""
+
+  cache_tokens_details: Optional[list[ModalityTokenCountDict]]
+  """List of modalities that were processed in the cache input."""
+
+  response_tokens_details: Optional[list[ModalityTokenCountDict]]
+  """List of modalities that were returned in the response."""
+
+  tool_use_prompt_tokens_details: Optional[list[ModalityTokenCountDict]]
+  """List of modalities that were processed in the tool-use prompt."""
+
+  traffic_type: Optional[TrafficType]
+  """Traffic type. This shows whether a request consumes Pay-As-You-Go
+ or Provisioned Throughput quota."""
+
+
+UsageMetadataOrDict = Union[UsageMetadata, UsageMetadataDict]
+
+
 class LiveServerGoAway(_common.BaseModel):
   """Server will not be able to service client soon."""
 
@@ -9050,6 +9141,9 @@ class LiveServerMessage(_common.BaseModel):
       default=None,
       description="""Notification for the client that a previously issued `ToolCallMessage` with the specified `id`s should have been not executed and should be cancelled.""",
   )
+  usage_metadata: Optional[UsageMetadata] = Field(
+      default=None, description="""Usage metadata about model response(s)."""
+  )
   go_away: Optional[LiveServerGoAway] = Field(
       default=None, description="""Server will disconnect soon."""
   )
@@ -9109,6 +9203,9 @@ class LiveServerMessageDict(TypedDict, total=False):
 
   tool_call_cancellation: Optional[LiveServerToolCallCancellationDict]
   """Notification for the client that a previously issued `ToolCallMessage` with the specified `id`s should have been not executed and should be cancelled."""
+
+  usage_metadata: Optional[UsageMetadataDict]
+  """Usage metadata about model response(s)."""
 
   go_away: Optional[LiveServerGoAwayDict]
   """Server will disconnect soon."""

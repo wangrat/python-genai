@@ -623,6 +623,96 @@ class AsyncSession:
 
     return to_object
 
+  def _ModalityTokenCount_from_mldev(
+      self,
+      from_object: Union[dict, object],
+  ) -> Dict[str, Any]:
+    to_object: Dict[str, Any] = {}
+    if getv(from_object, ['modality']) is not None:
+      setv(to_object, ['modality'], getv(from_object, ['modality']))
+    if getv(from_object, ['tokenCount']) is not None:
+      setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
+    return to_object
+
+  def _UsageMetadata_from_mldev(
+      self,
+      from_object: Union[dict, object],
+  ) -> Dict[str, Any]:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['promptTokenCount']) is not None:
+      setv(
+          to_object,
+          ['prompt_token_count'],
+          getv(from_object, ['promptTokenCount']),
+      )
+    if getv(from_object, ['cachedContentTokenCount']) is not None:
+      setv(
+          to_object,
+          ['cached_content_token_count'],
+          getv(from_object, ['cachedContentTokenCount']),
+      )
+    if getv(from_object, ['responseTokenCount']) is not None:
+      setv(
+          to_object,
+          ['response_token_count'],
+          getv(from_object, ['responseTokenCount']),
+      )
+    if getv(from_object, ['toolUsePromptTokenCount']) is not None:
+      setv(
+          to_object,
+          ['tool_use_prompt_token_count'],
+          getv(from_object, ['toolUsePromptTokenCount']),
+      )
+    if getv(from_object, ['thoughtsTokenCount']) is not None:
+      setv(
+          to_object,
+          ['thoughts_token_count'],
+          getv(from_object, ['thoughtsTokenCount']),
+      )
+    if getv(from_object, ['totalTokenCount']) is not None:
+      setv(
+          to_object,
+          ['total_token_count'],
+          getv(from_object, ['totalTokenCount']),
+      )
+    if getv(from_object, ['promptTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['prompt_tokens_details'],
+          [
+              self._ModalityTokenCount_from_mldev(item)
+              for item in getv(from_object, ['promptTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['cacheTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['cache_tokens_details'],
+          [
+              self._ModalityTokenCount_from_mldev(item)
+              for item in getv(from_object, ['cacheTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['responseTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['response_tokens_details'],
+          [
+              self._ModalityTokenCount_from_mldev(item)
+              for item in getv(from_object, ['responseTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['tool_use_prompt_tokens_details'],
+          [
+              self._ModalityTokenCount_from_mldev(item)
+              for item in getv(from_object, ['toolUsePromptTokensDetails'])
+          ],
+      )
+    return to_object
+
   def _LiveServerMessage_from_mldev(
       self,
       from_object: Union[dict, object],
@@ -670,6 +760,12 @@ class AsyncSession:
 
       return to_object
 
+    if getv(from_object, ['usageMetadata']) is not None:
+      setv(
+          to_object,
+          ['usage_metadata'],
+          self._UsageMetadata_from_mldev(getv(from_object, ['usageMetadata'])),
+      )
     return to_object
 
   def _LiveServerContent_from_vertex(
@@ -741,6 +837,102 @@ class AsyncSession:
     return to_object
 
 
+  def _ModalityTokenCount_from_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> Dict[str, Any]:
+    to_object: Dict[str, Any] = {}
+    if getv(from_object, ['modality']) is not None:
+      setv(to_object, ['modality'], getv(from_object, ['modality']))
+    if getv(from_object, ['tokenCount']) is not None:
+      setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
+    return to_object
+
+  def _UsageMetadata_from_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> Dict[str, Any]:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['promptTokenCount']) is not None:
+      setv(
+          to_object,
+          ['prompt_token_count'],
+          getv(from_object, ['promptTokenCount']),
+      )
+    if getv(from_object, ['cachedContentTokenCount']) is not None:
+      setv(
+          to_object,
+          ['cached_content_token_count'],
+          getv(from_object, ['cachedContentTokenCount']),
+      )
+    if getv(from_object, ['candidatesTokenCount']) is not None:
+      setv(
+          to_object,
+          ['response_token_count'],
+          getv(from_object, ['candidatesTokenCount']),
+      )
+    if getv(from_object, ['toolUsePromptTokenCount']) is not None:
+      setv(
+          to_object,
+          ['tool_use_prompt_token_count'],
+          getv(from_object, ['toolUsePromptTokenCount']),
+      )
+    if getv(from_object, ['thoughtsTokenCount']) is not None:
+      setv(
+          to_object,
+          ['thoughts_token_count'],
+          getv(from_object, ['thoughtsTokenCount']),
+      )
+    if getv(from_object, ['totalTokenCount']) is not None:
+      setv(
+          to_object,
+          ['total_token_count'],
+          getv(from_object, ['totalTokenCount']),
+      )
+    if getv(from_object, ['promptTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['prompt_tokens_details'],
+          [
+              self._ModalityTokenCount_from_vertex(item)
+              for item in getv(from_object, ['promptTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['cacheTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['cache_tokens_details'],
+          [
+              self._ModalityTokenCount_from_vertex(item)
+              for item in getv(from_object, ['cacheTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['tool_use_prompt_tokens_details'],
+          [
+              self._ModalityTokenCount_from_vertex(item)
+              for item in getv(from_object, ['toolUsePromptTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['candidatesTokensDetails']) is not None:
+      setv(
+          to_object,
+          ['response_tokens_details'],
+          [
+              self._ModalityTokenCount_from_vertex(item)
+              for item in getv(from_object, ['candidatesTokensDetails'])
+          ],
+      )
+    if getv(from_object, ['trafficType']) is not None:
+      setv(
+          to_object,
+          ['traffic_type'],
+          getv(from_object, ['trafficType']),
+      )
+    return to_object
+
   def _LiveServerMessage_from_vertex(
       self,
       from_object: Union[dict, object],
@@ -754,7 +946,6 @@ class AsyncSession:
               getv(from_object, ['serverContent'])
           ),
       )
-
     if getv(from_object, ['toolCall']) is not None:
       setv(
           to_object,
@@ -786,6 +977,12 @@ class AsyncSession:
           ),
       )
 
+    if getv(from_object, ['usageMetadata']) is not None:
+      setv(
+          to_object,
+          ['usage_metadata'],
+          self._UsageMetadata_from_vertex(getv(from_object, ['usageMetadata'])),
+      )
     return to_object
 
   def _parse_client_message(
