@@ -707,6 +707,49 @@ async def test_bidi_setup_to_api_with_config_tools_google_search_retrieval(
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_context_window_compression(
+     vertexai
+):
+  config = types.LiveConnectConfig(
+      generation_config=types.GenerationConfig(temperature=0.7),
+      response_modalities=['TEXT'],
+      system_instruction=types.Content(
+          parts=[types.Part(text='test instruction')], role='user'
+      ),
+      context_window_compression=types.ContextWindowCompressionConfig(
+          trigger_tokens=1000,
+          sliding_window=types.SlidingWindow(target_tokens=10),
+      ),
+  )
+  expected_result = {
+      'setup': {
+          'generationConfig': {
+              'temperature': 0.7,
+              'responseModalities': ['TEXT'],
+          },
+          'systemInstruction': {
+              'parts': [{'text': 'test instruction'}],
+              'role': 'user',
+          },
+           'contextWindowCompression': {
+              'triggerTokens': 1000,
+              'slidingWindow': {'targetTokens': 10},
+          }
+      }
+  }
+  if vertexai:
+    expected_result['setup']['model'] = 'projects/test_project/locations/us-central1/publishers/google/models/test_model'
+  else:
+    expected_result['setup']['model'] = 'models/test_model'
+
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai),
+      model='test_model', config=config
+  )
+  assert result == expected_result
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
 async def test_bidi_setup_to_api_with_config_tools_function_declaration(
      vertexai
 ):

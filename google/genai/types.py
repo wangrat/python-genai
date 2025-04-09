@@ -9440,6 +9440,12 @@ class LiveClientSetup(_common.BaseModel):
 
           If included server will send SessionResumptionUpdate messages.""",
   )
+  context_window_compression: Optional[ContextWindowCompressionConfig] = Field(
+      default=None,
+      description="""Configures context window compression mechanism.
+
+      If included, server will compress context window to fit into given length.""",
+  )
 
 
 class LiveClientSetupDict(TypedDict, total=False):
@@ -9472,6 +9478,11 @@ class LiveClientSetupDict(TypedDict, total=False):
   """Configures session resumption mechanism.
 
           If included server will send SessionResumptionUpdate messages."""
+
+  context_window_compression: Optional[ContextWindowCompressionConfigDict]
+  """Configures context window compression mechanism.
+
+      If included, server will compress context window to fit into given length."""
 
 
 LiveClientSetupOrDict = Union[LiveClientSetup, LiveClientSetupDict]
@@ -9802,6 +9813,12 @@ If included the server will send SessionResumptionUpdate messages.""",
       specified for the output audio.
       """,
   )
+  context_window_compression: Optional[ContextWindowCompressionConfig] = Field(
+      default=None,
+      description="""Configures context window compression mechanism.
+
+      If included, server will compress context window to fit into given length.""",
+  )
 
 
 class LiveConnectConfigDict(TypedDict, total=False):
@@ -9875,6 +9892,11 @@ If included the server will send SessionResumptionUpdate messages."""
   """The transcription of the output aligns with the language code
       specified for the output audio.
       """
+
+  context_window_compression: Optional[ContextWindowCompressionConfigDict]
+  """Configures context window compression mechanism.
+
+      If included, server will compress context window to fit into given length."""
 
 
 LiveConnectConfigOrDict = Union[LiveConnectConfig, LiveConnectConfigDict]

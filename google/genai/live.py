@@ -1490,9 +1490,48 @@ class AsyncLive(_api_module.BaseModule):
           ),
       )
 
+    if getv(config, ['context_window_compression']) is not None:
+      setv(
+          to_object,
+          ['contextWindowCompression'],
+          self._ContextWindowCompressionConfig_to_mldev(
+              getv(config, ['context_window_compression']),
+          ),
+      )
+
     return_value = {'setup': {'model': model}}
     return_value['setup'].update(to_object)
     return return_value
+
+  def _SlidingWindow_to_mldev(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['target_tokens']) is not None:
+      setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
+
+    return to_object
+
+
+  def _ContextWindowCompressionConfig_to_mldev(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['trigger_tokens']) is not None:
+      setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
+
+    if getv(from_object, ['sliding_window']) is not None:
+      setv(
+          to_object,
+          ['slidingWindow'],
+          self._SlidingWindow_to_mldev(
+              getv(from_object, ['sliding_window'])
+          ),
+      )
+
+    return to_object
 
   def _LiveClientSessionResumptionConfig_to_mldev(
       self,
@@ -1643,9 +1682,47 @@ class AsyncLive(_api_module.BaseModule):
           ),
       )
 
+    if getv(config, ['context_window_compression']) is not None:
+      setv(
+          to_object,
+          ['contextWindowCompression'],
+          self._ContextWindowCompressionConfig_to_vertex(
+              getv(config, ['context_window_compression']),
+          ),
+      )
+
     return_value = {'setup': {'model': model}}
     return_value['setup'].update(to_object)
     return return_value
+
+  def _SlidingWindow_to_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['target_tokens']) is not None:
+      setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
+
+    return to_object
+
+  def _ContextWindowCompressionConfig_to_vertex(
+      self,
+      from_object: Union[dict, object],
+  ) -> dict:
+    to_object: dict[str, Any] = {}
+    if getv(from_object, ['trigger_tokens']) is not None:
+      setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
+
+    if getv(from_object, ['sliding_window']) is not None:
+      setv(
+          to_object,
+          ['slidingWindow'],
+          self._SlidingWindow_to_mldev(
+              getv(from_object, ['sliding_window'])
+          ),
+      )
+
+    return to_object
 
   def _LiveClientSessionResumptionConfig_to_vertex(
       self,
