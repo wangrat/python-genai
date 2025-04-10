@@ -109,6 +109,7 @@ def _ToolResponse_to_vertex(
   tool_response = from_object.model_dump(exclude_none=True, mode='json')
   return tool_response
 
+
 def _AudioTranscriptionConfig_to_mldev(
     api_client: BaseApiClient,
     from_object: types.AudioTranscriptionConfig,
@@ -123,6 +124,140 @@ def _AudioTranscriptionConfig_to_vertex(
 ) -> dict:
   audio_transcription: dict[str, Any] = {}
   return audio_transcription
+
+
+def _AutomaticActivityDetection_to_mldev(
+    api_client: BaseApiClient,
+    from_object: types.AutomaticActivityDetection,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['disabled']) is not None:
+    setv(
+        to_object,
+        ['disabled'],
+        getv(from_object, ['disabled']),
+    )
+  if getv(from_object, ['start_of_speech_sensitivity']) is not None:
+    setv(
+        to_object,
+        ['startOfSpeechSensitivity'],
+        getv(from_object, ['start_of_speech_sensitivity']),
+    )
+  if getv(from_object, ['end_of_speech_sensitivity']) is not None:
+    setv(
+        to_object,
+        ['endOfSpeechSensitivity'],
+        getv(from_object, ['end_of_speech_sensitivity']),
+    )
+  if getv(from_object, ['prefix_padding_ms']) is not None:
+    setv(
+        to_object,
+        ['prefixPaddingMs'],
+        getv(from_object, ['prefix_padding_ms']),
+    )
+  if getv(from_object, ['silence_duration_ms']) is not None:
+    setv(
+        to_object,
+        ['silenceDurationMs'],
+        getv(from_object, ['silence_duration_ms']),
+    )
+  return to_object
+
+
+def _AutomaticActivityDetection_to_vertex(
+    api_client: BaseApiClient,
+    from_object: types.AutomaticActivityDetection,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['disabled']) is not None:
+    setv(
+        to_object,
+        ['disabled'],
+        getv(from_object, ['disabled']),
+    )
+  if getv(from_object, ['start_of_speech_sensitivity']) is not None:
+    setv(
+        to_object,
+        ['startOfSpeechSensitivity'],
+        getv(from_object, ['start_of_speech_sensitivity']),
+    )
+  if getv(from_object, ['end_of_speech_sensitivity']) is not None:
+    setv(
+        to_object,
+        ['endOfSpeechSensitivity'],
+        getv(from_object, ['end_of_speech_sensitivity']),
+    )
+  if getv(from_object, ['prefix_padding_ms']) is not None:
+    setv(
+        to_object,
+        ['prefixPaddingMs'],
+        getv(from_object, ['prefix_padding_ms']),
+    )
+  if getv(from_object, ['silence_duration_ms']) is not None:
+    setv(
+        to_object,
+        ['silenceDurationMs'],
+        getv(from_object, ['silence_duration_ms']),
+    )
+  return to_object
+
+
+def _RealtimeInputConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: types.RealtimeInputConfig,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['automatic_activity_detection']) is not None:
+    setv(
+        to_object,
+        ['automaticActivityDetection'],
+        _AutomaticActivityDetection_to_mldev(
+            api_client,
+            getv(from_object, ['automatic_activity_detection']),
+        ),
+    )
+  if getv(from_object, ['activity_handling']) is not None:
+    setv(
+        to_object,
+        ['activityHandling'],
+        getv(from_object, ['activity_handling']),
+    )
+  if getv(from_object, ['turn_coverage']) is not None:
+    setv(
+        to_object,
+        ['turnCoverage'],
+        getv(from_object, ['turn_coverage']),
+    )
+  return to_object
+
+
+def _RealtimeInputConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: types.RealtimeInputConfig,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['automatic_activity_detection']) is not None:
+    setv(
+        to_object,
+        ['automaticActivityDetection'],
+        _AutomaticActivityDetection_to_vertex(
+            api_client,
+            getv(from_object, ['automatic_activity_detection']),
+        ),
+    )
+  if getv(from_object, ['activity_handling']) is not None:
+    setv(
+        to_object,
+        ['activityHandling'],
+        getv(from_object, ['activity_handling']),
+    )
+  if getv(from_object, ['turn_coverage']) is not None:
+    setv(
+        to_object,
+        ['turnCoverage'],
+        getv(from_object, ['turn_coverage']),
+    )
+  return to_object
 
 
 class AsyncSession:
@@ -836,7 +971,6 @@ class AsyncSession:
 
     return to_object
 
-
   def _ModalityTokenCount_from_vertex(
       self,
       from_object: Union[dict, object],
@@ -1288,12 +1422,12 @@ class AsyncSession:
 
     return client_message
 
-  async def close(self):
+  async def close(self) -> None:
     # Close the websocket connection.
     await self._ws.close()
 
 
-def _t_content_strict(content: types.ContentOrDict):
+def _t_content_strict(content: types.ContentOrDict) -> types.Content:
   if isinstance(content, dict):
     return types.Content.model_validate(content)
   elif isinstance(content, types.Content):
@@ -1306,7 +1440,8 @@ def _t_content_strict(content: types.ContentOrDict):
 
 
 def _t_contents_strict(
-    contents: Union[Sequence[types.ContentOrDict], types.ContentOrDict]):
+    contents: Union[Sequence[types.ContentOrDict], types.ContentOrDict],
+) -> list[types.Content]:
   if isinstance(contents, Sequence):
     return [_t_content_strict(content) for content in contents]
   else:
@@ -1366,12 +1501,55 @@ def _t_tool_response(
     ) from e
 
 
+def _t_speech_config(
+    origin: Union[types.SpeechConfigUnionDict, Any],
+) -> Optional[types.SpeechConfig]:
+  if not origin:
+    return None
+  if isinstance(origin, types.SpeechConfig):
+    return origin
+  if isinstance(origin, str):
+    # There is no way to know if the string is a voice name or a language code.
+    raise ValueError(
+        f'Unsupported speechConfig type: {type(origin)}. There is no way to'
+        ' know if the string is a voice name or a language code.'
+    )
+  if isinstance(origin, dict):
+    speech_config = types.SpeechConfig()
+    if (
+        'voice_config' in origin
+        and origin['voice_config'] is not None
+        and 'prebuilt_voice_config' in origin['voice_config']
+        and origin['voice_config']['prebuilt_voice_config'] is not None
+        and 'voice_name' in origin['voice_config']['prebuilt_voice_config']
+    ):
+      speech_config.voice_config = types.VoiceConfig(
+          prebuilt_voice_config=types.PrebuiltVoiceConfig(
+              voice_name=origin['voice_config']['prebuilt_voice_config'].get(
+                  'voice_name'
+              )
+          )
+      )
+    if 'language_code' in origin and origin['language_code'] is not None:
+      speech_config.language_code = origin['language_code']
+    if (
+        speech_config.voice_config is None
+        and speech_config.language_code is None
+    ):
+      raise ValueError(
+          'Unsupported speechConfig type: {type(origin)}. At least one of'
+          ' voice_config or language_code must be set.'
+      )
+    return speech_config
+  raise ValueError(f'Unsupported speechConfig type: {type(origin)}')
+
+
 class AsyncLive(_api_module.BaseModule):
   """[Preview] AsyncLive."""
 
   def _LiveSetup_to_mldev(
       self, model: str, config: Optional[types.LiveConnectConfig] = None
-  ):
+  ) -> dict[str, Any]:
 
     to_object: dict[str, Any] = {}
     if getv(config, ['generation_config']) is not None:
@@ -1397,18 +1575,14 @@ class AsyncLive(_api_module.BaseModule):
       if getv(to_object, ['generationConfig']) is not None:
         to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_mldev(
             self._api_client,
-            t.t_speech_config(
-                self._api_client, getv(config, ['speech_config'])
-            ),
+            _t_speech_config(getv(config, ['speech_config'])),
             to_object,
         )
       else:
         to_object['generationConfig'] = {
             'speechConfig': _SpeechConfig_to_mldev(
                 self._api_client,
-                t.t_speech_config(
-                    self._api_client, getv(config, ['speech_config'])
-                ),
+                _t_speech_config(getv(config, ['speech_config'])),
                 to_object,
             )
         }
@@ -1490,6 +1664,16 @@ class AsyncLive(_api_module.BaseModule):
           ),
       )
 
+    if getv(config, ['realtime_input_config']) is not None:
+      setv(
+          to_object,
+          ['realtimeInputConfig'],
+          _RealtimeInputConfig_to_mldev(
+              self._api_client,
+              getv(config, ['realtime_input_config']),
+          ),
+      )
+
     if getv(config, ['session_resumption']) is not None:
       setv(
           to_object,
@@ -1515,7 +1699,7 @@ class AsyncLive(_api_module.BaseModule):
   def _SlidingWindow_to_mldev(
       self,
       from_object: Union[dict, object],
-  ) -> dict:
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['target_tokens']) is not None:
       setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
@@ -1526,7 +1710,7 @@ class AsyncLive(_api_module.BaseModule):
   def _ContextWindowCompressionConfig_to_mldev(
       self,
       from_object: Union[dict, object],
-  ) -> dict:
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['trigger_tokens']) is not None:
       setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
@@ -1543,9 +1727,8 @@ class AsyncLive(_api_module.BaseModule):
     return to_object
 
   def _LiveClientSessionResumptionConfig_to_mldev(
-      self,
-      from_object: Union[dict, object]
-  ) -> dict:
+      self, from_object: Union[dict, object]
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['handle']) is not None:
       setv(to_object, ['handle'], getv(from_object, ['handle']))
@@ -1557,7 +1740,7 @@ class AsyncLive(_api_module.BaseModule):
 
   def _LiveSetup_to_vertex(
       self, model: str, config: Optional[types.LiveConnectConfig] = None
-  ):
+  ) -> dict[str, Any]:
 
     to_object: dict[str, Any] = {}
 
@@ -1592,18 +1775,14 @@ class AsyncLive(_api_module.BaseModule):
       if getv(to_object, ['generationConfig']) is not None:
         to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_vertex(
             self._api_client,
-            t.t_speech_config(
-                self._api_client, getv(config, ['speech_config'])
-            ),
+            _t_speech_config(getv(config, ['speech_config'])),
             to_object,
         )
       else:
         to_object['generationConfig'] = {
             'speechConfig': _SpeechConfig_to_vertex(
                 self._api_client,
-                t.t_speech_config(
-                    self._api_client, getv(config, ['speech_config'])
-                ),
+                _t_speech_config(getv(config, ['speech_config'])),
                 to_object,
             )
         }
@@ -1672,6 +1851,15 @@ class AsyncLive(_api_module.BaseModule):
               for item in t.t_tools(self._api_client, getv(config, ['tools']))
           ],
       )
+    if getv(config, ['realtime_input_config']) is not None:
+      setv(
+          to_object,
+          ['realtimeInputConfig'],
+          _RealtimeInputConfig_to_vertex(
+              self._api_client,
+              getv(config, ['realtime_input_config']),
+          ),
+      )
     if getv(config, ['input_audio_transcription']) is not None:
       setv(
           to_object,
@@ -1716,7 +1904,7 @@ class AsyncLive(_api_module.BaseModule):
   def _SlidingWindow_to_vertex(
       self,
       from_object: Union[dict, object],
-  ) -> dict:
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['target_tokens']) is not None:
       setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
@@ -1726,7 +1914,7 @@ class AsyncLive(_api_module.BaseModule):
   def _ContextWindowCompressionConfig_to_vertex(
       self,
       from_object: Union[dict, object],
-  ) -> dict:
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['trigger_tokens']) is not None:
       setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
@@ -1743,9 +1931,8 @@ class AsyncLive(_api_module.BaseModule):
     return to_object
 
   def _LiveClientSessionResumptionConfig_to_vertex(
-      self,
-      from_object: Union[dict, object]
-  ) -> dict:
+      self, from_object: Union[dict, object]
+  ) -> dict[str, Any]:
     to_object: dict[str, Any] = {}
     if getv(from_object, ['handle']) is not None:
       setv(to_object, ['handle'], getv(from_object, ['handle']))
@@ -1849,19 +2036,23 @@ def _t_live_connect_config(
   if config is None:
     parameter_model = types.LiveConnectConfig()
   elif isinstance(config, dict):
-    system_instruction = config.pop('system_instruction', None)
-    if system_instruction is not None:
+    if getv(config, ['system_instruction']) is not None:
       converted_system_instruction = t.t_content(
-          api_client, content=system_instruction
+          api_client, getv(config, ['system_instruction'])
       )
     else:
       converted_system_instruction = None
-    parameter_model = types.LiveConnectConfig(
-        system_instruction=converted_system_instruction,
-        **config
-    )  # type: ignore
+    parameter_model = types.LiveConnectConfig(**config)
+    parameter_model.system_instruction = converted_system_instruction
   else:
+    if config.system_instruction is None:
+      system_instruction = None
+    else:
+      system_instruction = t.t_content(
+          api_client, getv(config, ['system_instruction'])
+      )
     parameter_model = config
+    parameter_model.system_instruction = system_instruction
 
   if parameter_model.generation_config is not None:
     warnings.warn(
