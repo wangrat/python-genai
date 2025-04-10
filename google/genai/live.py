@@ -373,8 +373,14 @@ class AsyncSession:
     ```
     import google.genai
     from google.genai import types
+    import os
 
-    client = genai.Client(http_options={'api_version': 'v1alpha'})
+    if os.environ.get('GOOGLE_GENAI_USE_VERTEXAI'):
+      MODEL_NAME = 'gemini-2.0-flash-live-preview-04-09'
+    else:
+      MODEL_NAME = 'gemini-2.0-flash-live-001';
+
+    client = genai.Client()
     async with client.aio.live.connect(
         model=MODEL_NAME,
         config={"response_modalities": ["TEXT"]}
@@ -425,8 +431,16 @@ class AsyncSession:
     from google.genai import types
 
     import PIL.Image
+    
+    import os
 
-    client = genai.Client(http_options= {'api_version': 'v1alpha'})
+    if os.environ.get('GOOGLE_GENAI_USE_VERTEXAI'):
+      MODEL_NAME = 'gemini-2.0-flash-live-preview-04-09'
+    else:
+      MODEL_NAME = 'gemini-2.0-flash-live-001';
+
+
+    client = genai.Client()
 
     async with client.aio.live.connect(
         model=MODEL_NAME,
@@ -475,7 +489,14 @@ class AsyncSession:
     from google import genai
     from google.genai import types
 
-    client = genai.Client(http_options={'api_version': 'v1alpha'})
+    import os
+
+    if os.environ.get('GOOGLE_GENAI_USE_VERTEXAI'):
+      MODEL_NAME = 'gemini-2.0-flash-live-preview-04-09'
+    else:
+      MODEL_NAME = 'gemini-2.0-flash-live-001';
+
+    client = genai.Client()
 
     tools = [{'function_declarations': [{'name': 'turn_on_the_lights'}]}]
     config = {
@@ -484,13 +505,13 @@ class AsyncSession:
     }
 
     async with client.aio.live.connect(
-        model='gemini-2.0-flash-exp',
+        model='models/gemini-2.0-flash-live-001',
         config=config
     ) as session:
       prompt = "Turn on the lights please"
       await session.send_client_content(
-          turns=prompt,
-          turn_complete=True)
+          turns={"parts": [{'text': prompt}]}
+      )
 
       async for chunk in session.receive():
           if chunk.server_content:
