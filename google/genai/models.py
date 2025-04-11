@@ -6439,7 +6439,9 @@ class AsyncModels(_api_module.BaseModule):
       if remaining_remote_calls_afc == 0:
         logger.info('Reached max remote calls for automatic function calling.')
 
-      function_map = _extra_utils.get_function_map(config)
+      function_map = _extra_utils.get_function_map(
+          config, is_caller_method_async=True
+      )
       if not function_map:
         break
       if not response:
@@ -6450,8 +6452,10 @@ class AsyncModels(_api_module.BaseModule):
           or not response.candidates[0].content.parts
       ):
         break
-      func_response_parts = _extra_utils.get_function_response_parts(
-          response, function_map
+      func_response_parts = (
+          await _extra_utils.get_function_response_parts_async(
+              response, function_map
+          )
       )
       if not func_response_parts:
         break
@@ -6571,7 +6575,9 @@ class AsyncModels(_api_module.BaseModule):
               'Reached max remote calls for automatic function calling.'
           )
 
-        function_map = _extra_utils.get_function_map(config)
+        function_map = _extra_utils.get_function_map(
+            config, is_caller_method_async=True
+        )
 
         if i == 1:
           # First request gets a function call.
@@ -6587,8 +6593,10 @@ class AsyncModels(_api_module.BaseModule):
                   or not chunk.candidates[0].content.parts
               ):
                 break
-              func_response_parts = _extra_utils.get_function_response_parts(
-                  chunk, function_map
+              func_response_parts = (
+                  await _extra_utils.get_function_response_parts_async(
+                      chunk, function_map
+                  )
               )
               if not func_response_parts:
                 yield chunk
