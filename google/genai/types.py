@@ -9808,6 +9808,23 @@ ContextWindowCompressionConfigOrDict = Union[
 ]
 
 
+class AudioTranscriptionConfig(_common.BaseModel):
+  """The audio transcription configuration in Setup."""
+
+  pass
+
+
+class AudioTranscriptionConfigDict(TypedDict, total=False):
+  """The audio transcription configuration in Setup."""
+
+  pass
+
+
+AudioTranscriptionConfigOrDict = Union[
+    AudioTranscriptionConfig, AudioTranscriptionConfigDict
+]
+
+
 class LiveClientSetup(_common.BaseModel):
   """Message contains configuration that will apply for the duration of the streaming session."""
 
@@ -10113,23 +10130,6 @@ class LiveClientMessageDict(TypedDict, total=False):
 
 
 LiveClientMessageOrDict = Union[LiveClientMessage, LiveClientMessageDict]
-
-
-class AudioTranscriptionConfig(_common.BaseModel):
-  """The audio transcription configuration in Setup."""
-
-  pass
-
-
-class AudioTranscriptionConfigDict(TypedDict, total=False):
-  """The audio transcription configuration in Setup."""
-
-  pass
-
-
-AudioTranscriptionConfigOrDict = Union[
-    AudioTranscriptionConfig, AudioTranscriptionConfigDict
-]
 
 
 class LiveConnectConfig(_common.BaseModel):
