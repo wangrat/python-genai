@@ -1026,3 +1026,121 @@ def t_bytes(api_client: _api_client.BaseApiClient, data: bytes) -> str:
   if not isinstance(data, bytes):
     return data
   return base64.b64encode(data).decode('ascii')
+
+
+def t_content_strict(content: types.ContentOrDict) -> types.Content:
+  if isinstance(content, dict):
+    return types.Content.model_validate(content)
+  elif isinstance(content, types.Content):
+    return content
+  else:
+    raise ValueError(
+        f'Could not convert input (type "{type(content)}") to '
+        '`types.Content`'
+    )
+
+
+def t_contents_strict(
+    contents: Union[Sequence[types.ContentOrDict], types.ContentOrDict],
+) -> list[types.Content]:
+  if isinstance(contents, Sequence):
+    return [t_content_strict(content) for content in contents]
+  else:
+    return [t_content_strict(contents)]
+
+
+def t_client_content(
+    turns: Optional[
+        Union[Sequence[types.ContentOrDict], types.ContentOrDict]
+    ] = None,
+    turn_complete: bool = True,
+) -> types.LiveClientContent:
+  if turns is None:
+    return types.LiveClientContent(turn_complete=turn_complete)
+
+  try:
+    return types.LiveClientContent(
+        turns=t_contents_strict(contents=turns),
+        turn_complete=turn_complete,
+    )
+  except Exception as e:
+    raise ValueError(
+        f'Could not convert input (type "{type(turns)}") to '
+        '`types.LiveClientContent`'
+    ) from e
+
+
+def t_realtime_input(
+    media: BlobUnion,
+) -> types.LiveClientRealtimeInput:
+  try:
+    return types.LiveClientRealtimeInput(media_chunks=[t_blob(blob=media)])
+  except Exception as e:
+    raise ValueError(
+        f'Could not convert input (type "{type(input)}") to '
+        '`types.LiveClientRealtimeInput`'
+    ) from e
+
+
+def t_tool_response(
+    input: Union[
+        types.FunctionResponseOrDict,
+        Sequence[types.FunctionResponseOrDict],
+    ],
+) -> types.LiveClientToolResponse:
+  if not input:
+    raise ValueError(f'A tool response is required, got: \n{input}')
+
+  try:
+    return types.LiveClientToolResponse(
+        function_responses=t_function_responses(function_responses=input)
+    )
+  except Exception as e:
+    raise ValueError(
+        f'Could not convert input (type "{type(input)}") to '
+        '`types.LiveClientToolResponse`'
+    ) from e
+
+
+def t_live_speech_config(
+    origin: Union[types.SpeechConfigUnionDict, Any],
+) -> Optional[types.SpeechConfig]:
+  if not origin:
+    return None
+  if isinstance(origin, types.SpeechConfig):
+    return origin
+  if isinstance(origin, str):
+    # There is no way to know if the string is a voice name or a language code.
+    raise ValueError(
+        f'Unsupported speechConfig type: {type(origin)}. There is no way to'
+        ' know if the string is a voice name or a language code.'
+    )
+  if isinstance(origin, dict):
+    speech_config = types.SpeechConfig()
+    if (
+        'voice_config' in origin
+        and origin['voice_config'] is not None
+        and 'prebuilt_voice_config' in origin['voice_config']
+        and origin['voice_config']['prebuilt_voice_config'] is not None
+        and 'voice_name' in origin['voice_config']['prebuilt_voice_config']
+    ):
+      speech_config.voice_config = types.VoiceConfig(
+          prebuilt_voice_config=types.PrebuiltVoiceConfig(
+              voice_name=origin['voice_config']['prebuilt_voice_config'].get(
+                  'voice_name'
+              )
+          )
+      )
+    if 'language_code' in origin and origin['language_code'] is not None:
+      speech_config.language_code = origin['language_code']
+    if (
+        speech_config.voice_config is None
+        and speech_config.language_code is None
+    ):
+      raise ValueError(
+          'Unsupported speechConfig type: {type(origin)}. At least one of'
+          ' voice_config or language_code must be set.'
+      )
+    return speech_config
+  raise ValueError(f'Unsupported speechConfig type: {type(origin)}')
+
