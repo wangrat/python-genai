@@ -47,49 +47,30 @@ _FUNCTION_RESPONSE_REQUIRES_ID = (
 )
 
 
-def _ClientContent_to_mldev(
-    api_client: BaseApiClient,
-    from_object: types.LiveClientContent,
-) -> dict:
-  client_content = from_object.model_dump(exclude_none=True, mode='json')
-  if 'turns' in client_content:
-    client_content['turns'] = [
-        _Content_to_mldev(api_client=api_client, from_object=item)
-        for item in client_content['turns']
-    ]
-  return client_content
+def _LiveClientSessionResumptionConfig_to_mldev(
+    api_client: BaseApiClient, from_object: Union[dict, object]
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['handle']) is not None:
+    setv(to_object, ['handle'], getv(from_object, ['handle']))
+
+  if getv(from_object, ['transparent']) is not None:
+    raise ValueError('The `transparent` field is not supported in MLDev API')
+
+  return to_object
 
 
-def _ClientContent_to_vertex(
-    api_client: BaseApiClient,
-    from_object: types.LiveClientContent,
-) -> dict:
-  client_content = from_object.model_dump(exclude_none=True, mode='json')
-  if 'turns' in client_content:
-    client_content['turns'] = [
-        _Content_to_vertex(api_client=api_client, from_object=item)
-        for item in client_content['turns']
-    ]
-  return client_content
+def _LiveClientSessionResumptionConfig_to_vertex(
+    api_client: BaseApiClient, from_object: Union[dict, object]
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['handle']) is not None:
+    setv(to_object, ['handle'], getv(from_object, ['handle']))
 
+  if getv(from_object, ['transparent']) is not None:
+    setv(to_object, ['transparent'], getv(from_object, ['transparent']))
 
-def _ToolResponse_to_mldev(
-    api_client: BaseApiClient,
-    from_object: types.LiveClientToolResponse,
-) -> dict:
-  tool_response = from_object.model_dump(exclude_none=True, mode='json')
-  for response in tool_response.get('function_responses', []):
-    if response.get('id') is None:
-      raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
-  return tool_response
-
-
-def _ToolResponse_to_vertex(
-    api_client: BaseApiClient,
-    from_object: types.LiveClientToolResponse,
-) -> dict:
-  tool_response = from_object.model_dump(exclude_none=True, mode='json')
-  return tool_response
+  return to_object
 
 
 def _AudioTranscriptionConfig_to_mldev(
@@ -242,461 +223,65 @@ def _RealtimeInputConfig_to_vertex(
   return to_object
 
 
-def _LiveServerContent_from_mldev(
+def _SlidingWindow_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['modelTurn']) is not None:
-    setv(
-        to_object,
-        ['model_turn'],
-        _Content_from_mldev(
-            api_client,
-            getv(from_object, ['modelTurn']),
-        ),
-    )
-  if getv(from_object, ['turnComplete']) is not None:
-    setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
-  if getv(from_object, ['generationComplete']) is not None:
-    setv(
-        to_object,
-        ['generation_complete'],
-        getv(from_object, ['generationComplete']),
-    )
-  if getv(from_object, ['inputTranscription']) is not None:
-    setv(
-        to_object,
-        ['input_transcription'],
-        getv(from_object, ['inputTranscription']),
-    )
-  if getv(from_object, ['outputTranscription']) is not None:
-    setv(
-        to_object,
-        ['output_transcription'],
-        getv(from_object, ['outputTranscription']),
-    )
-  if getv(from_object, ['interrupted']) is not None:
-    setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
-  return to_object
-
-def _LiveToolCall_from_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['functionCalls']) is not None:
-    setv(
-        to_object,
-        ['function_calls'],
-        getv(from_object, ['functionCalls']),
-    )
-  return to_object
-
-def _LiveToolCall_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['functionCalls']) is not None:
-    setv(
-        to_object,
-        ['function_calls'],
-        getv(from_object, ['functionCalls']),
-    )
-  return to_object
-
-def _LiveServerGoAway_from_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
-) -> dict:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['timeLeft']) is not None:
-    setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
+  if getv(from_object, ['target_tokens']) is not None:
+    setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
 
   return to_object
 
-def _LiveServerSessionResumptionUpdate_from_mldev(
+
+def _SlidingWindow_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
-) -> dict:
+) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['newHandle']) is not None:
-    setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
-
-  if getv(from_object, ['resumable']) is not None:
-    setv(to_object, ['resumable'], getv(from_object, ['resumable']))
-
-  if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
-    setv(
-        to_object,
-        ['last_consumed_client_message_index'],
-        getv(from_object, ['lastConsumedClientMessageIndex']),
-    )
+  if getv(from_object, ['target_tokens']) is not None:
+    setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
 
   return to_object
 
-def _ModalityTokenCount_from_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: Dict[str, Any] = {}
-  if getv(from_object, ['modality']) is not None:
-    setv(to_object, ['modality'], getv(from_object, ['modality']))
-  if getv(from_object, ['tokenCount']) is not None:
-    setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
-  return to_object
 
-def _UsageMetadata_from_mldev(
+def _ContextWindowCompressionConfig_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['promptTokenCount']) is not None:
-    setv(
-        to_object,
-        ['prompt_token_count'],
-        getv(from_object, ['promptTokenCount']),
-    )
-  if getv(from_object, ['cachedContentTokenCount']) is not None:
-    setv(
-        to_object,
-        ['cached_content_token_count'],
-        getv(from_object, ['cachedContentTokenCount']),
-    )
-  if getv(from_object, ['responseTokenCount']) is not None:
-    setv(
-        to_object,
-        ['response_token_count'],
-        getv(from_object, ['responseTokenCount']),
-    )
-  if getv(from_object, ['toolUsePromptTokenCount']) is not None:
-    setv(
-        to_object,
-        ['tool_use_prompt_token_count'],
-        getv(from_object, ['toolUsePromptTokenCount']),
-    )
-  if getv(from_object, ['thoughtsTokenCount']) is not None:
-    setv(
-        to_object,
-        ['thoughts_token_count'],
-        getv(from_object, ['thoughtsTokenCount']),
-    )
-  if getv(from_object, ['totalTokenCount']) is not None:
-    setv(
-        to_object,
-        ['total_token_count'],
-        getv(from_object, ['totalTokenCount']),
-    )
-  if getv(from_object, ['promptTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['prompt_tokens_details'],
-        [
-            _ModalityTokenCount_from_mldev(api_client,item)
-            for item in getv(from_object, ['promptTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['cacheTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['cache_tokens_details'],
-        [
-            _ModalityTokenCount_from_mldev(api_client,item)
-            for item in getv(from_object, ['cacheTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['responseTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['response_tokens_details'],
-        [
-            _ModalityTokenCount_from_mldev(api_client,item)
-            for item in getv(from_object, ['responseTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['tool_use_prompt_tokens_details'],
-        [
-            _ModalityTokenCount_from_mldev(api_client,item)
-            for item in getv(from_object, ['toolUsePromptTokensDetails'])
-        ],
-    )
-  return to_object
+  if getv(from_object, ['trigger_tokens']) is not None:
+    setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
 
-def _LiveServerMessage_from_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['serverContent']) is not None:
+  if getv(from_object, ['sliding_window']) is not None:
     setv(
         to_object,
-        ['server_content'],
-        _LiveServerContent_from_mldev(api_client,
-            getv(from_object, ['serverContent'])
-        ),
-    )
-  if getv(from_object, ['toolCall']) is not None:
-    setv(
-        to_object,
-        ['tool_call'],
-        _LiveToolCall_from_mldev(api_client,getv(from_object, ['toolCall'])),
-    )
-  if getv(from_object, ['toolCallCancellation']) is not None:
-    setv(
-        to_object,
-        ['tool_call_cancellation'],
-        getv(from_object, ['toolCallCancellation']),
-    )
-
-  if getv(from_object, ['goAway']) is not None:
-    setv(
-        to_object,
-        ['go_away'],
-        _LiveServerGoAway_from_mldev(api_client,
-            getv(from_object, ['goAway']), to_object
+        ['slidingWindow'],
+        _SlidingWindow_to_mldev(
+            api_client, getv(from_object, ['sliding_window'])
         ),
     )
 
-  if getv(from_object, ['sessionResumptionUpdate']) is not None:
+  return to_object
+
+
+def _ContextWindowCompressionConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['trigger_tokens']) is not None:
+    setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
+
+  if getv(from_object, ['sliding_window']) is not None:
     setv(
         to_object,
-        ['session_resumption_update'],
-        _LiveServerSessionResumptionUpdate_from_mldev(api_client,
-            getv(from_object, ['sessionResumptionUpdate']),
-            to_object,
+        ['slidingWindow'],
+        _SlidingWindow_to_mldev(
+            api_client, getv(from_object, ['sliding_window'])
         ),
     )
 
-    return to_object
-
-  if getv(from_object, ['usageMetadata']) is not None:
-    setv(
-        to_object,
-        ['usage_metadata'],
-        _UsageMetadata_from_mldev(api_client,getv(from_object, ['usageMetadata'])),
-    )
-  return to_object
-
-def _LiveServerContent_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['modelTurn']) is not None:
-    setv(
-        to_object,
-        ['model_turn'],
-        _Content_from_vertex(
-            api_client,
-            getv(from_object, ['modelTurn']),
-        ),
-    )
-  if getv(from_object, ['turnComplete']) is not None:
-    setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
-  if getv(from_object, ['generationComplete']) is not None:
-    setv(
-        to_object,
-        ['generation_complete'],
-        getv(from_object, ['generationComplete']),
-    )
-  if getv(from_object, ['inputTranscription']) is not None:
-    setv(
-        to_object,
-        ['input_transcription'],
-        getv(from_object, ['inputTranscription']),
-    )
-  if getv(from_object, ['outputTranscription']) is not None:
-    setv(
-        to_object,
-        ['output_transcription'],
-        getv(from_object, ['outputTranscription']),
-    )
-  if getv(from_object, ['interrupted']) is not None:
-    setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
-  return to_object
-
-def _LiveServerGoAway_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> dict:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['timeLeft']) is not None:
-    setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
-
-  return to_object
-
-def _LiveServerSessionResumptionUpdate_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> dict:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['newHandle']) is not None:
-    setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
-
-  if getv(from_object, ['resumable']) is not None:
-    setv(to_object, ['resumable'], getv(from_object, ['resumable']))
-
-  if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
-    setv(
-        to_object,
-        ['last_consumed_client_message_index'],
-        getv(from_object, ['lastConsumedClientMessageIndex']),
-    )
-
-  return to_object
-
-def _ModalityTokenCount_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: Dict[str, Any] = {}
-  if getv(from_object, ['modality']) is not None:
-    setv(to_object, ['modality'], getv(from_object, ['modality']))
-  if getv(from_object, ['tokenCount']) is not None:
-    setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
-  return to_object
-
-def _UsageMetadata_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['promptTokenCount']) is not None:
-    setv(
-        to_object,
-        ['prompt_token_count'],
-        getv(from_object, ['promptTokenCount']),
-    )
-  if getv(from_object, ['cachedContentTokenCount']) is not None:
-    setv(
-        to_object,
-        ['cached_content_token_count'],
-        getv(from_object, ['cachedContentTokenCount']),
-    )
-  if getv(from_object, ['candidatesTokenCount']) is not None:
-    setv(
-        to_object,
-        ['response_token_count'],
-        getv(from_object, ['candidatesTokenCount']),
-    )
-  if getv(from_object, ['toolUsePromptTokenCount']) is not None:
-    setv(
-        to_object,
-        ['tool_use_prompt_token_count'],
-        getv(from_object, ['toolUsePromptTokenCount']),
-    )
-  if getv(from_object, ['thoughtsTokenCount']) is not None:
-    setv(
-        to_object,
-        ['thoughts_token_count'],
-        getv(from_object, ['thoughtsTokenCount']),
-    )
-  if getv(from_object, ['totalTokenCount']) is not None:
-    setv(
-        to_object,
-        ['total_token_count'],
-        getv(from_object, ['totalTokenCount']),
-    )
-  if getv(from_object, ['promptTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['prompt_tokens_details'],
-        [
-            _ModalityTokenCount_from_vertex(api_client,item)
-            for item in getv(from_object, ['promptTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['cacheTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['cache_tokens_details'],
-        [
-            _ModalityTokenCount_from_vertex(api_client,item)
-            for item in getv(from_object, ['cacheTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['tool_use_prompt_tokens_details'],
-        [
-            _ModalityTokenCount_from_vertex(api_client,item)
-            for item in getv(from_object, ['toolUsePromptTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['candidatesTokensDetails']) is not None:
-    setv(
-        to_object,
-        ['response_tokens_details'],
-        [
-            _ModalityTokenCount_from_vertex(api_client,item)
-            for item in getv(from_object, ['candidatesTokensDetails'])
-        ],
-    )
-  if getv(from_object, ['trafficType']) is not None:
-    setv(
-        to_object,
-        ['traffic_type'],
-        getv(from_object, ['trafficType']),
-    )
-  return to_object
-
-def _LiveServerMessage_from_vertex(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> Dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['serverContent']) is not None:
-    setv(
-        to_object,
-        ['server_content'],
-        _LiveServerContent_from_vertex(api_client,
-            getv(from_object, ['serverContent'])
-        ),
-    )
-  if getv(from_object, ['toolCall']) is not None:
-    setv(
-        to_object,
-        ['tool_call'],
-        _LiveToolCall_from_vertex(api_client,getv(from_object, ['toolCall'])),
-    )
-  if getv(from_object, ['toolCallCancellation']) is not None:
-    setv(
-        to_object,
-        ['tool_call_cancellation'],
-        getv(from_object, ['toolCallCancellation']),
-    )
-
-  if getv(from_object, ['goAway']) is not None:
-    setv(
-        to_object,
-        ['go_away'],
-        _LiveServerGoAway_from_vertex(api_client,
-            getv(from_object, ['goAway'])
-        ),
-    )
-
-  if getv(from_object, ['sessionResumptionUpdate']) is not None:
-    setv(
-        to_object,
-        ['session_resumption_update'],
-        _LiveServerSessionResumptionUpdate_from_vertex(api_client,
-            getv(from_object, ['sessionResumptionUpdate']),
-        ),
-    )
-
-  if getv(from_object, ['usageMetadata']) is not None:
-    setv(
-        to_object,
-        ['usage_metadata'],
-        _UsageMetadata_from_vertex(api_client,getv(from_object, ['usageMetadata'])),
-    )
   return to_object
 
 
@@ -849,47 +434,6 @@ def _LiveSetup_to_mldev(
   return_value['setup'].update(to_object)
   return return_value
 
-def _SlidingWindow_to_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['target_tokens']) is not None:
-    setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
-
-  return to_object
-
-
-def _ContextWindowCompressionConfig_to_mldev(
-    api_client: BaseApiClient,
-    from_object: Union[dict, object],
-) -> dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['trigger_tokens']) is not None:
-    setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
-
-  if getv(from_object, ['sliding_window']) is not None:
-    setv(
-        to_object,
-        ['slidingWindow'],
-        _SlidingWindow_to_mldev(api_client,
-            getv(from_object, ['sliding_window'])
-        ),
-    )
-
-  return to_object
-
-def _LiveClientSessionResumptionConfig_to_mldev(
-    api_client: BaseApiClient, from_object: Union[dict, object]
-) -> dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['handle']) is not None:
-    setv(to_object, ['handle'], getv(from_object, ['handle']))
-
-  if getv(from_object, ['transparent']) is not None:
-    raise ValueError('The `transparent` field is not supported in MLDev API')
-
-  return to_object
 
 def _LiveSetup_to_vertex(
     api_client: BaseApiClient, model: str, config: Optional[types.LiveConnectConfig] = None
@@ -1054,44 +598,522 @@ def _LiveSetup_to_vertex(
   return_value['setup'].update(to_object)
   return return_value
 
-def _SlidingWindow_to_vertex(
+
+def _ClientContent_to_mldev(
+    api_client: BaseApiClient,
+    from_object: types.LiveClientContent,
+) -> dict:
+  client_content = from_object.model_dump(exclude_none=True, mode='json')
+  if 'turns' in client_content:
+    client_content['turns'] = [
+        _Content_to_mldev(api_client=api_client, from_object=item)
+        for item in client_content['turns']
+    ]
+  return client_content
+
+
+def _ClientContent_to_vertex(
+    api_client: BaseApiClient,
+    from_object: types.LiveClientContent,
+) -> dict:
+  client_content = from_object.model_dump(exclude_none=True, mode='json')
+  if 'turns' in client_content:
+    client_content['turns'] = [
+        _Content_to_vertex(api_client=api_client, from_object=item)
+        for item in client_content['turns']
+    ]
+  return client_content
+
+
+def _ToolResponse_to_mldev(
+    api_client: BaseApiClient,
+    from_object: types.LiveClientToolResponse,
+) -> dict:
+  tool_response = from_object.model_dump(exclude_none=True, mode='json')
+  for response in tool_response.get('function_responses', []):
+    if response.get('id') is None:
+      raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
+  return tool_response
+
+
+def _ToolResponse_to_vertex(
+    api_client: BaseApiClient,
+    from_object: types.LiveClientToolResponse,
+) -> dict:
+  tool_response = from_object.model_dump(exclude_none=True, mode='json')
+  return tool_response
+
+
+def _LiveServerContent_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['target_tokens']) is not None:
-    setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
+  if getv(from_object, ['modelTurn']) is not None:
+    setv(
+        to_object,
+        ['model_turn'],
+        _Content_from_mldev(
+            api_client,
+            getv(from_object, ['modelTurn']),
+        ),
+    )
+  if getv(from_object, ['turnComplete']) is not None:
+    setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
+  if getv(from_object, ['generationComplete']) is not None:
+    setv(
+        to_object,
+        ['generation_complete'],
+        getv(from_object, ['generationComplete']),
+    )
+  if getv(from_object, ['inputTranscription']) is not None:
+    setv(
+        to_object,
+        ['input_transcription'],
+        getv(from_object, ['inputTranscription']),
+    )
+  if getv(from_object, ['outputTranscription']) is not None:
+    setv(
+        to_object,
+        ['output_transcription'],
+        getv(from_object, ['outputTranscription']),
+    )
+  if getv(from_object, ['interrupted']) is not None:
+    setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
+  return to_object
+
+
+def _LiveServerContent_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['modelTurn']) is not None:
+    setv(
+        to_object,
+        ['model_turn'],
+        _Content_from_vertex(
+            api_client,
+            getv(from_object, ['modelTurn']),
+        ),
+    )
+  if getv(from_object, ['turnComplete']) is not None:
+    setv(to_object, ['turn_complete'], getv(from_object, ['turnComplete']))
+  if getv(from_object, ['generationComplete']) is not None:
+    setv(
+        to_object,
+        ['generation_complete'],
+        getv(from_object, ['generationComplete']),
+    )
+  if getv(from_object, ['inputTranscription']) is not None:
+    setv(
+        to_object,
+        ['input_transcription'],
+        getv(from_object, ['inputTranscription']),
+    )
+  if getv(from_object, ['outputTranscription']) is not None:
+    setv(
+        to_object,
+        ['output_transcription'],
+        getv(from_object, ['outputTranscription']),
+    )
+  if getv(from_object, ['interrupted']) is not None:
+    setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
+  return to_object
+
+
+def _LiveToolCall_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['functionCalls']) is not None:
+    setv(
+        to_object,
+        ['function_calls'],
+        getv(from_object, ['functionCalls']),
+    )
+  return to_object
+
+
+def _LiveToolCall_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['functionCalls']) is not None:
+    setv(
+        to_object,
+        ['function_calls'],
+        getv(from_object, ['functionCalls']),
+    )
+  return to_object
+
+
+def _ModalityTokenCount_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: Dict[str, Any] = {}
+  if getv(from_object, ['modality']) is not None:
+    setv(to_object, ['modality'], getv(from_object, ['modality']))
+  if getv(from_object, ['tokenCount']) is not None:
+    setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
+  return to_object
+
+
+def _ModalityTokenCount_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: Dict[str, Any] = {}
+  if getv(from_object, ['modality']) is not None:
+    setv(to_object, ['modality'], getv(from_object, ['modality']))
+  if getv(from_object, ['tokenCount']) is not None:
+    setv(to_object, ['token_count'], getv(from_object, ['tokenCount']))
+  return to_object
+
+
+def _UsageMetadata_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['promptTokenCount']) is not None:
+    setv(
+        to_object,
+        ['prompt_token_count'],
+        getv(from_object, ['promptTokenCount']),
+    )
+  if getv(from_object, ['cachedContentTokenCount']) is not None:
+    setv(
+        to_object,
+        ['cached_content_token_count'],
+        getv(from_object, ['cachedContentTokenCount']),
+    )
+  if getv(from_object, ['responseTokenCount']) is not None:
+    setv(
+        to_object,
+        ['response_token_count'],
+        getv(from_object, ['responseTokenCount']),
+    )
+  if getv(from_object, ['toolUsePromptTokenCount']) is not None:
+    setv(
+        to_object,
+        ['tool_use_prompt_token_count'],
+        getv(from_object, ['toolUsePromptTokenCount']),
+    )
+  if getv(from_object, ['thoughtsTokenCount']) is not None:
+    setv(
+        to_object,
+        ['thoughts_token_count'],
+        getv(from_object, ['thoughtsTokenCount']),
+    )
+  if getv(from_object, ['totalTokenCount']) is not None:
+    setv(
+        to_object,
+        ['total_token_count'],
+        getv(from_object, ['totalTokenCount']),
+    )
+  if getv(from_object, ['promptTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['prompt_tokens_details'],
+        [
+            _ModalityTokenCount_from_mldev(api_client, item)
+            for item in getv(from_object, ['promptTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['cacheTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['cache_tokens_details'],
+        [
+            _ModalityTokenCount_from_mldev(api_client, item)
+            for item in getv(from_object, ['cacheTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['responseTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['response_tokens_details'],
+        [
+            _ModalityTokenCount_from_mldev(api_client, item)
+            for item in getv(from_object, ['responseTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['tool_use_prompt_tokens_details'],
+        [
+            _ModalityTokenCount_from_mldev(api_client, item)
+            for item in getv(from_object, ['toolUsePromptTokensDetails'])
+        ],
+    )
+  return to_object
+
+
+def _UsageMetadata_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['promptTokenCount']) is not None:
+    setv(
+        to_object,
+        ['prompt_token_count'],
+        getv(from_object, ['promptTokenCount']),
+    )
+  if getv(from_object, ['cachedContentTokenCount']) is not None:
+    setv(
+        to_object,
+        ['cached_content_token_count'],
+        getv(from_object, ['cachedContentTokenCount']),
+    )
+  if getv(from_object, ['candidatesTokenCount']) is not None:
+    setv(
+        to_object,
+        ['response_token_count'],
+        getv(from_object, ['candidatesTokenCount']),
+    )
+  if getv(from_object, ['toolUsePromptTokenCount']) is not None:
+    setv(
+        to_object,
+        ['tool_use_prompt_token_count'],
+        getv(from_object, ['toolUsePromptTokenCount']),
+    )
+  if getv(from_object, ['thoughtsTokenCount']) is not None:
+    setv(
+        to_object,
+        ['thoughts_token_count'],
+        getv(from_object, ['thoughtsTokenCount']),
+    )
+  if getv(from_object, ['totalTokenCount']) is not None:
+    setv(
+        to_object,
+        ['total_token_count'],
+        getv(from_object, ['totalTokenCount']),
+    )
+  if getv(from_object, ['promptTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['prompt_tokens_details'],
+        [
+            _ModalityTokenCount_from_vertex(api_client, item)
+            for item in getv(from_object, ['promptTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['cacheTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['cache_tokens_details'],
+        [
+            _ModalityTokenCount_from_vertex(api_client, item)
+            for item in getv(from_object, ['cacheTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['toolUsePromptTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['tool_use_prompt_tokens_details'],
+        [
+            _ModalityTokenCount_from_vertex(api_client, item)
+            for item in getv(from_object, ['toolUsePromptTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['candidatesTokensDetails']) is not None:
+    setv(
+        to_object,
+        ['response_tokens_details'],
+        [
+            _ModalityTokenCount_from_vertex(api_client, item)
+            for item in getv(from_object, ['candidatesTokensDetails'])
+        ],
+    )
+  if getv(from_object, ['trafficType']) is not None:
+    setv(
+        to_object,
+        ['traffic_type'],
+        getv(from_object, ['trafficType']),
+    )
+  return to_object
+
+
+def _LiveServerGoAway_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['timeLeft']) is not None:
+    setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
 
   return to_object
 
-def _ContextWindowCompressionConfig_to_vertex(
+
+def _LiveServerGoAway_from_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(from_object, ['trigger_tokens']) is not None:
-    setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
+  if getv(from_object, ['timeLeft']) is not None:
+    setv(to_object, ['time_left'], getv(from_object, ['timeLeft']))
 
-  if getv(from_object, ['sliding_window']) is not None:
+  return to_object
+
+
+def _LiveServerSessionResumptionUpdate_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['newHandle']) is not None:
+    setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
+
+  if getv(from_object, ['resumable']) is not None:
+    setv(to_object, ['resumable'], getv(from_object, ['resumable']))
+
+  if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
     setv(
         to_object,
-        ['slidingWindow'],
-        _SlidingWindow_to_mldev(api_client,
-            getv(from_object, ['sliding_window'])
-        ),
+        ['last_consumed_client_message_index'],
+        getv(from_object, ['lastConsumedClientMessageIndex']),
     )
 
   return to_object
 
-def _LiveClientSessionResumptionConfig_to_vertex(
-    api_client: BaseApiClient, from_object: Union[dict, object]
-) -> dict[str, Any]:
-  to_object: dict[str, Any] = {}
-  if getv(from_object, ['handle']) is not None:
-    setv(to_object, ['handle'], getv(from_object, ['handle']))
 
-  if getv(from_object, ['transparent']) is not None:
-    setv(to_object, ['transparent'], getv(from_object, ['transparent']))
+def _LiveServerSessionResumptionUpdate_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['newHandle']) is not None:
+    setv(to_object, ['new_handle'], getv(from_object, ['newHandle']))
+
+  if getv(from_object, ['resumable']) is not None:
+    setv(to_object, ['resumable'], getv(from_object, ['resumable']))
+
+  if getv(from_object, ['lastConsumedClientMessageIndex']) is not None:
+    setv(
+        to_object,
+        ['last_consumed_client_message_index'],
+        getv(from_object, ['lastConsumedClientMessageIndex']),
+    )
 
   return to_object
 
+
+def _LiveServerMessage_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['serverContent']) is not None:
+    setv(
+        to_object,
+        ['server_content'],
+        _LiveServerContent_from_mldev(
+            api_client, getv(from_object, ['serverContent'])
+        ),
+    )
+  if getv(from_object, ['toolCall']) is not None:
+    setv(
+        to_object,
+        ['tool_call'],
+        _LiveToolCall_from_mldev(api_client, getv(from_object, ['toolCall'])),
+    )
+  if getv(from_object, ['toolCallCancellation']) is not None:
+    setv(
+        to_object,
+        ['tool_call_cancellation'],
+        getv(from_object, ['toolCallCancellation']),
+    )
+
+  if getv(from_object, ['goAway']) is not None:
+    setv(
+        to_object,
+        ['go_away'],
+        _LiveServerGoAway_from_mldev(
+            api_client, getv(from_object, ['goAway']), to_object
+        ),
+    )
+
+  if getv(from_object, ['sessionResumptionUpdate']) is not None:
+    setv(
+        to_object,
+        ['session_resumption_update'],
+        _LiveServerSessionResumptionUpdate_from_mldev(
+            api_client,
+            getv(from_object, ['sessionResumptionUpdate']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['usageMetadata']) is not None:
+    setv(
+        to_object,
+        ['usage_metadata'],
+        _UsageMetadata_from_mldev(
+            api_client, getv(from_object, ['usageMetadata'])
+        ),
+    )
+  return to_object
+
+
+def _LiveServerMessage_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+) -> Dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['serverContent']) is not None:
+    setv(
+        to_object,
+        ['server_content'],
+        _LiveServerContent_from_vertex(
+            api_client, getv(from_object, ['serverContent'])
+        ),
+    )
+  if getv(from_object, ['toolCall']) is not None:
+    setv(
+        to_object,
+        ['tool_call'],
+        _LiveToolCall_from_vertex(api_client, getv(from_object, ['toolCall'])),
+    )
+  if getv(from_object, ['toolCallCancellation']) is not None:
+    setv(
+        to_object,
+        ['tool_call_cancellation'],
+        getv(from_object, ['toolCallCancellation']),
+    )
+
+  if getv(from_object, ['goAway']) is not None:
+    setv(
+        to_object,
+        ['go_away'],
+        _LiveServerGoAway_from_vertex(
+            api_client, getv(from_object, ['goAway'])
+        ),
+    )
+
+  if getv(from_object, ['sessionResumptionUpdate']) is not None:
+    setv(
+        to_object,
+        ['session_resumption_update'],
+        _LiveServerSessionResumptionUpdate_from_vertex(
+            api_client,
+            getv(from_object, ['sessionResumptionUpdate']),
+        ),
+    )
+
+  if getv(from_object, ['usageMetadata']) is not None:
+    setv(
+        to_object,
+        ['usage_metadata'],
+        _UsageMetadata_from_vertex(
+            api_client, getv(from_object, ['usageMetadata'])
+        ),
+    )
+  return to_object
