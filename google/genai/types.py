@@ -236,6 +236,17 @@ class AdapterSize(_common.CaseInSensitiveEnum):
   ADAPTER_SIZE_THIRTY_TWO = 'ADAPTER_SIZE_THIRTY_TWO'
 
 
+class FeatureSelectionPreference(_common.CaseInSensitiveEnum):
+  """Options for feature selection preference."""
+
+  FEATURE_SELECTION_PREFERENCE_UNSPECIFIED = (
+      'FEATURE_SELECTION_PREFERENCE_UNSPECIFIED'
+  )
+  PRIORITIZE_QUALITY = 'PRIORITIZE_QUALITY'
+  BALANCED = 'BALANCED'
+  PRIORITIZE_COST = 'PRIORITIZE_COST'
+
+
 class DynamicRetrievalConfigMode(_common.CaseInSensitiveEnum):
   """Config for the dynamic retrieval config mode."""
 
@@ -1224,6 +1235,26 @@ class SchemaDict(TypedDict, total=False):
 
 
 SchemaOrDict = Union[Schema, SchemaDict]
+
+
+class ModelSelectionConfig(_common.BaseModel):
+  """Config for model selection."""
+
+  feature_selection_preference: Optional[FeatureSelectionPreference] = Field(
+      default=None, description="""Options for feature selection preference."""
+  )
+
+
+class ModelSelectionConfigDict(TypedDict, total=False):
+  """Config for model selection."""
+
+  feature_selection_preference: Optional[FeatureSelectionPreference]
+  """Options for feature selection preference."""
+
+
+ModelSelectionConfigOrDict = Union[
+    ModelSelectionConfig, ModelSelectionConfigDict
+]
 
 
 class SafetySetting(_common.BaseModel):
@@ -2387,6 +2418,11 @@ class GenerateContentConfig(_common.BaseModel):
       description="""Configuration for model router requests.
       """,
   )
+  model_selection_config: Optional[ModelSelectionConfig] = Field(
+      default=None,
+      description="""Configuration for model selection.
+      """,
+  )
   safety_settings: Optional[list[SafetySetting]] = Field(
       default=None,
       description="""Safety settings in the request to block unsafe content in the
@@ -2550,6 +2586,10 @@ class GenerateContentConfigDict(TypedDict, total=False):
 
   routing_config: Optional[GenerationConfigRoutingConfigDict]
   """Configuration for model router requests.
+      """
+
+  model_selection_config: Optional[ModelSelectionConfigDict]
+  """Configuration for model selection.
       """
 
   safety_settings: Optional[list[SafetySettingDict]]

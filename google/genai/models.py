@@ -176,6 +176,20 @@ def _Schema_to_mldev(
   return to_object
 
 
+def _ModelSelectionConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['feature_selection_preference']) is not None:
+    raise ValueError(
+        'feature_selection_preference parameter is not supported in Gemini API.'
+    )
+
+  return to_object
+
+
 def _SafetySetting_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -499,6 +513,11 @@ def _GenerateContentConfig_to_mldev(
 
   if getv(from_object, ['routing_config']) is not None:
     raise ValueError('routing_config parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['model_selection_config']) is not None:
+    raise ValueError(
+        'model_selection_config parameter is not supported in Gemini API.'
+    )
 
   if getv(from_object, ['safety_settings']) is not None:
     setv(
@@ -1273,6 +1292,22 @@ def _Schema_to_vertex(
   return to_object
 
 
+def _ModelSelectionConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['feature_selection_preference']) is not None:
+    setv(
+        to_object,
+        ['featureSelectionPreference'],
+        getv(from_object, ['feature_selection_preference']),
+    )
+
+  return to_object
+
+
 def _SafetySetting_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -1602,6 +1637,15 @@ def _GenerateContentConfig_to_vertex(
 
   if getv(from_object, ['routing_config']) is not None:
     setv(to_object, ['routingConfig'], getv(from_object, ['routing_config']))
+
+  if getv(from_object, ['model_selection_config']) is not None:
+    setv(
+        to_object,
+        ['modelConfig'],
+        _ModelSelectionConfig_to_vertex(
+            api_client, getv(from_object, ['model_selection_config']), to_object
+        ),
+    )
 
   if getv(from_object, ['safety_settings']) is not None:
     setv(
@@ -2663,6 +2707,16 @@ def _GenerateVideosParameters_to_vertex(
     )
 
   return to_object
+
+
+def _FeatureSelectionPreference_to_mldev_enum_validate(enum_value: Any):
+  if enum_value in set([
+      'FEATURE_SELECTION_PREFERENCE_UNSPECIFIED',
+      'PRIORITIZE_QUALITY',
+      'BALANCED',
+      'PRIORITIZE_COST',
+  ]):
+    raise ValueError(f'{enum_value} enum value is not supported in Gemini API.')
 
 
 def _SafetyFilterLevel_to_mldev_enum_validate(enum_value: Any):
