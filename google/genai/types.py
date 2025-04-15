@@ -862,7 +862,7 @@ class JSONSchema(pydantic.BaseModel):
 
   Represents a subset of a JSON Schema object that is used by the Gemini model.
   The difference between this class and the Schema class is that this class is
-  compatible with OpenAPI 3.0 schema objects. And the Schema class is used to
+  compatible with OpenAPI 3.1 schema objects. And the Schema class is used to
   make API call to Gemini model.
   """
 
