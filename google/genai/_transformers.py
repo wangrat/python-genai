@@ -854,6 +854,8 @@ def t_tool(client: _api_client.BaseApiClient, origin) -> Optional[types.Tool]:
             )
         ]
     )
+  elif isinstance(origin, dict):
+    return types.Tool.model_validate(origin)
   else:
     return origin
 

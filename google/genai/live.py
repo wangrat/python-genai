@@ -34,6 +34,7 @@ from . import client
 from . import types
 from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
+from ._common import set_value_by_path as setv
 from . import live_converters
 from .models import _Content_to_mldev
 from .models import _Content_to_vertex
@@ -192,11 +193,11 @@ class AsyncSession:
     client_content = t.t_client_content(turns, turn_complete)
 
     if self._api_client.vertexai:
-      client_content_dict = live_converters._ClientContent_to_vertex(
+      client_content_dict = live_converters._LiveClientContent_to_vertex(
           api_client=self._api_client, from_object=client_content
       )
     else:
-      client_content_dict = live_converters._ClientContent_to_mldev(
+      client_content_dict = live_converters._LiveClientContent_to_mldev(
           api_client=self._api_client, from_object=client_content
       )
 
@@ -329,11 +330,11 @@ class AsyncSession:
     """
     tool_response = t.t_tool_response(function_responses)
     if self._api_client.vertexai:
-      tool_response_dict = live_converters._ToolResponse_to_vertex(
+      tool_response_dict = live_converters._LiveClientToolResponse_to_vertex(
           api_client=self._api_client, from_object=tool_response
       )
     else:
-      tool_response_dict = live_converters._ToolResponse_to_mldev(
+      tool_response_dict = live_converters._LiveClientToolResponse_to_mldev(
           api_client=self._api_client, from_object=tool_response
       )
     await self._ws.send(json.dumps({'tool_response': tool_response_dict}))
@@ -823,13 +824,20 @@ class AsyncLive(_api_module.BaseModule):
       version = self._api_client._http_options.api_version
       uri = f'{base_url}/ws/google.ai.generativelanguage.{version}.GenerativeService.BidiGenerateContent?key={api_key}'
       headers = self._api_client._http_options.headers
+
       request_dict = _common.convert_to_dict(
-          live_converters._LiveSetup_to_mldev(
+          live_converters._LiveConnectParameters_to_mldev(
               api_client=self._api_client,
-              model=transformed_model,
-              config=parameter_model,
+              from_object=types.LiveConnectParameters(
+                model=transformed_model,
+                config=parameter_model,
+              ).model_dump(exclude_none=True)
           )
       )
+      del request_dict['config']
+
+      setv(request_dict, ['setup', 'model'], transformed_model)
+
       request = json.dumps(request_dict)
     else:
       # Get bearer token through Application Default Credentials.
@@ -856,12 +864,19 @@ class AsyncLive(_api_module.BaseModule):
             f'projects/{project}/locations/{location}/' + transformed_model
         )
       request_dict = _common.convert_to_dict(
-          live_converters._LiveSetup_to_vertex(
+          live_converters._LiveConnectParameters_to_vertex(
               api_client=self._api_client,
-              model=transformed_model,
-              config=parameter_model,
+              from_object=types.LiveConnectParameters(
+                model=transformed_model,
+                config=parameter_model,
+              ).model_dump(exclude_none=True)
           )
       )
+      del request_dict['config']
+
+      if getv(request_dict, ['setup', 'generationConfig', 'responseModalities']) is None:
+        setv(request_dict, ['setup', 'generationConfig', 'responseModalities'], ['AUDIO'])
+
       request = json.dumps(request_dict)
 
     try:

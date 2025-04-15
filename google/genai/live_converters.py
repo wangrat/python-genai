@@ -46,23 +46,26 @@ _FUNCTION_RESPONSE_REQUIRES_ID = (
     ' response of a ToolCall.FunctionalCalls in Google AI.'
 )
 
-
-def _LiveClientSessionResumptionConfig_to_mldev(
-    api_client: BaseApiClient, from_object: Union[dict, object]
-) -> dict[str, Any]:
+def _SessionResumptionConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['handle']) is not None:
     setv(to_object, ['handle'], getv(from_object, ['handle']))
 
   if getv(from_object, ['transparent']) is not None:
-    raise ValueError('The `transparent` field is not supported in MLDev API')
+    raise ValueError('transparent parameter is not supported in Gemini API.')
 
   return to_object
 
 
-def _LiveClientSessionResumptionConfig_to_vertex(
-    api_client: BaseApiClient, from_object: Union[dict, object]
-) -> dict[str, Any]:
+def _SessionResumptionConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['handle']) is not None:
     setv(to_object, ['handle'], getv(from_object, ['handle']))
@@ -75,99 +78,104 @@ def _LiveClientSessionResumptionConfig_to_vertex(
 
 def _AudioTranscriptionConfig_to_mldev(
     api_client: BaseApiClient,
-    from_object: types.AudioTranscriptionConfig,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
-  audio_transcription: dict[str, Any] = {}
-  return audio_transcription
+  to_object: dict[str, Any] = {}
+
+  return to_object
 
 
 def _AudioTranscriptionConfig_to_vertex(
     api_client: BaseApiClient,
-    from_object: types.AudioTranscriptionConfig,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
-  audio_transcription: dict[str, Any] = {}
-  return audio_transcription
+  to_object: dict[str, Any] = {}
+
+  return to_object
 
 
 def _AutomaticActivityDetection_to_mldev(
     api_client: BaseApiClient,
-    from_object: types.AutomaticActivityDetection,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['disabled']) is not None:
-    setv(
-        to_object,
-        ['disabled'],
-        getv(from_object, ['disabled']),
-    )
+    setv(to_object, ['disabled'], getv(from_object, ['disabled']))
+
   if getv(from_object, ['start_of_speech_sensitivity']) is not None:
     setv(
         to_object,
         ['startOfSpeechSensitivity'],
         getv(from_object, ['start_of_speech_sensitivity']),
     )
+
   if getv(from_object, ['end_of_speech_sensitivity']) is not None:
     setv(
         to_object,
         ['endOfSpeechSensitivity'],
         getv(from_object, ['end_of_speech_sensitivity']),
     )
+
   if getv(from_object, ['prefix_padding_ms']) is not None:
     setv(
-        to_object,
-        ['prefixPaddingMs'],
-        getv(from_object, ['prefix_padding_ms']),
+        to_object, ['prefixPaddingMs'], getv(from_object, ['prefix_padding_ms'])
     )
+
   if getv(from_object, ['silence_duration_ms']) is not None:
     setv(
         to_object,
         ['silenceDurationMs'],
         getv(from_object, ['silence_duration_ms']),
     )
+
   return to_object
 
 
 def _AutomaticActivityDetection_to_vertex(
     api_client: BaseApiClient,
-    from_object: types.AutomaticActivityDetection,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['disabled']) is not None:
-    setv(
-        to_object,
-        ['disabled'],
-        getv(from_object, ['disabled']),
-    )
+    setv(to_object, ['disabled'], getv(from_object, ['disabled']))
+
   if getv(from_object, ['start_of_speech_sensitivity']) is not None:
     setv(
         to_object,
         ['startOfSpeechSensitivity'],
         getv(from_object, ['start_of_speech_sensitivity']),
     )
+
   if getv(from_object, ['end_of_speech_sensitivity']) is not None:
     setv(
         to_object,
         ['endOfSpeechSensitivity'],
         getv(from_object, ['end_of_speech_sensitivity']),
     )
+
   if getv(from_object, ['prefix_padding_ms']) is not None:
     setv(
-        to_object,
-        ['prefixPaddingMs'],
-        getv(from_object, ['prefix_padding_ms']),
+        to_object, ['prefixPaddingMs'], getv(from_object, ['prefix_padding_ms'])
     )
+
   if getv(from_object, ['silence_duration_ms']) is not None:
     setv(
         to_object,
         ['silenceDurationMs'],
         getv(from_object, ['silence_duration_ms']),
     )
+
   return to_object
 
 
 def _RealtimeInputConfig_to_mldev(
     api_client: BaseApiClient,
-    from_object: types.RealtimeInputConfig,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['automatic_activity_detection']) is not None:
@@ -177,26 +185,27 @@ def _RealtimeInputConfig_to_mldev(
         _AutomaticActivityDetection_to_mldev(
             api_client,
             getv(from_object, ['automatic_activity_detection']),
+            to_object,
         ),
     )
+
   if getv(from_object, ['activity_handling']) is not None:
     setv(
         to_object,
         ['activityHandling'],
         getv(from_object, ['activity_handling']),
     )
+
   if getv(from_object, ['turn_coverage']) is not None:
-    setv(
-        to_object,
-        ['turnCoverage'],
-        getv(from_object, ['turn_coverage']),
-    )
+    setv(to_object, ['turnCoverage'], getv(from_object, ['turn_coverage']))
+
   return to_object
 
 
 def _RealtimeInputConfig_to_vertex(
     api_client: BaseApiClient,
-    from_object: types.RealtimeInputConfig,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['automatic_activity_detection']) is not None:
@@ -206,27 +215,28 @@ def _RealtimeInputConfig_to_vertex(
         _AutomaticActivityDetection_to_vertex(
             api_client,
             getv(from_object, ['automatic_activity_detection']),
+            to_object,
         ),
     )
+
   if getv(from_object, ['activity_handling']) is not None:
     setv(
         to_object,
         ['activityHandling'],
         getv(from_object, ['activity_handling']),
     )
+
   if getv(from_object, ['turn_coverage']) is not None:
-    setv(
-        to_object,
-        ['turnCoverage'],
-        getv(from_object, ['turn_coverage']),
-    )
+    setv(to_object, ['turnCoverage'], getv(from_object, ['turn_coverage']))
+
   return to_object
 
 
 def _SlidingWindow_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['target_tokens']) is not None:
     setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
@@ -237,7 +247,8 @@ def _SlidingWindow_to_mldev(
 def _SlidingWindow_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['target_tokens']) is not None:
     setv(to_object, ['targetTokens'], getv(from_object, ['target_tokens']))
@@ -248,7 +259,8 @@ def _SlidingWindow_to_vertex(
 def _ContextWindowCompressionConfig_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['trigger_tokens']) is not None:
     setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
@@ -258,7 +270,7 @@ def _ContextWindowCompressionConfig_to_mldev(
         to_object,
         ['slidingWindow'],
         _SlidingWindow_to_mldev(
-            api_client, getv(from_object, ['sliding_window'])
+            api_client, getv(from_object, ['sliding_window']), to_object
         ),
     )
 
@@ -268,7 +280,8 @@ def _ContextWindowCompressionConfig_to_mldev(
 def _ContextWindowCompressionConfig_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
-) -> dict[str, Any]:
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['trigger_tokens']) is not None:
     setv(to_object, ['triggerTokens'], getv(from_object, ['trigger_tokens']))
@@ -277,355 +290,512 @@ def _ContextWindowCompressionConfig_to_vertex(
     setv(
         to_object,
         ['slidingWindow'],
-        _SlidingWindow_to_mldev(
-            api_client, getv(from_object, ['sliding_window'])
+        _SlidingWindow_to_vertex(
+            api_client, getv(from_object, ['sliding_window']), to_object
         ),
     )
 
   return to_object
 
 
-def _LiveSetup_to_mldev(
-    api_client: BaseApiClient, model: str, config: Optional[types.LiveConnectConfig] = None
-) -> dict[str, Any]:
-
+def _LiveConnectConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
   to_object: dict[str, Any] = {}
-  if getv(config, ['generation_config']) is not None:
+  if getv(from_object, ['generation_config']) is not None:
     setv(
-        to_object,
-        ['generationConfig'],
-        _GenerateContentConfig_to_mldev(
+        parent_object,
+        ['setup', 'generationConfig'],
+        getv(from_object, ['generation_config']),
+    )
+
+  if getv(from_object, ['response_modalities']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'responseModalities'],
+        getv(from_object, ['response_modalities']),
+    )
+
+  if getv(from_object, ['temperature']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'temperature'],
+        getv(from_object, ['temperature']),
+    )
+
+  if getv(from_object, ['top_p']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'topP'],
+        getv(from_object, ['top_p']),
+    )
+
+  if getv(from_object, ['top_k']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'topK'],
+        getv(from_object, ['top_k']),
+    )
+
+  if getv(from_object, ['max_output_tokens']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'maxOutputTokens'],
+        getv(from_object, ['max_output_tokens']),
+    )
+
+  if getv(from_object, ['media_resolution']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'mediaResolution'],
+        getv(from_object, ['media_resolution']),
+    )
+
+  if getv(from_object, ['seed']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'seed'],
+        getv(from_object, ['seed']),
+    )
+
+  if getv(from_object, ['speech_config']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'speechConfig'],
+        getv(from_object, ['speech_config']),
+    )
+
+  if getv(from_object, ['system_instruction']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'systemInstruction'],
+        _Content_to_mldev(
             api_client,
-            getv(config, ['generation_config']),
+            t.t_content(api_client, getv(from_object, ['system_instruction'])),
             to_object,
         ),
     )
-  if getv(config, ['response_modalities']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['responseModalities'] = getv(
-          config, ['response_modalities']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'responseModalities': getv(config, ['response_modalities'])
-      }
-  if getv(config, ['speech_config']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_mldev(
-          api_client,
-          t.t_live_speech_config(getv(config, ['speech_config'])),
-          to_object,
-      )
-    else:
-      to_object['generationConfig'] = {
-          'speechConfig': _SpeechConfig_to_mldev(
-              api_client,
-              t.t_live_speech_config(getv(config, ['speech_config'])),
-              to_object,
-          )
-      }
-  if getv(config, ['temperature']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['temperature'] = getv(
-          config, ['temperature']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'temperature': getv(config, ['temperature'])
-      }
-  if getv(config, ['top_p']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['topP'] = getv(config, ['top_p'])
-    else:
-      to_object['generationConfig'] = {'topP': getv(config, ['top_p'])}
-  if getv(config, ['top_k']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['topK'] = getv(config, ['top_k'])
-    else:
-      to_object['generationConfig'] = {'topK': getv(config, ['top_k'])}
-  if getv(config, ['max_output_tokens']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['maxOutputTokens'] = getv(
-          config, ['max_output_tokens']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'maxOutputTokens': getv(config, ['max_output_tokens'])
-      }
-  if getv(config, ['media_resolution']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['mediaResolution'] = getv(
-          config, ['media_resolution']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'mediaResolution': getv(config, ['media_resolution'])
-      }
-  if getv(config, ['seed']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['seed'] = getv(config, ['seed'])
-    else:
-      to_object['generationConfig'] = {'seed': getv(config, ['seed'])}
-  if getv(config, ['system_instruction']) is not None:
+
+  if getv(from_object, ['tools']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'tools'],
+        [
+            _Tool_to_mldev(api_client, t.t_tool(api_client, item), to_object)
+            for item in t.t_tools(api_client, getv(from_object, ['tools']))
+        ],
+    )
+
+  if getv(from_object, ['session_resumption']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'sessionResumption'],
+        _SessionResumptionConfig_to_mldev(
+            api_client, getv(from_object, ['session_resumption']), to_object
+        ),
+    )
+
+  if getv(from_object, ['input_audio_transcription']) is not None:
+    raise ValueError(
+        'input_audio_transcription parameter is not supported in Gemini API.'
+    )
+
+  if getv(from_object, ['output_audio_transcription']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'outputAudioTranscription'],
+        _AudioTranscriptionConfig_to_mldev(
+            api_client,
+            getv(from_object, ['output_audio_transcription']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['realtime_input_config']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'realtimeInputConfig'],
+        _RealtimeInputConfig_to_mldev(
+            api_client, getv(from_object, ['realtime_input_config']), to_object
+        ),
+    )
+
+  if getv(from_object, ['context_window_compression']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'contextWindowCompression'],
+        _ContextWindowCompressionConfig_to_mldev(
+            api_client,
+            getv(from_object, ['context_window_compression']),
+            to_object,
+        ),
+    )
+
+  return to_object
+
+
+def _LiveConnectConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['generation_config']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig'],
+        getv(from_object, ['generation_config']),
+    )
+
+  if getv(from_object, ['response_modalities']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'responseModalities'],
+        getv(from_object, ['response_modalities']),
+    )
+
+  if getv(from_object, ['temperature']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'temperature'],
+        getv(from_object, ['temperature']),
+    )
+
+  if getv(from_object, ['top_p']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'topP'],
+        getv(from_object, ['top_p']),
+    )
+
+  if getv(from_object, ['top_k']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'topK'],
+        getv(from_object, ['top_k']),
+    )
+
+  if getv(from_object, ['max_output_tokens']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'maxOutputTokens'],
+        getv(from_object, ['max_output_tokens']),
+    )
+
+  if getv(from_object, ['media_resolution']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'mediaResolution'],
+        getv(from_object, ['media_resolution']),
+    )
+
+  if getv(from_object, ['seed']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'seed'],
+        getv(from_object, ['seed']),
+    )
+
+  if getv(from_object, ['speech_config']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'speechConfig'],
+        getv(from_object, ['speech_config']),
+    )
+
+  if getv(from_object, ['system_instruction']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'systemInstruction'],
+        _Content_to_vertex(
+            api_client,
+            t.t_content(api_client, getv(from_object, ['system_instruction'])),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['tools']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'tools'],
+        [
+            _Tool_to_vertex(api_client, t.t_tool(api_client, item), to_object)
+            for item in t.t_tools(api_client, getv(from_object, ['tools']))
+        ],
+    )
+
+  if getv(from_object, ['session_resumption']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'sessionResumption'],
+        _SessionResumptionConfig_to_vertex(
+            api_client, getv(from_object, ['session_resumption']), to_object
+        ),
+    )
+
+  if getv(from_object, ['input_audio_transcription']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'inputAudioTranscription'],
+        _AudioTranscriptionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['input_audio_transcription']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['output_audio_transcription']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'outputAudioTranscription'],
+        _AudioTranscriptionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['output_audio_transcription']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['realtime_input_config']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'realtimeInputConfig'],
+        _RealtimeInputConfig_to_vertex(
+            api_client, getv(from_object, ['realtime_input_config']), to_object
+        ),
+    )
+
+  if getv(from_object, ['context_window_compression']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'contextWindowCompression'],
+        _ContextWindowCompressionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['context_window_compression']),
+            to_object,
+        ),
+    )
+
+  return to_object
+
+
+def _LiveConnectParameters_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['model']) is not None:
+    setv(
+        to_object,
+        ['setup', 'model'],
+        t.t_model(api_client, getv(from_object, ['model'])),
+    )
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _LiveConnectConfig_to_mldev(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
+
+  return to_object
+
+
+def _LiveConnectParameters_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['model']) is not None:
+    setv(
+        to_object,
+        ['setup', 'model'],
+        t.t_model(api_client, getv(from_object, ['model'])),
+    )
+
+  if getv(from_object, ['config']) is not None:
+    setv(
+        to_object,
+        ['config'],
+        _LiveConnectConfig_to_vertex(
+            api_client, getv(from_object, ['config']), to_object
+        ),
+    )
+
+  return to_object
+
+
+def _LiveClientSetup_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['model']) is not None:
+    setv(to_object, ['model'], getv(from_object, ['model']))
+
+  if getv(from_object, ['generation_config']) is not None:
+    setv(
+        to_object,
+        ['generationConfig'],
+        getv(from_object, ['generation_config']),
+    )
+
+  if getv(from_object, ['system_instruction']) is not None:
     setv(
         to_object,
         ['systemInstruction'],
         _Content_to_mldev(
             api_client,
-            t.t_content(
-                api_client, getv(config, ['system_instruction'])
-            ),
+            t.t_content(api_client, getv(from_object, ['system_instruction'])),
             to_object,
         ),
     )
-  if getv(config, ['tools']) is not None:
+
+  if getv(from_object, ['tools']) is not None:
     setv(
         to_object,
         ['tools'],
         [
-            _Tool_to_mldev(
-                api_client, t.t_tool(api_client, item), to_object
-            )
-            for item in t.t_tools(api_client, getv(config, ['tools']))
+            _Tool_to_mldev(api_client, t.t_tool(api_client, item), to_object)
+            for item in t.t_tools(api_client, getv(from_object, ['tools']))
         ],
     )
-  if getv(config, ['input_audio_transcription']) is not None:
-    raise ValueError('input_audio_transcription is not supported in MLDev '
-                      'API.')
-  if getv(config, ['output_audio_transcription']) is not None:
-    setv(
-        to_object,
-        ['outputAudioTranscription'],
-        _AudioTranscriptionConfig_to_mldev(
-            api_client,
-            getv(config, ['output_audio_transcription']),
-        ),
-    )
 
-  if getv(config, ['realtime_input_config']) is not None:
-    setv(
-        to_object,
-        ['realtimeInputConfig'],
-        _RealtimeInputConfig_to_mldev(
-            api_client,
-            getv(config, ['realtime_input_config']),
-        ),
-    )
-
-  if getv(config, ['session_resumption']) is not None:
+  if getv(from_object, ['session_resumption']) is not None:
     setv(
         to_object,
         ['sessionResumption'],
-        _LiveClientSessionResumptionConfig_to_mldev(api_client,
-            getv(config, ['session_resumption'])
+        _SessionResumptionConfig_to_mldev(
+            api_client, getv(from_object, ['session_resumption']), to_object
         ),
     )
 
-  if getv(config, ['context_window_compression']) is not None:
+  if getv(from_object, ['context_window_compression']) is not None:
     setv(
         to_object,
         ['contextWindowCompression'],
-        _ContextWindowCompressionConfig_to_mldev(api_client,
-            getv(config, ['context_window_compression']),
-        ),
-    )
-
-  return_value = {'setup': {'model': model}}
-  return_value['setup'].update(to_object)
-  return return_value
-
-
-def _LiveSetup_to_vertex(
-    api_client: BaseApiClient, model: str, config: Optional[types.LiveConnectConfig] = None
-) -> dict[str, Any]:
-
-  to_object: dict[str, Any] = {}
-
-  if getv(config, ['generation_config']) is not None:
-    setv(
-        to_object,
-        ['generationConfig'],
-        _GenerateContentConfig_to_vertex(
+        _ContextWindowCompressionConfig_to_mldev(
             api_client,
-            getv(config, ['generation_config']),
+            getv(from_object, ['context_window_compression']),
             to_object,
         ),
     )
-  if getv(config, ['response_modalities']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['responseModalities'] = getv(
-          config, ['response_modalities']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'responseModalities': getv(config, ['response_modalities'])
-      }
-  else:
-    # Set default to AUDIO to align with MLDev API.
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig'].update({'responseModalities': ['AUDIO']})
-    else:
-      to_object.update(
-          {'generationConfig': {'responseModalities': ['AUDIO']}}
-      )
-  if getv(config, ['speech_config']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['speechConfig'] = _SpeechConfig_to_vertex(
-          api_client,
-          t.t_live_speech_config(getv(config, ['speech_config'])),
-          to_object,
-      )
-    else:
-      to_object['generationConfig'] = {
-          'speechConfig': _SpeechConfig_to_vertex(
-              api_client,
-              t.t_live_speech_config(getv(config, ['speech_config'])),
-              to_object,
-          )
-      }
-  if getv(config, ['temperature']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['temperature'] = getv(
-          config, ['temperature']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'temperature': getv(config, ['temperature'])
-      }
-  if getv(config, ['top_p']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['topP'] = getv(config, ['top_p'])
-    else:
-      to_object['generationConfig'] = {'topP': getv(config, ['top_p'])}
-  if getv(config, ['top_k']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['topK'] = getv(config, ['top_k'])
-    else:
-      to_object['generationConfig'] = {'topK': getv(config, ['top_k'])}
-  if getv(config, ['max_output_tokens']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['maxOutputTokens'] = getv(
-          config, ['max_output_tokens']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'maxOutputTokens': getv(config, ['max_output_tokens'])
-      }
-  if getv(config, ['media_resolution']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['mediaResolution'] = getv(
-          config, ['media_resolution']
-      )
-    else:
-      to_object['generationConfig'] = {
-          'mediaResolution': getv(config, ['media_resolution'])
-      }
-  if getv(config, ['seed']) is not None:
-    if getv(to_object, ['generationConfig']) is not None:
-      to_object['generationConfig']['seed'] = getv(config, ['seed'])
-    else:
-      to_object['generationConfig'] = {'seed': getv(config, ['seed'])}
-  if getv(config, ['system_instruction']) is not None:
+
+  return to_object
+
+
+def _LiveClientSetup_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
+) -> dict:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['model']) is not None:
+    setv(to_object, ['model'], getv(from_object, ['model']))
+
+  if getv(from_object, ['generation_config']) is not None:
+    setv(
+        to_object,
+        ['generationConfig'],
+        getv(from_object, ['generation_config']),
+    )
+
+  if getv(from_object, ['system_instruction']) is not None:
     setv(
         to_object,
         ['systemInstruction'],
         _Content_to_vertex(
             api_client,
-            t.t_content(
-                api_client, getv(config, ['system_instruction'])
-            ),
+            t.t_content(api_client, getv(from_object, ['system_instruction'])),
             to_object,
         ),
     )
-  if getv(config, ['tools']) is not None:
+
+  if getv(from_object, ['tools']) is not None:
     setv(
         to_object,
         ['tools'],
         [
-            _Tool_to_vertex(
-                api_client, t.t_tool(api_client, item), to_object
-            )
-            for item in t.t_tools(api_client, getv(config, ['tools']))
+            _Tool_to_vertex(api_client, t.t_tool(api_client, item), to_object)
+            for item in t.t_tools(api_client, getv(from_object, ['tools']))
         ],
     )
-  if getv(config, ['realtime_input_config']) is not None:
-    setv(
-        to_object,
-        ['realtimeInputConfig'],
-        _RealtimeInputConfig_to_vertex(
-            api_client,
-            getv(config, ['realtime_input_config']),
-        ),
-    )
-  if getv(config, ['input_audio_transcription']) is not None:
-    setv(
-        to_object,
-        ['inputAudioTranscription'],
-        _AudioTranscriptionConfig_to_vertex(
-            api_client,
-            getv(config, ['input_audio_transcription']),
-        ),
-    )
-  if getv(config, ['output_audio_transcription']) is not None:
-    setv(
-        to_object,
-        ['outputAudioTranscription'],
-        _AudioTranscriptionConfig_to_vertex(
-            api_client,
-            getv(config, ['output_audio_transcription']),
-        ),
-    )
 
-  if getv(config, ['session_resumption']) is not None:
+  if getv(from_object, ['session_resumption']) is not None:
     setv(
         to_object,
         ['sessionResumption'],
-        _LiveClientSessionResumptionConfig_to_vertex(api_client,
-            getv(config, ['session_resumption'])
+        _SessionResumptionConfig_to_vertex(
+            api_client, getv(from_object, ['session_resumption']), to_object
         ),
     )
 
-  if getv(config, ['context_window_compression']) is not None:
+  if getv(from_object, ['context_window_compression']) is not None:
     setv(
         to_object,
         ['contextWindowCompression'],
-        _ContextWindowCompressionConfig_to_vertex(api_client,
-            getv(config, ['context_window_compression']),
+        _ContextWindowCompressionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['context_window_compression']),
+            to_object,
         ),
     )
 
-  return_value = {'setup': {'model': model}}
-  return_value['setup'].update(to_object)
-  return return_value
+  return to_object
 
 
-def _ClientContent_to_mldev(
+
+def _LiveClientContent_to_mldev(
     api_client: BaseApiClient,
-    from_object: types.LiveClientContent,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
-  client_content = from_object.model_dump(exclude_none=True, mode='json')
-  if 'turns' in client_content:
-    client_content['turns'] = [
-        _Content_to_mldev(api_client=api_client, from_object=item)
-        for item in client_content['turns']
-    ]
-  return client_content
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['turns']) is not None:
+    setv(
+        to_object,
+        ['turns'],
+        [
+            _Content_to_mldev(api_client, item, to_object)
+            for item in getv(from_object, ['turns'])
+        ],
+    )
+
+  if getv(from_object, ['turn_complete']) is not None:
+    setv(to_object, ['turnComplete'], getv(from_object, ['turn_complete']))
+
+  return to_object
 
 
-def _ClientContent_to_vertex(
+def _LiveClientContent_to_vertex(
     api_client: BaseApiClient,
-    from_object: types.LiveClientContent,
+    from_object: Union[dict, object],
+    parent_object: Optional[dict] = None,
 ) -> dict:
-  client_content = from_object.model_dump(exclude_none=True, mode='json')
-  if 'turns' in client_content:
-    client_content['turns'] = [
-        _Content_to_vertex(api_client=api_client, from_object=item)
-        for item in client_content['turns']
-    ]
-  return client_content
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['turns']) is not None:
+    setv(
+        to_object,
+        ['turns'],
+        [
+            _Content_to_vertex(api_client, item, to_object)
+            for item in getv(from_object, ['turns'])
+        ],
+    )
+
+  if getv(from_object, ['turn_complete']) is not None:
+    setv(to_object, ['turnComplete'], getv(from_object, ['turn_complete']))
+
+  return to_object
 
 
-def _ToolResponse_to_mldev(
+def _LiveClientToolResponse_to_mldev(
     api_client: BaseApiClient,
     from_object: types.LiveClientToolResponse,
 ) -> dict:
@@ -636,7 +806,7 @@ def _ToolResponse_to_mldev(
   return tool_response
 
 
-def _ToolResponse_to_vertex(
+def _LiveClientToolResponse_to_vertex(
     api_client: BaseApiClient,
     from_object: types.LiveClientToolResponse,
 ) -> dict:
@@ -722,6 +892,7 @@ def _LiveServerContent_from_vertex(
   return to_object
 
 
+
 def _LiveToolCall_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -735,7 +906,6 @@ def _LiveToolCall_from_mldev(
     )
   return to_object
 
-
 def _LiveToolCall_from_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -748,6 +918,7 @@ def _LiveToolCall_from_vertex(
         getv(from_object, ['functionCalls']),
     )
   return to_object
+
 
 
 def _ModalityTokenCount_from_mldev(
@@ -820,7 +991,7 @@ def _UsageMetadata_from_mldev(
         to_object,
         ['prompt_tokens_details'],
         [
-            _ModalityTokenCount_from_mldev(api_client, item)
+            _ModalityTokenCount_from_mldev(api_client,item)
             for item in getv(from_object, ['promptTokensDetails'])
         ],
     )
@@ -829,7 +1000,7 @@ def _UsageMetadata_from_mldev(
         to_object,
         ['cache_tokens_details'],
         [
-            _ModalityTokenCount_from_mldev(api_client, item)
+            _ModalityTokenCount_from_mldev(api_client,item)
             for item in getv(from_object, ['cacheTokensDetails'])
         ],
     )
@@ -838,7 +1009,7 @@ def _UsageMetadata_from_mldev(
         to_object,
         ['response_tokens_details'],
         [
-            _ModalityTokenCount_from_mldev(api_client, item)
+            _ModalityTokenCount_from_mldev(api_client,item)
             for item in getv(from_object, ['responseTokensDetails'])
         ],
     )
@@ -847,7 +1018,7 @@ def _UsageMetadata_from_mldev(
         to_object,
         ['tool_use_prompt_tokens_details'],
         [
-            _ModalityTokenCount_from_mldev(api_client, item)
+            _ModalityTokenCount_from_mldev(api_client,item)
             for item in getv(from_object, ['toolUsePromptTokensDetails'])
         ],
     )
@@ -900,7 +1071,7 @@ def _UsageMetadata_from_vertex(
         to_object,
         ['prompt_tokens_details'],
         [
-            _ModalityTokenCount_from_vertex(api_client, item)
+            _ModalityTokenCount_from_vertex(api_client,item)
             for item in getv(from_object, ['promptTokensDetails'])
         ],
     )
@@ -909,7 +1080,7 @@ def _UsageMetadata_from_vertex(
         to_object,
         ['cache_tokens_details'],
         [
-            _ModalityTokenCount_from_vertex(api_client, item)
+            _ModalityTokenCount_from_vertex(api_client,item)
             for item in getv(from_object, ['cacheTokensDetails'])
         ],
     )
@@ -918,7 +1089,7 @@ def _UsageMetadata_from_vertex(
         to_object,
         ['tool_use_prompt_tokens_details'],
         [
-            _ModalityTokenCount_from_vertex(api_client, item)
+            _ModalityTokenCount_from_vertex(api_client,item)
             for item in getv(from_object, ['toolUsePromptTokensDetails'])
         ],
     )
@@ -927,7 +1098,7 @@ def _UsageMetadata_from_vertex(
         to_object,
         ['response_tokens_details'],
         [
-            _ModalityTokenCount_from_vertex(api_client, item)
+            _ModalityTokenCount_from_vertex(api_client,item)
             for item in getv(from_object, ['candidatesTokensDetails'])
         ],
     )
@@ -963,6 +1134,7 @@ def _LiveServerGoAway_from_vertex(
   return to_object
 
 
+
 def _LiveServerSessionResumptionUpdate_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -983,6 +1155,9 @@ def _LiveServerSessionResumptionUpdate_from_mldev(
     )
 
   return to_object
+
+
+
 
 
 def _LiveServerSessionResumptionUpdate_from_vertex(
@@ -1006,6 +1181,7 @@ def _LiveServerSessionResumptionUpdate_from_vertex(
   return to_object
 
 
+
 def _LiveServerMessage_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict, object],
@@ -1015,15 +1191,15 @@ def _LiveServerMessage_from_mldev(
     setv(
         to_object,
         ['server_content'],
-        _LiveServerContent_from_mldev(
-            api_client, getv(from_object, ['serverContent'])
+        _LiveServerContent_from_mldev(api_client,
+            getv(from_object, ['serverContent'])
         ),
     )
   if getv(from_object, ['toolCall']) is not None:
     setv(
         to_object,
         ['tool_call'],
-        _LiveToolCall_from_mldev(api_client, getv(from_object, ['toolCall'])),
+        _LiveToolCall_from_mldev(api_client,getv(from_object, ['toolCall'])),
     )
   if getv(from_object, ['toolCallCancellation']) is not None:
     setv(
@@ -1036,8 +1212,8 @@ def _LiveServerMessage_from_mldev(
     setv(
         to_object,
         ['go_away'],
-        _LiveServerGoAway_from_mldev(
-            api_client, getv(from_object, ['goAway']), to_object
+        _LiveServerGoAway_from_mldev(api_client,
+            getv(from_object, ['goAway']), to_object
         ),
     )
 
@@ -1045,8 +1221,16 @@ def _LiveServerMessage_from_mldev(
     setv(
         to_object,
         ['session_resumption_update'],
-        _LiveServerSessionResumptionUpdate_from_mldev(
-            api_client,
+        _LiveServerSessionResumptionUpdate_from_mldev(api_client,
+            getv(from_object, ['sessionResumptionUpdate']),
+            to_object,
+        ),
+    )
+  if getv(from_object, ['sessionResumptionUpdate']) is not None:
+    setv(
+        to_object,
+        ['session_resumption_update'],
+        _LiveServerSessionResumptionUpdate_from_mldev(api_client,
             getv(from_object, ['sessionResumptionUpdate']),
             to_object,
         ),
@@ -1056,9 +1240,7 @@ def _LiveServerMessage_from_mldev(
     setv(
         to_object,
         ['usage_metadata'],
-        _UsageMetadata_from_mldev(
-            api_client, getv(from_object, ['usageMetadata'])
-        ),
+        _UsageMetadata_from_mldev(api_client,getv(from_object, ['usageMetadata'])),
     )
   return to_object
 
@@ -1072,15 +1254,15 @@ def _LiveServerMessage_from_vertex(
     setv(
         to_object,
         ['server_content'],
-        _LiveServerContent_from_vertex(
-            api_client, getv(from_object, ['serverContent'])
+        _LiveServerContent_from_vertex(api_client,
+            getv(from_object, ['serverContent'])
         ),
     )
   if getv(from_object, ['toolCall']) is not None:
     setv(
         to_object,
         ['tool_call'],
-        _LiveToolCall_from_vertex(api_client, getv(from_object, ['toolCall'])),
+        _LiveToolCall_from_vertex(api_client,getv(from_object, ['toolCall'])),
     )
   if getv(from_object, ['toolCallCancellation']) is not None:
     setv(
@@ -1093,8 +1275,8 @@ def _LiveServerMessage_from_vertex(
     setv(
         to_object,
         ['go_away'],
-        _LiveServerGoAway_from_vertex(
-            api_client, getv(from_object, ['goAway'])
+        _LiveServerGoAway_from_vertex(api_client,
+            getv(from_object, ['goAway'])
         ),
     )
 
@@ -1102,8 +1284,7 @@ def _LiveServerMessage_from_vertex(
     setv(
         to_object,
         ['session_resumption_update'],
-        _LiveServerSessionResumptionUpdate_from_vertex(
-            api_client,
+        _LiveServerSessionResumptionUpdate_from_vertex(api_client,
             getv(from_object, ['sessionResumptionUpdate']),
         ),
     )
@@ -1112,8 +1293,6 @@ def _LiveServerMessage_from_vertex(
     setv(
         to_object,
         ['usage_metadata'],
-        _UsageMetadata_from_vertex(
-            api_client, getv(from_object, ['usageMetadata'])
-        ),
+        _UsageMetadata_from_vertex(api_client,getv(from_object, ['usageMetadata'])),
     )
   return to_object
