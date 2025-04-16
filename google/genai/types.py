@@ -831,6 +831,12 @@ class HttpOptions(_common.BaseModel):
   timeout: Optional[int] = Field(
       default=None, description="""Timeout for the request in milliseconds."""
   )
+  client_args: Optional[dict[str, Any]] = Field(
+      default=None, description="""Args passed to the HTTP client."""
+  )
+  async_client_args: Optional[dict[str, Any]] = Field(
+      default=None, description="""Args passed to the async HTTP client."""
+  )
 
 
 class HttpOptionsDict(TypedDict, total=False):
@@ -847,6 +853,12 @@ class HttpOptionsDict(TypedDict, total=False):
 
   timeout: Optional[int]
   """Timeout for the request in milliseconds."""
+
+  client_args: Optional[dict[str, Any]]
+  """Args passed to the HTTP client."""
+
+  async_client_args: Optional[dict[str, Any]]
+  """Args passed to the async HTTP client."""
 
 
 HttpOptionsOrDict = Union[HttpOptions, HttpOptionsDict]
