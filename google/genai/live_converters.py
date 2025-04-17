@@ -48,8 +48,8 @@ _FUNCTION_RESPONSE_REQUIRES_ID = (
 
 def _SessionResumptionConfig_to_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['handle']) is not None:
@@ -63,8 +63,8 @@ def _SessionResumptionConfig_to_mldev(
 
 def _SessionResumptionConfig_to_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['handle']) is not None:
@@ -234,8 +234,8 @@ def _RealtimeInputConfig_to_vertex(
 
 def _SlidingWindow_to_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['target_tokens']) is not None:
@@ -246,8 +246,8 @@ def _SlidingWindow_to_mldev(
 
 def _SlidingWindow_to_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['target_tokens']) is not None:
@@ -258,8 +258,8 @@ def _SlidingWindow_to_vertex(
 
 def _ContextWindowCompressionConfig_to_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['trigger_tokens']) is not None:
@@ -279,8 +279,8 @@ def _ContextWindowCompressionConfig_to_mldev(
 
 def _ContextWindowCompressionConfig_to_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['trigger_tokens']) is not None:
@@ -816,7 +816,7 @@ def _LiveClientToolResponse_to_vertex(
 
 def _LiveServerContent_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['modelTurn']) is not None:
@@ -855,7 +855,7 @@ def _LiveServerContent_from_mldev(
 
 def _LiveServerContent_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['modelTurn']) is not None:
@@ -895,7 +895,7 @@ def _LiveServerContent_from_vertex(
 
 def _LiveToolCall_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['functionCalls']) is not None:
@@ -908,7 +908,7 @@ def _LiveToolCall_from_mldev(
 
 def _LiveToolCall_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['functionCalls']) is not None:
@@ -923,7 +923,7 @@ def _LiveToolCall_from_vertex(
 
 def _ModalityTokenCount_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: Dict[str, Any] = {}
   if getv(from_object, ['modality']) is not None:
@@ -935,7 +935,7 @@ def _ModalityTokenCount_from_mldev(
 
 def _ModalityTokenCount_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: Dict[str, Any] = {}
   if getv(from_object, ['modality']) is not None:
@@ -947,7 +947,7 @@ def _ModalityTokenCount_from_vertex(
 
 def _UsageMetadata_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['promptTokenCount']) is not None:
@@ -1027,7 +1027,7 @@ def _UsageMetadata_from_mldev(
 
 def _UsageMetadata_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['promptTokenCount']) is not None:
@@ -1113,8 +1113,8 @@ def _UsageMetadata_from_vertex(
 
 def _LiveServerGoAway_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['timeLeft']) is not None:
@@ -1125,7 +1125,7 @@ def _LiveServerGoAway_from_mldev(
 
 def _LiveServerGoAway_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['timeLeft']) is not None:
@@ -1137,8 +1137,8 @@ def _LiveServerGoAway_from_vertex(
 
 def _LiveServerSessionResumptionUpdate_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
-    parent_object: Optional[dict] = None,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['newHandle']) is not None:
@@ -1162,7 +1162,7 @@ def _LiveServerSessionResumptionUpdate_from_mldev(
 
 def _LiveServerSessionResumptionUpdate_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> dict:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['newHandle']) is not None:
@@ -1184,7 +1184,7 @@ def _LiveServerSessionResumptionUpdate_from_vertex(
 
 def _LiveServerMessage_from_mldev(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['serverContent']) is not None:
@@ -1247,7 +1247,7 @@ def _LiveServerMessage_from_mldev(
 
 def _LiveServerMessage_from_vertex(
     api_client: BaseApiClient,
-    from_object: Union[dict, object],
+    from_object: Union[dict[str, Any], object],
 ) -> Dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['serverContent']) is not None:

@@ -60,7 +60,7 @@ class AsyncSession:
   """[Preview] AsyncSession."""
 
   def __init__(
-      self, api_client: client.BaseApiClient, websocket: ClientConnection
+      self, api_client: BaseApiClient, websocket: ClientConnection
   ):
     self._api_client = api_client
     self._ws = websocket
@@ -80,7 +80,7 @@ class AsyncSession:
           ]
       ] = None,
       end_of_turn: Optional[bool] = False,
-  ):
+  ) -> None:
     """[Deprecated] Send input to the model.
 
     > **Warning**: This method is deprecated and will be removed in a future
@@ -468,7 +468,7 @@ class AsyncSession:
       data_stream: AsyncIterator[bytes],
       mime_type: str,
       stop_event: asyncio.Event,
-  ):
+  ) -> None:
     async for data in data_stream:
       model_input = types.LiveClientRealtimeInput(
         media_chunks=[types.Blob(data=data, mime_type=mime_type)]
@@ -815,6 +815,8 @@ class AsyncLive(_api_module.BaseModule):
           print(message)
     """
     base_url = self._api_client._websocket_base_url()
+    if isinstance(base_url, bytes):
+      base_url = base_url.decode('utf-8')
     transformed_model = t.t_model(self._api_client, model)
 
     parameter_model = _t_live_connect_config(self._api_client, config)
@@ -841,13 +843,13 @@ class AsyncLive(_api_module.BaseModule):
       request = json.dumps(request_dict)
     else:
       # Get bearer token through Application Default Credentials.
-      creds, _ = google.auth.default(
+      creds, _ = google.auth.default(  # type: ignore[no-untyped-call]
           scopes=['https://www.googleapis.com/auth/cloud-platform']
       )
 
       # creds.valid is False, and creds.token is None
       # Need to refresh credentials to populate those
-      auth_req = google.auth.transport.requests.Request()
+      auth_req = google.auth.transport.requests.Request()  # type: ignore[no-untyped-call]
       creds.refresh(auth_req)
       bearer_token = creds.token
       headers = self._api_client._http_options.headers

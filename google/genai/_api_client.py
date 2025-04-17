@@ -129,7 +129,7 @@ def _join_url_path(base_url: str, path: str) -> str:
 
 def _load_auth(*, project: Union[str, None]) -> Tuple[Credentials, str]:
   """Loads google auth credentials and project id."""
-  credentials, loaded_project_id = google.auth.default(
+  credentials, loaded_project_id = google.auth.default(  # type: ignore[no-untyped-call]
       scopes=['https://www.googleapis.com/auth/cloud-platform'],
   )
 
@@ -145,7 +145,7 @@ def _load_auth(*, project: Union[str, None]) -> Tuple[Credentials, str]:
 
 
 def _refresh_auth(credentials: Credentials) -> Credentials:
-  credentials.refresh(Request())
+  credentials.refresh(Request())  # type: ignore[no-untyped-call]
   return credentials
 
 
@@ -191,13 +191,13 @@ class HttpResponse:
       response_stream: Union[Any, str] = None,
       byte_stream: Union[Any, bytes] = None,
   ):
-    self.status_code = 200
+    self.status_code: int = 200
     self.headers = headers
     self.response_stream = response_stream
     self.byte_stream = byte_stream
 
   # Async iterator for async streaming.
-  def __aiter__(self):
+  def __aiter__(self) -> 'HttpResponse':
     self.segment_iterator = self.async_segments()
     return self
 
@@ -504,9 +504,9 @@ class BaseApiClient:
         _maybe_set(async_args, ctx),
     )
 
-  def _websocket_base_url(self):
+  def _websocket_base_url(self) -> str:
     url_parts = urlparse(self._http_options.base_url)
-    return url_parts._replace(scheme='wss').geturl()
+    return url_parts._replace(scheme='wss').geturl()  # type: ignore[arg-type, return-value]
 
   def _access_token(self) -> str:
     """Retrieves the access token for the credentials."""
@@ -908,7 +908,7 @@ class BaseApiClient:
       path: str,
       *,
       http_options: Optional[HttpOptionsOrDict] = None,
-  ):
+  ) -> Union[Any,bytes]:
     """Downloads the file data.
 
     Args:
@@ -1056,7 +1056,7 @@ class BaseApiClient:
       path: str,
       *,
       http_options: Optional[HttpOptionsOrDict] = None,
-  ):
+  ) -> Union[Any, bytes]:
     """Downloads the file data.
 
     Args:
