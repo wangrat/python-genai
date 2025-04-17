@@ -35,7 +35,7 @@ from . import types
 from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
-from . import live_converters
+from . import _live_converters as live_converters
 from .models import _Content_to_mldev
 from .models import _Content_to_vertex
 
@@ -337,6 +337,10 @@ class AsyncSession:
       tool_response_dict = live_converters._LiveClientToolResponse_to_mldev(
           api_client=self._api_client, from_object=tool_response
       )
+      for response in tool_response_dict.get('functionResponses', []):
+        if response.get('id') is None:
+          raise ValueError(_FUNCTION_RESPONSE_REQUIRES_ID)
+
     await self._ws.send(json.dumps({'tool_response': tool_response_dict}))
 
   async def receive(self) -> AsyncIterator[types.LiveServerMessage]:
@@ -785,7 +789,6 @@ class AsyncSession:
   async def close(self) -> None:
     # Close the websocket connection.
     await self._ws.close()
-
 
 
 class AsyncLive(_api_module.BaseModule):
