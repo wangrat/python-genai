@@ -642,7 +642,22 @@ class Part(_common.BaseModel):
   )
 
   @classmethod
-  def from_uri(cls, *, file_uri: str, mime_type: str) -> 'Part':
+  def from_uri(
+      cls, *, file_uri: str, mime_type: Optional[str] = None
+  ) -> 'Part':
+    """Creates a Part from a file uri.
+
+    Args:
+      file_uri (str): The uri of the file
+      mime_type (str): mime_type: The MIME type of the image. If not provided,
+        the MIME type will be automatically determined.
+    """
+    if mime_type is None:
+      import mimetypes
+
+      mime_type, _ = mimetypes.guess_type(file_uri)
+      if not mime_type:
+        raise ValueError(f'Failed to determine mime type for file: {file_uri}')
     file_data = FileData(file_uri=file_uri, mime_type=mime_type)
     return cls(file_data=file_data)
 
