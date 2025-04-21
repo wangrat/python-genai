@@ -677,13 +677,6 @@ def process_schema(
         'type': 'array'
     }
   """
-  if not client.vertexai:
-    if schema.get('default') is not None:
-      raise ValueError(
-          'Default value is not supported in the response schema for the Gemini'
-          ' API.'
-      )
-
   if schema.get('title') == 'PlaceholderLiteralEnum':
     del schema['title']
 
