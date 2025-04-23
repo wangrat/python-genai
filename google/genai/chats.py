@@ -445,7 +445,7 @@ class AsyncChat(_BaseChat):
       self,
       message: Union[list[PartUnionDict], PartUnionDict],
       config: Optional[GenerateContentConfigOrDict] = None,
-  ) -> Awaitable[AsyncIterator[GenerateContentResponse]]:
+  ) -> AsyncIterator[GenerateContentResponse]:
     """Sends the conversation history with the additional message and yields the model's response in chunks.
 
     Args:
@@ -495,7 +495,7 @@ class AsyncChat(_BaseChat):
       self.record_history(
           user_input=input_content,
           model_output=output_contents,
-          automatic_function_calling_history=chunk.automatic_function_calling_history,
+          automatic_function_calling_history=chunk.automatic_function_calling_history if chunk.automatic_function_calling_history else [],
           is_valid=is_valid,
       )
     return async_generator()  # type: ignore[no-untyped-call, no-any-return]
