@@ -10757,9 +10757,10 @@ LiveConnectParametersOrDict = Union[
     LiveConnectParameters, LiveConnectParametersDict
 ]
 
-
-BlobImageUnion = Union[Blob, PIL.Image.Image]
-
+if _is_pillow_image_imported:
+  BlobImageUnion = Union[Blob, PIL_Image]
+else:
+  BlobImageUnion = Blob  # type: ignore[misc]
 
 BlobImageUnionDict = Union[BlobImageUnion, BlobDict]
 
