@@ -283,15 +283,6 @@ class SyncHttpxClient(httpx.Client):
     kwargs.setdefault('follow_redirects', True)
     super().__init__(**kwargs)
 
-  def __del__(self) -> None:
-    """Closes the httpx client."""
-    if self.is_closed:
-      return
-    try:
-      self.close()
-    except Exception:
-      pass
-
 
 class AsyncHttpxClient(httpx.AsyncClient):
   """Async httpx client."""
@@ -300,14 +291,6 @@ class AsyncHttpxClient(httpx.AsyncClient):
     """Initializes the httpx client."""
     kwargs.setdefault('follow_redirects', True)
     super().__init__(**kwargs)
-
-  def __del__(self) -> None:
-    if self.is_closed:
-      return
-    try:
-      asyncio.get_running_loop().create_task(self.aclose())
-    except Exception:
-      pass
 
 
 class BaseApiClient:
