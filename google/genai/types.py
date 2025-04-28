@@ -5544,6 +5544,7 @@ ListModelsResponseOrDict = Union[ListModelsResponse, ListModelsResponseDict]
 
 
 class UpdateModelConfig(_common.BaseModel):
+  """Configuration for updating a tuned model."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -5553,6 +5554,7 @@ class UpdateModelConfig(_common.BaseModel):
 
 
 class UpdateModelConfigDict(TypedDict, total=False):
+  """Configuration for updating a tuned model."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -5568,12 +5570,14 @@ UpdateModelConfigOrDict = Union[UpdateModelConfig, UpdateModelConfigDict]
 
 
 class _UpdateModelParameters(_common.BaseModel):
+  """Configuration for updating a tuned model."""
 
   model: Optional[str] = Field(default=None, description="""""")
   config: Optional[UpdateModelConfig] = Field(default=None, description="""""")
 
 
 class _UpdateModelParametersDict(TypedDict, total=False):
+  """Configuration for updating a tuned model."""
 
   model: Optional[str]
   """"""
@@ -5588,6 +5592,7 @@ _UpdateModelParametersOrDict = Union[
 
 
 class DeleteModelConfig(_common.BaseModel):
+  """Configuration for deleting a tuned model."""
 
   http_options: Optional[HttpOptions] = Field(
       default=None, description="""Used to override HTTP request options."""
@@ -5595,6 +5600,7 @@ class DeleteModelConfig(_common.BaseModel):
 
 
 class DeleteModelConfigDict(TypedDict, total=False):
+  """Configuration for deleting a tuned model."""
 
   http_options: Optional[HttpOptionsDict]
   """Used to override HTTP request options."""
@@ -5604,6 +5610,7 @@ DeleteModelConfigOrDict = Union[DeleteModelConfig, DeleteModelConfigDict]
 
 
 class _DeleteModelParameters(_common.BaseModel):
+  """Parameters for deleting a tuned model."""
 
   model: Optional[str] = Field(default=None, description="""""")
   config: Optional[DeleteModelConfig] = Field(
@@ -5612,6 +5619,7 @@ class _DeleteModelParameters(_common.BaseModel):
 
 
 class _DeleteModelParametersDict(TypedDict, total=False):
+  """Parameters for deleting a tuned model."""
 
   model: Optional[str]
   """"""
