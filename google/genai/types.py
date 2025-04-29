@@ -1052,9 +1052,6 @@ class Schema(_common.BaseModel):
       default=None,
       description="""Optional. Pattern of the Type.STRING to restrict a string to a regular expression.""",
   )
-  default: Optional[Any] = Field(
-      default=None, description="""Optional. Default value of the data."""
-  )
   max_length: Optional[int] = Field(
       default=None,
       description="""Optional. Maximum length of the Type.STRING""",
@@ -1074,6 +1071,9 @@ class Schema(_common.BaseModel):
   any_of: Optional[list['Schema']] = Field(
       default=None,
       description="""Optional. The value should be validated against any (one or more) of the subschemas in the list.""",
+  )
+  default: Optional[Any] = Field(
+      default=None, description="""Optional. Default value of the data."""
   )
   description: Optional[str] = Field(
       default=None, description="""Optional. The description of the data."""
@@ -1484,9 +1484,6 @@ class SchemaDict(TypedDict, total=False):
   pattern: Optional[str]
   """Optional. Pattern of the Type.STRING to restrict a string to a regular expression."""
 
-  default: Optional[Any]
-  """Optional. Default value of the data."""
-
   max_length: Optional[int]
   """Optional. Maximum length of the Type.STRING"""
 
@@ -1501,6 +1498,9 @@ class SchemaDict(TypedDict, total=False):
 
   any_of: Optional[list['SchemaDict']]
   """Optional. The value should be validated against any (one or more) of the subschemas in the list."""
+
+  default: Optional[Any]
+  """Optional. Default value of the data."""
 
   description: Optional[str]
   """Optional. The description of the data."""
