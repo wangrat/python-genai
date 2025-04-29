@@ -1229,43 +1229,50 @@ class Schema(_common.BaseModel):
     )
     dict_schema_field_names: tuple[str, ...] = ('properties',)  # 'defs' to come
 
-    number_integer_related_field_names: tuple[str, ...] = (
-        'description',
-        'enum',
-        'format',
-        'maximum',
-        'minimum',
-        'title',
+    related_field_names_by_type: dict[str, tuple[str, ...]] = {
+        JSONSchemaType.NUMBER.value: (
+            'description',
+            'enum',
+            'format',
+            'maximum',
+            'minimum',
+            'title',
+        ),
+        JSONSchemaType.STRING.value: (
+            'description',
+            'enum',
+            'format',
+            'max_length',
+            'min_length',
+            'pattern',
+            'title',
+        ),
+        JSONSchemaType.OBJECT.value: (
+            'any_of',
+            'description',
+            'max_properties',
+            'min_properties',
+            'properties',
+            'required',
+            'title',
+        ),
+        JSONSchemaType.ARRAY.value: (
+            'description',
+            'items',
+            'max_items',
+            'min_items',
+            'title',
+        ),
+        JSONSchemaType.BOOLEAN.value: (
+            'description',
+            'title',
+        ),
+    }
+    # Treat `INTEGER` like `NUMBER`.
+    related_field_names_by_type[JSONSchemaType.INTEGER.value] = (
+        related_field_names_by_type[JSONSchemaType.NUMBER.value]
     )
-    string_related_field_names: tuple[str, ...] = (
-        'description',
-        'enum',
-        'format',
-        'max_length',
-        'min_length',
-        'pattern',
-        'title',
-    )
-    object_related_field_names: tuple[str, ...] = (
-        'any_of',
-        'description',
-        'max_properties',
-        'min_properties',
-        'properties',
-        'required',
-        'title',
-    )
-    array_related_field_names: tuple[str, ...] = (
-        'description',
-        'items',
-        'max_items',
-        'min_items',
-        'title',
-    )
-    boolean_related_field_names: tuple[str, ...] = (
-        'description',
-        'title',
-    )
+
     # placeholder for potential gemini api unsupported fields
     gemini_api_unsupported_field_names: tuple[str, ...] = ()
 
@@ -1277,14 +1284,8 @@ class Schema(_common.BaseModel):
       """Returns (non_null_types, nullable)"""
       if json_schema_type is None:
         return [], False
-      if isinstance(json_schema_type, str):
-        if json_schema_type == JSONSchemaType.NULL.value:
-          return [], True
-        return [json_schema_type], False
-      if isinstance(json_schema_type, JSONSchemaType):
-        if json_schema_type == JSONSchemaType.NULL:
-          return [], True
-        return [json_schema_type.value], False
+      if not isinstance(json_schema_type, Sequence):
+        json_schema_type = [json_schema_type]
       non_null_types = []
       nullable = False
       for type_value in json_schema_type:
@@ -1383,37 +1384,11 @@ class Schema(_common.BaseModel):
           schema.nullable = True
         for normalized_type in non_null_types:
           sub_schema_in_any_of = {'type': normalized_type}
-          if normalized_type == JSONSchemaType.BOOLEAN.value:
+          related_field_names = related_field_names_by_type.get(normalized_type)
+          if related_field_names is not None:
             copy_schema_fields(
                 json_schema_dict=json_schema_dict,
-                related_fields_to_copy=boolean_related_field_names,
-                sub_schema_in_any_of=sub_schema_in_any_of,
-            )
-          elif normalized_type in (
-              JSONSchemaType.NUMBER.value,
-              JSONSchemaType.INTEGER.value,
-          ):
-            copy_schema_fields(
-                json_schema_dict=json_schema_dict,
-                related_fields_to_copy=number_integer_related_field_names,
-                sub_schema_in_any_of=sub_schema_in_any_of,
-            )
-          elif normalized_type == JSONSchemaType.STRING.value:
-            copy_schema_fields(
-                json_schema_dict=json_schema_dict,
-                related_fields_to_copy=string_related_field_names,
-                sub_schema_in_any_of=sub_schema_in_any_of,
-            )
-          elif normalized_type == JSONSchemaType.ARRAY.value:
-            copy_schema_fields(
-                json_schema_dict=json_schema_dict,
-                related_fields_to_copy=array_related_field_names,
-                sub_schema_in_any_of=sub_schema_in_any_of,
-            )
-          elif normalized_type == JSONSchemaType.OBJECT.value:
-            copy_schema_fields(
-                json_schema_dict=json_schema_dict,
-                related_fields_to_copy=object_related_field_names,
+                related_fields_to_copy=related_field_names,
                 sub_schema_in_any_of=sub_schema_in_any_of,
             )
           any_of.append(JSONSchema(**sub_schema_in_any_of))
@@ -10769,6 +10744,7 @@ if _is_pillow_image_imported:
   BlobImageUnion = Union[Blob, PIL_Image]
 else:
   BlobImageUnion = Blob  # type: ignore[misc]
+
 
 BlobImageUnionDict = Union[BlobImageUnion, BlobDict]
 
