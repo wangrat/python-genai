@@ -1675,6 +1675,13 @@ def _LiveServerContent_from_mldev(
   if getv(from_object, ['interrupted']) is not None:
     setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
 
+  if getv(from_object, ['groundingMetadata']) is not None:
+    setv(
+        to_object,
+        ['grounding_metadata'],
+        getv(from_object, ['groundingMetadata']),
+    )
+
   if getv(from_object, ['generationComplete']) is not None:
     setv(
         to_object,
@@ -1723,6 +1730,13 @@ def _LiveServerContent_from_vertex(
 
   if getv(from_object, ['interrupted']) is not None:
     setv(to_object, ['interrupted'], getv(from_object, ['interrupted']))
+
+  if getv(from_object, ['groundingMetadata']) is not None:
+    setv(
+        to_object,
+        ['grounding_metadata'],
+        getv(from_object, ['groundingMetadata']),
+    )
 
   if getv(from_object, ['generationComplete']) is not None:
     setv(

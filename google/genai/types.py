@@ -9590,6 +9590,10 @@ class LiveServerContent(_common.BaseModel):
       default=None,
       description="""If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue.""",
   )
+  grounding_metadata: Optional[GroundingMetadata] = Field(
+      default=None,
+      description="""Metadata returned to client when grounding is enabled.""",
+  )
   generation_complete: Optional[bool] = Field(
       default=None,
       description="""If true, indicates that the model is done generating. When model is
@@ -9631,6 +9635,9 @@ class LiveServerContentDict(TypedDict, total=False):
 
   interrupted: Optional[bool]
   """If true, indicates that a client message has interrupted current model generation. If the client is playing out the content in realtime, this is a good signal to stop and empty the current queue."""
+
+  grounding_metadata: Optional[GroundingMetadataDict]
+  """Metadata returned to client when grounding is enabled."""
 
   generation_complete: Optional[bool]
   """If true, indicates that the model is done generating. When model is
