@@ -998,6 +998,21 @@ GoogleSearchRetrievalOrDict = Union[
 ]
 
 
+class EnterpriseWebSearch(_common.BaseModel):
+  """Tool to search public web data, powered by Vertex AI Search and Sec4 compliance."""
+
+  pass
+
+
+class EnterpriseWebSearchDict(TypedDict, total=False):
+  """Tool to search public web data, powered by Vertex AI Search and Sec4 compliance."""
+
+  pass
+
+
+EnterpriseWebSearchOrDict = Union[EnterpriseWebSearch, EnterpriseWebSearchDict]
+
+
 class VertexAISearch(_common.BaseModel):
   """Retrieve from Vertex AI Search datastore or engine for grounding.
 
@@ -2120,6 +2135,11 @@ class Tool(_common.BaseModel):
       default=None,
       description="""Optional. GoogleSearchRetrieval tool type. Specialized retrieval tool that is powered by Google search.""",
   )
+  enterprise_web_search: Optional[EnterpriseWebSearch] = Field(
+      default=None,
+      description="""Optional. Enterprise web search tool type. Specialized retrieval
+      tool that is powered by Vertex AI Search and Sec4 compliance.""",
+  )
   code_execution: Optional[ToolCodeExecution] = Field(
       default=None,
       description="""Optional. CodeExecution tool type. Enables the model to execute code as part of generation. This field is only used by the Gemini Developer API services.""",
@@ -2142,6 +2162,10 @@ class ToolDict(TypedDict, total=False):
 
   google_search_retrieval: Optional[GoogleSearchRetrievalDict]
   """Optional. GoogleSearchRetrieval tool type. Specialized retrieval tool that is powered by Google search."""
+
+  enterprise_web_search: Optional[EnterpriseWebSearchDict]
+  """Optional. Enterprise web search tool type. Specialized retrieval
+      tool that is powered by Vertex AI Search and Sec4 compliance."""
 
   code_execution: Optional[ToolCodeExecutionDict]
   """Optional. CodeExecution tool type. Enables the model to execute code as part of generation. This field is only used by the Gemini Developer API services."""

@@ -178,6 +178,16 @@ def _GoogleSearchRetrieval_to_mldev(
   return to_object
 
 
+def _EnterpriseWebSearch_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+
+  return to_object
+
+
 def _Tool_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -205,6 +215,11 @@ def _Tool_to_mldev(
             getv(from_object, ['google_search_retrieval']),
             to_object,
         ),
+    )
+
+  if getv(from_object, ['enterprise_web_search']) is not None:
+    raise ValueError(
+        'enterprise_web_search parameter is not supported in Gemini API.'
     )
 
   if getv(from_object, ['code_execution']) is not None:
@@ -1189,6 +1204,16 @@ def _GoogleSearchRetrieval_to_vertex(
   return to_object
 
 
+def _EnterpriseWebSearch_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+
+  return to_object
+
+
 def _Tool_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -1215,6 +1240,15 @@ def _Tool_to_vertex(
             api_client,
             getv(from_object, ['google_search_retrieval']),
             to_object,
+        ),
+    )
+
+  if getv(from_object, ['enterprise_web_search']) is not None:
+    setv(
+        to_object,
+        ['enterpriseWebSearch'],
+        _EnterpriseWebSearch_to_vertex(
+            api_client, getv(from_object, ['enterprise_web_search']), to_object
         ),
     )
 
