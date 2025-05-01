@@ -9914,11 +9914,23 @@ class LiveServerMessage(_common.BaseModel):
     ):
       return None
     text = ''
+    non_text_parts = []
     for part in self.server_content.model_turn.parts:
+      for field_name, field_value in part.model_dump(
+          exclude={'text', 'thought'}
+      ).items():
+        if field_value is not None:
+          non_text_parts.append(field_name)
       if isinstance(part.text, str):
         if isinstance(part.thought, bool) and part.thought:
           continue
         text += part.text
+    if non_text_parts:
+      logger.warning(
+          'Warning: there are non-text parts in the response:'
+          f' {non_text_parts}, returning concatenated text result from text'
+          ' parts, check out the non text parts for full response from model.'
+      )
     return text if text else None
 
   @property
@@ -9932,9 +9944,21 @@ class LiveServerMessage(_common.BaseModel):
     ):
       return None
     concatenated_data = b''
+    non_data_parts = []
     for part in self.server_content.model_turn.parts:
+      for field_name, field_value in part.model_dump(
+          exclude={'inline_data'}
+      ).items():
+        if field_value is not None:
+          non_data_parts.append(field_name)
       if part.inline_data and isinstance(part.inline_data.data, bytes):
         concatenated_data += part.inline_data.data
+    if non_data_parts:
+      logger.warning(
+          'Warning: there are non-data parts in the response:'
+          f' {non_data_parts}, returning concatenated data result from data'
+          ' parts, check out the non data parts for full response from model.'
+      )
     return concatenated_data if len(concatenated_data) > 0 else None
 
 
