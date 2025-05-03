@@ -1000,13 +1000,9 @@ async def test_bidi_setup_to_api_with_input_transcription(vertexai):
       }
   }
 
-  with exception_if_mldev(vertexai, ValueError):
-    result = await get_connect_message(
-        mock_api_client(vertexai=vertexai),
-        model='test_model', config=config
-    )
-  if not vertexai:
-    return
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai), model='test_model', config=config
+  )
 
   assert (
       result['setup']['inputAudioTranscription']

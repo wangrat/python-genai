@@ -722,8 +722,14 @@ def _LiveConnectConfig_to_mldev(
     )
 
   if getv(from_object, ['input_audio_transcription']) is not None:
-    raise ValueError(
-        'input_audio_transcription parameter is not supported in Gemini API.'
+    setv(
+        parent_object,
+        ['setup', 'inputAudioTranscription'],
+        _AudioTranscriptionConfig_to_mldev(
+            api_client,
+            getv(from_object, ['input_audio_transcription']),
+            to_object,
+        ),
     )
 
   if getv(from_object, ['output_audio_transcription']) is not None:
@@ -1151,6 +1157,28 @@ def _LiveClientSetup_to_mldev(
         ),
     )
 
+  if getv(from_object, ['input_audio_transcription']) is not None:
+    setv(
+        to_object,
+        ['inputAudioTranscription'],
+        _AudioTranscriptionConfig_to_mldev(
+            api_client,
+            getv(from_object, ['input_audio_transcription']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['output_audio_transcription']) is not None:
+    setv(
+        to_object,
+        ['outputAudioTranscription'],
+        _AudioTranscriptionConfig_to_mldev(
+            api_client,
+            getv(from_object, ['output_audio_transcription']),
+            to_object,
+        ),
+    )
+
   return to_object
 
 
@@ -1207,6 +1235,28 @@ def _LiveClientSetup_to_vertex(
         _ContextWindowCompressionConfig_to_vertex(
             api_client,
             getv(from_object, ['context_window_compression']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['input_audio_transcription']) is not None:
+    setv(
+        to_object,
+        ['inputAudioTranscription'],
+        _AudioTranscriptionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['input_audio_transcription']),
+            to_object,
+        ),
+    )
+
+  if getv(from_object, ['output_audio_transcription']) is not None:
+    setv(
+        to_object,
+        ['outputAudioTranscription'],
+        _AudioTranscriptionConfig_to_vertex(
+            api_client,
+            getv(from_object, ['output_audio_transcription']),
             to_object,
         ),
     )

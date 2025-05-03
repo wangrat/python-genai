@@ -10260,6 +10260,17 @@ class LiveClientSetup(_common.BaseModel):
 
       If included, server will compress context window to fit into given length.""",
   )
+  input_audio_transcription: Optional[AudioTranscriptionConfig] = Field(
+      default=None,
+      description="""The transcription of the input aligns with the input audio language.
+      """,
+  )
+  output_audio_transcription: Optional[AudioTranscriptionConfig] = Field(
+      default=None,
+      description="""The transcription of the output aligns with the language code
+      specified for the output audio.
+      """,
+  )
 
 
 class LiveClientSetupDict(TypedDict, total=False):
@@ -10297,6 +10308,15 @@ class LiveClientSetupDict(TypedDict, total=False):
   """Configures context window compression mechanism.
 
       If included, server will compress context window to fit into given length."""
+
+  input_audio_transcription: Optional[AudioTranscriptionConfigDict]
+  """The transcription of the input aligns with the input audio language.
+      """
+
+  output_audio_transcription: Optional[AudioTranscriptionConfigDict]
+  """The transcription of the output aligns with the language code
+      specified for the output audio.
+      """
 
 
 LiveClientSetupOrDict = Union[LiveClientSetup, LiveClientSetupDict]
