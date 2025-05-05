@@ -873,7 +873,7 @@ class BaseApiClient:
           timeout=timeout_in_seconds,
       )
       offset += chunk_size
-      if response.headers['x-goog-upload-status'] != 'active':
+      if response.headers.get('x-goog-upload-status') != 'active':
         break  # upload is complete or it has been interrupted.
       if upload_size <= offset:  # Status is not finalized.
         raise ValueError(
@@ -881,7 +881,7 @@ class BaseApiClient:
             f' finalized.'
         )
 
-    if response.headers['x-goog-upload-status'] != 'final':
+    if response.headers.get('x-goog-upload-status') != 'final':
       raise ValueError(
           'Failed to upload file: Upload status is not finalized.'
       )
