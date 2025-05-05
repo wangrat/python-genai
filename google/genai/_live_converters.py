@@ -286,6 +286,136 @@ def _EnterpriseWebSearch_to_vertex(
   return to_object
 
 
+def _ApiKeyConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['api_key_string']) is not None:
+    raise ValueError('api_key_string parameter is not supported in Gemini API.')
+
+  return to_object
+
+
+def _ApiKeyConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['api_key_string']) is not None:
+    setv(to_object, ['apiKeyString'], getv(from_object, ['api_key_string']))
+
+  return to_object
+
+
+def _AuthConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['api_key_config']) is not None:
+    raise ValueError('api_key_config parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['auth_type']) is not None:
+    setv(to_object, ['authType'], getv(from_object, ['auth_type']))
+
+  if getv(from_object, ['google_service_account_config']) is not None:
+    setv(
+        to_object,
+        ['googleServiceAccountConfig'],
+        getv(from_object, ['google_service_account_config']),
+    )
+
+  if getv(from_object, ['http_basic_auth_config']) is not None:
+    setv(
+        to_object,
+        ['httpBasicAuthConfig'],
+        getv(from_object, ['http_basic_auth_config']),
+    )
+
+  if getv(from_object, ['oauth_config']) is not None:
+    setv(to_object, ['oauthConfig'], getv(from_object, ['oauth_config']))
+
+  if getv(from_object, ['oidc_config']) is not None:
+    setv(to_object, ['oidcConfig'], getv(from_object, ['oidc_config']))
+
+  return to_object
+
+
+def _AuthConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['api_key_config']) is not None:
+    setv(
+        to_object,
+        ['apiKeyConfig'],
+        _ApiKeyConfig_to_vertex(
+            api_client, getv(from_object, ['api_key_config']), to_object
+        ),
+    )
+
+  if getv(from_object, ['auth_type']) is not None:
+    setv(to_object, ['authType'], getv(from_object, ['auth_type']))
+
+  if getv(from_object, ['google_service_account_config']) is not None:
+    setv(
+        to_object,
+        ['googleServiceAccountConfig'],
+        getv(from_object, ['google_service_account_config']),
+    )
+
+  if getv(from_object, ['http_basic_auth_config']) is not None:
+    setv(
+        to_object,
+        ['httpBasicAuthConfig'],
+        getv(from_object, ['http_basic_auth_config']),
+    )
+
+  if getv(from_object, ['oauth_config']) is not None:
+    setv(to_object, ['oauthConfig'], getv(from_object, ['oauth_config']))
+
+  if getv(from_object, ['oidc_config']) is not None:
+    setv(to_object, ['oidcConfig'], getv(from_object, ['oidc_config']))
+
+  return to_object
+
+
+def _GoogleMaps_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['auth_config']) is not None:
+    raise ValueError('auth_config parameter is not supported in Gemini API.')
+
+  return to_object
+
+
+def _GoogleMaps_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['auth_config']) is not None:
+    setv(
+        to_object,
+        ['authConfig'],
+        _AuthConfig_to_vertex(
+            api_client, getv(from_object, ['auth_config']), to_object
+        ),
+    )
+
+  return to_object
+
+
 def _Tool_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -319,6 +449,9 @@ def _Tool_to_mldev(
     raise ValueError(
         'enterprise_web_search parameter is not supported in Gemini API.'
     )
+
+  if getv(from_object, ['google_maps']) is not None:
+    raise ValueError('google_maps parameter is not supported in Gemini API.')
 
   if getv(from_object, ['code_execution']) is not None:
     setv(to_object, ['codeExecution'], getv(from_object, ['code_execution']))
@@ -368,6 +501,15 @@ def _Tool_to_vertex(
         ['enterpriseWebSearch'],
         _EnterpriseWebSearch_to_vertex(
             api_client, getv(from_object, ['enterprise_web_search']), to_object
+        ),
+    )
+
+  if getv(from_object, ['google_maps']) is not None:
+    setv(
+        to_object,
+        ['googleMaps'],
+        _GoogleMaps_to_vertex(
+            api_client, getv(from_object, ['google_maps']), to_object
         ),
     )
 
