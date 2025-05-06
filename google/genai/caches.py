@@ -42,13 +42,6 @@ def _Part_to_mldev(
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
 
-  if getv(from_object, ['thought_signature']) is not None:
-    setv(
-        to_object,
-        ['thoughtSignature'],
-        getv(from_object, ['thought_signature']),
-    )
-
   if getv(from_object, ['code_execution_result']) is not None:
     setv(
         to_object,
@@ -558,13 +551,6 @@ def _Part_to_vertex(
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
-
-  if getv(from_object, ['thought_signature']) is not None:
-    setv(
-        to_object,
-        ['thoughtSignature'],
-        getv(from_object, ['thought_signature']),
-    )
 
   if getv(from_object, ['code_execution_result']) is not None:
     setv(
