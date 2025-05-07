@@ -58,7 +58,9 @@ from .types import HttpOptionsOrDict
 
 logger = logging.getLogger('google_genai._api_client')
 CHUNK_SIZE = 8 * 1024 * 1024  # 8 MB chunk size
-
+MAX_RETRY_COUNT = 3
+INITIAL_RETRY_DELAY = 1  # second
+DELAY_MULTIPLIER = 2
 
 def _append_library_version_headers(headers: dict[str, str]) -> None:
   """Appends the telemetry header to the headers dict."""
@@ -888,13 +890,21 @@ class BaseApiClient:
           'Content-Length': str(chunk_size),
       }
       _populate_server_timeout_header(upload_headers, timeout_in_seconds)
-      response = self._httpx_client.request(
-          method='POST',
-          url=upload_url,
-          headers=upload_headers,
-          content=file_chunk,
-          timeout=timeout_in_seconds,
-      )
+      retry_count = 0
+      while retry_count < MAX_RETRY_COUNT:
+        response = self._httpx_client.request(
+            method='POST',
+            url=upload_url,
+            headers=upload_headers,
+            content=file_chunk,
+            timeout=timeout_in_seconds,
+        )
+        if response.headers.get('x-goog-upload-status'):
+          break
+        delay_seconds = INITIAL_RETRY_DELAY * (DELAY_MULTIPLIER**retry_count)
+        retry_count += 1
+        time.sleep(delay_seconds)
+
       offset += chunk_size
       if response.headers.get('x-goog-upload-status') != 'active':
         break  # upload is complete or it has been interrupted.
@@ -1036,13 +1046,22 @@ class BaseApiClient:
           'Content-Length': str(chunk_size),
       }
       _populate_server_timeout_header(upload_headers, timeout_in_seconds)
-      response = await self._async_httpx_client.request(
-          method='POST',
-          url=upload_url,
-          content=file_chunk,
-          headers=upload_headers,
-          timeout=timeout_in_seconds,
-      )
+
+      retry_count = 0
+      while retry_count < MAX_RETRY_COUNT:
+        response = await self._async_httpx_client.request(
+            method='POST',
+            url=upload_url,
+            content=file_chunk,
+            headers=upload_headers,
+            timeout=timeout_in_seconds,
+        )
+        if response.headers.get('x-goog-upload-status'):
+          break
+        delay_seconds = INITIAL_RETRY_DELAY * (DELAY_MULTIPLIER**retry_count)
+        retry_count += 1
+        time.sleep(delay_seconds)
+
       offset += chunk_size
       if response.headers.get('x-goog-upload-status') != 'active':
         break  # upload is complete or it has been interrupted.
