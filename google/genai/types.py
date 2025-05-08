@@ -10792,6 +10792,87 @@ LiveClientRealtimeInputOrDict = Union[
     LiveClientRealtimeInput, LiveClientRealtimeInputDict
 ]
 
+if _is_pillow_image_imported:
+  BlobImageUnion = Union[Blob, PIL_Image]
+else:
+  BlobImageUnion = Blob  # type: ignore[misc]
+
+
+BlobImageUnionDict = Union[BlobImageUnion, BlobDict]
+
+
+class LiveSendRealtimeInputParameters(_common.BaseModel):
+  """Parameters for sending realtime input to the live API."""
+
+  media: Optional[BlobImageUnion] = Field(
+      default=None, description="""Realtime input to send to the session."""
+  )
+  audio: Optional[Blob] = Field(
+      default=None, description="""The realtime audio input stream."""
+  )
+  audio_stream_end: Optional[bool] = Field(
+      default=None,
+      description="""
+Indicates that the audio stream has ended, e.g. because the microphone was
+turned off.
+
+This should only be sent when automatic activity detection is enabled
+(which is the default).
+
+The client can reopen the stream by sending an audio message.
+""",
+  )
+  video: Optional[BlobImageUnion] = Field(
+      default=None, description="""The realtime video input stream."""
+  )
+  text: Optional[str] = Field(
+      default=None, description="""The realtime text input stream."""
+  )
+  activity_start: Optional[ActivityStart] = Field(
+      default=None, description="""Marks the start of user activity."""
+  )
+  activity_end: Optional[ActivityEnd] = Field(
+      default=None, description="""Marks the end of user activity."""
+  )
+
+
+class LiveSendRealtimeInputParametersDict(TypedDict, total=False):
+  """Parameters for sending realtime input to the live API."""
+
+  media: Optional[BlobImageUnionDict]
+  """Realtime input to send to the session."""
+
+  audio: Optional[BlobDict]
+  """The realtime audio input stream."""
+
+  audio_stream_end: Optional[bool]
+  """
+Indicates that the audio stream has ended, e.g. because the microphone was
+turned off.
+
+This should only be sent when automatic activity detection is enabled
+(which is the default).
+
+The client can reopen the stream by sending an audio message.
+"""
+
+  video: Optional[BlobImageUnionDict]
+  """The realtime video input stream."""
+
+  text: Optional[str]
+  """The realtime text input stream."""
+
+  activity_start: Optional[ActivityStartDict]
+  """Marks the start of user activity."""
+
+  activity_end: Optional[ActivityEndDict]
+  """Marks the end of user activity."""
+
+
+LiveSendRealtimeInputParametersOrDict = Union[
+    LiveSendRealtimeInputParameters, LiveSendRealtimeInputParametersDict
+]
+
 
 class LiveClientToolResponse(_common.BaseModel):
   """Client generated response to a `ToolCall` received from the server.
@@ -11089,85 +11170,4 @@ class LiveConnectParametersDict(TypedDict, total=False):
 
 LiveConnectParametersOrDict = Union[
     LiveConnectParameters, LiveConnectParametersDict
-]
-
-if _is_pillow_image_imported:
-  BlobImageUnion = Union[Blob, PIL_Image]
-else:
-  BlobImageUnion = Blob  # type: ignore[misc]
-
-
-BlobImageUnionDict = Union[BlobImageUnion, BlobDict]
-
-
-class LiveSendRealtimeInputParameters(_common.BaseModel):
-  """Parameters for sending realtime input to the live API."""
-
-  media: Optional[BlobImageUnion] = Field(
-      default=None, description="""Realtime input to send to the session."""
-  )
-  audio: Optional[Blob] = Field(
-      default=None, description="""The realtime audio input stream."""
-  )
-  audio_stream_end: Optional[bool] = Field(
-      default=None,
-      description="""
-Indicates that the audio stream has ended, e.g. because the microphone was
-turned off.
-
-This should only be sent when automatic activity detection is enabled
-(which is the default).
-
-The client can reopen the stream by sending an audio message.
-""",
-  )
-  video: Optional[BlobImageUnion] = Field(
-      default=None, description="""The realtime video input stream."""
-  )
-  text: Optional[str] = Field(
-      default=None, description="""The realtime text input stream."""
-  )
-  activity_start: Optional[ActivityStart] = Field(
-      default=None, description="""Marks the start of user activity."""
-  )
-  activity_end: Optional[ActivityEnd] = Field(
-      default=None, description="""Marks the end of user activity."""
-  )
-
-
-class LiveSendRealtimeInputParametersDict(TypedDict, total=False):
-  """Parameters for sending realtime input to the live API."""
-
-  media: Optional[BlobImageUnionDict]
-  """Realtime input to send to the session."""
-
-  audio: Optional[BlobDict]
-  """The realtime audio input stream."""
-
-  audio_stream_end: Optional[bool]
-  """
-Indicates that the audio stream has ended, e.g. because the microphone was
-turned off.
-
-This should only be sent when automatic activity detection is enabled
-(which is the default).
-
-The client can reopen the stream by sending an audio message.
-"""
-
-  video: Optional[BlobImageUnionDict]
-  """The realtime video input stream."""
-
-  text: Optional[str]
-  """The realtime text input stream."""
-
-  activity_start: Optional[ActivityStartDict]
-  """Marks the start of user activity."""
-
-  activity_end: Optional[ActivityEndDict]
-  """Marks the end of user activity."""
-
-
-LiveSendRealtimeInputParametersOrDict = Union[
-    LiveSendRealtimeInputParameters, LiveSendRealtimeInputParametersDict
 ]
