@@ -35,11 +35,12 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_vertex_tuned_models_update',
         parameters=types._UpdateModelParameters(
-            model='models/7687416965014487040',
+            model='models/2121966731898388480',
             config={
                 'description': (
                     'My SupervisedTuningJob 2024-05-16 13:36:47.332273'
                 ),
+                'default_checkpoint_id': '8',
             },
         ),
         exception_if_mldev='404',
@@ -58,11 +59,12 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_vertex_tuned_models_update_with_http_options_in_method',
         parameters=types._UpdateModelParameters(
-            model='models/7687416965014487040',
+            model='models/2121966731898388480',
             config={
                 'description': (
                     'My SupervisedTuningJob 2024-05-16 13:36:47.332273'
                 ),
+                'default_checkpoint_id': '8',
                 'http_options': test_http_options,
             },
         ),

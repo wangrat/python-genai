@@ -28,7 +28,7 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_get_vertex_tuned_model',
         parameters=types._GetModelParameters(
-            model='models/7687416965014487040'
+            model='models/2121966731898388480'
         ),
         exception_if_mldev='404',
     ),
@@ -42,7 +42,7 @@ test_table: list[pytest_helper.TestTableItem] = [
     pytest_helper.TestTableItem(
         name='test_get_vertex_tuned_model_with_http_options_in_method',
         parameters=types._GetModelParameters(
-            model='models/7687416965014487040',
+            model='models/2121966731898388480',
             config={
                 'http_options': test_http_options,
             },

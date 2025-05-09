@@ -922,6 +922,13 @@ def _UpdateModelConfig_to_mldev(
   if getv(from_object, ['description']) is not None:
     setv(parent_object, ['description'], getv(from_object, ['description']))
 
+  if getv(from_object, ['default_checkpoint_id']) is not None:
+    setv(
+        parent_object,
+        ['defaultCheckpointId'],
+        getv(from_object, ['default_checkpoint_id']),
+    )
+
   return to_object
 
 
@@ -2472,6 +2479,13 @@ def _UpdateModelConfig_to_vertex(
   if getv(from_object, ['description']) is not None:
     setv(parent_object, ['description'], getv(from_object, ['description']))
 
+  if getv(from_object, ['default_checkpoint_id']) is not None:
+    setv(
+        parent_object,
+        ['defaultCheckpointId'],
+        getv(from_object, ['default_checkpoint_id']),
+    )
+
   return to_object
 
 
@@ -3105,6 +3119,16 @@ def _TunedModelInfo_from_mldev(
 
   if getv(from_object, ['updateTime']) is not None:
     setv(to_object, ['update_time'], getv(from_object, ['updateTime']))
+
+  return to_object
+
+
+def _Checkpoint_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
 
   return to_object
 
@@ -3760,6 +3784,24 @@ def _TunedModelInfo_from_vertex(
   return to_object
 
 
+def _Checkpoint_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['checkpointId']) is not None:
+    setv(to_object, ['checkpoint_id'], getv(from_object, ['checkpointId']))
+
+  if getv(from_object, ['epoch']) is not None:
+    setv(to_object, ['epoch'], getv(from_object, ['epoch']))
+
+  if getv(from_object, ['step']) is not None:
+    setv(to_object, ['step'], getv(from_object, ['step']))
+
+  return to_object
+
+
 def _Model_from_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -3798,6 +3840,23 @@ def _Model_from_vertex(
         _TunedModelInfo_from_vertex(
             api_client, getv(from_object, ['_self']), to_object
         ),
+    )
+
+  if getv(from_object, ['defaultCheckpointId']) is not None:
+    setv(
+        to_object,
+        ['default_checkpoint_id'],
+        getv(from_object, ['defaultCheckpointId']),
+    )
+
+  if getv(from_object, ['checkpoints']) is not None:
+    setv(
+        to_object,
+        ['checkpoints'],
+        [
+            _Checkpoint_from_vertex(api_client, item, to_object)
+            for item in getv(from_object, ['checkpoints'])
+        ],
     )
 
   return to_object

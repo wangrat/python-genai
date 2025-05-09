@@ -5662,6 +5662,45 @@ class TunedModelInfoDict(TypedDict, total=False):
 TunedModelInfoOrDict = Union[TunedModelInfo, TunedModelInfoDict]
 
 
+class Checkpoint(_common.BaseModel):
+  """Describes the machine learning model version checkpoint."""
+
+  checkpoint_id: Optional[str] = Field(
+      default=None,
+      description="""The ID of the checkpoint.
+      """,
+  )
+  epoch: Optional[int] = Field(
+      default=None,
+      description="""The epoch of the checkpoint.
+      """,
+  )
+  step: Optional[int] = Field(
+      default=None,
+      description="""The step of the checkpoint.
+      """,
+  )
+
+
+class CheckpointDict(TypedDict, total=False):
+  """Describes the machine learning model version checkpoint."""
+
+  checkpoint_id: Optional[str]
+  """The ID of the checkpoint.
+      """
+
+  epoch: Optional[int]
+  """The epoch of the checkpoint.
+      """
+
+  step: Optional[int]
+  """The step of the checkpoint.
+      """
+
+
+CheckpointOrDict = Union[Checkpoint, CheckpointDict]
+
+
 class Model(_common.BaseModel):
   """A trained machine learning model."""
 
@@ -5706,6 +5745,14 @@ class Model(_common.BaseModel):
       default=None,
       description="""List of actions that are supported by the model.""",
   )
+  default_checkpoint_id: Optional[str] = Field(
+      default=None,
+      description="""The default checkpoint id of a model version.
+      """,
+  )
+  checkpoints: Optional[list[Checkpoint]] = Field(
+      default=None, description="""The checkpoints of the model."""
+  )
 
 
 class ModelDict(TypedDict, total=False):
@@ -5744,6 +5791,13 @@ class ModelDict(TypedDict, total=False):
 
   supported_actions: Optional[list[str]]
   """List of actions that are supported by the model."""
+
+  default_checkpoint_id: Optional[str]
+  """The default checkpoint id of a model version.
+      """
+
+  checkpoints: Optional[list[CheckpointDict]]
+  """The checkpoints of the model."""
 
 
 ModelOrDict = Union[Model, ModelDict]
@@ -5826,6 +5880,7 @@ class UpdateModelConfig(_common.BaseModel):
   )
   display_name: Optional[str] = Field(default=None, description="""""")
   description: Optional[str] = Field(default=None, description="""""")
+  default_checkpoint_id: Optional[str] = Field(default=None, description="""""")
 
 
 class UpdateModelConfigDict(TypedDict, total=False):
@@ -5838,6 +5893,9 @@ class UpdateModelConfigDict(TypedDict, total=False):
   """"""
 
   description: Optional[str]
+  """"""
+
+  default_checkpoint_id: Optional[str]
   """"""
 
 
@@ -6619,6 +6677,58 @@ _GetTuningJobParametersOrDict = Union[
 ]
 
 
+class TunedModelCheckpoint(_common.BaseModel):
+  """TunedModelCheckpoint for the Tuned Model of a Tuning Job."""
+
+  checkpoint_id: Optional[str] = Field(
+      default=None,
+      description="""The ID of the checkpoint.
+      """,
+  )
+  epoch: Optional[int] = Field(
+      default=None,
+      description="""The epoch of the checkpoint.
+      """,
+  )
+  step: Optional[int] = Field(
+      default=None,
+      description="""The step of the checkpoint.
+      """,
+  )
+  endpoint: Optional[str] = Field(
+      default=None,
+      description="""The Endpoint resource name that the checkpoint is deployed to.
+      Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`.
+      """,
+  )
+
+
+class TunedModelCheckpointDict(TypedDict, total=False):
+  """TunedModelCheckpoint for the Tuned Model of a Tuning Job."""
+
+  checkpoint_id: Optional[str]
+  """The ID of the checkpoint.
+      """
+
+  epoch: Optional[int]
+  """The epoch of the checkpoint.
+      """
+
+  step: Optional[int]
+  """The step of the checkpoint.
+      """
+
+  endpoint: Optional[str]
+  """The Endpoint resource name that the checkpoint is deployed to.
+      Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`.
+      """
+
+
+TunedModelCheckpointOrDict = Union[
+    TunedModelCheckpoint, TunedModelCheckpointDict
+]
+
+
 class TunedModel(_common.BaseModel):
 
   model: Optional[str] = Field(
@@ -6629,6 +6739,12 @@ class TunedModel(_common.BaseModel):
       default=None,
       description="""Output only. A resource name of an Endpoint. Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`.""",
   )
+  checkpoints: Optional[list[TunedModelCheckpoint]] = Field(
+      default=None,
+      description="""The checkpoints associated with this TunedModel.
+      This field is only populated for tuning jobs that enable intermediate
+      checkpoints.""",
+  )
 
 
 class TunedModelDict(TypedDict, total=False):
@@ -6638,6 +6754,11 @@ class TunedModelDict(TypedDict, total=False):
 
   endpoint: Optional[str]
   """Output only. A resource name of an Endpoint. Format: `projects/{project}/locations/{location}/endpoints/{endpoint}`."""
+
+  checkpoints: Optional[list[TunedModelCheckpointDict]]
+  """The checkpoints associated with this TunedModel.
+      This field is only populated for tuning jobs that enable intermediate
+      checkpoints."""
 
 
 TunedModelOrDict = Union[TunedModel, TunedModelDict]
@@ -6736,6 +6857,10 @@ class SupervisedTuningSpec(_common.BaseModel):
       default=None,
       description="""Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file.""",
   )
+  export_last_checkpoint_only: Optional[bool] = Field(
+      default=None,
+      description="""Optional. If set to true, disable intermediate checkpoints for SFT and only the last checkpoint will be exported.""",
+  )
 
 
 class SupervisedTuningSpecDict(TypedDict, total=False):
@@ -6749,6 +6874,9 @@ class SupervisedTuningSpecDict(TypedDict, total=False):
 
   validation_dataset_uri: Optional[str]
   """Optional. Cloud Storage path to file containing validation dataset for tuning. The dataset must be formatted as a JSONL file."""
+
+  export_last_checkpoint_only: Optional[bool]
+  """Optional. If set to true, disable intermediate checkpoints for SFT and only the last checkpoint will be exported."""
 
 
 SupervisedTuningSpecOrDict = Union[
@@ -7661,6 +7789,10 @@ class CreateTuningJobConfig(_common.BaseModel):
       default=None,
       description="""Multiplier for adjusting the default learning rate.""",
   )
+  export_last_checkpoint_only: Optional[bool] = Field(
+      default=None,
+      description="""If set to true, disable intermediate checkpoints for SFT and only the last checkpoint will be exported. Otherwise, enable intermediate checkpoints for SFT.""",
+  )
   adapter_size: Optional[AdapterSize] = Field(
       default=None, description="""Adapter size for tuning."""
   )
@@ -7694,6 +7826,9 @@ class CreateTuningJobConfigDict(TypedDict, total=False):
 
   learning_rate_multiplier: Optional[float]
   """Multiplier for adjusting the default learning rate."""
+
+  export_last_checkpoint_only: Optional[bool]
+  """If set to true, disable intermediate checkpoints for SFT and only the last checkpoint will be exported. Otherwise, enable intermediate checkpoints for SFT."""
 
   adapter_size: Optional[AdapterSize]
   """Adapter size for tuning."""
