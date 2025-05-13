@@ -48,7 +48,7 @@ def test_tune_until_success(client):
 
   while not job.has_ended:
     # Skipping the sleep for when in replay mode.
-    if client._api_client._mode != "replay":
+    if client._api_client._mode not in ("replay", "auto"):
       time.sleep(60)
     job = client.tunings.get(name=job.name)
 
