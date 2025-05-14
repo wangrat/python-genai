@@ -20,6 +20,7 @@ import base64
 import contextlib
 import json
 import logging
+import typing
 from typing import Any, AsyncIterator, Dict, Optional, Sequence, Union, cast, get_args
 import warnings
 
@@ -29,13 +30,13 @@ from websockets import ConnectionClosed
 
 from . import _api_module
 from . import _common
+from . import _live_converters as live_converters
 from . import _transformers as t
 from . import client
 from . import types
 from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
-from . import _live_converters as live_converters
 from .models import _Content_to_mldev
 from .models import _Content_to_vertex
 
@@ -48,6 +49,19 @@ except ModuleNotFoundError:
   from websockets.client import ClientConnection  # type: ignore
   from websockets.client import connect  # type: ignore
 
+if typing.TYPE_CHECKING:
+  from mcp import ClientSession as McpClientSession
+  from ._adapters import McpToGenAiToolAdapter
+else:
+  McpClientSession: typing.Type = Any
+  McpToGenAiToolAdapter: typing.Type = Any
+  try:
+    from mcp import ClientSession as McpClientSession
+    from ._adapters import McpToGenAiToolAdapter
+  except ImportError:
+    McpClientSession = None
+    McpToGenAiToolAdapter = None
+
 logger = logging.getLogger('google_genai.live')
 
 _FUNCTION_RESPONSE_REQUIRES_ID = (
@@ -59,9 +73,7 @@ _FUNCTION_RESPONSE_REQUIRES_ID = (
 class AsyncSession:
   """[Preview] AsyncSession."""
 
-  def __init__(
-      self, api_client: BaseApiClient, websocket: ClientConnection
-  ):
+  def __init__(self, api_client: BaseApiClient, websocket: ClientConnection):
     self._api_client = api_client
     self._ws = websocket
 
@@ -123,7 +135,7 @@ class AsyncSession:
           Union[
               types.Content,
               types.ContentDict,
-              list[Union[types.Content, types.ContentDict]]
+              list[Union[types.Content, types.ContentDict]],
           ]
       ] = None,
       turn_complete: bool = True,
@@ -264,7 +276,7 @@ class AsyncSession:
           print(f'{msg.text}')
     ```
     """
-    kwargs:dict[str, Any] = {}
+    kwargs: dict[str, Any] = {}
     if media is not None:
       kwargs['media'] = media
     if audio is not None:
@@ -506,9 +518,13 @@ class AsyncSession:
       response = {}
 
     if self._api_client.vertexai:
-      response_dict = live_converters._LiveServerMessage_from_vertex(self._api_client, response)
+      response_dict = live_converters._LiveServerMessage_from_vertex(
+          self._api_client, response
+      )
     else:
-      response_dict = live_converters._LiveServerMessage_from_mldev(self._api_client, response)
+      response_dict = live_converters._LiveServerMessage_from_mldev(
+          self._api_client, response
+      )
 
     return types.LiveServerMessage._from_response(
         response=response_dict, kwargs=parameter_model.model_dump()
@@ -522,7 +538,7 @@ class AsyncSession:
   ) -> None:
     async for data in data_stream:
       model_input = types.LiveClientRealtimeInput(
-        media_chunks=[types.Blob(data=data, mime_type=mime_type)]
+          media_chunks=[types.Blob(data=data, mime_type=mime_type)]
       )
       await self.send(input=model_input)
       # Give a chance for the receive loop to process responses.
@@ -560,9 +576,8 @@ class AsyncSession:
         raise ValueError(
             f'Unsupported input type "{type(input)}" or input content "{input}"'
         )
-      if (
-          isinstance(blob_input, types.Blob)
-          and isinstance(blob_input.data, bytes)
+      if isinstance(blob_input, types.Blob) and isinstance(
+          blob_input.data, bytes
       ):
         formatted_input = [
             blob_input.model_dump(mode='json', exclude_none=True)
@@ -841,7 +856,6 @@ class AsyncSession:
 class AsyncLive(_api_module.BaseModule):
   """[Preview] AsyncLive."""
 
-
   @contextlib.asynccontextmanager
   async def connect(
       self,
@@ -869,7 +883,7 @@ class AsyncLive(_api_module.BaseModule):
       base_url = base_url.decode('utf-8')
     transformed_model = t.t_model(self._api_client, model)
 
-    parameter_model = _t_live_connect_config(self._api_client, config)
+    parameter_model = await _t_live_connect_config(self._api_client, config)
 
     if self._api_client.api_key:
       api_key = self._api_client.api_key
@@ -881,9 +895,9 @@ class AsyncLive(_api_module.BaseModule):
           live_converters._LiveConnectParameters_to_mldev(
               api_client=self._api_client,
               from_object=types.LiveConnectParameters(
-                model=transformed_model,
-                config=parameter_model,
-              ).model_dump(exclude_none=True)
+                  model=transformed_model,
+                  config=parameter_model,
+              ).model_dump(exclude_none=True),
           )
       )
       del request_dict['config']
@@ -895,7 +909,7 @@ class AsyncLive(_api_module.BaseModule):
       if not self._api_client._credentials:
         # Get bearer token through Application Default Credentials.
         creds, _ = google.auth.default(  # type: ignore[no-untyped-call]
-          scopes=['https://www.googleapis.com/auth/cloud-platform']
+            scopes=['https://www.googleapis.com/auth/cloud-platform']
         )
       else:
         creds = self._api_client._credentials
@@ -922,15 +936,24 @@ class AsyncLive(_api_module.BaseModule):
           live_converters._LiveConnectParameters_to_vertex(
               api_client=self._api_client,
               from_object=types.LiveConnectParameters(
-                model=transformed_model,
-                config=parameter_model,
-              ).model_dump(exclude_none=True)
+                  model=transformed_model,
+                  config=parameter_model,
+              ).model_dump(exclude_none=True),
           )
       )
       del request_dict['config']
 
-      if getv(request_dict, ['setup', 'generationConfig', 'responseModalities']) is None:
-        setv(request_dict, ['setup', 'generationConfig', 'responseModalities'], ['AUDIO'])
+      if (
+          getv(
+              request_dict, ['setup', 'generationConfig', 'responseModalities']
+          )
+          is None
+      ):
+        setv(
+            request_dict,
+            ['setup', 'generationConfig', 'responseModalities'],
+            ['AUDIO'],
+        )
 
       request = json.dumps(request_dict)
 
@@ -949,7 +972,7 @@ class AsyncLive(_api_module.BaseModule):
         yield AsyncSession(api_client=self._api_client, websocket=ws)
 
 
-def _t_live_connect_config(
+async def _t_live_connect_config(
     api_client: BaseApiClient,
     config: Optional[types.LiveConnectConfigOrDict],
 ) -> types.LiveConnectConfig:
@@ -974,6 +997,21 @@ def _t_live_connect_config(
       )
     parameter_model = config
     parameter_model.system_instruction = system_instruction
+
+  if parameter_model.tools:
+    for tool in parameter_model.tools:
+      if McpClientSession is not None and isinstance(tool, McpClientSession):
+        mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
+            tool, await tool.list_tools()
+        )
+        # Extend the config with the MCP session tools converted to GenAI tools.
+        parameter_model.tools.extend(mcp_to_genai_tool_adapter.tools)
+    if McpClientSession is not None:
+      parameter_model.tools = [
+          tool
+          for tool in parameter_model.tools
+          if not isinstance(tool, McpClientSession)
+      ]
 
   if parameter_model.generation_config is not None:
     warnings.warn(

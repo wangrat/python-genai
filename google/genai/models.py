@@ -6658,6 +6658,10 @@ class AsyncModels(_api_module.BaseModule):
       print(response.text)
       # J'aime les bagels.
     """
+    # Retrieve and cache any MCP tools if provided.
+    config, mcp_to_genai_tool_adapters = (
+        await _extra_utils.parse_config_for_mcp_tools(config)
+    )
     if _extra_utils.should_disable_afc(config):
       return await self._generate_content(
           model=model, contents=contents, config=config
@@ -6677,7 +6681,7 @@ class AsyncModels(_api_module.BaseModule):
         logger.info('Reached max remote calls for automatic function calling.')
 
       function_map = _extra_utils.get_function_map(
-          config, is_caller_method_async=True
+          config, mcp_to_genai_tool_adapters, is_caller_method_async=True
       )
       if not function_map:
         break
@@ -6780,6 +6784,10 @@ class AsyncModels(_api_module.BaseModule):
       # scones.
     """
 
+    # Retrieve and cache any MCP tools if provided.
+    config, mcp_to_genai_tool_adapters = (
+        await _extra_utils.parse_config_for_mcp_tools(config)
+    )
     if _extra_utils.should_disable_afc(config):
       response = await self._generate_content_stream(
           model=model, contents=contents, config=config
@@ -6813,7 +6821,7 @@ class AsyncModels(_api_module.BaseModule):
           )
 
         function_map = _extra_utils.get_function_map(
-            config, is_caller_method_async=True
+            config, mcp_to_genai_tool_adapters, is_caller_method_async=True
         )
 
         if i == 1:
