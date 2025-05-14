@@ -128,3 +128,49 @@ async def test_mcp_tool():
       config, mcp_to_genai_tool_adapters, is_caller_method_async=True
   )
   assert isinstance(result['tool'], McpToGenAiToolAdapter)
+
+
+@pytest.mark.asyncio
+async def test_duplicate_mcp_tool_raises_error():
+  if not _is_mcp_imported:
+    return
+
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='tool',
+                  description='tool-description',
+                  inputSchema={
+                      'type': 'OBJECT',
+                      'properties': {
+                          'key1': {
+                              'type': 'STRING',
+                          },
+                          'key2': {
+                              'type': 'NUMBER',
+                          },
+                      },
+                  },
+              )
+          ]
+      )
+
+  def tool():
+    pass
+
+  session = MockMcpClientSession()
+  config = GenerateContentConfig(tools=[tool, session])
+  mcp_to_genai_tool_adapters = {
+      'tool': McpToGenAiToolAdapter(session, [await session.list_tools()]),
+  }
+  with pytest.raises(ValueError):
+    get_function_map(
+        config, mcp_to_genai_tool_adapters, is_caller_method_async=True
+    )

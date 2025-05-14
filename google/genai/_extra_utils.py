@@ -116,6 +116,11 @@ def get_function_map(
       raise errors.UnsupportedFunctionError(
           'MCP tools are not supported in synchronous methods.'
       )
+    for tool_name, _ in mcp_to_genai_tool_adapters.items():
+      if function_map.get(tool_name):
+        raise ValueError(
+            f'Tool {tool_name} is already defined for the request.'
+        )
     function_map.update(mcp_to_genai_tool_adapters)
   return function_map
 
@@ -459,6 +464,11 @@ async def parse_config_for_mcp_tools(
           if genai_tool.function_declarations:
             for function_declaration in genai_tool.function_declarations:
               if function_declaration.name:
+                if mcp_to_genai_tool_adapters.get(function_declaration.name):
+                  raise ValueError(
+                      f'Tool {function_declaration.name} is already defined for'
+                      ' the request.'
+                  )
                 mcp_to_genai_tool_adapters[function_declaration.name] = (
                     mcp_to_genai_tool_adapter
                 )

@@ -20,6 +20,7 @@ from .. import pytest_helper
 
 try:
   from mcp import types as mcp_types
+  from mcp import ClientSession as McpClientSession
 except ImportError as e:
   import sys
 
@@ -64,3 +65,43 @@ async def test_mcp_tools_async(client):
           args={'location': 'Boston'},
       )
   ]
+
+
+@pytest.mark.asyncio
+async def test_mcp_tools_duplicate_tool_name_raises_error(client):
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Different tool to get the weather.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+          ]
+      )
+
+  with pytest.raises(ValueError):
+    await client.aio.models.generate_content(
+        model='gemini-2.0-flash',
+        contents=t.t_contents(None, 'What is the weather in Boston?'),
+        config={
+            'tools': [MockMcpClientSession()],
+        },
+    )
