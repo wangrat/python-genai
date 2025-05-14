@@ -16,10 +16,9 @@
 
 """Tests for get_function_response_parts."""
 
-import typing
-from typing import Any
 import pytest
-from ..._extra_utils import get_function_response_parts, get_function_response_parts_async
+
+from ..._extra_utils import get_function_response_parts
 from ...errors import UnsupportedFunctionError
 from ...types import Candidate
 from ...types import Content
@@ -27,26 +26,6 @@ from ...types import FunctionCall
 from ...types import FunctionResponse
 from ...types import GenerateContentResponse
 from ...types import Part
-
-_is_mcp_imported = False
-if typing.TYPE_CHECKING:
-  from mcp import types as mcp_types
-  from mcp import ClientSession as McpClientSession
-  from ..._adapters import McpToGenAiToolAdapter
-
-  _is_mcp_imported = True
-else:
-  McpClientSession: typing.Type = Any
-  McpToGenAiToolAdapter: typing.Type = Any
-  try:
-    from mcp import types as mcp_types
-    from mcp import ClientSession as McpClientSession
-    from ..._adapters import McpToGenAiToolAdapter
-
-    _is_mcp_imported = True
-  except ImportError:
-    McpClientSession = None
-    McpToGenAiToolAdapter = None
 
 
 def test_integer_value():
@@ -153,57 +132,6 @@ def test_string_value():
       )
   ]
   actual_parts = get_function_response_parts(response, function_map)
-
-  for actual_part, expected_part in zip(actual_parts, expected_parts):
-    assert actual_part.model_dump_json(
-        exclude_none=True
-    ) == expected_part.model_dump_json(exclude_none=True)
-
-
-@pytest.mark.asyncio
-async def test_mcp_tool():
-  if not _is_mcp_imported:
-    return
-
-  class MockMcpClientSession(McpClientSession):
-
-    def __init__(self):
-      self._read_stream = None
-      self._write_stream = None
-
-    async def call_tool(self, name: str, arguments: dict[str, Any]) -> Any:
-      return '1.01'
-
-  mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
-      session=MockMcpClientSession(),
-      list_tools_result=mcp_types.ListToolsResult(tools=[]),
-  )
-  response = GenerateContentResponse(
-      candidates=[
-          Candidate(
-              content=Content(
-                  parts=[
-                      Part(
-                          function_call=FunctionCall(
-                              name='tool',
-                              args={'key1': 'value1', 'key2': 1},
-                          )
-                      )
-                  ]
-              )
-          )
-      ]
-  )
-  function_map = {'tool': mcp_to_genai_tool_adapter}
-  expected_parts = [
-      Part(
-          function_response=FunctionResponse(
-              name='tool',
-              response={'result': '1.01'},
-          )
-      )
-  ]
-  actual_parts = await get_function_response_parts_async(response, function_map)
 
   for actual_part, expected_part in zip(actual_parts, expected_parts):
     assert actual_part.model_dump_json(

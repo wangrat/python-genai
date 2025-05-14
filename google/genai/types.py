@@ -55,22 +55,6 @@ else:
   except ImportError:
     PIL_Image = None
 
-_is_mcp_imported = False
-if typing.TYPE_CHECKING:
-  from mcp import types as mcp_types
-  from mcp import ClientSession as McpClientSession
-
-  _is_mcp_imported = True
-else:
-  McpClientSession: typing.Type = Any
-  try:
-    from mcp import types as mcp_types
-    from mcp import ClientSession as McpClientSession
-
-    _is_mcp_imported = True
-  except ImportError:
-    McpClientSession = None
-
 logger = logging.getLogger('google_genai.types')
 
 T = typing.TypeVar('T', bound='GenerateContentResponse')
@@ -2408,17 +2392,8 @@ class ToolDict(TypedDict, total=False):
 
 
 ToolOrDict = Union[Tool, ToolDict]
-if _is_mcp_imported:
-  ToolUnion = Union[Tool, Callable[..., Any], mcp_types.Tool, McpClientSession]
-  ToolUnionDict = Union[
-      ToolDict, Callable[..., Any], mcp_types.Tool, McpClientSession
-  ]
-else:
-  ToolUnion = Union[Tool, Callable[..., Any]]  # type: ignore[misc]
-  ToolUnionDict = Union[ToolDict, Callable[..., Any]]  # type: ignore[misc]
-
-ToolListUnion = list[ToolUnion]
-ToolListUnionDict = list[ToolUnionDict]
+ToolListUnion = list[Union[Tool, Callable[..., Any]]]
+ToolListUnionDict = list[Union[ToolDict, Callable[..., Any]]]
 
 SchemaUnion = Union[
     dict[Any, Any], type, Schema, builtin_types.GenericAlias, VersionedUnionType  # type: ignore[valid-type]
