@@ -24,9 +24,9 @@ from unittest.mock import Mock
 from unittest.mock import patch
 import warnings
 
+from google.oauth2.credentials import Credentials
 import pytest
 from websockets import client
-from google.oauth2.credentials import Credentials
 
 from ... import _api_client as api_client
 from ... import _common
@@ -34,13 +34,8 @@ from ... import Client
 from ... import client as gl_client
 from ... import live
 from ... import types
+from .. import pytest_helper
 
-
-def exception_if_mldev(vertexai, exception_type: type[Exception]):
-  if vertexai:
-    return contextlib.nullcontext()
-  else:
-    return pytest.raises(exception_type)
 
 function_declarations = [{
     'name': 'get_current_weather',
@@ -83,6 +78,7 @@ def mock_api_client(vertexai=False, credentials=None):
       {'headers': {}}
   )  # Ensure headers exist
   api_client.vertexai = vertexai
+  api_client._api_client = api_client
   return api_client
 
 
@@ -917,6 +913,34 @@ async def test_bidi_setup_to_api_with_config_tools_function_directly(
 
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_tools_function_behavior(vertexai):
+  api_client = mock_api_client(vertexai=vertexai)
+
+  declaration = types.FunctionDeclaration.from_callable(
+      client=api_client, callable=get_current_weather
+  )
+  declaration.behavior = types.Behavior.NON_BLOCKING
+  config_dict = {
+      'generation_config': {'temperature': 0.7},
+      'tools': [{'function_declarations': [declaration]}],
+  }
+  config = types.LiveConnectConfig(**config_dict)
+
+  with pytest_helper.exception_if_vertex(api_client, ValueError):
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai), model='test_model', config=config
+    )
+  if vertexai:
+    return
+
+  assert (
+      result['setup']['tools'][0]['functionDeclarations'][0]['behavior']
+      == 'NON_BLOCKING'
+  )
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
 async def test_bidi_setup_to_api_with_config_tools_code_execution(
      vertexai
 ):
@@ -1131,12 +1155,13 @@ async def test_bidi_setup_to_api_with_session_resumption(vertexai):
 @pytest.mark.parametrize('vertexai', [True, False])
 @pytest.mark.asyncio
 async def test_bidi_setup_to_api_with_transparent_session_resumption(vertexai):
+  api_client = mock_api_client(vertexai=vertexai)
   config_dict = {
       'session_resumption': {'handle': 'test_handle', 'transparent': True},
   }
   config = types.LiveConnectConfig(**config_dict)
 
-  with exception_if_mldev(vertexai, ValueError):
+  with pytest_helper.exception_if_mldev(api_client, ValueError):
     result = await get_connect_message(
         mock_api_client(vertexai=vertexai),
         model='test_model',

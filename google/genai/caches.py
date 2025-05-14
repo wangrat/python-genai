@@ -120,6 +120,30 @@ def _Content_to_mldev(
   return to_object
 
 
+def _FunctionDeclaration_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['behavior']) is not None:
+    setv(to_object, ['behavior'], getv(from_object, ['behavior']))
+
+  if getv(from_object, ['description']) is not None:
+    setv(to_object, ['description'], getv(from_object, ['description']))
+
+  if getv(from_object, ['name']) is not None:
+    setv(to_object, ['name'], getv(from_object, ['name']))
+
+  if getv(from_object, ['parameters']) is not None:
+    setv(to_object, ['parameters'], getv(from_object, ['parameters']))
+
+  if getv(from_object, ['response']) is not None:
+    setv(to_object, ['response'], getv(from_object, ['response']))
+
+  return to_object
+
+
 def _GoogleSearch_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -244,6 +268,16 @@ def _Tool_to_mldev(
     parent_object: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
+  if getv(from_object, ['function_declarations']) is not None:
+    setv(
+        to_object,
+        ['functionDeclarations'],
+        [
+            _FunctionDeclaration_to_mldev(api_client, item, to_object)
+            for item in getv(from_object, ['function_declarations'])
+        ],
+    )
+
   if getv(from_object, ['retrieval']) is not None:
     raise ValueError('retrieval parameter is not supported in Gemini API.')
 
@@ -277,13 +311,6 @@ def _Tool_to_mldev(
 
   if getv(from_object, ['code_execution']) is not None:
     setv(to_object, ['codeExecution'], getv(from_object, ['code_execution']))
-
-  if getv(from_object, ['function_declarations']) is not None:
-    setv(
-        to_object,
-        ['functionDeclarations'],
-        getv(from_object, ['function_declarations']),
-    )
 
   return to_object
 
@@ -654,6 +681,30 @@ def _Content_to_vertex(
   return to_object
 
 
+def _FunctionDeclaration_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['behavior']) is not None:
+    raise ValueError('behavior parameter is not supported in Vertex AI.')
+
+  if getv(from_object, ['description']) is not None:
+    setv(to_object, ['description'], getv(from_object, ['description']))
+
+  if getv(from_object, ['name']) is not None:
+    setv(to_object, ['name'], getv(from_object, ['name']))
+
+  if getv(from_object, ['parameters']) is not None:
+    setv(to_object, ['parameters'], getv(from_object, ['parameters']))
+
+  if getv(from_object, ['response']) is not None:
+    setv(to_object, ['response'], getv(from_object, ['response']))
+
+  return to_object
+
+
 def _GoogleSearch_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -790,6 +841,16 @@ def _Tool_to_vertex(
     parent_object: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
+  if getv(from_object, ['function_declarations']) is not None:
+    setv(
+        to_object,
+        ['functionDeclarations'],
+        [
+            _FunctionDeclaration_to_vertex(api_client, item, to_object)
+            for item in getv(from_object, ['function_declarations'])
+        ],
+    )
+
   if getv(from_object, ['retrieval']) is not None:
     setv(to_object, ['retrieval'], getv(from_object, ['retrieval']))
 
@@ -833,13 +894,6 @@ def _Tool_to_vertex(
 
   if getv(from_object, ['code_execution']) is not None:
     setv(to_object, ['codeExecution'], getv(from_object, ['code_execution']))
-
-  if getv(from_object, ['function_declarations']) is not None:
-    setv(
-        to_object,
-        ['functionDeclarations'],
-        getv(from_object, ['function_declarations']),
-    )
 
   return to_object
 
@@ -1128,6 +1182,11 @@ def _ListCachedContentsParameters_to_vertex(
     )
 
   return to_object
+
+
+def _Behavior_to_vertex_enum_validate(enum_value: Any) -> None:
+  if enum_value in set(['UNSPECIFIED', 'BLOCKING', 'NON_BLOCKING']):
+    raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
 
 
 def _CachedContent_from_mldev(
