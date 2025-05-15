@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+from typing import Any
 import pytest
 from ... import _transformers as t
 from ... import types
@@ -65,6 +66,72 @@ async def test_mcp_tools_async(client):
           args={'location': 'Boston'},
       )
   ]
+
+
+@pytest.mark.asyncio
+async def test_mcp_tools_subsequent_calls_async(client):
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+              mcp_types.Tool(
+                  name='add_numbers',
+                  description='Add two numbers together.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {
+                          'a': {'type': 'number'},
+                          'b': {'type': 'number'},
+                      },
+                  },
+              ),
+          ]
+      )
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any],
+    ):
+      if name == 'get_weather':
+        return mcp_types.CallToolResult(
+            content=[mcp_types.TextContent(type='text', text='Sunny')]
+        )
+      else:
+        return mcp_types.CallToolResult(
+            content=[mcp_types.TextContent(type='text', text='100')]
+        )
+
+  config = {
+      'tools': [MockMcpClientSession()],
+  }
+
+  response = await client.aio.models.generate_content(
+      model='gemini-2.0-flash',
+      contents=t.t_contents(None, 'What is the weather in Boston?'),
+      config=config,
+  )
+  assert 'sunny' in response.text
+
+  response_2 = await client.aio.models.generate_content(
+      model='gemini-2.0-flash',
+      contents=t.t_contents(None, 'What is 50 + 50?'),
+      config=config,
+  )
+  assert '100' in response_2.text
 
 
 @pytest.mark.asyncio

@@ -6718,14 +6718,16 @@ class AsyncModels(_api_module.BaseModule):
       # J'aime les bagels.
     """
     # Retrieve and cache any MCP tools if provided.
-    config, mcp_to_genai_tool_adapters = (
+    parsed_config, mcp_to_genai_tool_adapters = (
         await _extra_utils.parse_config_for_mcp_tools(config)
     )
-    if _extra_utils.should_disable_afc(config):
+    if _extra_utils.should_disable_afc(parsed_config):
       return await self._generate_content(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
-    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
+    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(
+        parsed_config
+    )
     logger.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
@@ -6733,14 +6735,14 @@ class AsyncModels(_api_module.BaseModule):
     response = types.GenerateContentResponse()
     while remaining_remote_calls_afc > 0:
       response = await self._generate_content(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
       remaining_remote_calls_afc -= 1
       if remaining_remote_calls_afc == 0:
         logger.info('Reached max remote calls for automatic function calling.')
 
       function_map = _extra_utils.get_function_map(
-          config, mcp_to_genai_tool_adapters, is_caller_method_async=True
+          parsed_config, mcp_to_genai_tool_adapters, is_caller_method_async=True
       )
       if not function_map:
         break
@@ -6773,7 +6775,10 @@ class AsyncModels(_api_module.BaseModule):
       automatic_function_calling_history.append(func_call_content)
       automatic_function_calling_history.append(func_response_content)
 
-    if _extra_utils.should_append_afc_history(config) and response is not None:
+    if (
+        _extra_utils.should_append_afc_history(parsed_config)
+        and response is not None
+    ):
       response.automatic_function_calling_history = (
           automatic_function_calling_history
       )
@@ -6844,19 +6849,19 @@ class AsyncModels(_api_module.BaseModule):
     """
 
     # Retrieve and cache any MCP tools if provided.
-    config, mcp_to_genai_tool_adapters = (
+    parsed_config, mcp_to_genai_tool_adapters = (
         await _extra_utils.parse_config_for_mcp_tools(config)
     )
-    if _extra_utils.should_disable_afc(config):
+    if _extra_utils.should_disable_afc(parsed_config):
       response = await self._generate_content_stream(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
 
       async def base_async_generator(model, contents, config):  # type: ignore[no-untyped-def]
         async for chunk in response:  # type: ignore[attr-defined]
           yield chunk
 
-      return base_async_generator(model, contents, config)  # type: ignore[no-untyped-call, no-any-return]
+      return base_async_generator(model, contents, parsed_config)  # type: ignore[no-untyped-call, no-any-return]
 
     async def async_generator(model, contents, config):  # type: ignore[no-untyped-def]
       remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
@@ -6945,7 +6950,7 @@ class AsyncModels(_api_module.BaseModule):
           automatic_function_calling_history.append(func_call_content)
         automatic_function_calling_history.append(func_response_content)
 
-    return async_generator(model, contents, config)  # type: ignore[no-untyped-call, no-any-return]
+    return async_generator(model, contents, parsed_config)  # type: ignore[no-untyped-call, no-any-return]
 
   async def edit_image(
       self,

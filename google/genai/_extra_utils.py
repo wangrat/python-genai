@@ -451,7 +451,9 @@ async def parse_config_for_mcp_tools(
   mcp_to_genai_tool_adapters: dict[str, McpToGenAiToolAdapter] = {}
   if not config:
     return config, mcp_to_genai_tool_adapters
-  config_model = _create_generate_content_config_model(config)
+  config_model = _create_generate_content_config_model(config).model_copy(
+      deep=True
+  )
   if config_model.tools:
     for tool in config_model.tools:
       if McpClientSession is not None and isinstance(tool, McpClientSession):
