@@ -228,6 +228,21 @@ test_table: list[pytest_helper.TestTableItem] = [
             ),
         ),
     ),
+     pytest_helper.TestTableItem(
+        name='test_google_search_tool_with_time_range_filter',
+        parameters=types._GenerateContentParameters(
+            model='gemini-2.0-flash-exp',
+            contents=t.t_contents(None, 'What is the QQQ stock price?'),
+            config=types.GenerateContentConfig(
+                tools=[types.Tool(google_search=types.GoogleSearch(
+                    time_range_filter=types.Interval(
+                        start_time=datetime.fromisoformat('2025-05-01T00:00:00Z'),
+                        end_time=datetime.fromisoformat('2025-05-03T00:00:00Z'),
+                    )
+                ))]
+            ),
+        ),
+    ),
     pytest_helper.TestTableItem(
         name='test_speech_with_config',
         parameters=types._GenerateContentParameters(

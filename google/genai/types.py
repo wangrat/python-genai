@@ -1792,16 +1792,60 @@ class FunctionDeclarationDict(TypedDict, total=False):
 FunctionDeclarationOrDict = Union[FunctionDeclaration, FunctionDeclarationDict]
 
 
+class Interval(_common.BaseModel):
+  """Represents a time interval, encoded as a start time (inclusive) and an end time (exclusive).
+
+  The start time must be less than or equal to the end time.
+  When the start equals the end time, the interval is an empty interval.
+  (matches no time)
+  When both start and end are unspecified, the interval matches any time.
+  """
+
+  start_time: Optional[datetime.datetime] = Field(
+      default=None, description="""The start time of the interval."""
+  )
+  end_time: Optional[datetime.datetime] = Field(
+      default=None, description="""The end time of the interval."""
+  )
+
+
+class IntervalDict(TypedDict, total=False):
+  """Represents a time interval, encoded as a start time (inclusive) and an end time (exclusive).
+
+  The start time must be less than or equal to the end time.
+  When the start equals the end time, the interval is an empty interval.
+  (matches no time)
+  When both start and end are unspecified, the interval matches any time.
+  """
+
+  start_time: Optional[datetime.datetime]
+  """The start time of the interval."""
+
+  end_time: Optional[datetime.datetime]
+  """The end time of the interval."""
+
+
+IntervalOrDict = Union[Interval, IntervalDict]
+
+
 class GoogleSearch(_common.BaseModel):
   """Tool to support Google Search in Model. Powered by Google."""
 
-  pass
+  time_range_filter: Optional[Interval] = Field(
+      default=None,
+      description="""Optional. Filter search results to a specific time range.
+      If customers set a start time, they must set an end time (and vice versa).
+      """,
+  )
 
 
 class GoogleSearchDict(TypedDict, total=False):
   """Tool to support Google Search in Model. Powered by Google."""
 
-  pass
+  time_range_filter: Optional[IntervalDict]
+  """Optional. Filter search results to a specific time range.
+      If customers set a start time, they must set an end time (and vice versa).
+      """
 
 
 GoogleSearchOrDict = Union[GoogleSearch, GoogleSearchDict]
