@@ -69,6 +69,42 @@ async def test_mcp_tools_async(client):
 
 
 @pytest.mark.asyncio
+async def test_mcp_tools_with_custom_headers_async(client):
+  config = {
+      'http_options': {
+          'headers': {
+              'x-goog-api-client': 'google-genai-sdk/1.0.0 gl-python/1.0.0',
+          },
+      },
+      'tools': [
+          mcp_types.Tool(
+              name='get_weather',
+              description='Get the weather in a city.',
+              inputSchema={
+                  'type': 'object',
+                  'properties': {'location': {'type': 'string'}},
+              },
+          )
+      ],
+  }
+  response = await client.aio.models.generate_content(
+      model='gemini-2.0-flash',
+      contents=t.t_contents(None, 'What is the weather in Boston?'),
+      config=config,
+  )
+  assert response.function_calls == [
+      types.FunctionCall(
+          name='get_weather',
+          args={'location': 'Boston'},
+      )
+  ]
+  # Assert config is not modified.
+  assert config['http_options']['headers'] == {
+      'x-goog-api-client': 'google-genai-sdk/1.0.0 gl-python/1.0.0'
+  }
+
+
+@pytest.mark.asyncio
 async def test_mcp_tools_subsequent_calls_async(client):
   class MockMcpClientSession(McpClientSession):
 

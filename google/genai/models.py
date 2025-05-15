@@ -21,6 +21,7 @@ from urllib.parse import urlencode
 from . import _api_module
 from . import _common
 from . import _extra_utils
+from . import _mcp_utils
 from . import _transformers as t
 from . import types
 from ._api_client import BaseApiClient
@@ -6884,6 +6885,16 @@ class AsyncModels(_api_module.BaseModule):
     parsed_config, mcp_to_genai_tool_adapters = (
         await _extra_utils.parse_config_for_mcp_tools(config)
     )
+    if (
+        parsed_config
+        and parsed_config.tools
+        and _mcp_utils.has_mcp_tool_usage(parsed_config.tools)
+    ):
+      if parsed_config.http_options is None:
+        parsed_config.http_options = types.HttpOptions(headers={})
+      if parsed_config.http_options.headers is None:
+        parsed_config.http_options.headers = {}
+      _mcp_utils.set_mcp_usage_header(parsed_config.http_options.headers)
     if _extra_utils.should_disable_afc(parsed_config):
       return await self._generate_content(
           model=model, contents=contents, config=parsed_config
@@ -7015,6 +7026,16 @@ class AsyncModels(_api_module.BaseModule):
     parsed_config, mcp_to_genai_tool_adapters = (
         await _extra_utils.parse_config_for_mcp_tools(config)
     )
+    if (
+        parsed_config
+        and parsed_config.tools
+        and _mcp_utils.has_mcp_tool_usage(parsed_config.tools)
+    ):
+      if parsed_config.http_options is None:
+        parsed_config.http_options = types.HttpOptions(headers={})
+      if parsed_config.http_options.headers is None:
+        parsed_config.http_options.headers = {}
+      _mcp_utils.set_mcp_usage_header(parsed_config.http_options.headers)
     if _extra_utils.should_disable_afc(parsed_config):
       response = await self._generate_content_stream(
           model=model, contents=contents, config=parsed_config

@@ -31,6 +31,7 @@ from websockets import ConnectionClosed
 from . import _api_module
 from . import _common
 from . import _live_converters as live_converters
+from . import _mcp_utils
 from . import _transformers as t
 from . import client
 from . import types
@@ -957,6 +958,12 @@ class AsyncLive(_api_module.BaseModule):
 
       request = json.dumps(request_dict)
 
+    if parameter_model.tools and _mcp_utils.has_mcp_tool_usage(
+        parameter_model.tools
+    ):
+      if headers is None:
+        headers = {}
+      _mcp_utils.set_mcp_usage_header(headers)
     try:
       async with connect(uri, additional_headers=headers) as ws:
         await ws.send(request)

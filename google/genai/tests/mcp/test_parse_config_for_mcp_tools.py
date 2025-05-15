@@ -40,7 +40,7 @@ async def test_parse_empty_config_dict():
   parsed_config, mcp_to_genai_tool_adapters = (
       await _extra_utils.parse_config_for_mcp_tools(config)
   )
-  assert config == parsed_config
+  assert parsed_config == None
   assert not mcp_to_genai_tool_adapters
 
 

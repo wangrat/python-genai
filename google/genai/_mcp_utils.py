@@ -15,19 +15,24 @@
 
 """Utils for working with MCP tools."""
 
+from importlib.metadata import PackageNotFoundError, version
 import typing
-from typing import Any
+from typing import Any, Union
 
 from . import types
 
 if typing.TYPE_CHECKING:
   from mcp.types import Tool as McpTool
+  from mcp import ClientSession as McpClientSession
 else:
+  McpClientSession: typing.Type = Any
   McpTool: typing.Type = Any
   try:
     from mcp.types import Tool as McpTool
+    from mcp import ClientSession as McpClientSession
   except ImportError:
     McpTool = None
+    McpClientSession = None
 
 
 def mcp_to_gemini_tool(tool: McpTool) -> types.Tool:
@@ -48,6 +53,29 @@ def mcp_to_gemini_tool(tool: McpTool) -> types.Tool:
 def mcp_to_gemini_tools(tools: list[McpTool]) -> list[types.Tool]:
   """Translates a list of MCP tools to a list of Google GenAI tools."""
   return [mcp_to_gemini_tool(tool) for tool in tools]
+
+
+def has_mcp_tool_usage(tools: types.ToolListUnion) -> bool:
+  """Checks whether the list of tools contains any MCP tools."""
+  if McpClientSession is None:
+    return False
+  for tool in tools:
+    if isinstance(tool, McpTool) or isinstance(tool, McpClientSession):
+      return True
+  return False
+
+
+def set_mcp_usage_header(headers: dict[str, str]) -> None:
+  """Sets the MCP version label in the Google API client header."""
+  if McpClientSession is None:
+    return
+  try:
+    version_label = version("mcp")
+  except PackageNotFoundError:
+    version_label = "0.0.0"
+  headers["x-goog-api-client"] = (
+      headers.get("x-goog-api-client", "") + f" mcp_used/{version_label}"
+  ).lstrip()
 
 
 def _filter_to_supported_schema(schema: dict[str, Any]) -> dict[str, Any]:

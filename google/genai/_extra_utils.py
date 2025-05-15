@@ -441,7 +441,7 @@ def should_append_afc_history(
 async def parse_config_for_mcp_tools(
     config: Optional[types.GenerateContentConfigOrDict] = None,
 ) -> tuple[
-    Optional[types.GenerateContentConfigOrDict],
+    Optional[types.GenerateContentConfig],
     dict[str, McpToGenAiToolAdapter],
 ]:
   """Returns a parsed config with MCP sessions converted to GenAI tools.
@@ -450,7 +450,7 @@ async def parse_config_for_mcp_tools(
   """
   mcp_to_genai_tool_adapters: dict[str, McpToGenAiToolAdapter] = {}
   if not config:
-    return config, mcp_to_genai_tool_adapters
+    return None, mcp_to_genai_tool_adapters
   config_model = _create_generate_content_config_model(config).model_copy(
       deep=True
   )
