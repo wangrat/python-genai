@@ -330,11 +330,13 @@ async def get_function_response_parts_async(
         func_response: dict[str, Any]
         try:
           if isinstance(func, McpToGenAiToolAdapter):
-            func_response = {
-                'result': await func.call_tool(
-                    types.FunctionCall(name=func_name, args=args)
-                )
-            }
+            mcp_tool_response = await func.call_tool(
+                types.FunctionCall(name=func_name, args=args)
+            )
+            if mcp_tool_response.isError:
+              func_response = {'error': mcp_tool_response}
+            else:
+              func_response = {'result': mcp_tool_response}
           elif inspect.iscoroutinefunction(func):
             func_response = {
                 'result': await invoke_function_from_dict_args_async(args, func)

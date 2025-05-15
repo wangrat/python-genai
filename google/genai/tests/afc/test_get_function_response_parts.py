@@ -172,7 +172,9 @@ async def test_mcp_tool():
       self._write_stream = None
 
     async def call_tool(self, name: str, arguments: dict[str, Any]) -> Any:
-      return '1.01'
+      return mcp_types.CallToolResult(
+          content=[mcp_types.TextContent(type='text', text='1.01')]
+      )
 
   mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
       session=MockMcpClientSession(),
@@ -199,7 +201,71 @@ async def test_mcp_tool():
       Part(
           function_response=FunctionResponse(
               name='tool',
-              response={'result': '1.01'},
+              response={
+                  'result': {
+                      'content': [{'type': 'text', 'text': '1.01'}],
+                      'isError': False,
+                  }
+              },
+          )
+      )
+  ]
+  actual_parts = await get_function_response_parts_async(response, function_map)
+
+  for actual_part, expected_part in zip(actual_parts, expected_parts):
+    assert actual_part.model_dump_json(
+        exclude_none=True
+    ) == expected_part.model_dump_json(exclude_none=True)
+
+
+@pytest.mark.asyncio
+async def test_mcp_tool_error():
+  if not _is_mcp_imported:
+    return
+
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def call_tool(self, name: str, arguments: dict[str, Any]) -> Any:
+      return mcp_types.CallToolResult(
+          content=[mcp_types.TextContent(type='text', text='Internal error')],
+          isError=True,
+      )
+
+  mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
+      session=MockMcpClientSession(),
+      list_tools_result=mcp_types.ListToolsResult(tools=[]),
+  )
+  response = GenerateContentResponse(
+      candidates=[
+          Candidate(
+              content=Content(
+                  parts=[
+                      Part(
+                          function_call=FunctionCall(
+                              name='tool',
+                              args={'key1': 'value1', 'key2': 1},
+                          )
+                      )
+                  ]
+              )
+          )
+      ]
+  )
+  function_map = {'tool': mcp_to_genai_tool_adapter}
+  expected_parts = [
+      Part(
+          function_response=FunctionResponse(
+              name='tool',
+              response={
+                  'error': {
+                      'content': [{'type': 'text', 'text': 'Internal error'}],
+                      'isError': True,
+                  }
+              },
           )
       )
   ]
