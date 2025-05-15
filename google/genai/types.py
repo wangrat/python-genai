@@ -301,6 +301,14 @@ class FunctionCallingConfigMode(_common.CaseInSensitiveEnum):
   NONE = 'NONE'
 
 
+class UrlRetrievalStatus(_common.CaseInSensitiveEnum):
+  """Status of the url retrieval."""
+
+  URL_RETRIEVAL_STATUS_UNSPECIFIED = 'URL_RETRIEVAL_STATUS_UNSPECIFIED'
+  URL_RETRIEVAL_STATUS_SUCCESS = 'URL_RETRIEVAL_STATUS_SUCCESS'
+  URL_RETRIEVAL_STATUS_ERROR = 'URL_RETRIEVAL_STATUS_ERROR'
+
+
 class SafetyFilterLevel(_common.CaseInSensitiveEnum):
   """Enum that controls the safety filter level for objectionable content."""
 
@@ -2052,6 +2060,21 @@ class GoogleMapsDict(TypedDict, total=False):
 GoogleMapsOrDict = Union[GoogleMaps, GoogleMapsDict]
 
 
+class UrlContext(_common.BaseModel):
+  """Tool to support URL context retrieval."""
+
+  pass
+
+
+class UrlContextDict(TypedDict, total=False):
+  """Tool to support URL context retrieval."""
+
+  pass
+
+
+UrlContextOrDict = Union[UrlContext, UrlContextDict]
+
+
 class VertexAISearch(_common.BaseModel):
   """Retrieve from Vertex AI Search datastore or engine for grounding.
 
@@ -2409,6 +2432,10 @@ class Tool(_common.BaseModel):
       description="""Optional. Google Maps tool type. Specialized retrieval tool
       that is powered by Google Maps.""",
   )
+  url_context: Optional[UrlContext] = Field(
+      default=None,
+      description="""Optional. Tool to support URL context retrieval.""",
+  )
   code_execution: Optional[ToolCodeExecution] = Field(
       default=None,
       description="""Optional. CodeExecution tool type. Enables the model to execute code as part of generation. This field is only used by the Gemini Developer API services.""",
@@ -2438,6 +2465,9 @@ class ToolDict(TypedDict, total=False):
   google_maps: Optional[GoogleMapsDict]
   """Optional. Google Maps tool type. Specialized retrieval tool
       that is powered by Google Maps."""
+
+  url_context: Optional[UrlContextDict]
+  """Optional. Tool to support URL context retrieval."""
 
   code_execution: Optional[ToolCodeExecutionDict]
   """Optional. CodeExecution tool type. Enables the model to execute code as part of generation. This field is only used by the Gemini Developer API services."""
@@ -3495,6 +3525,48 @@ class CitationMetadataDict(TypedDict, total=False):
 CitationMetadataOrDict = Union[CitationMetadata, CitationMetadataDict]
 
 
+class UrlMetadata(_common.BaseModel):
+  """Context for a single url retrieval."""
+
+  retrieved_url: Optional[str] = Field(
+      default=None, description="""The URL retrieved by the tool."""
+  )
+  url_retrieval_status: Optional[UrlRetrievalStatus] = Field(
+      default=None, description="""Status of the url retrieval."""
+  )
+
+
+class UrlMetadataDict(TypedDict, total=False):
+  """Context for a single url retrieval."""
+
+  retrieved_url: Optional[str]
+  """The URL retrieved by the tool."""
+
+  url_retrieval_status: Optional[UrlRetrievalStatus]
+  """Status of the url retrieval."""
+
+
+UrlMetadataOrDict = Union[UrlMetadata, UrlMetadataDict]
+
+
+class UrlContextMetadata(_common.BaseModel):
+  """Metadata related to url context retrieval tool."""
+
+  url_metadata: Optional[list[UrlMetadata]] = Field(
+      default=None, description="""List of url context."""
+  )
+
+
+class UrlContextMetadataDict(TypedDict, total=False):
+  """Metadata related to url context retrieval tool."""
+
+  url_metadata: Optional[list[UrlMetadataDict]]
+  """List of url context."""
+
+
+UrlContextMetadataOrDict = Union[UrlContextMetadata, UrlContextMetadataDict]
+
+
 class GroundingChunkRetrievedContext(_common.BaseModel):
   """Chunk from context retrieved by the retrieval tools."""
 
@@ -3910,6 +3982,10 @@ class Candidate(_common.BaseModel):
       If empty, the model has not stopped generating the tokens.
       """,
   )
+  url_context_metadata: Optional[UrlContextMetadata] = Field(
+      default=None,
+      description="""Metadata related to url context retrieval tool.""",
+  )
   avg_logprobs: Optional[float] = Field(
       default=None,
       description="""Output only. Average log probability score of the candidate.""",
@@ -3954,6 +4030,9 @@ class CandidateDict(TypedDict, total=False):
   """The reason why the model stopped generating tokens.
       If empty, the model has not stopped generating the tokens.
       """
+
+  url_context_metadata: Optional[UrlContextMetadataDict]
+  """Metadata related to url context retrieval tool."""
 
   avg_logprobs: Optional[float]
   """Output only. Average log probability score of the candidate."""
@@ -10139,6 +10218,10 @@ class LiveServerContent(_common.BaseModel):
       model turn.
       """,
   )
+  url_context_metadata: Optional[UrlContextMetadata] = Field(
+      default=None,
+      description="""Metadata related to url context retrieval tool.""",
+  )
 
 
 class LiveServerContentDict(TypedDict, total=False):
@@ -10180,6 +10263,9 @@ class LiveServerContentDict(TypedDict, total=False):
       turn which means it doesn’t imply any ordering between transcription and
       model turn.
       """
+
+  url_context_metadata: Optional[UrlContextMetadataDict]
+  """Metadata related to url context retrieval tool."""
 
 
 LiveServerContentOrDict = Union[LiveServerContent, LiveServerContentDict]

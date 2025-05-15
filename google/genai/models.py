@@ -295,6 +295,16 @@ def _GoogleMaps_to_mldev(
   return to_object
 
 
+def _UrlContext_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+
+  return to_object
+
+
 def _Tool_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -341,6 +351,15 @@ def _Tool_to_mldev(
 
   if getv(from_object, ['google_maps']) is not None:
     raise ValueError('google_maps parameter is not supported in Gemini API.')
+
+  if getv(from_object, ['url_context']) is not None:
+    setv(
+        to_object,
+        ['urlContext'],
+        _UrlContext_to_mldev(
+            api_client, getv(from_object, ['url_context']), to_object
+        ),
+    )
 
   if getv(from_object, ['code_execution']) is not None:
     setv(to_object, ['codeExecution'], getv(from_object, ['code_execution']))
@@ -1485,6 +1504,16 @@ def _GoogleMaps_to_vertex(
   return to_object
 
 
+def _UrlContext_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+
+  return to_object
+
+
 def _Tool_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -1541,6 +1570,9 @@ def _Tool_to_vertex(
             api_client, getv(from_object, ['google_maps']), to_object
         ),
     )
+
+  if getv(from_object, ['url_context']) is not None:
+    raise ValueError('url_context parameter is not supported in Vertex AI.')
 
   if getv(from_object, ['code_execution']) is not None:
     setv(to_object, ['codeExecution'], getv(from_object, ['code_execution']))
@@ -2978,6 +3010,44 @@ def _CitationMetadata_from_mldev(
   return to_object
 
 
+def _UrlMetadata_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['retrievedUrl']) is not None:
+    setv(to_object, ['retrieved_url'], getv(from_object, ['retrievedUrl']))
+
+  if getv(from_object, ['urlRetrievalStatus']) is not None:
+    setv(
+        to_object,
+        ['url_retrieval_status'],
+        getv(from_object, ['urlRetrievalStatus']),
+    )
+
+  return to_object
+
+
+def _UrlContextMetadata_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['urlMetadata']) is not None:
+    setv(
+        to_object,
+        ['url_metadata'],
+        [
+            _UrlMetadata_from_mldev(api_client, item, to_object)
+            for item in getv(from_object, ['urlMetadata'])
+        ],
+    )
+
+  return to_object
+
+
 def _Candidate_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -3007,6 +3077,15 @@ def _Candidate_from_mldev(
 
   if getv(from_object, ['finishReason']) is not None:
     setv(to_object, ['finish_reason'], getv(from_object, ['finishReason']))
+
+  if getv(from_object, ['urlContextMetadata']) is not None:
+    setv(
+        to_object,
+        ['url_context_metadata'],
+        _UrlContextMetadata_from_mldev(
+            api_client, getv(from_object, ['urlContextMetadata']), to_object
+        ),
+    )
 
   if getv(from_object, ['avgLogprobs']) is not None:
     setv(to_object, ['avg_logprobs'], getv(from_object, ['avgLogprobs']))
@@ -3576,6 +3655,44 @@ def _CitationMetadata_from_vertex(
   to_object: dict[str, Any] = {}
   if getv(from_object, ['citations']) is not None:
     setv(to_object, ['citations'], getv(from_object, ['citations']))
+
+  return to_object
+
+
+def _UrlMetadata_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['retrievedUrl']) is not None:
+    setv(to_object, ['retrieved_url'], getv(from_object, ['retrievedUrl']))
+
+  if getv(from_object, ['urlRetrievalStatus']) is not None:
+    setv(
+        to_object,
+        ['url_retrieval_status'],
+        getv(from_object, ['urlRetrievalStatus']),
+    )
+
+  return to_object
+
+
+def _UrlContextMetadata_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['urlMetadata']) is not None:
+    setv(
+        to_object,
+        ['url_metadata'],
+        [
+            _UrlMetadata_from_vertex(api_client, item, to_object)
+            for item in getv(from_object, ['urlMetadata'])
+        ],
+    )
 
   return to_object
 

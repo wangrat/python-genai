@@ -120,7 +120,9 @@ test_table: list[pytest_helper.TestTableItem] = [
                 'tools': [{
                     'retrieval': {
                         'vertex_ai_search': {
-                            'datastore': 'projects/vertex-sdk-dev/locations/global/collections/default_collection/dataStores/yvonne_1728691676574'
+                            'datastore': (
+                                'projects/vertex-sdk-dev/locations/global/collections/default_collection/dataStores/yvonne_1728691676574'
+                            )
                         }
                     }
                 }]
@@ -149,7 +151,7 @@ test_table: list[pytest_helper.TestTableItem] = [
         exception_if_mldev='retrieval',
         exception_if_vertex='400',
     ),
-     pytest_helper.TestTableItem(
+    pytest_helper.TestTableItem(
         name='test_vai_search_engine',
         parameters=types._GenerateContentParameters(
             model='gemini-2.0-flash-001',
@@ -257,6 +259,17 @@ test_table: list[pytest_helper.TestTableItem] = [
             ),
             config={'tools': [{'code_execution': {}}]},
         ),
+    ),
+    pytest_helper.TestTableItem(
+        name='test_url_context',
+        parameters=types._GenerateContentParameters(
+            model='gemini-2.5-flash-preview-04-17',
+            contents=t.t_contents(
+                None, 'what are the top headlines on https://news.google.com'
+            ),
+            config={'tools': [{'url_context': {}}]},
+        ),
+        exception_if_vertex='not supported in Vertex AI',
     ),
 ]
 
