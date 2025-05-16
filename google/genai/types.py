@@ -80,27 +80,39 @@ class Outcome(_common.CaseInSensitiveEnum):
   """Required. Outcome of the code execution."""
 
   OUTCOME_UNSPECIFIED = 'OUTCOME_UNSPECIFIED'
+  """Unspecified status. This value should not be used."""
   OUTCOME_OK = 'OUTCOME_OK'
+  """Code execution completed successfully."""
   OUTCOME_FAILED = 'OUTCOME_FAILED'
+  """Code execution finished but with a failure. `stderr` should contain the reason."""
   OUTCOME_DEADLINE_EXCEEDED = 'OUTCOME_DEADLINE_EXCEEDED'
+  """Code execution ran for too long, and was cancelled. There may or may not be a partial output present."""
 
 
 class Language(_common.CaseInSensitiveEnum):
   """Required. Programming language of the `code`."""
 
   LANGUAGE_UNSPECIFIED = 'LANGUAGE_UNSPECIFIED'
+  """Unspecified language. This value should not be used."""
   PYTHON = 'PYTHON'
+  """Python >= 3.10, with numpy and simpy available."""
 
 
 class HarmCategory(_common.CaseInSensitiveEnum):
   """Required. Harm category."""
 
   HARM_CATEGORY_UNSPECIFIED = 'HARM_CATEGORY_UNSPECIFIED'
+  """The harm category is unspecified."""
   HARM_CATEGORY_HATE_SPEECH = 'HARM_CATEGORY_HATE_SPEECH'
+  """The harm category is hate speech."""
   HARM_CATEGORY_DANGEROUS_CONTENT = 'HARM_CATEGORY_DANGEROUS_CONTENT'
+  """The harm category is dangerous content."""
   HARM_CATEGORY_HARASSMENT = 'HARM_CATEGORY_HARASSMENT'
+  """The harm category is harassment."""
   HARM_CATEGORY_SEXUALLY_EXPLICIT = 'HARM_CATEGORY_SEXUALLY_EXPLICIT'
+  """The harm category is sexually explicit content."""
   HARM_CATEGORY_CIVIC_INTEGRITY = 'HARM_CATEGORY_CIVIC_INTEGRITY'
+  """The harm category is civic integrity."""
 
 
 class HarmBlockMethod(_common.CaseInSensitiveEnum):
@@ -111,38 +123,56 @@ class HarmBlockMethod(_common.CaseInSensitiveEnum):
   """
 
   HARM_BLOCK_METHOD_UNSPECIFIED = 'HARM_BLOCK_METHOD_UNSPECIFIED'
+  """The harm block method is unspecified."""
   SEVERITY = 'SEVERITY'
+  """The harm block method uses both probability and severity scores."""
   PROBABILITY = 'PROBABILITY'
+  """The harm block method uses the probability score."""
 
 
 class HarmBlockThreshold(_common.CaseInSensitiveEnum):
   """Required. The harm block threshold."""
 
   HARM_BLOCK_THRESHOLD_UNSPECIFIED = 'HARM_BLOCK_THRESHOLD_UNSPECIFIED'
+  """Unspecified harm block threshold."""
   BLOCK_LOW_AND_ABOVE = 'BLOCK_LOW_AND_ABOVE'
+  """Block low threshold and above (i.e. block more)."""
   BLOCK_MEDIUM_AND_ABOVE = 'BLOCK_MEDIUM_AND_ABOVE'
+  """Block medium threshold and above."""
   BLOCK_ONLY_HIGH = 'BLOCK_ONLY_HIGH'
+  """Block only high threshold (i.e. block less)."""
   BLOCK_NONE = 'BLOCK_NONE'
+  """Block none."""
   OFF = 'OFF'
+  """Turn off the safety filter."""
 
 
 class Type(_common.CaseInSensitiveEnum):
   """Optional. The type of the data."""
 
   TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
+  """Not specified, should not be used."""
   STRING = 'STRING'
+  """OpenAPI string type"""
   NUMBER = 'NUMBER'
+  """OpenAPI number type"""
   INTEGER = 'INTEGER'
+  """OpenAPI integer type"""
   BOOLEAN = 'BOOLEAN'
+  """OpenAPI boolean type"""
   ARRAY = 'ARRAY'
+  """OpenAPI array type"""
   OBJECT = 'OBJECT'
+  """OpenAPI object type"""
 
 
 class Mode(_common.CaseInSensitiveEnum):
   """The mode of the predictor to be used in dynamic retrieval."""
 
   MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
+  """Always trigger retrieval."""
   MODE_DYNAMIC = 'MODE_DYNAMIC'
+  """Run retrieval only when system decides it is necessary."""
 
 
 class AuthType(_common.CaseInSensitiveEnum):
@@ -150,11 +180,17 @@ class AuthType(_common.CaseInSensitiveEnum):
 
   AUTH_TYPE_UNSPECIFIED = 'AUTH_TYPE_UNSPECIFIED'
   NO_AUTH = 'NO_AUTH'
+  """No Auth."""
   API_KEY_AUTH = 'API_KEY_AUTH'
+  """API Key Auth."""
   HTTP_BASIC_AUTH = 'HTTP_BASIC_AUTH'
+  """HTTP Basic Auth."""
   GOOGLE_SERVICE_ACCOUNT_AUTH = 'GOOGLE_SERVICE_ACCOUNT_AUTH'
+  """Google Service Account Auth."""
   OAUTH = 'OAUTH'
+  """OAuth auth."""
   OIDC_AUTH = 'OIDC_AUTH'
+  """OpenID Connect (OIDC) Auth."""
 
 
 class FinishReason(_common.CaseInSensitiveEnum):
@@ -164,47 +200,74 @@ class FinishReason(_common.CaseInSensitiveEnum):
   """
 
   FINISH_REASON_UNSPECIFIED = 'FINISH_REASON_UNSPECIFIED'
+  """The finish reason is unspecified."""
   STOP = 'STOP'
+  """Token generation reached a natural stopping point or a configured stop sequence."""
   MAX_TOKENS = 'MAX_TOKENS'
+  """Token generation reached the configured maximum output tokens."""
   SAFETY = 'SAFETY'
+  """Token generation stopped because the content potentially contains safety violations. NOTE: When streaming, [content][] is empty if content filters blocks the output."""
   RECITATION = 'RECITATION'
+  """The token generation stopped because of potential recitation."""
   LANGUAGE = 'LANGUAGE'
+  """The token generation stopped because of using an unsupported language."""
   OTHER = 'OTHER'
+  """All other reasons that stopped the token generation."""
   BLOCKLIST = 'BLOCKLIST'
+  """Token generation stopped because the content contains forbidden terms."""
   PROHIBITED_CONTENT = 'PROHIBITED_CONTENT'
+  """Token generation stopped for potentially containing prohibited content."""
   SPII = 'SPII'
+  """Token generation stopped because the content potentially contains Sensitive Personally Identifiable Information (SPII)."""
   MALFORMED_FUNCTION_CALL = 'MALFORMED_FUNCTION_CALL'
+  """The function call generated by the model is invalid."""
   IMAGE_SAFETY = 'IMAGE_SAFETY'
+  """Token generation stopped because generated images have safety violations."""
 
 
 class HarmProbability(_common.CaseInSensitiveEnum):
   """Output only. Harm probability levels in the content."""
 
   HARM_PROBABILITY_UNSPECIFIED = 'HARM_PROBABILITY_UNSPECIFIED'
+  """Harm probability unspecified."""
   NEGLIGIBLE = 'NEGLIGIBLE'
+  """Negligible level of harm."""
   LOW = 'LOW'
+  """Low level of harm."""
   MEDIUM = 'MEDIUM'
+  """Medium level of harm."""
   HIGH = 'HIGH'
+  """High level of harm."""
 
 
 class HarmSeverity(_common.CaseInSensitiveEnum):
   """Output only. Harm severity levels in the content."""
 
   HARM_SEVERITY_UNSPECIFIED = 'HARM_SEVERITY_UNSPECIFIED'
+  """Harm severity unspecified."""
   HARM_SEVERITY_NEGLIGIBLE = 'HARM_SEVERITY_NEGLIGIBLE'
+  """Negligible level of harm severity."""
   HARM_SEVERITY_LOW = 'HARM_SEVERITY_LOW'
+  """Low level of harm severity."""
   HARM_SEVERITY_MEDIUM = 'HARM_SEVERITY_MEDIUM'
+  """Medium level of harm severity."""
   HARM_SEVERITY_HIGH = 'HARM_SEVERITY_HIGH'
+  """High level of harm severity."""
 
 
 class BlockedReason(_common.CaseInSensitiveEnum):
   """Output only. Blocked reason."""
 
   BLOCKED_REASON_UNSPECIFIED = 'BLOCKED_REASON_UNSPECIFIED'
+  """Unspecified blocked reason."""
   SAFETY = 'SAFETY'
+  """Candidates blocked due to safety."""
   OTHER = 'OTHER'
+  """Candidates blocked due to other reason."""
   BLOCKLIST = 'BLOCKLIST'
+  """Candidates blocked due to the terms which are included from the terminology blocklist."""
   PROHIBITED_CONTENT = 'PROHIBITED_CONTENT'
+  """Candidates blocked due to prohibited content."""
 
 
 class TrafficType(_common.CaseInSensitiveEnum):
@@ -215,55 +278,85 @@ class TrafficType(_common.CaseInSensitiveEnum):
   """
 
   TRAFFIC_TYPE_UNSPECIFIED = 'TRAFFIC_TYPE_UNSPECIFIED'
+  """Unspecified request traffic type."""
   ON_DEMAND = 'ON_DEMAND'
+  """Type for Pay-As-You-Go traffic."""
   PROVISIONED_THROUGHPUT = 'PROVISIONED_THROUGHPUT'
+  """Type for Provisioned Throughput traffic."""
 
 
 class Modality(_common.CaseInSensitiveEnum):
   """Server content modalities."""
 
   MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
+  """The modality is unspecified."""
   TEXT = 'TEXT'
+  """Indicates the model should return text"""
   IMAGE = 'IMAGE'
+  """Indicates the model should return images."""
   AUDIO = 'AUDIO'
+  """Indicates the model should return images."""
 
 
 class MediaResolution(_common.CaseInSensitiveEnum):
   """The media resolution to use."""
 
   MEDIA_RESOLUTION_UNSPECIFIED = 'MEDIA_RESOLUTION_UNSPECIFIED'
+  """Media resolution has not been set"""
   MEDIA_RESOLUTION_LOW = 'MEDIA_RESOLUTION_LOW'
+  """Media resolution set to low (64 tokens)."""
   MEDIA_RESOLUTION_MEDIUM = 'MEDIA_RESOLUTION_MEDIUM'
+  """Media resolution set to medium (256 tokens)."""
   MEDIA_RESOLUTION_HIGH = 'MEDIA_RESOLUTION_HIGH'
+  """Media resolution set to high (zoomed reframing with 256 tokens)."""
 
 
 class JobState(_common.CaseInSensitiveEnum):
   """Job state."""
 
   JOB_STATE_UNSPECIFIED = 'JOB_STATE_UNSPECIFIED'
+  """The job state is unspecified."""
   JOB_STATE_QUEUED = 'JOB_STATE_QUEUED'
+  """The job has been just created or resumed and processing has not yet begun."""
   JOB_STATE_PENDING = 'JOB_STATE_PENDING'
+  """The service is preparing to run the job."""
   JOB_STATE_RUNNING = 'JOB_STATE_RUNNING'
+  """The job is in progress."""
   JOB_STATE_SUCCEEDED = 'JOB_STATE_SUCCEEDED'
+  """The job completed successfully."""
   JOB_STATE_FAILED = 'JOB_STATE_FAILED'
+  """The job failed."""
   JOB_STATE_CANCELLING = 'JOB_STATE_CANCELLING'
+  """The job is being cancelled. From this state the job may only go to either `JOB_STATE_SUCCEEDED`, `JOB_STATE_FAILED` or `JOB_STATE_CANCELLED`."""
   JOB_STATE_CANCELLED = 'JOB_STATE_CANCELLED'
+  """The job has been cancelled."""
   JOB_STATE_PAUSED = 'JOB_STATE_PAUSED'
+  """The job has been stopped, and can be resumed."""
   JOB_STATE_EXPIRED = 'JOB_STATE_EXPIRED'
+  """The job has expired."""
   JOB_STATE_UPDATING = 'JOB_STATE_UPDATING'
+  """The job is being updated. Only jobs in the `JOB_STATE_RUNNING` state can be updated. After updating, the job goes back to the `JOB_STATE_RUNNING` state."""
   JOB_STATE_PARTIALLY_SUCCEEDED = 'JOB_STATE_PARTIALLY_SUCCEEDED'
+  """The job is partially succeeded, some results may be missing due to errors."""
 
 
 class AdapterSize(_common.CaseInSensitiveEnum):
   """Optional. Adapter size for tuning."""
 
   ADAPTER_SIZE_UNSPECIFIED = 'ADAPTER_SIZE_UNSPECIFIED'
+  """Adapter size is unspecified."""
   ADAPTER_SIZE_ONE = 'ADAPTER_SIZE_ONE'
+  """Adapter size 1."""
   ADAPTER_SIZE_TWO = 'ADAPTER_SIZE_TWO'
+  """Adapter size 2."""
   ADAPTER_SIZE_FOUR = 'ADAPTER_SIZE_FOUR'
+  """Adapter size 4."""
   ADAPTER_SIZE_EIGHT = 'ADAPTER_SIZE_EIGHT'
+  """Adapter size 8."""
   ADAPTER_SIZE_SIXTEEN = 'ADAPTER_SIZE_SIXTEEN'
+  """Adapter size 16."""
   ADAPTER_SIZE_THIRTY_TWO = 'ADAPTER_SIZE_THIRTY_TWO'
+  """Adapter size 32."""
 
 
 class FeatureSelectionPreference(_common.CaseInSensitiveEnum):
@@ -281,32 +374,44 @@ class Behavior(_common.CaseInSensitiveEnum):
   """Defines the function behavior. Defaults to `BLOCKING`."""
 
   UNSPECIFIED = 'UNSPECIFIED'
+  """This value is unused."""
   BLOCKING = 'BLOCKING'
+  """If set, the system will wait to receive the function response before continuing the conversation."""
   NON_BLOCKING = 'NON_BLOCKING'
+  """If set, the system will not wait to receive the function response. Instead, it will attempt to handle function responses as they become available while maintaining the conversation between the user and the model."""
 
 
 class DynamicRetrievalConfigMode(_common.CaseInSensitiveEnum):
   """Config for the dynamic retrieval config mode."""
 
   MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
+  """Always trigger retrieval."""
   MODE_DYNAMIC = 'MODE_DYNAMIC'
+  """Run retrieval only when system decides it is necessary."""
 
 
 class FunctionCallingConfigMode(_common.CaseInSensitiveEnum):
   """Config for the function calling config mode."""
 
   MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
+  """The function calling config mode is unspecified. Should not be used."""
   AUTO = 'AUTO'
+  """Default model behavior, model decides to predict either function calls or natural language response."""
   ANY = 'ANY'
+  """Model is constrained to always predicting function calls only. If "allowed_function_names" are set, the predicted function calls will be limited to any one of "allowed_function_names", else the predicted function calls will be any one of the provided "function_declarations"."""
   NONE = 'NONE'
+  """Model will not predict any function calls. Model behavior is same as when not passing any function declarations."""
 
 
 class UrlRetrievalStatus(_common.CaseInSensitiveEnum):
   """Status of the url retrieval."""
 
   URL_RETRIEVAL_STATUS_UNSPECIFIED = 'URL_RETRIEVAL_STATUS_UNSPECIFIED'
+  """Default value. This value is unused"""
   URL_RETRIEVAL_STATUS_SUCCESS = 'URL_RETRIEVAL_STATUS_SUCCESS'
+  """Url retrieval is successful."""
   URL_RETRIEVAL_STATUS_ERROR = 'URL_RETRIEVAL_STATUS_ERROR'
+  """Url retrieval is failed due to error."""
 
 
 class SafetyFilterLevel(_common.CaseInSensitiveEnum):
@@ -398,52 +503,74 @@ class MediaModality(_common.CaseInSensitiveEnum):
   """Server content modalities."""
 
   MODALITY_UNSPECIFIED = 'MODALITY_UNSPECIFIED'
+  """The modality is unspecified."""
   TEXT = 'TEXT'
+  """Plain text."""
   IMAGE = 'IMAGE'
+  """Images."""
   VIDEO = 'VIDEO'
+  """Video."""
   AUDIO = 'AUDIO'
+  """Audio."""
   DOCUMENT = 'DOCUMENT'
+  """Document, e.g. PDF."""
 
 
 class StartSensitivity(_common.CaseInSensitiveEnum):
   """Start of speech sensitivity."""
 
   START_SENSITIVITY_UNSPECIFIED = 'START_SENSITIVITY_UNSPECIFIED'
+  """The default is START_SENSITIVITY_LOW."""
   START_SENSITIVITY_HIGH = 'START_SENSITIVITY_HIGH'
+  """Automatic detection will detect the start of speech more often."""
   START_SENSITIVITY_LOW = 'START_SENSITIVITY_LOW'
+  """Automatic detection will detect the start of speech less often."""
 
 
 class EndSensitivity(_common.CaseInSensitiveEnum):
   """End of speech sensitivity."""
 
   END_SENSITIVITY_UNSPECIFIED = 'END_SENSITIVITY_UNSPECIFIED'
+  """The default is END_SENSITIVITY_LOW."""
   END_SENSITIVITY_HIGH = 'END_SENSITIVITY_HIGH'
+  """Automatic detection ends speech more often."""
   END_SENSITIVITY_LOW = 'END_SENSITIVITY_LOW'
+  """Automatic detection ends speech less often."""
 
 
 class ActivityHandling(_common.CaseInSensitiveEnum):
   """The different ways of handling user activity."""
 
   ACTIVITY_HANDLING_UNSPECIFIED = 'ACTIVITY_HANDLING_UNSPECIFIED'
+  """If unspecified, the default behavior is `START_OF_ACTIVITY_INTERRUPTS`."""
   START_OF_ACTIVITY_INTERRUPTS = 'START_OF_ACTIVITY_INTERRUPTS'
+  """If true, start of activity will interrupt the model's response (also called "barge in"). The model's current response will be cut-off in the moment of the interruption. This is the default behavior."""
   NO_INTERRUPTION = 'NO_INTERRUPTION'
+  """The model's response will not be interrupted."""
 
 
 class TurnCoverage(_common.CaseInSensitiveEnum):
   """Options about which input is included in the user's turn."""
 
   TURN_COVERAGE_UNSPECIFIED = 'TURN_COVERAGE_UNSPECIFIED'
+  """If unspecified, the default behavior is `TURN_INCLUDES_ONLY_ACTIVITY`."""
   TURN_INCLUDES_ONLY_ACTIVITY = 'TURN_INCLUDES_ONLY_ACTIVITY'
+  """The users turn only includes activity since the last turn, excluding inactivity (e.g. silence on the audio stream). This is the default behavior."""
   TURN_INCLUDES_ALL_INPUT = 'TURN_INCLUDES_ALL_INPUT'
+  """The users turn includes all realtime input since the last turn, including inactivity (e.g. silence on the audio stream)."""
 
 
 class FunctionResponseScheduling(_common.CaseInSensitiveEnum):
   """Specifies how the response should be scheduled in the conversation."""
 
   SCHEDULING_UNSPECIFIED = 'SCHEDULING_UNSPECIFIED'
+  """This value is unused."""
   SILENT = 'SILENT'
+  """Only add the result to the conversation context, do not interrupt or trigger generation."""
   WHEN_IDLE = 'WHEN_IDLE'
+  """Add the result to the conversation context, and prompt to generate output without interrupting ongoing generation."""
   INTERRUPT = 'INTERRUPT'
+  """Add the result to the conversation context, interrupt ongoing generation and prompt to generate output."""
 
 
 class VideoMetadata(_common.BaseModel):
