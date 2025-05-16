@@ -7047,6 +7047,8 @@ class AsyncModels(_api_module.BaseModule):
 
     Some models support multimodal input and output.
 
+    Built-in MCP support is a preview feature.
+
     Usage:
 
     .. code-block:: python
@@ -7177,6 +7179,8 @@ class AsyncModels(_api_module.BaseModule):
       'tunedModels/1234567890123456789'
 
     Some models support multimodal input and output.
+
+    Built-in MCP support is a preview feature.
 
     Usage:
 
