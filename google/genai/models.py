@@ -32,6 +32,24 @@ from .pagers import AsyncPager, Pager
 logger = logging.getLogger('google_genai.models')
 
 
+def _VideoMetadata_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['fps']) is not None:
+    setv(to_object, ['fps'], getv(from_object, ['fps']))
+
+  if getv(from_object, ['end_offset']) is not None:
+    setv(to_object, ['endOffset'], getv(from_object, ['end_offset']))
+
+  if getv(from_object, ['start_offset']) is not None:
+    setv(to_object, ['startOffset'], getv(from_object, ['start_offset']))
+
+  return to_object
+
+
 def _Blob_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -57,7 +75,13 @@ def _Part_to_mldev(
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['video_metadata']) is not None:
-    raise ValueError('video_metadata parameter is not supported in Gemini API.')
+    setv(
+        to_object,
+        ['videoMetadata'],
+        _VideoMetadata_to_mldev(
+            api_client, getv(from_object, ['video_metadata']), to_object
+        ),
+    )
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
@@ -1309,6 +1333,24 @@ def _GenerateVideosParameters_to_mldev(
   return to_object
 
 
+def _VideoMetadata_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['fps']) is not None:
+    setv(to_object, ['fps'], getv(from_object, ['fps']))
+
+  if getv(from_object, ['end_offset']) is not None:
+    setv(to_object, ['endOffset'], getv(from_object, ['end_offset']))
+
+  if getv(from_object, ['start_offset']) is not None:
+    setv(to_object, ['startOffset'], getv(from_object, ['start_offset']))
+
+  return to_object
+
+
 def _Blob_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -1334,7 +1376,13 @@ def _Part_to_vertex(
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['video_metadata']) is not None:
-    setv(to_object, ['videoMetadata'], getv(from_object, ['video_metadata']))
+    setv(
+        to_object,
+        ['videoMetadata'],
+        _VideoMetadata_to_vertex(
+            api_client, getv(from_object, ['video_metadata']), to_object
+        ),
+    )
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
@@ -3052,6 +3100,24 @@ def _Behavior_to_vertex_enum_validate(enum_value: Any) -> None:
     raise ValueError(f'{enum_value} enum value is not supported in Vertex AI.')
 
 
+def _VideoMetadata_from_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['fps']) is not None:
+    setv(to_object, ['fps'], getv(from_object, ['fps']))
+
+  if getv(from_object, ['endOffset']) is not None:
+    setv(to_object, ['end_offset'], getv(from_object, ['endOffset']))
+
+  if getv(from_object, ['startOffset']) is not None:
+    setv(to_object, ['start_offset'], getv(from_object, ['startOffset']))
+
+  return to_object
+
+
 def _Blob_from_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -3074,6 +3140,14 @@ def _Part_from_mldev(
     parent_object: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
+  if getv(from_object, ['videoMetadata']) is not None:
+    setv(
+        to_object,
+        ['video_metadata'],
+        _VideoMetadata_from_mldev(
+            api_client, getv(from_object, ['videoMetadata']), to_object
+        ),
+    )
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))
@@ -3697,6 +3771,24 @@ def _GenerateVideosOperation_from_mldev(
   return to_object
 
 
+def _VideoMetadata_from_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['fps']) is not None:
+    setv(to_object, ['fps'], getv(from_object, ['fps']))
+
+  if getv(from_object, ['endOffset']) is not None:
+    setv(to_object, ['end_offset'], getv(from_object, ['endOffset']))
+
+  if getv(from_object, ['startOffset']) is not None:
+    setv(to_object, ['start_offset'], getv(from_object, ['startOffset']))
+
+  return to_object
+
+
 def _Blob_from_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -3722,7 +3814,13 @@ def _Part_from_vertex(
 ) -> dict[str, Any]:
   to_object: dict[str, Any] = {}
   if getv(from_object, ['videoMetadata']) is not None:
-    setv(to_object, ['video_metadata'], getv(from_object, ['videoMetadata']))
+    setv(
+        to_object,
+        ['video_metadata'],
+        _VideoMetadata_from_vertex(
+            api_client, getv(from_object, ['videoMetadata']), to_object
+        ),
+    )
 
   if getv(from_object, ['thought']) is not None:
     setv(to_object, ['thought'], getv(from_object, ['thought']))

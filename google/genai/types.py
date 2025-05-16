@@ -446,6 +446,39 @@ class FunctionResponseScheduling(_common.CaseInSensitiveEnum):
   INTERRUPT = 'INTERRUPT'
 
 
+class VideoMetadata(_common.BaseModel):
+  """Describes how the video in the Part should be used by the model."""
+
+  fps: Optional[float] = Field(
+      default=None,
+      description="""The frame rate of the video sent to the model. If not specified, the
+        default value will be 1.0. The fps range is (0.0, 24.0].""",
+  )
+  end_offset: Optional[str] = Field(
+      default=None, description="""Optional. The end offset of the video."""
+  )
+  start_offset: Optional[str] = Field(
+      default=None, description="""Optional. The start offset of the video."""
+  )
+
+
+class VideoMetadataDict(TypedDict, total=False):
+  """Describes how the video in the Part should be used by the model."""
+
+  fps: Optional[float]
+  """The frame rate of the video sent to the model. If not specified, the
+        default value will be 1.0. The fps range is (0.0, 24.0]."""
+
+  end_offset: Optional[str]
+  """Optional. The end offset of the video."""
+
+  start_offset: Optional[str]
+  """Optional. The start offset of the video."""
+
+
+VideoMetadataOrDict = Union[VideoMetadata, VideoMetadataDict]
+
+
 class Blob(_common.BaseModel):
   """Content blob."""
 
@@ -476,30 +509,6 @@ class BlobDict(TypedDict, total=False):
 
 
 BlobOrDict = Union[Blob, BlobDict]
-
-
-class VideoMetadata(_common.BaseModel):
-  """Metadata describes the input video content."""
-
-  end_offset: Optional[str] = Field(
-      default=None, description="""Optional. The end offset of the video."""
-  )
-  start_offset: Optional[str] = Field(
-      default=None, description="""Optional. The start offset of the video."""
-  )
-
-
-class VideoMetadataDict(TypedDict, total=False):
-  """Metadata describes the input video content."""
-
-  end_offset: Optional[str]
-  """Optional. The end offset of the video."""
-
-  start_offset: Optional[str]
-  """Optional. The start offset of the video."""
-
-
-VideoMetadataOrDict = Union[VideoMetadata, VideoMetadataDict]
 
 
 class CodeExecutionResult(_common.BaseModel):
