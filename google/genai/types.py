@@ -8237,6 +8237,18 @@ class CreateCachedContentConfig(_common.BaseModel):
       description="""Configuration for the tools to use. This config is shared for all tools.
       """,
   )
+  kms_key_name: Optional[str] = Field(
+      default=None,
+      description="""The Cloud KMS resource identifier of the customer managed
+      encryption key used to protect a resource.
+      The key needs to be in the same region as where the compute resource is
+      created. See
+      https://cloud.google.com/vertex-ai/docs/general/cmek for more
+      details. If this is set, then all created CachedContent objects
+      will be encrypted with the provided encryption key.
+      Allowed formats: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}
+      """,
+  )
 
 
 class CreateCachedContentConfigDict(TypedDict, total=False):
@@ -8269,6 +8281,17 @@ class CreateCachedContentConfigDict(TypedDict, total=False):
 
   tool_config: Optional[ToolConfigDict]
   """Configuration for the tools to use. This config is shared for all tools.
+      """
+
+  kms_key_name: Optional[str]
+  """The Cloud KMS resource identifier of the customer managed
+      encryption key used to protect a resource.
+      The key needs to be in the same region as where the compute resource is
+      created. See
+      https://cloud.google.com/vertex-ai/docs/general/cmek for more
+      details. If this is set, then all created CachedContent objects
+      will be encrypted with the provided encryption key.
+      Allowed formats: projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}
       """
 
 

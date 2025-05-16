@@ -518,6 +518,9 @@ def _CreateCachedContentConfig_to_mldev(
         ),
     )
 
+  if getv(from_object, ['kms_key_name']) is not None:
+    raise ValueError('kms_key_name parameter is not supported in Gemini API.')
+
   return to_object
 
 
@@ -1169,6 +1172,13 @@ def _CreateCachedContentConfig_to_vertex(
         _ToolConfig_to_vertex(
             api_client, getv(from_object, ['tool_config']), to_object
         ),
+    )
+
+  if getv(from_object, ['kms_key_name']) is not None:
+    setv(
+        parent_object,
+        ['encryption_spec', 'kmsKeyName'],
+        getv(from_object, ['kms_key_name']),
     )
 
   return to_object
