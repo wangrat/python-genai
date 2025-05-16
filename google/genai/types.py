@@ -573,6 +573,67 @@ class FunctionResponseScheduling(_common.CaseInSensitiveEnum):
   """Add the result to the conversation context, interrupt ongoing generation and prompt to generate output."""
 
 
+class Scale(_common.CaseInSensitiveEnum):
+  """Scale of the generated music."""
+
+  SCALE_UNSPECIFIED = 'SCALE_UNSPECIFIED'
+  """Default value. This value is unused."""
+  C_MAJOR_A_MINOR = 'C_MAJOR_A_MINOR'
+  """C major or A minor."""
+  D_FLAT_MAJOR_B_FLAT_MINOR = 'D_FLAT_MAJOR_B_FLAT_MINOR'
+  """Db major or Bb minor."""
+  D_MAJOR_B_MINOR = 'D_MAJOR_B_MINOR'
+  """D major or B minor."""
+  E_FLAT_MAJOR_C_MINOR = 'E_FLAT_MAJOR_C_MINOR'
+  """Eb major or C minor"""
+  E_MAJOR_D_FLAT_MINOR = 'E_MAJOR_D_FLAT_MINOR'
+  """E major or Db minor."""
+  F_MAJOR_D_MINOR = 'F_MAJOR_D_MINOR'
+  """F major or D minor."""
+  G_FLAT_MAJOR_E_FLAT_MINOR = 'G_FLAT_MAJOR_E_FLAT_MINOR'
+  """Gb major or Eb minor."""
+  G_MAJOR_E_MINOR = 'G_MAJOR_E_MINOR'
+  """G major or E minor."""
+  A_FLAT_MAJOR_F_MINOR = 'A_FLAT_MAJOR_F_MINOR'
+  """Ab major or F minor."""
+  A_MAJOR_G_FLAT_MINOR = 'A_MAJOR_G_FLAT_MINOR'
+  """A major or Gb minor."""
+  B_FLAT_MAJOR_G_MINOR = 'B_FLAT_MAJOR_G_MINOR'
+  """Bb major or G minor."""
+  B_MAJOR_A_FLAT_MINOR = 'B_MAJOR_A_FLAT_MINOR'
+  """B major or Ab minor."""
+
+
+class MusicGenerationMode(_common.CaseInSensitiveEnum):
+  """The mode of music generation."""
+
+  MUSIC_GENERATION_MODE_UNSPECIFIED = 'MUSIC_GENERATION_MODE_UNSPECIFIED'
+  """This value is unused."""
+  QUALITY = 'QUALITY'
+  """Steer text prompts to regions of latent space with higher quality
+      music."""
+  DIVERSITY = 'DIVERSITY'
+  """Steer text prompts to regions of latent space with a larger diversity
+      of music."""
+
+
+class LiveMusicPlaybackControl(_common.CaseInSensitiveEnum):
+  """The playback control signal to apply to the music generation."""
+
+  PLAYBACK_CONTROL_UNSPECIFIED = 'PLAYBACK_CONTROL_UNSPECIFIED'
+  """This value is unused."""
+  PLAY = 'PLAY'
+  """Start generating the music."""
+  PAUSE = 'PAUSE'
+  """Hold the music generation. Use PLAY to resume from the current position."""
+  STOP = 'STOP'
+  """Stop the music generation and reset the context (prompts retained).
+      Use PLAY to restart the music generation."""
+  RESET_CONTEXT = 'RESET_CONTEXT'
+  """Reset the context of the music generation without stopping it.
+      Retains the current prompts and config."""
+
+
 class VideoMetadata(_common.BaseModel):
   """Describes how the video in the Part should be used by the model."""
 
@@ -11741,4 +11802,456 @@ class LiveConnectParametersDict(TypedDict, total=False):
 
 LiveConnectParametersOrDict = Union[
     LiveConnectParameters, LiveConnectParametersDict
+]
+
+
+class LiveMusicClientSetup(_common.BaseModel):
+  """Message to be sent by the system when connecting to the API."""
+
+  model: Optional[str] = Field(
+      default=None,
+      description="""The model's resource name. Format: `models/{model}`.""",
+  )
+
+
+class LiveMusicClientSetupDict(TypedDict, total=False):
+  """Message to be sent by the system when connecting to the API."""
+
+  model: Optional[str]
+  """The model's resource name. Format: `models/{model}`."""
+
+
+LiveMusicClientSetupOrDict = Union[
+    LiveMusicClientSetup, LiveMusicClientSetupDict
+]
+
+
+class WeightedPrompt(_common.BaseModel):
+  """Maps a prompt to a relative weight to steer music generation."""
+
+  text: Optional[str] = Field(default=None, description="""Text prompt.""")
+  weight: Optional[float] = Field(
+      default=None,
+      description="""Weight of the prompt. The weight is used to control the relative
+      importance of the prompt. Higher weights are more important than lower
+      weights.
+
+      Weight must not be 0. Weights of all weighted_prompts in this
+      LiveMusicClientContent message will be normalized.""",
+  )
+
+
+class WeightedPromptDict(TypedDict, total=False):
+  """Maps a prompt to a relative weight to steer music generation."""
+
+  text: Optional[str]
+  """Text prompt."""
+
+  weight: Optional[float]
+  """Weight of the prompt. The weight is used to control the relative
+      importance of the prompt. Higher weights are more important than lower
+      weights.
+
+      Weight must not be 0. Weights of all weighted_prompts in this
+      LiveMusicClientContent message will be normalized."""
+
+
+WeightedPromptOrDict = Union[WeightedPrompt, WeightedPromptDict]
+
+
+class LiveMusicClientContent(_common.BaseModel):
+  """User input to start or steer the music."""
+
+  weighted_prompts: Optional[list[WeightedPrompt]] = Field(
+      default=None, description="""Weighted prompts as the model input."""
+  )
+
+
+class LiveMusicClientContentDict(TypedDict, total=False):
+  """User input to start or steer the music."""
+
+  weighted_prompts: Optional[list[WeightedPromptDict]]
+  """Weighted prompts as the model input."""
+
+
+LiveMusicClientContentOrDict = Union[
+    LiveMusicClientContent, LiveMusicClientContentDict
+]
+
+
+class LiveMusicGenerationConfig(_common.BaseModel):
+  """Configuration for music generation."""
+
+  temperature: Optional[float] = Field(
+      default=None,
+      description="""Controls the variance in audio generation. Higher values produce
+      higher variance. Range is [0.0, 3.0].""",
+  )
+  top_k: Optional[int] = Field(
+      default=None,
+      description="""Controls how the model selects tokens for output. Samples the topK
+      tokens with the highest probabilities. Range is [1, 1000].""",
+  )
+  seed: Optional[int] = Field(
+      default=None,
+      description="""Seeds audio generation. If not set, the request uses a randomly
+      generated seed.""",
+  )
+  guidance: Optional[float] = Field(
+      default=None,
+      description="""Controls how closely the model follows prompts.
+      Higher guidance follows more closely, but will make transitions more
+      abrupt. Range is [0.0, 6.0].""",
+  )
+  bpm: Optional[int] = Field(
+      default=None, description="""Beats per minute. Range is [60, 200]."""
+  )
+  density: Optional[float] = Field(
+      default=None, description="""Density of sounds. Range is [0.0, 1.0]."""
+  )
+  brightness: Optional[float] = Field(
+      default=None,
+      description="""Brightness of the music. Range is [0.0, 1.0].""",
+  )
+  scale: Optional[Scale] = Field(
+      default=None, description="""Scale of the generated music."""
+  )
+  mute_bass: Optional[bool] = Field(
+      default=None,
+      description="""Whether the audio output should contain bass.""",
+  )
+  mute_drums: Optional[bool] = Field(
+      default=None,
+      description="""Whether the audio output should contain drums.""",
+  )
+  only_bass_and_drums: Optional[bool] = Field(
+      default=None,
+      description="""Whether the audio output should contain only bass and drums.""",
+  )
+  music_generation_mode: Optional[MusicGenerationMode] = Field(
+      default=None,
+      description="""The mode of music generation. Default mode is QUALITY.""",
+  )
+
+
+class LiveMusicGenerationConfigDict(TypedDict, total=False):
+  """Configuration for music generation."""
+
+  temperature: Optional[float]
+  """Controls the variance in audio generation. Higher values produce
+      higher variance. Range is [0.0, 3.0]."""
+
+  top_k: Optional[int]
+  """Controls how the model selects tokens for output. Samples the topK
+      tokens with the highest probabilities. Range is [1, 1000]."""
+
+  seed: Optional[int]
+  """Seeds audio generation. If not set, the request uses a randomly
+      generated seed."""
+
+  guidance: Optional[float]
+  """Controls how closely the model follows prompts.
+      Higher guidance follows more closely, but will make transitions more
+      abrupt. Range is [0.0, 6.0]."""
+
+  bpm: Optional[int]
+  """Beats per minute. Range is [60, 200]."""
+
+  density: Optional[float]
+  """Density of sounds. Range is [0.0, 1.0]."""
+
+  brightness: Optional[float]
+  """Brightness of the music. Range is [0.0, 1.0]."""
+
+  scale: Optional[Scale]
+  """Scale of the generated music."""
+
+  mute_bass: Optional[bool]
+  """Whether the audio output should contain bass."""
+
+  mute_drums: Optional[bool]
+  """Whether the audio output should contain drums."""
+
+  only_bass_and_drums: Optional[bool]
+  """Whether the audio output should contain only bass and drums."""
+
+  music_generation_mode: Optional[MusicGenerationMode]
+  """The mode of music generation. Default mode is QUALITY."""
+
+
+LiveMusicGenerationConfigOrDict = Union[
+    LiveMusicGenerationConfig, LiveMusicGenerationConfigDict
+]
+
+
+class LiveMusicClientMessage(_common.BaseModel):
+  """Messages sent by the client in the LiveMusicClientMessage call."""
+
+  setup: Optional[LiveMusicClientSetup] = Field(
+      default=None,
+      description="""Message to be sent in the first (and only in the first) `LiveMusicClientMessage`.
+      Clients should wait for a `LiveMusicSetupComplete` message before
+      sending any additional messages.""",
+  )
+  client_content: Optional[LiveMusicClientContent] = Field(
+      default=None, description="""User input to influence music generation."""
+  )
+  music_generation_config: Optional[LiveMusicGenerationConfig] = Field(
+      default=None, description="""Configuration for music generation."""
+  )
+  playback_control: Optional[LiveMusicPlaybackControl] = Field(
+      default=None,
+      description="""Playback control signal for the music generation.""",
+  )
+
+
+class LiveMusicClientMessageDict(TypedDict, total=False):
+  """Messages sent by the client in the LiveMusicClientMessage call."""
+
+  setup: Optional[LiveMusicClientSetupDict]
+  """Message to be sent in the first (and only in the first) `LiveMusicClientMessage`.
+      Clients should wait for a `LiveMusicSetupComplete` message before
+      sending any additional messages."""
+
+  client_content: Optional[LiveMusicClientContentDict]
+  """User input to influence music generation."""
+
+  music_generation_config: Optional[LiveMusicGenerationConfigDict]
+  """Configuration for music generation."""
+
+  playback_control: Optional[LiveMusicPlaybackControl]
+  """Playback control signal for the music generation."""
+
+
+LiveMusicClientMessageOrDict = Union[
+    LiveMusicClientMessage, LiveMusicClientMessageDict
+]
+
+
+class LiveMusicServerSetupComplete(_common.BaseModel):
+  """Sent in response to a `LiveMusicClientSetup` message from the client."""
+
+  pass
+
+
+class LiveMusicServerSetupCompleteDict(TypedDict, total=False):
+  """Sent in response to a `LiveMusicClientSetup` message from the client."""
+
+  pass
+
+
+LiveMusicServerSetupCompleteOrDict = Union[
+    LiveMusicServerSetupComplete, LiveMusicServerSetupCompleteDict
+]
+
+
+class LiveMusicSourceMetadata(_common.BaseModel):
+  """Prompts and config used for generating this audio chunk."""
+
+  client_content: Optional[LiveMusicClientContent] = Field(
+      default=None,
+      description="""Weighted prompts for generating this audio chunk.""",
+  )
+  music_generation_config: Optional[LiveMusicGenerationConfig] = Field(
+      default=None,
+      description="""Music generation config for generating this audio chunk.""",
+  )
+
+
+class LiveMusicSourceMetadataDict(TypedDict, total=False):
+  """Prompts and config used for generating this audio chunk."""
+
+  client_content: Optional[LiveMusicClientContentDict]
+  """Weighted prompts for generating this audio chunk."""
+
+  music_generation_config: Optional[LiveMusicGenerationConfigDict]
+  """Music generation config for generating this audio chunk."""
+
+
+LiveMusicSourceMetadataOrDict = Union[
+    LiveMusicSourceMetadata, LiveMusicSourceMetadataDict
+]
+
+
+class AudioChunk(_common.BaseModel):
+  """Representation of an audio chunk."""
+
+  data: Optional[bytes] = Field(
+      default=None, description="""Raw byets of audio data."""
+  )
+  mime_type: Optional[str] = Field(
+      default=None, description="""MIME type of the audio chunk."""
+  )
+  source_metadata: Optional[LiveMusicSourceMetadata] = Field(
+      default=None,
+      description="""Prompts and config used for generating this audio chunk.""",
+  )
+
+
+class AudioChunkDict(TypedDict, total=False):
+  """Representation of an audio chunk."""
+
+  data: Optional[bytes]
+  """Raw byets of audio data."""
+
+  mime_type: Optional[str]
+  """MIME type of the audio chunk."""
+
+  source_metadata: Optional[LiveMusicSourceMetadataDict]
+  """Prompts and config used for generating this audio chunk."""
+
+
+AudioChunkOrDict = Union[AudioChunk, AudioChunkDict]
+
+
+class LiveMusicServerContent(_common.BaseModel):
+  """Server update generated by the model in response to client messages.
+
+  Content is generated as quickly as possible, and not in real time.
+  Clients may choose to buffer and play it out in real time.
+  """
+
+  audio_chunks: Optional[list[AudioChunk]] = Field(
+      default=None,
+      description="""The audio chunks that the model has generated.""",
+  )
+
+
+class LiveMusicServerContentDict(TypedDict, total=False):
+  """Server update generated by the model in response to client messages.
+
+  Content is generated as quickly as possible, and not in real time.
+  Clients may choose to buffer and play it out in real time.
+  """
+
+  audio_chunks: Optional[list[AudioChunkDict]]
+  """The audio chunks that the model has generated."""
+
+
+LiveMusicServerContentOrDict = Union[
+    LiveMusicServerContent, LiveMusicServerContentDict
+]
+
+
+class LiveMusicFilteredPrompt(_common.BaseModel):
+  """A prompt that was filtered with the reason."""
+
+  text: Optional[str] = Field(
+      default=None, description="""The text prompt that was filtered."""
+  )
+  filtered_reason: Optional[str] = Field(
+      default=None, description="""The reason the prompt was filtered."""
+  )
+
+
+class LiveMusicFilteredPromptDict(TypedDict, total=False):
+  """A prompt that was filtered with the reason."""
+
+  text: Optional[str]
+  """The text prompt that was filtered."""
+
+  filtered_reason: Optional[str]
+  """The reason the prompt was filtered."""
+
+
+LiveMusicFilteredPromptOrDict = Union[
+    LiveMusicFilteredPrompt, LiveMusicFilteredPromptDict
+]
+
+
+class LiveMusicServerMessage(_common.BaseModel):
+  """Response message for the LiveMusicClientMessage call."""
+
+  setup_complete: Optional[LiveMusicServerSetupComplete] = Field(
+      default=None,
+      description="""Message sent in response to a `LiveMusicClientSetup` message from the client.
+      Clients should wait for this message before sending any additional messages.""",
+  )
+  server_content: Optional[LiveMusicServerContent] = Field(
+      default=None,
+      description="""Content generated by the model in response to client messages.""",
+  )
+  filtered_prompt: Optional[LiveMusicFilteredPrompt] = Field(
+      default=None,
+      description="""A prompt that was filtered with the reason.""",
+  )
+
+
+class LiveMusicServerMessageDict(TypedDict, total=False):
+  """Response message for the LiveMusicClientMessage call."""
+
+  setup_complete: Optional[LiveMusicServerSetupCompleteDict]
+  """Message sent in response to a `LiveMusicClientSetup` message from the client.
+      Clients should wait for this message before sending any additional messages."""
+
+  server_content: Optional[LiveMusicServerContentDict]
+  """Content generated by the model in response to client messages."""
+
+  filtered_prompt: Optional[LiveMusicFilteredPromptDict]
+  """A prompt that was filtered with the reason."""
+
+
+LiveMusicServerMessageOrDict = Union[
+    LiveMusicServerMessage, LiveMusicServerMessageDict
+]
+
+
+class LiveMusicConnectParameters(_common.BaseModel):
+  """Parameters for connecting to the live API."""
+
+  model: Optional[str] = Field(
+      default=None, description="""The model's resource name."""
+  )
+
+
+class LiveMusicConnectParametersDict(TypedDict, total=False):
+  """Parameters for connecting to the live API."""
+
+  model: Optional[str]
+  """The model's resource name."""
+
+
+LiveMusicConnectParametersOrDict = Union[
+    LiveMusicConnectParameters, LiveMusicConnectParametersDict
+]
+
+
+class LiveMusicSetConfigParameters(_common.BaseModel):
+  """Parameters for setting config for the live API."""
+
+  music_generation_config: Optional[LiveMusicGenerationConfig] = Field(
+      default=None, description="""Configuration for music generation."""
+  )
+
+
+class LiveMusicSetConfigParametersDict(TypedDict, total=False):
+  """Parameters for setting config for the live API."""
+
+  music_generation_config: Optional[LiveMusicGenerationConfigDict]
+  """Configuration for music generation."""
+
+
+LiveMusicSetConfigParametersOrDict = Union[
+    LiveMusicSetConfigParameters, LiveMusicSetConfigParametersDict
+]
+
+
+class LiveMusicSetClientContentParameters(_common.BaseModel):
+  """Parameters for setting client content for the live API."""
+
+  weighted_prompts: Optional[list[WeightedPrompt]] = Field(
+      default=None,
+      description="""A map of text prompts to weights to use for the generation request.""",
+  )
+
+
+class LiveMusicSetClientContentParametersDict(TypedDict, total=False):
+  """Parameters for setting client content for the live API."""
+
+  weighted_prompts: Optional[list[WeightedPromptDict]]
+  """A map of text prompts to weights to use for the generation request."""
+
+
+LiveMusicSetClientContentParametersOrDict = Union[
+    LiveMusicSetClientContentParameters, LiveMusicSetClientContentParametersDict
 ]
