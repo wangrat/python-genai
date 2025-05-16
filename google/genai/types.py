@@ -2655,9 +2655,7 @@ class PrebuiltVoiceConfig(_common.BaseModel):
   """The configuration for the prebuilt speaker to use."""
 
   voice_name: Optional[str] = Field(
-      default=None,
-      description="""The name of the prebuilt voice to use.
-      """,
+      default=None, description="""The name of the prebuilt voice to use."""
   )
 
 
@@ -2665,8 +2663,7 @@ class PrebuiltVoiceConfigDict(TypedDict, total=False):
   """The configuration for the prebuilt speaker to use."""
 
   voice_name: Optional[str]
-  """The name of the prebuilt voice to use.
-      """
+  """The name of the prebuilt voice to use."""
 
 
 PrebuiltVoiceConfigOrDict = Union[PrebuiltVoiceConfig, PrebuiltVoiceConfigDict]
@@ -2693,6 +2690,53 @@ class VoiceConfigDict(TypedDict, total=False):
 VoiceConfigOrDict = Union[VoiceConfig, VoiceConfigDict]
 
 
+class SpeakerVoiceConfig(_common.BaseModel):
+  """The configuration for the speaker to use."""
+
+  speaker: Optional[str] = Field(
+      default=None,
+      description="""The name of the speaker to use. Should be the same as in the
+          prompt.""",
+  )
+  voice_config: Optional[VoiceConfig] = Field(
+      default=None, description="""The configuration for the voice to use."""
+  )
+
+
+class SpeakerVoiceConfigDict(TypedDict, total=False):
+  """The configuration for the speaker to use."""
+
+  speaker: Optional[str]
+  """The name of the speaker to use. Should be the same as in the
+          prompt."""
+
+  voice_config: Optional[VoiceConfigDict]
+  """The configuration for the voice to use."""
+
+
+SpeakerVoiceConfigOrDict = Union[SpeakerVoiceConfig, SpeakerVoiceConfigDict]
+
+
+class MultiSpeakerVoiceConfig(_common.BaseModel):
+  """The configuration for the multi-speaker setup."""
+
+  speaker_voice_configs: Optional[list[SpeakerVoiceConfig]] = Field(
+      default=None, description="""The configuration for the speaker to use."""
+  )
+
+
+class MultiSpeakerVoiceConfigDict(TypedDict, total=False):
+  """The configuration for the multi-speaker setup."""
+
+  speaker_voice_configs: Optional[list[SpeakerVoiceConfigDict]]
+  """The configuration for the speaker to use."""
+
+
+MultiSpeakerVoiceConfigOrDict = Union[
+    MultiSpeakerVoiceConfig, MultiSpeakerVoiceConfigDict
+]
+
+
 class SpeechConfig(_common.BaseModel):
   """The speech generation configuration."""
 
@@ -2700,6 +2744,12 @@ class SpeechConfig(_common.BaseModel):
       default=None,
       description="""The configuration for the speaker to use.
       """,
+  )
+  multi_speaker_voice_config: Optional[MultiSpeakerVoiceConfig] = Field(
+      default=None,
+      description="""The configuration for the multi-speaker setup.
+          It is mutually exclusive with the voice_config field.
+          """,
   )
   language_code: Optional[str] = Field(
       default=None,
@@ -2715,6 +2765,11 @@ class SpeechConfigDict(TypedDict, total=False):
   voice_config: Optional[VoiceConfigDict]
   """The configuration for the speaker to use.
       """
+
+  multi_speaker_voice_config: Optional[MultiSpeakerVoiceConfigDict]
+  """The configuration for the multi-speaker setup.
+          It is mutually exclusive with the voice_config field.
+          """
 
   language_code: Optional[str]
   """Language code (ISO 639. e.g. en-US) for the speech synthesization.

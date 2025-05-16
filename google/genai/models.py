@@ -500,6 +500,46 @@ def _VoiceConfig_to_mldev(
   return to_object
 
 
+def _SpeakerVoiceConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['speaker']) is not None:
+    setv(to_object, ['speaker'], getv(from_object, ['speaker']))
+
+  if getv(from_object, ['voice_config']) is not None:
+    setv(
+        to_object,
+        ['voiceConfig'],
+        _VoiceConfig_to_mldev(
+            api_client, getv(from_object, ['voice_config']), to_object
+        ),
+    )
+
+  return to_object
+
+
+def _MultiSpeakerVoiceConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['speaker_voice_configs']) is not None:
+    setv(
+        to_object,
+        ['speakerVoiceConfigs'],
+        [
+            _SpeakerVoiceConfig_to_mldev(api_client, item, to_object)
+            for item in getv(from_object, ['speaker_voice_configs'])
+        ],
+    )
+
+  return to_object
+
+
 def _SpeechConfig_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -512,6 +552,17 @@ def _SpeechConfig_to_mldev(
         ['voiceConfig'],
         _VoiceConfig_to_mldev(
             api_client, getv(from_object, ['voice_config']), to_object
+        ),
+    )
+
+  if getv(from_object, ['multi_speaker_voice_config']) is not None:
+    setv(
+        to_object,
+        ['multiSpeakerVoiceConfig'],
+        _MultiSpeakerVoiceConfig_to_mldev(
+            api_client,
+            getv(from_object, ['multi_speaker_voice_config']),
+            to_object,
         ),
     )
 
@@ -1746,6 +1797,35 @@ def _VoiceConfig_to_vertex(
   return to_object
 
 
+def _SpeakerVoiceConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['speaker']) is not None:
+    raise ValueError('speaker parameter is not supported in Vertex AI.')
+
+  if getv(from_object, ['voice_config']) is not None:
+    raise ValueError('voice_config parameter is not supported in Vertex AI.')
+
+  return to_object
+
+
+def _MultiSpeakerVoiceConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['speaker_voice_configs']) is not None:
+    raise ValueError(
+        'speaker_voice_configs parameter is not supported in Vertex AI.'
+    )
+
+  return to_object
+
+
 def _SpeechConfig_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -1759,6 +1839,11 @@ def _SpeechConfig_to_vertex(
         _VoiceConfig_to_vertex(
             api_client, getv(from_object, ['voice_config']), to_object
         ),
+    )
+
+  if getv(from_object, ['multi_speaker_voice_config']) is not None:
+    raise ValueError(
+        'multi_speaker_voice_config parameter is not supported in Vertex AI.'
     )
 
   if getv(from_object, ['language_code']) is not None:

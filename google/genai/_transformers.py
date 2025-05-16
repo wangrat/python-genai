@@ -866,24 +866,27 @@ def t_speech_config(
             prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=origin)
         )
     )
-  if (
-      isinstance(origin, dict)
-      and 'voice_config' in origin
-      and origin['voice_config'] is not None
-      and 'prebuilt_voice_config' in origin['voice_config']
-      and origin['voice_config']['prebuilt_voice_config'] is not None
-      and 'voice_name' in origin['voice_config']['prebuilt_voice_config']
-  ):
-    return types.SpeechConfig(
-        voice_config=types.VoiceConfig(
-            prebuilt_voice_config=types.PrebuiltVoiceConfig(
-                voice_name=origin['voice_config']['prebuilt_voice_config'].get(
-                    'voice_name'
-                )
-            )
-        )
-    )
+  if isinstance(origin, dict):
+    return types.SpeechConfig.model_validate(origin)
+
   raise ValueError(f'Unsupported speechConfig type: {type(origin)}')
+
+
+def t_live_speech_config(
+    client: _api_client.BaseApiClient,
+    origin: types.SpeechConfigOrDict,
+) -> Optional[types.SpeechConfig]:
+  if isinstance(origin, types.SpeechConfig):
+    speech_config = origin
+  if isinstance(origin, dict):
+    speech_config = types.SpeechConfig.model_validate(origin)
+
+  if speech_config.multi_speaker_voice_config is not None:
+    raise ValueError(
+        'multi_speaker_voice_config is not supported in the live API.'
+    )
+
+  return speech_config
 
 
 def t_tool(

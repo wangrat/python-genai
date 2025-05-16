@@ -586,10 +586,10 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
                   # defined in the discovery doc, so it doesn't need to/from
                   # converters. The API is insensitive to the case format.
                   # This looks wrong, but it is okay/correct.
-                  'voice_config': {
-                      'prebuilt_voice_config': {'voice_name': 'en-default'}
+                  'voiceConfig': {
+                      'prebuiltVoiceConfig': {'voiceName': 'en-default'}
                   },
-                  'language_code': 'en-US',
+                  'languageCode': 'en-US',
               },
               'temperature': 0.7,
               'topP': 0.8,
@@ -662,6 +662,46 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
       model='test_model', config=config
   )
   assert result == expected_result
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_error_if_multispeaker_voice_config(vertexai):
+
+  # Config is a dict
+  config_dict = {
+      'speech_config': {
+          'multi_speaker_voice_config': {
+              'speaker_voice_configs': [
+                  {
+                      'speaker': 'Alice',
+                      'voice_config': {
+                          'prebuilt_voice_config': {'voice_name': 'leda'}
+                      },
+                  },
+                  {
+                      'speaker': 'Bob',
+                      'voice_config': {
+                          'prebuilt_voice_config': {'voice_name': 'kore'}
+                      },
+                  },
+              ],
+          },
+      },
+      'temperature': 0.7,
+      'top_p': 0.8,
+      'top_k': 9,
+      'max_output_tokens': 10,
+      'seed': 13,
+      'system_instruction': 'test instruction',
+      'media_resolution': 'MEDIA_RESOLUTION_MEDIUM',
+  }
+  with pytest.raises(ValueError, match='.*multi_speaker_voice_config.*'):
+    result = await get_connect_message(
+        mock_api_client(vertexai=vertexai),
+        model='test_model',
+        config=config_dict,
+    )
 
 
 @pytest.mark.parametrize('vertexai', [True, False])
