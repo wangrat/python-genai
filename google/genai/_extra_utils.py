@@ -34,15 +34,20 @@ else:
 
 if typing.TYPE_CHECKING:
   from mcp import ClientSession as McpClientSession
+  from mcp.types import Tool as McpTool
   from ._adapters import McpToGenAiToolAdapter
+  from . import _mcp_utils
 else:
   McpClientSession: typing.Type = Any
   McpToGenAiToolAdapter: typing.Type = Any
   try:
     from mcp import ClientSession as McpClientSession
+    from mcp.types import Tool as McpTool
     from ._adapters import McpToGenAiToolAdapter
+    from . import _mcp_utils
   except ImportError:
     McpClientSession = None
+    McpTool = None
     McpToGenAiToolAdapter = None
 
 _DEFAULT_MAX_REMOTE_CALLS_AFC = 10
@@ -440,7 +445,28 @@ def should_append_afc_history(
   return not config_model.automatic_function_calling.ignore_call_history
 
 
-async def parse_config_for_mcp_tools(
+def parse_config_for_mcp_usage(
+    config: Optional[types.GenerateContentConfigOrDict] = None,
+) -> Optional[types.GenerateContentConfig]:
+  """Returns a parsed config with an appended MCP header if MCP tools or sessions are used."""
+  if not config:
+    return None
+  config_model = _create_generate_content_config_model(config)
+  # Create a copy of the config model with the tools field cleared since some
+  # tools may not be pickleable.
+  config_model_copy = config_model.model_copy(update={'tools': None})
+  config_model_copy.tools = config_model.tools
+  if config_model.tools and _mcp_utils.has_mcp_tool_usage(config_model.tools):
+    if config_model_copy.http_options is None:
+      config_model_copy.http_options = types.HttpOptions(headers={})
+    if config_model_copy.http_options.headers is None:
+      config_model_copy.http_options.headers = {}
+    _mcp_utils.set_mcp_usage_header(config_model_copy.http_options.headers)
+
+  return config_model_copy
+
+
+async def parse_config_for_mcp_sessions(
     config: Optional[types.GenerateContentConfigOrDict] = None,
 ) -> tuple[
     Optional[types.GenerateContentConfig],
@@ -451,21 +477,21 @@ async def parse_config_for_mcp_tools(
   Also returns a map of MCP tools to GenAI tool adapters to be used for AFC.
   """
   mcp_to_genai_tool_adapters: dict[str, McpToGenAiToolAdapter] = {}
-  if not config:
+  parsed_config = parse_config_for_mcp_usage(config)
+  if not parsed_config:
     return None, mcp_to_genai_tool_adapters
-  config_model = _create_generate_content_config_model(config)
   # Create a copy of the config model with the tools field cleared as they will
   # be replaced with the MCP tools converted to GenAI tools.
-  config_model_copy = config_model.model_copy(update={'tools': None})
-  if config_model.tools:
-    config_model_copy.tools = []
-    for tool in config_model.tools:
+  parsed_config_copy = parsed_config.model_copy(update={'tools': None})
+  if parsed_config.tools:
+    parsed_config_copy.tools = []
+    for tool in parsed_config.tools:
       if McpClientSession is not None and isinstance(tool, McpClientSession):
         mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
             tool, await tool.list_tools()
         )
         # Extend the config with the MCP session tools converted to GenAI tools.
-        config_model_copy.tools.extend(mcp_to_genai_tool_adapter.tools)
+        parsed_config_copy.tools.extend(mcp_to_genai_tool_adapter.tools)
         for genai_tool in mcp_to_genai_tool_adapter.tools:
           if genai_tool.function_declarations:
             for function_declaration in genai_tool.function_declarations:
@@ -479,9 +505,9 @@ async def parse_config_for_mcp_tools(
                     mcp_to_genai_tool_adapter
                 )
     if McpClientSession is not None:
-      config_model_copy.tools.extend(
+      parsed_config_copy.tools.extend(
           tool
-          for tool in config_model.tools
+          for tool in parsed_config.tools
           if not isinstance(tool, McpClientSession)
       )
-  return config_model_copy, mcp_to_genai_tool_adapters
+  return parsed_config_copy, mcp_to_genai_tool_adapters

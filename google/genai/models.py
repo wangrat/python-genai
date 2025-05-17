@@ -5603,19 +5603,22 @@ class Models(_api_module.BaseModule):
       # scones.
     """
 
-    if config:
-      config_model = _extra_utils._create_generate_content_config_model(config)
-      if config_model.tools and _mcp_utils.has_mcp_session_usage(
-          config_model.tools
-      ):
-        raise errors.UnsupportedFunctionError(
-            'MCP sessions are not supported in synchronous methods.'
-        )
-    if _extra_utils.should_disable_afc(config):
-      return self._generate_content(
-          model=model, contents=contents, config=config
+    parsed_config = _extra_utils.parse_config_for_mcp_usage(config)
+    if (
+        parsed_config
+        and parsed_config.tools
+        and _mcp_utils.has_mcp_session_usage(parsed_config.tools)
+    ):
+      raise errors.UnsupportedFunctionError(
+          'MCP sessions are not supported in synchronous methods.'
       )
-    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
+    if _extra_utils.should_disable_afc(parsed_config):
+      return self._generate_content(
+          model=model, contents=contents, config=parsed_config
+      )
+    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(
+        parsed_config
+    )
     logger.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
@@ -5625,14 +5628,14 @@ class Models(_api_module.BaseModule):
     while remaining_remote_calls_afc > 0:
       i += 1
       response = self._generate_content(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
       logger.info(f'AFC remote call {i} is done.')
       remaining_remote_calls_afc -= 1
       if remaining_remote_calls_afc == 0:
         logger.info('Reached max remote calls for automatic function calling.')
 
-      function_map = _extra_utils.get_function_map(config)
+      function_map = _extra_utils.get_function_map(parsed_config)
       if not function_map:
         break
       if not response:
@@ -5661,7 +5664,10 @@ class Models(_api_module.BaseModule):
         contents.append(func_response_content)  # type: ignore[arg-type]
       automatic_function_calling_history.append(func_call_content)
       automatic_function_calling_history.append(func_response_content)
-    if _extra_utils.should_append_afc_history(config) and response is not None:
+    if (
+        _extra_utils.should_append_afc_history(parsed_config)
+        and response is not None
+    ):
       response.automatic_function_calling_history = (
           automatic_function_calling_history
       )
@@ -5733,21 +5739,24 @@ class Models(_api_module.BaseModule):
       # scones.
     """
 
-    if config:
-      config_model = _extra_utils._create_generate_content_config_model(config)
-      if config_model.tools and _mcp_utils.has_mcp_session_usage(
-          config_model.tools
-      ):
-        raise errors.UnsupportedFunctionError(
-            'MCP sessions are not supported in synchronous methods.'
-        )
-    if _extra_utils.should_disable_afc(config):
+    parsed_config = _extra_utils.parse_config_for_mcp_usage(config)
+    if (
+        parsed_config
+        and parsed_config.tools
+        and _mcp_utils.has_mcp_session_usage(parsed_config.tools)
+    ):
+      raise errors.UnsupportedFunctionError(
+          'MCP sessions are not supported in synchronous methods.'
+      )
+    if _extra_utils.should_disable_afc(parsed_config):
       yield from self._generate_content_stream(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
       return
 
-    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(config)
+    remaining_remote_calls_afc = _extra_utils.get_max_remote_calls_afc(
+        parsed_config
+    )
     logger.info(
         f'AFC is enabled with max remote calls: {remaining_remote_calls_afc}.'
     )
@@ -5758,14 +5767,14 @@ class Models(_api_module.BaseModule):
     while remaining_remote_calls_afc > 0:
       i += 1
       response = self._generate_content_stream(
-          model=model, contents=contents, config=config
+          model=model, contents=contents, config=parsed_config
       )
       logger.info(f'AFC remote call {i} is done.')
       remaining_remote_calls_afc -= 1
       if remaining_remote_calls_afc == 0:
         logger.info('Reached max remote calls for automatic function calling.')
 
-      function_map = _extra_utils.get_function_map(config)
+      function_map = _extra_utils.get_function_map(parsed_config)
 
       if i == 1:
         # First request gets a function call.
@@ -5790,7 +5799,7 @@ class Models(_api_module.BaseModule):
       else:
         #  Second request and beyond, yield chunks.
         for chunk in response:
-          if _extra_utils.should_append_afc_history(config):
+          if _extra_utils.should_append_afc_history(parsed_config):
             chunk.automatic_function_calling_history = (
                 automatic_function_calling_history
             )
@@ -7095,20 +7104,10 @@ class AsyncModels(_api_module.BaseModule):
       print(response.text)
       # J'aime les bagels.
     """
-    # Retrieve and cache any MCP tools if provided.
+    # Retrieve and cache any MCP sessions if provided.
     parsed_config, mcp_to_genai_tool_adapters = (
-        await _extra_utils.parse_config_for_mcp_tools(config)
+        await _extra_utils.parse_config_for_mcp_sessions(config)
     )
-    if (
-        parsed_config
-        and parsed_config.tools
-        and _mcp_utils.has_mcp_tool_usage(parsed_config.tools)
-    ):
-      if parsed_config.http_options is None:
-        parsed_config.http_options = types.HttpOptions(headers={})
-      if parsed_config.http_options.headers is None:
-        parsed_config.http_options.headers = {}
-      _mcp_utils.set_mcp_usage_header(parsed_config.http_options.headers)
     if _extra_utils.should_disable_afc(parsed_config):
       return await self._generate_content(
           model=model, contents=contents, config=parsed_config
@@ -7238,20 +7237,10 @@ class AsyncModels(_api_module.BaseModule):
       # scones.
     """
 
-    # Retrieve and cache any MCP tools if provided.
+    # Retrieve and cache any MCP sessions if provided.
     parsed_config, mcp_to_genai_tool_adapters = (
-        await _extra_utils.parse_config_for_mcp_tools(config)
+        await _extra_utils.parse_config_for_mcp_sessions(config)
     )
-    if (
-        parsed_config
-        and parsed_config.tools
-        and _mcp_utils.has_mcp_tool_usage(parsed_config.tools)
-    ):
-      if parsed_config.http_options is None:
-        parsed_config.http_options = types.HttpOptions(headers={})
-      if parsed_config.http_options.headers is None:
-        parsed_config.http_options.headers = {}
-      _mcp_utils.set_mcp_usage_header(parsed_config.http_options.headers)
     if _extra_utils.should_disable_afc(parsed_config):
       response = await self._generate_content_stream(
           model=model, contents=contents, config=parsed_config

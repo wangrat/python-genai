@@ -39,7 +39,7 @@ async def test_parse_empty_config_dict():
   """Test conversion of empty GenerateContentConfigDict to parsed config."""
   config = {}
   parsed_config, mcp_to_genai_tool_adapters = (
-      await _extra_utils.parse_config_for_mcp_tools(config)
+      await _extra_utils.parse_config_for_mcp_sessions(config)
   )
   assert parsed_config == None
   assert not mcp_to_genai_tool_adapters
@@ -50,7 +50,7 @@ async def test_parse_empty_config_object():
   """Test conversion of empty GenerateContentConfig to parsed config."""
   config = types.GenerateContentConfig()
   parsed_config, mcp_to_genai_tool_adapters = (
-      await _extra_utils.parse_config_for_mcp_tools(config)
+      await _extra_utils.parse_config_for_mcp_sessions(config)
   )
   assert config is not parsed_config  # config is not modified
   assert not mcp_to_genai_tool_adapters
@@ -91,7 +91,7 @@ async def test_parse_config_object_with_tools():
   mock_session_instance = MockMcpClientSession()
   config = types.GenerateContentConfig(tools=[mock_session_instance])
   parsed_config, mcp_to_genai_tool_adapters = (
-      await _extra_utils.parse_config_for_mcp_tools(config)
+      await _extra_utils.parse_config_for_mcp_sessions(config)
   )
   assert len(config.tools) == 1
   assert config.tools[0] is mock_session_instance
@@ -145,7 +145,7 @@ async def test_parse_config_object_with_tools_complex_type():
   mock_session_instance = MockMcpClientSession()
   config = types.GenerateContentConfig(tools=[mock_session_instance])
   parsed_config, mcp_to_genai_tool_adapters = (
-      await _extra_utils.parse_config_for_mcp_tools(config)
+      await _extra_utils.parse_config_for_mcp_sessions(config)
   )
   assert len(config.tools) == 1
   assert config.tools[0] is mock_session_instance
@@ -182,7 +182,7 @@ async def test_parse_config_object_with_non_mcp_tools():
       ]
   )
   parsed_config, mcp_to_genai_tool_adapters = (
-      await _extra_utils.parse_config_for_mcp_tools(config)
+      await _extra_utils.parse_config_for_mcp_sessions(config)
   )
   assert len(config.tools) == 2
   assert config is not parsed_config  # config is not modified
