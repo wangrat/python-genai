@@ -605,6 +605,7 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
                   },
                   'languageCode': 'en-US',
               },
+              'enableAffectiveDialog': True,
               'temperature': 0.7,
               'topP': 0.8,
               'topK': 9.0,
@@ -612,6 +613,7 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
               'mediaResolution': 'MEDIA_RESOLUTION_MEDIUM',
               'seed': 13,
           },
+          'proactivity': {'proactiveAudio': True},
           'systemInstruction': {
               'parts': [
                   {
@@ -641,13 +643,15 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
           },
           'language_code': 'en-US',
       },
+      'enable_affective_dialog': True,
+      'proactivity': {'proactive_audio': True},
       'temperature': 0.7,
       'top_p': 0.8,
       'top_k': 9,
       'max_output_tokens': 10,
       'seed': 13,
       'system_instruction': 'test instruction',
-      'media_resolution': 'MEDIA_RESOLUTION_MEDIUM'
+      'media_resolution': 'MEDIA_RESOLUTION_MEDIUM',
   }
   result = await get_connect_message(
       mock_api_client(vertexai=vertexai), model='test_model', config=config_dict
@@ -663,6 +667,8 @@ async def test_bidi_setup_to_api_speech_config(vertexai):
           ),
           language_code='en-US',
       ),
+      enable_affective_dialog=True,
+      proactivity=types.ProactivityConfig(proactive_audio=True),
       temperature=0.7,
       top_p=0.8,
       top_k=9,

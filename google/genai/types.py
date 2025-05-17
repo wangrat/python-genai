@@ -11122,6 +11122,29 @@ AudioTranscriptionConfigOrDict = Union[
 ]
 
 
+class ProactivityConfig(_common.BaseModel):
+  """Config for proactivity features."""
+
+  proactive_audio: Optional[bool] = Field(
+      default=None,
+      description="""If enabled, the model can reject responding to the last prompt. For
+        example, this allows the model to ignore out of context speech or to stay
+        silent if the user did not make a request, yet.""",
+  )
+
+
+class ProactivityConfigDict(TypedDict, total=False):
+  """Config for proactivity features."""
+
+  proactive_audio: Optional[bool]
+  """If enabled, the model can reject responding to the last prompt. For
+        example, this allows the model to ignore out of context speech or to stay
+        silent if the user did not make a request, yet."""
+
+
+ProactivityConfigOrDict = Union[ProactivityConfig, ProactivityConfigDict]
+
+
 class LiveClientSetup(_common.BaseModel):
   """Message contains configuration that will apply for the duration of the streaming session."""
 
@@ -11175,6 +11198,11 @@ class LiveClientSetup(_common.BaseModel):
       specified for the output audio.
       """,
   )
+  proactivity: Optional[ProactivityConfig] = Field(
+      default=None,
+      description="""Configures the proactivity of the model. This allows the model to respond proactively to
+    the input and to ignore irrelevant input.""",
+  )
 
 
 class LiveClientSetupDict(TypedDict, total=False):
@@ -11221,6 +11249,10 @@ class LiveClientSetupDict(TypedDict, total=False):
   """The transcription of the output aligns with the language code
       specified for the output audio.
       """
+
+  proactivity: Optional[ProactivityConfigDict]
+  """Configures the proactivity of the model. This allows the model to respond proactively to
+    the input and to ignore irrelevant input."""
 
 
 LiveClientSetupOrDict = Union[LiveClientSetup, LiveClientSetupDict]
@@ -11642,6 +11674,10 @@ class LiveConnectConfig(_common.BaseModel):
       description="""The speech generation configuration.
       """,
   )
+  enable_affective_dialog: Optional[bool] = Field(
+      default=None,
+      description="""If enabled, the model will detect emotions and adapt its responses accordingly.""",
+  )
   system_instruction: Optional[ContentUnion] = Field(
       default=None,
       description="""The user provided system instructions for the model.
@@ -11682,6 +11718,11 @@ If included the server will send SessionResumptionUpdate messages.""",
       description="""Configures context window compression mechanism.
 
       If included, server will compress context window to fit into given length.""",
+  )
+  proactivity: Optional[ProactivityConfig] = Field(
+      default=None,
+      description="""Configures the proactivity of the model. This allows the model to respond proactively to
+    the input and to ignore irrelevant input.""",
   )
 
 
@@ -11735,6 +11776,9 @@ class LiveConnectConfigDict(TypedDict, total=False):
   """The speech generation configuration.
       """
 
+  enable_affective_dialog: Optional[bool]
+  """If enabled, the model will detect emotions and adapt its responses accordingly."""
+
   system_instruction: Optional[ContentUnionDict]
   """The user provided system instructions for the model.
       Note: only text should be used in parts and content in each part will be
@@ -11768,6 +11812,10 @@ If included the server will send SessionResumptionUpdate messages."""
   """Configures context window compression mechanism.
 
       If included, server will compress context window to fit into given length."""
+
+  proactivity: Optional[ProactivityConfigDict]
+  """Configures the proactivity of the model. This allows the model to respond proactively to
+    the input and to ignore irrelevant input."""
 
 
 LiveConnectConfigOrDict = Union[LiveConnectConfig, LiveConnectConfigDict]

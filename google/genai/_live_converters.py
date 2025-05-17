@@ -1179,6 +1179,30 @@ def _ContextWindowCompressionConfig_to_vertex(
   return to_object
 
 
+def _ProactivityConfig_to_mldev(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['proactive_audio']) is not None:
+    setv(to_object, ['proactiveAudio'], getv(from_object, ['proactive_audio']))
+
+  return to_object
+
+
+def _ProactivityConfig_to_vertex(
+    api_client: BaseApiClient,
+    from_object: Union[dict[str, Any], object],
+    parent_object: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+  to_object: dict[str, Any] = {}
+  if getv(from_object, ['proactive_audio']) is not None:
+    setv(to_object, ['proactiveAudio'], getv(from_object, ['proactive_audio']))
+
+  return to_object
+
+
 def _LiveConnectConfig_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
@@ -1254,6 +1278,13 @@ def _LiveConnectConfig_to_mldev(
         ),
     )
 
+  if getv(from_object, ['enable_affective_dialog']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'enableAffectiveDialog'],
+        getv(from_object, ['enable_affective_dialog']),
+    )
+
   if getv(from_object, ['system_instruction']) is not None:
     setv(
         parent_object,
@@ -1323,6 +1354,15 @@ def _LiveConnectConfig_to_mldev(
             api_client,
             getv(from_object, ['context_window_compression']),
             to_object,
+        ),
+    )
+
+  if getv(from_object, ['proactivity']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'proactivity'],
+        _ProactivityConfig_to_mldev(
+            api_client, getv(from_object, ['proactivity']), to_object
         ),
     )
 
@@ -1404,6 +1444,13 @@ def _LiveConnectConfig_to_vertex(
         ),
     )
 
+  if getv(from_object, ['enable_affective_dialog']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'generationConfig', 'enableAffectiveDialog'],
+        getv(from_object, ['enable_affective_dialog']),
+    )
+
   if getv(from_object, ['system_instruction']) is not None:
     setv(
         parent_object,
@@ -1473,6 +1520,15 @@ def _LiveConnectConfig_to_vertex(
             api_client,
             getv(from_object, ['context_window_compression']),
             to_object,
+        ),
+    )
+
+  if getv(from_object, ['proactivity']) is not None:
+    setv(
+        parent_object,
+        ['setup', 'proactivity'],
+        _ProactivityConfig_to_vertex(
+            api_client, getv(from_object, ['proactivity']), to_object
         ),
     )
 
@@ -1748,6 +1804,15 @@ def _LiveClientSetup_to_mldev(
         ),
     )
 
+  if getv(from_object, ['proactivity']) is not None:
+    setv(
+        to_object,
+        ['proactivity'],
+        _ProactivityConfig_to_mldev(
+            api_client, getv(from_object, ['proactivity']), to_object
+        ),
+    )
+
   return to_object
 
 
@@ -1827,6 +1892,15 @@ def _LiveClientSetup_to_vertex(
             api_client,
             getv(from_object, ['output_audio_transcription']),
             to_object,
+        ),
+    )
+
+  if getv(from_object, ['proactivity']) is not None:
+    setv(
+        to_object,
+        ['proactivity'],
+        _ProactivityConfig_to_vertex(
+            api_client, getv(from_object, ['proactivity']), to_object
         ),
     )
 
