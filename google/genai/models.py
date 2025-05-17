@@ -23,6 +23,7 @@ from . import _common
 from . import _extra_utils
 from . import _mcp_utils
 from . import _transformers as t
+from . import errors
 from . import types
 from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
@@ -5565,6 +5566,8 @@ class Models(_api_module.BaseModule):
 
     Some models support multimodal input and output.
 
+    Built-in MCP support is a preview feature.
+
     Usage:
 
     .. code-block:: python
@@ -5600,6 +5603,14 @@ class Models(_api_module.BaseModule):
       # scones.
     """
 
+    if config:
+      config_model = _extra_utils._create_generate_content_config_model(config)
+      if config_model.tools and _mcp_utils.has_mcp_session_usage(
+          config_model.tools
+      ):
+        raise errors.UnsupportedFunctionError(
+            'MCP sessions are not supported in synchronous methods.'
+        )
     if _extra_utils.should_disable_afc(config):
       return self._generate_content(
           model=model, contents=contents, config=config
@@ -5685,6 +5696,8 @@ class Models(_api_module.BaseModule):
 
     Some models support multimodal input and output.
 
+    Built-in MCP support is a preview feature.
+
     Usage:
 
     .. code-block:: python
@@ -5720,6 +5733,14 @@ class Models(_api_module.BaseModule):
       # scones.
     """
 
+    if config:
+      config_model = _extra_utils._create_generate_content_config_model(config)
+      if config_model.tools and _mcp_utils.has_mcp_session_usage(
+          config_model.tools
+      ):
+        raise errors.UnsupportedFunctionError(
+            'MCP sessions are not supported in synchronous methods.'
+        )
     if _extra_utils.should_disable_afc(config):
       yield from self._generate_content_stream(
           model=model, contents=contents, config=config

@@ -56,11 +56,21 @@ def mcp_to_gemini_tools(tools: list[McpTool]) -> list[types.Tool]:
 
 
 def has_mcp_tool_usage(tools: types.ToolListUnion) -> bool:
-  """Checks whether the list of tools contains any MCP tools."""
+  """Checks whether the list of tools contains any MCP tools or sessions."""
   if McpClientSession is None:
     return False
   for tool in tools:
     if isinstance(tool, McpTool) or isinstance(tool, McpClientSession):
+      return True
+  return False
+
+
+def has_mcp_session_usage(tools: types.ToolListUnion) -> bool:
+  """Checks whether the list of tools contains any MCP sessions."""
+  if McpClientSession is None:
+    return False
+  for tool in tools:
+    if isinstance(tool, McpClientSession):
       return True
   return False
 

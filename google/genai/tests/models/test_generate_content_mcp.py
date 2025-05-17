@@ -16,6 +16,7 @@
 from typing import Any
 import pytest
 from ... import _transformers as t
+from ... import errors
 from ... import types
 from .. import pytest_helper
 
@@ -202,6 +203,134 @@ async def test_mcp_tools_duplicate_tool_name_raises_error(client):
 
   with pytest.raises(ValueError):
     await client.aio.models.generate_content(
+        model='gemini-2.0-flash',
+        contents=t.t_contents(None, 'What is the weather in Boston?'),
+        config={
+            'tools': [MockMcpClientSession()],
+        },
+    )
+
+
+async def test_mcp_tools_synchronous_call(client):
+  response = client.models.generate_content(
+      model='gemini-2.0-flash',
+      contents=t.t_contents(None, 'What is the weather in Boston?'),
+      config={
+          'tools': [
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              )
+          ]
+      },
+  )
+  assert response.function_calls == [
+      types.FunctionCall(
+          name='get_weather',
+          args={'location': 'Boston'},
+      )
+  ]
+
+
+async def test_mcp_session_synchronous_call_raises_error(client):
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Different tool to get the weather.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+          ]
+      )
+
+  with pytest.raises(errors.UnsupportedFunctionError):
+    client.models.generate_content(
+        model='gemini-2.0-flash',
+        contents=t.t_contents(None, 'What is the weather in Boston?'),
+        config={
+            'tools': [MockMcpClientSession()],
+        },
+    )
+
+
+async def test_mcp_tools_synchronous_stream_call(client):
+  response = client.models.generate_content_stream(
+      model='gemini-2.0-flash',
+      contents=t.t_contents(None, 'What is the weather in Boston?'),
+      config={
+          'tools': [
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              )
+          ]
+      },
+  )
+  assert response.function_calls == [
+      types.FunctionCall(
+          name='get_weather',
+          args={'location': 'Boston'},
+      )
+  ]
+
+
+async def test_mcp_session_synchronous_stream_call_raises_error(client):
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Different tool to get the weather.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+          ]
+      )
+
+  with pytest.raises(errors.UnsupportedFunctionError):
+    client.models.generate_content_stream(
         model='gemini-2.0-flash',
         contents=t.t_contents(None, 'What is the weather in Boston?'),
         config={
