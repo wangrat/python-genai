@@ -453,17 +453,19 @@ async def parse_config_for_mcp_tools(
   mcp_to_genai_tool_adapters: dict[str, McpToGenAiToolAdapter] = {}
   if not config:
     return None, mcp_to_genai_tool_adapters
-  config_model = _create_generate_content_config_model(config).model_copy(
-      deep=True
-  )
+  config_model = _create_generate_content_config_model(config)
+  # Create a copy of the config model with the tools field cleared as they will
+  # be replaced with the MCP tools converted to GenAI tools.
+  config_model_copy = config_model.model_copy(update={'tools': None})
   if config_model.tools:
+    config_model_copy.tools = []
     for tool in config_model.tools:
       if McpClientSession is not None and isinstance(tool, McpClientSession):
         mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
             tool, await tool.list_tools()
         )
         # Extend the config with the MCP session tools converted to GenAI tools.
-        config_model.tools.extend(mcp_to_genai_tool_adapter.tools)
+        config_model_copy.tools.extend(mcp_to_genai_tool_adapter.tools)
         for genai_tool in mcp_to_genai_tool_adapter.tools:
           if genai_tool.function_declarations:
             for function_declaration in genai_tool.function_declarations:
@@ -477,9 +479,9 @@ async def parse_config_for_mcp_tools(
                     mcp_to_genai_tool_adapter
                 )
     if McpClientSession is not None:
-      config_model.tools = [
+      config_model_copy.tools.extend(
           tool
           for tool in config_model.tools
           if not isinstance(tool, McpClientSession)
-      ]
-  return config_model, mcp_to_genai_tool_adapters
+      )
+  return config_model_copy, mcp_to_genai_tool_adapters

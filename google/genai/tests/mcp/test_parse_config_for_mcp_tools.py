@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+import _asyncio
 import pytest
 from ... import _extra_utils
 from ... import types
@@ -106,3 +107,95 @@ async def test_parse_config_object_with_tools():
   assert isinstance(
       mcp_to_genai_tool_adapters['get_weather_2'], McpToGenAiToolAdapter
   )
+
+
+@pytest.mark.asyncio
+async def test_parse_config_object_with_tools_complex_type():
+  """Test conversion of GenerateContentConfig with tools to parsed config."""
+
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+      self._future = _asyncio.Future()  # This object cannot be pickled.
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+              mcp_types.Tool(
+                  name='get_weather_2',
+                  description='Different tool to get the weather.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+          ]
+      )
+
+  mock_session_instance = MockMcpClientSession()
+  config = types.GenerateContentConfig(tools=[mock_session_instance])
+  parsed_config, mcp_to_genai_tool_adapters = (
+      await _extra_utils.parse_config_for_mcp_tools(config)
+  )
+  assert len(config.tools) == 1
+  assert config.tools[0] is mock_session_instance
+  assert config is not parsed_config  # config is not modified
+  assert len(mcp_to_genai_tool_adapters) == 2
+  assert mcp_to_genai_tool_adapters.keys() == {
+      'get_weather',
+      'get_weather_2',
+  }
+  assert isinstance(
+      mcp_to_genai_tool_adapters['get_weather'], McpToGenAiToolAdapter
+  )
+  assert isinstance(
+      mcp_to_genai_tool_adapters['get_weather_2'], McpToGenAiToolAdapter
+  )
+
+
+@pytest.mark.asyncio
+async def test_parse_config_object_with_non_mcp_tools():
+  """Test conversion of GenerateContentConfig with regular tools to parsed config."""
+
+  config = types.GenerateContentConfig(
+      tools=[
+          types.Tool(
+              function_declarations=[
+                  {'name': 'tool-1', 'description': 'tool-1-description'}
+              ]
+          ),
+          types.Tool(
+              function_declarations=[
+                  {'name': 'tool-2', 'description': 'tool-2-description'}
+              ]
+          ),
+      ]
+  )
+  parsed_config, mcp_to_genai_tool_adapters = (
+      await _extra_utils.parse_config_for_mcp_tools(config)
+  )
+  assert len(config.tools) == 2
+  assert config is not parsed_config  # config is not modified
+  assert mcp_to_genai_tool_adapters == {}
+  assert parsed_config.tools == [
+      types.Tool(
+          function_declarations=[
+              {'name': 'tool-1', 'description': 'tool-1-description'}
+          ]
+      ),
+      types.Tool(
+          function_declarations=[
+              {'name': 'tool-2', 'description': 'tool-2-description'}
+          ]
+      ),
+  ]

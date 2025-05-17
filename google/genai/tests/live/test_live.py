@@ -17,7 +17,8 @@
 """Tests for live.py."""
 import contextlib
 import json
-from typing import AsyncIterator
+import typing
+from typing import Any, AsyncIterator
 from unittest import mock
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
@@ -35,6 +36,19 @@ from ... import client as gl_client
 from ... import live
 from ... import types
 from .. import pytest_helper
+
+if typing.TYPE_CHECKING:
+  from mcp import types as mcp_types
+  from mcp import ClientSession as McpClientSession
+else:
+  mcp_types: typing.Type = Any
+  McpClientSession: typing.Type = Any
+  try:
+    from mcp import types as mcp_types
+    from mcp import ClientSession as McpClientSession
+  except ImportError:
+    mcp_types = None
+    McpClientSession = None
 
 
 function_declarations = [{
@@ -976,6 +990,171 @@ async def test_bidi_setup_to_api_with_tools_function_behavior(vertexai):
   assert (
       result['setup']['tools'][0]['functionDeclarations'][0]['behavior']
       == 'NON_BLOCKING'
+  )
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_config_mcp_tools(
+    vertexai,
+):
+  if mcp_types is None:
+    return
+
+  expected_result_googleai = {
+      'setup': {
+          'model': 'models/test_model',
+          'tools': [{
+              'functionDeclarations': [{
+                  'parameters': {
+                      'type': 'OBJECT',
+                      'properties': {
+                          'location': {
+                              'type': 'STRING',
+                          },
+                      },
+                  },
+                  'name': 'get_weather',
+                  'description': 'Get the weather in a city.',
+              }],
+          }],
+      }
+  }
+  expected_result_vertexai = {
+      'setup': {
+          'generationConfig': {
+              'responseModalities': [
+                  'AUDIO',
+              ],
+          },
+          'model': (
+              'projects/test_project/locations/us-central1/publishers/google/models/test_model'
+          ),
+          'tools': [{
+              'functionDeclarations': [{
+                  'parameters': {
+                      'type': 'OBJECT',
+                      'properties': {
+                          'location': {
+                              'type': 'STRING',
+                          },
+                      },
+                  },
+                  'name': 'get_weather',
+                  'description': 'Get the weather in a city.',
+              }],
+          }],
+      }
+  }
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai),
+      model='test_model',
+      config={
+          'tools': [
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              )
+          ],
+      },
+  )
+
+  assert (
+      result == expected_result_vertexai
+      if vertexai
+      else expected_result_googleai
+  )
+
+
+@pytest.mark.parametrize('vertexai', [True, False])
+@pytest.mark.asyncio
+async def test_bidi_setup_to_api_with_config_mcp_session(
+    vertexai,
+):
+  if mcp_types is None:
+    return
+
+  class MockMcpClientSession(McpClientSession):
+
+    def __init__(self):
+      self._read_stream = None
+      self._write_stream = None
+
+    async def list_tools(self):
+      return mcp_types.ListToolsResult(
+          tools=[
+              mcp_types.Tool(
+                  name='get_weather',
+                  description='Get the weather in a city.',
+                  inputSchema={
+                      'type': 'object',
+                      'properties': {'location': {'type': 'string'}},
+                  },
+              ),
+          ]
+      )
+
+  expected_result_googleai = {
+      'setup': {
+          'model': 'models/test_model',
+          'tools': [{
+              'functionDeclarations': [{
+                  'parameters': {
+                      'type': 'OBJECT',
+                      'properties': {
+                          'location': {
+                              'type': 'STRING',
+                          },
+                      },
+                  },
+                  'name': 'get_weather',
+                  'description': 'Get the weather in a city.',
+              }],
+          }],
+      }
+  }
+  expected_result_vertexai = {
+      'setup': {
+          'generationConfig': {
+              'responseModalities': [
+                  'AUDIO',
+              ],
+          },
+          'model': (
+              'projects/test_project/locations/us-central1/publishers/google/models/test_model'
+          ),
+          'tools': [{
+              'functionDeclarations': [{
+                  'parameters': {
+                      'type': 'OBJECT',
+                      'properties': {
+                          'location': {
+                              'type': 'STRING',
+                          },
+                      },
+                  },
+                  'name': 'get_weather',
+                  'description': 'Get the weather in a city.',
+              }],
+          }],
+      }
+  }
+  result = await get_connect_message(
+      mock_api_client(vertexai=vertexai),
+      model='test_model',
+      config={
+          'tools': [MockMcpClientSession()],
+      },
+  )
+
+  assert (
+      result == expected_result_vertexai
+      if vertexai
+      else expected_result_googleai
   )
 
 

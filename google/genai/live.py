@@ -52,16 +52,23 @@ except ModuleNotFoundError:
 
 if typing.TYPE_CHECKING:
   from mcp import ClientSession as McpClientSession
+  from mcp.types import Tool as McpTool
   from ._adapters import McpToGenAiToolAdapter
+  from ._mcp_utils import mcp_to_gemini_tool
 else:
   McpClientSession: typing.Type = Any
+  McpTool: typing.Type = Any
   McpToGenAiToolAdapter: typing.Type = Any
   try:
     from mcp import ClientSession as McpClientSession
+    from mcp.types import Tool as McpTool
     from ._adapters import McpToGenAiToolAdapter
+    from ._mcp_utils import mcp_to_gemini_tool
   except ImportError:
     McpClientSession = None
+    McpTool = None
     McpToGenAiToolAdapter = None
+    mcp_to_gemini_tool = None
 
 logger = logging.getLogger('google_genai.live')
 
@@ -1005,22 +1012,31 @@ async def _t_live_connect_config(
     parameter_model = config
     parameter_model.system_instruction = system_instruction
 
+  # Create a copy of the config model with the tools field cleared as they will
+  # be replaced with the MCP tools converted to GenAI tools.
+  parameter_model_copy = parameter_model.model_copy(update={'tools': None})
   if parameter_model.tools:
+    parameter_model_copy.tools = []
     for tool in parameter_model.tools:
       if McpClientSession is not None and isinstance(tool, McpClientSession):
         mcp_to_genai_tool_adapter = McpToGenAiToolAdapter(
             tool, await tool.list_tools()
         )
         # Extend the config with the MCP session tools converted to GenAI tools.
-        parameter_model.tools.extend(mcp_to_genai_tool_adapter.tools)
+        parameter_model_copy.tools.extend(mcp_to_genai_tool_adapter.tools)
+      if McpTool is not None and isinstance(tool, McpTool):
+        parameter_model_copy.tools.append(mcp_to_gemini_tool(tool))
     if McpClientSession is not None:
-      parameter_model.tools = [
+      parameter_model_copy.tools.extend(
           tool
           for tool in parameter_model.tools
-          if not isinstance(tool, McpClientSession)
-      ]
+          if (
+              not isinstance(tool, McpClientSession)
+              and not isinstance(tool, McpTool)
+          )
+      )
 
-  if parameter_model.generation_config is not None:
+  if parameter_model_copy.generation_config is not None:
     warnings.warn(
         'Setting `LiveConnectConfig.generation_config` is deprecated, '
         'please set the fields on `LiveConnectConfig` directly. This will '
@@ -1029,4 +1045,4 @@ async def _t_live_connect_config(
         stacklevel=4,
     )
 
-  return parameter_model
+  return parameter_model_copy
