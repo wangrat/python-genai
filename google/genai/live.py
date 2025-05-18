@@ -38,6 +38,7 @@ from . import types
 from ._api_client import BaseApiClient
 from ._common import get_value_by_path as getv
 from ._common import set_value_by_path as setv
+from .live_music import AsyncLiveMusic
 from .models import _Content_to_mldev
 from .models import _Content_to_vertex
 
@@ -863,6 +864,14 @@ class AsyncSession:
 
 class AsyncLive(_api_module.BaseModule):
   """[Preview] AsyncLive."""
+
+  def __init__(self, api_client: BaseApiClient):
+    super().__init__(api_client)
+    self._music = AsyncLiveMusic(api_client)
+
+  @property
+  def music(self) -> AsyncLiveMusic:
+    return self._music
 
   @contextlib.asynccontextmanager
   async def connect(
