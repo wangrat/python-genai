@@ -4571,9 +4571,9 @@ class GenerateContentResponse(_common.BaseModel):
     if non_text_parts:
       logger.warning(
           'Warning: there are non-text parts in the response:'
-          f' {non_text_parts},returning concatenated {warn_property} result'
-          ' from text parts,check out the non text parts for full response'
-          ' from model.'
+          f' {non_text_parts}, returning concatenated {warn_property} result'
+          ' from text parts. Check the full candidates.content.parts accessor'
+          ' to get the full model response.'
       )
     # part.text == '' is different from part.text is None
     return text if any_text_part_text else None
