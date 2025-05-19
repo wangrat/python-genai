@@ -2267,7 +2267,7 @@ def _WeightedPrompt_to_vertex(
   return to_object
 
 
-def _LiveMusicSetClientContentParameters_to_mldev(
+def _LiveMusicSetWeightedPromptsParameters_to_mldev(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
     parent_object: Optional[dict[str, Any]] = None,
@@ -2286,7 +2286,7 @@ def _LiveMusicSetClientContentParameters_to_mldev(
   return to_object
 
 
-def _LiveMusicSetClientContentParameters_to_vertex(
+def _LiveMusicSetWeightedPromptsParameters_to_vertex(
     api_client: BaseApiClient,
     from_object: Union[dict[str, Any], object],
     parent_object: Optional[dict[str, Any]] = None,

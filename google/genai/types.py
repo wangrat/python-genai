@@ -12265,7 +12265,7 @@ LiveMusicConnectParametersOrDict = Union[
 
 
 class LiveMusicSetConfigParameters(_common.BaseModel):
-  """Parameters for setting config for the live API."""
+  """Parameters for setting config for the live music API."""
 
   music_generation_config: Optional[LiveMusicGenerationConfig] = Field(
       default=None, description="""Configuration for music generation."""
@@ -12273,7 +12273,7 @@ class LiveMusicSetConfigParameters(_common.BaseModel):
 
 
 class LiveMusicSetConfigParametersDict(TypedDict, total=False):
-  """Parameters for setting config for the live API."""
+  """Parameters for setting config for the live music API."""
 
   music_generation_config: Optional[LiveMusicGenerationConfigDict]
   """Configuration for music generation."""
@@ -12284,8 +12284,8 @@ LiveMusicSetConfigParametersOrDict = Union[
 ]
 
 
-class LiveMusicSetClientContentParameters(_common.BaseModel):
-  """Parameters for setting client content for the live API."""
+class LiveMusicSetWeightedPromptsParameters(_common.BaseModel):
+  """Parameters for setting weighted prompts for the live music API."""
 
   weighted_prompts: Optional[list[WeightedPrompt]] = Field(
       default=None,
@@ -12293,13 +12293,14 @@ class LiveMusicSetClientContentParameters(_common.BaseModel):
   )
 
 
-class LiveMusicSetClientContentParametersDict(TypedDict, total=False):
-  """Parameters for setting client content for the live API."""
+class LiveMusicSetWeightedPromptsParametersDict(TypedDict, total=False):
+  """Parameters for setting weighted prompts for the live music API."""
 
   weighted_prompts: Optional[list[WeightedPromptDict]]
   """A map of text prompts to weights to use for the generation request."""
 
 
-LiveMusicSetClientContentParametersOrDict = Union[
-    LiveMusicSetClientContentParameters, LiveMusicSetClientContentParametersDict
+LiveMusicSetWeightedPromptsParametersOrDict = Union[
+    LiveMusicSetWeightedPromptsParameters,
+    LiveMusicSetWeightedPromptsParametersDict,
 ]
