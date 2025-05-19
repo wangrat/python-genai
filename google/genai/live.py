@@ -1153,17 +1153,10 @@ async def _t_live_connect_config(
         )
         # Extend the config with the MCP session tools converted to GenAI tools.
         parameter_model_copy.tools.extend(mcp_to_genai_tool_adapter.tools)
-      if McpTool is not None and isinstance(tool, McpTool):
+      elif McpTool is not None and isinstance(tool, McpTool):
         parameter_model_copy.tools.append(mcp_to_gemini_tool(tool))
-    if McpClientSession is not None:
-      parameter_model_copy.tools.extend(
-          tool
-          for tool in parameter_model.tools
-          if (
-              not isinstance(tool, McpClientSession)
-              and not isinstance(tool, McpTool)
-          )
-      )
+      else:
+        parameter_model_copy.tools.append(tool)
 
   if parameter_model_copy.generation_config is not None:
     warnings.warn(
