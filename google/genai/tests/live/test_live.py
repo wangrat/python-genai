@@ -123,7 +123,7 @@ async def get_connect_message(api_client, model, config=None):
     yield mock_ws
 
   @patch('google.auth.default', new=mock_google_auth_default)
-  @patch.object(live, 'connect', new=mock_connect)
+  @patch.object(live, 'ws_connect', new=mock_connect)
   async def _test_connect():
     live_module = live.AsyncLive(api_client)
     async with live_module.connect(
@@ -1761,7 +1761,7 @@ async def test_connect_with_provided_credentials(mock_websocket):
     async def mock_connect(uri, additional_headers=None):
         yield mock_websocket
 
-    @patch.object(live, "connect", new=mock_connect)
+    @patch.object(live, "ws_connect", new=mock_connect)
     async def _test_connect():
         live_module = live.AsyncLive(client)
         async with live_module.connect(model="test-model"):
@@ -1790,7 +1790,7 @@ async def test_connect_with_default_credentials(mock_websocket):
         yield mock_websocket
 
     @patch("google.auth.default", new=mock_google_auth_default)
-    @patch.object(live, "connect", new=mock_connect)
+    @patch.object(live, "ws_connect", new=mock_connect)
     async def _test_connect():
         live_module = live.AsyncLive(client)
         async with live_module.connect(model="test-model"):
