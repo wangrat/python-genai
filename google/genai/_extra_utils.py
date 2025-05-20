@@ -502,10 +502,7 @@ async def parse_config_for_mcp_sessions(
                 mcp_to_genai_tool_adapters[function_declaration.name] = (
                     mcp_to_genai_tool_adapter
                 )
-    if McpClientSession is not None:
-      parsed_config_copy.tools.extend(
-          tool
-          for tool in parsed_config.tools
-          if not isinstance(tool, McpClientSession)
-      )
+      else:
+        parsed_config_copy.tools.append(tool)
+
   return parsed_config_copy, mcp_to_genai_tool_adapters
