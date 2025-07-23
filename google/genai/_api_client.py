@@ -32,6 +32,7 @@ import logging
 import math
 import os
 import ssl
+import random
 import sys
 import threading
 import time
@@ -1000,14 +1001,36 @@ class BaseApiClient:
     if stream:
       if self._use_aiohttp():
         session = self._async_aiohttp_client
-        response = await session.request(
-            method=http_request.method,
-            url=http_request.url,
-            headers=http_request.headers,
-            data=data,
-            timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
-            **self._async_client_session_request_args,
-        )
+        try:
+          response = await session.request(
+              method=http_request.method,
+              url=http_request.url,
+              headers=http_request.headers,
+              data=data,
+              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              **self._async_client_session_request_args,
+          )
+        except (
+            aiohttp.ClientConnectorError,
+            aiohttp.ClientConnectorDNSError,
+            aiohttp.ClientOSError,
+            aiohttp.ServerDisconnectedError,
+        ) as e:
+          await asyncio.sleep(1 + random.randint(0, 9))
+          logger.info('Retrying due to aiohttp error: %s' % e)
+          # Retrieve the SSL context from the session.
+          self._async_client_session_request_args = (
+              self._ensure_aiohttp_ssl_ctx(self._http_options)
+          )
+          session = self._async_aiohttp_client
+          response = await session.request(
+              method=http_request.method,
+              url=http_request.url,
+              headers=http_request.headers,
+              data=data,
+              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              **self._async_client_session_request_args,
+          )
 
         await errors.APIError.raise_for_async_response(response)
         return HttpResponse(response.headers, response, session=session)
@@ -1028,17 +1051,42 @@ class BaseApiClient:
         return HttpResponse(client_response.headers, client_response)
     else:
       if self._use_aiohttp():
-        session = self._async_aiohttp_client
-        response = await session.request(
+        try:
+          session = self._async_aiohttp_client
+          response = await session.request(
               method=http_request.method,
               url=http_request.url,
               headers=http_request.headers,
               data=data,
               timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
               **self._async_client_session_request_args,
-        )
-        await errors.APIError.raise_for_async_response(response)
-        return HttpResponse(response.headers, [await response.text()])
+          )
+          await errors.APIError.raise_for_async_response(response)
+          return HttpResponse(response.headers, [await response.text()])
+        except (
+            aiohttp.ClientConnectorError,
+            aiohttp.ClientConnectorDNSError,
+            aiohttp.ClientOSError,
+            aiohttp.ServerDisconnectedError,
+        ) as e:
+          await asyncio.sleep(1 + random.randint(0, 9))
+          logger.info('Retrying due to aiohttp error: %s' % e)
+          # Retrieve the SSL context from the session.
+          self._async_client_session_request_args = (
+              self._ensure_aiohttp_ssl_ctx(self._http_options)
+          )
+          # Instantiate a new session with the updated SSL context.
+          session = self._async_aiohttp_client
+          response = await session.request(
+              method=http_request.method,
+              url=http_request.url,
+              headers=http_request.headers,
+              data=data,
+              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              **self._async_client_session_request_args,
+          )
+          await errors.APIError.raise_for_async_response(response)
+          return HttpResponse(response.headers, [await response.text()])
       else:
         # aiohttp is not available. Fall back to httpx.
         client_response = await self._async_httpx_client.request(
@@ -1340,74 +1388,71 @@ class BaseApiClient:
     offset = 0
     # Upload the file in chunks
     if self._use_aiohttp():  # pylint: disable=g-import-not-at-top
-      async with aiohttp.ClientSession(
-          headers=self._http_options.headers,
-          trust_env=True,
-      ) as session:
-        while True:
-          if isinstance(file, io.IOBase):
-            file_chunk = file.read(CHUNK_SIZE)
-          else:
-            file_chunk = await file.read(CHUNK_SIZE)
-          chunk_size = 0
-          if file_chunk:
-            chunk_size = len(file_chunk)
-          upload_command = 'upload'
-          # If last chunk, finalize the upload.
-          if chunk_size + offset >= upload_size:
-            upload_command += ', finalize'
-          http_options = http_options if http_options else self._http_options
+      session = self._async_aiohttp_client
+      while True:
+        if isinstance(file, io.IOBase):
+          file_chunk = file.read(CHUNK_SIZE)
+        else:
+          file_chunk = await file.read(CHUNK_SIZE)
+        chunk_size = 0
+        if file_chunk:
+          chunk_size = len(file_chunk)
+        upload_command = 'upload'
+        # If last chunk, finalize the upload.
+        if chunk_size + offset >= upload_size:
+          upload_command += ', finalize'
+        http_options = http_options if http_options else self._http_options
+        timeout = (
+            http_options.get('timeout')
+            if isinstance(http_options, dict)
+            else http_options.timeout
+        )
+        if timeout is None:
+          # Per request timeout is not configured. Check the global timeout.
           timeout = (
-              http_options.get('timeout')
-              if isinstance(http_options, dict)
-              else http_options.timeout
+              self._http_options.timeout
+              if isinstance(self._http_options, dict)
+              else self._http_options.timeout
           )
-          if timeout is None:
-            # Per request timeout is not configured. Check the global timeout.
-            timeout = (
-                self._http_options.timeout
-                if isinstance(self._http_options, dict)
-                else self._http_options.timeout
-            )
-          timeout_in_seconds = _get_timeout_in_seconds(timeout)
-          upload_headers = {
-              'X-Goog-Upload-Command': upload_command,
-              'X-Goog-Upload-Offset': str(offset),
-              'Content-Length': str(chunk_size),
-          }
-          _populate_server_timeout_header(upload_headers, timeout_in_seconds)
+        timeout_in_seconds = _get_timeout_in_seconds(timeout)
+        upload_headers = {
+            'X-Goog-Upload-Command': upload_command,
+            'X-Goog-Upload-Offset': str(offset),
+            'Content-Length': str(chunk_size),
+        }
+        _populate_server_timeout_header(upload_headers, timeout_in_seconds)
 
-          retry_count = 0
-          response = None
-          while retry_count < MAX_RETRY_COUNT:
-            response = await session.request(
-                method='POST',
-                url=upload_url,
-                data=file_chunk,
-                headers=upload_headers,
-                timeout=aiohttp.ClientTimeout(connect=timeout_in_seconds),
-            )
+        retry_count = 0
+        response = None
+        while retry_count < MAX_RETRY_COUNT:
+          response = await session.request(
+              method='POST',
+              url=upload_url,
+              data=file_chunk,
+              headers=upload_headers,
+              timeout=aiohttp.ClientTimeout(connect=timeout_in_seconds),
+          )
 
-            if response.headers.get('X-Goog-Upload-Status'):
-              break
-            delay_seconds = INITIAL_RETRY_DELAY * (
-                DELAY_MULTIPLIER**retry_count
-            )
-            retry_count += 1
-            time.sleep(delay_seconds)
+          if response.headers.get('X-Goog-Upload-Status'):
+            break
+          delay_seconds = INITIAL_RETRY_DELAY * (
+              DELAY_MULTIPLIER**retry_count
+          )
+          retry_count += 1
+          time.sleep(delay_seconds)
 
-          offset += chunk_size
-          if (
-              response is not None
-              and response.headers.get('X-Goog-Upload-Status') != 'active'
-          ):
-            break  # upload is complete or it has been interrupted.
+        offset += chunk_size
+        if (
+            response is not None
+            and response.headers.get('X-Goog-Upload-Status') != 'active'
+        ):
+          break  # upload is complete or it has been interrupted.
 
-          if upload_size <= offset:  # Status is not finalized.
-            raise ValueError(
-                f'All content has been uploaded, but the upload status is not'
-                f' finalized.'
-            )
+        if upload_size <= offset:  # Status is not finalized.
+          raise ValueError(
+              f'All content has been uploaded, but the upload status is not'
+              f' finalized.'
+          )
         if (
             response is not None
             and response.headers.get('X-Goog-Upload-Status') != 'final'
@@ -1523,22 +1568,19 @@ class BaseApiClient:
         data = http_request.data
 
     if self._use_aiohttp():
-      async with aiohttp.ClientSession(
+      session = self._async_aiohttp_client
+      response = await session.request(
+          method=http_request.method,
+          url=http_request.url,
           headers=http_request.headers,
-          trust_env=True,
-      ) as session:
-        response = await session.request(
-            method=http_request.method,
-            url=http_request.url,
-            headers=http_request.headers,
-            data=data,
-            timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
-        )
-        await errors.APIError.raise_for_async_response(response)
+          data=data,
+          timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+      )
+      await errors.APIError.raise_for_async_response(response)
 
-        return HttpResponse(
-            response.headers, byte_stream=[await response.read()]
-        ).byte_stream[0]
+      return HttpResponse(
+          response.headers, byte_stream=[await response.read()]
+      ).byte_stream[0]
     else:
       # aiohttp is not available. Fall back to httpx.
       client_response = await self._async_httpx_client.request(
