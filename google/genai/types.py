@@ -8811,6 +8811,9 @@ DistillationSpecOrDict = Union[DistillationSpec, DistillationSpecDict]
 class TuningJob(_common.BaseModel):
   """A tuning job."""
 
+  sdk_http_response: Optional[HttpResponse] = Field(
+      default=None, description="""Used to retain the full HTTP response."""
+  )
   name: Optional[str] = Field(
       default=None,
       description="""Output only. Identifier. Resource name of a TuningJob. Format: `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`""",
@@ -8909,6 +8912,9 @@ class TuningJob(_common.BaseModel):
 
 class TuningJobDict(TypedDict, total=False):
   """A tuning job."""
+
+  sdk_http_response: Optional[HttpResponseDict]
+  """Used to retain the full HTTP response."""
 
   name: Optional[str]
   """Output only. Identifier. Resource name of a TuningJob. Format: `projects/{project}/locations/{location}/tuningJobs/{tuning_job}`"""
@@ -9264,6 +9270,9 @@ _CreateTuningJobParametersOrDict = Union[
 class TuningOperation(_common.BaseModel):
   """A long-running operation."""
 
+  sdk_http_response: Optional[HttpResponse] = Field(
+      default=None, description="""Used to retain the full HTTP response."""
+  )
   name: Optional[str] = Field(
       default=None,
       description="""The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.""",
@@ -9284,6 +9293,9 @@ class TuningOperation(_common.BaseModel):
 
 class TuningOperationDict(TypedDict, total=False):
   """A long-running operation."""
+
+  sdk_http_response: Optional[HttpResponseDict]
+  """Used to retain the full HTTP response."""
 
   name: Optional[str]
   """The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`."""
