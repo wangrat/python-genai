@@ -343,6 +343,12 @@ class HttpResponse:
     # If there is any remaining chunk, yield it.
     if chunk:
       yield chunk
+    # Ensure the underlying httpx stream is closed to return the connection to the pool
+    if isinstance(self.response_stream, httpx.Response):
+      try:
+        self.response_stream.close()
+      except Exception:
+        pass
 
   async def _aiter_response_stream(self) -> AsyncIterator[str]:
     """Asynchronously iterates over chunks retrieved from the API."""
@@ -421,8 +427,17 @@ class HttpResponse:
     if chunk:
       yield chunk
 
-    if hasattr(self, '_session') and self._session:
-      await self._session.close()
+    # Ensure the underlying HTTP response is properly released/closed.
+    if isinstance(self.response_stream, httpx.Response):
+      try:
+        await self.response_stream.aclose()
+      except Exception:
+        pass
+    elif has_aiohttp and isinstance(self.response_stream, aiohttp.ClientResponse):
+      try:
+        await self.response_stream.release()
+      except Exception:
+        pass
 
   @classmethod
   def _load_json_from_response(cls, response: Any) -> Any:
@@ -682,18 +697,30 @@ class BaseApiClient:
     )
     self._httpx_client = SyncHttpxClient(**client_args)
     self._async_httpx_client = AsyncHttpxClient(**async_client_args)
-    if self._use_aiohttp():
+    if self._use_aiohttp() and has_aiohttp:
       # Do it once at the genai.Client level. Share among all requests.
       self._async_client_session_request_args = self._ensure_aiohttp_ssl_ctx(
           self._http_options
       )
-      self._async_aiohttp_client = aiohttp.ClientSession(
-        trust_env=True,
-        connector=aiohttp.TCPConnector(
+      # Configure connection pooling and keepalive more defensively.
+      connector = aiohttp.TCPConnector(
           use_dns_cache=True,
           ttl_dns_cache=60,
           enable_cleanup_closed=True,
-        )
+          limit=100,
+          limit_per_host=100,
+          keepalive_timeout=30,
+      )
+      # Session-level default timeout (per-request can override below).
+      session_timeout = None
+      try:
+        session_timeout = aiohttp.ClientTimeout(total=get_timeout_in_seconds(self._http_options.timeout))
+      except Exception:
+        session_timeout = None
+      self._async_aiohttp_client = aiohttp.ClientSession(
+          trust_env=True,
+          connector=connector,
+          timeout=session_timeout,
       )
 
     self._websocket_ssl_ctx = self._ensure_websocket_ssl_ctx(self._http_options)
@@ -1125,7 +1152,7 @@ class BaseApiClient:
               url=http_request.url,
               headers=http_request.headers,
               data=data,
-              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              timeout=aiohttp.ClientTimeout(total=http_request.timeout, connect=http_request.timeout),
               **self._async_client_session_request_args,
           )
         except (
@@ -1146,7 +1173,7 @@ class BaseApiClient:
               url=http_request.url,
               headers=http_request.headers,
               data=data,
-              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              timeout=aiohttp.ClientTimeout(total=http_request.timeout, connect=http_request.timeout),
               **self._async_client_session_request_args,
           )
 
@@ -1176,7 +1203,7 @@ class BaseApiClient:
               url=http_request.url,
               headers=http_request.headers,
               data=data,
-              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              timeout=aiohttp.ClientTimeout(total=http_request.timeout, connect=http_request.timeout),
               **self._async_client_session_request_args,
           )
           await errors.APIError.raise_for_async_response(response)
@@ -1200,7 +1227,7 @@ class BaseApiClient:
               url=http_request.url,
               headers=http_request.headers,
               data=data,
-              timeout=aiohttp.ClientTimeout(connect=http_request.timeout),
+              timeout=aiohttp.ClientTimeout(total=http_request.timeout, connect=http_request.timeout),
               **self._async_client_session_request_args,
           )
           await errors.APIError.raise_for_async_response(response)
